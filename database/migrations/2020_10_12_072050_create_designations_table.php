@@ -17,7 +17,7 @@ class CreateDesignationsTable extends Migration
             $table->id();
             $table->string('name', 50);
             $table->foreignId('role_id')->index('role_id');
-            $table->enum('status', ['Active', 'InActive']);
+            $table->enum('status', ['active', 'inActive']);
             $table->timestamps();
         });
     }

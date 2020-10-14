@@ -27,7 +27,7 @@ class CreateCompaniesTable extends Migration
             $table->string('password');
             $table->foreignId('employee_id');
             $table->string('verification_comment', 500);
-            $table->enum('status', ['Approve', 'Reject', 'Pending', 'Active']);
+            $table->enum('status', ['approve', 'reject', 'pending', 'active']);
             $table->timestamps();
         });
     }

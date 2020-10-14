@@ -35,7 +35,7 @@ class CreateEmployeesTable extends Migration
             $table->bigInteger('emg_phone');
             $table->string('emg_email', 70);
             $table->date('join_date');
-            $table->enum('Employeement _type', ['Applicant', 'Employee', 'Rejected']);
+            $table->enum('Employeement _type', ['applicant', 'employee', 'rejected']);
             $table->enum('status', ['active', 'inactive', 'applicant', 'employee']);
             $table->timestamps();
         });

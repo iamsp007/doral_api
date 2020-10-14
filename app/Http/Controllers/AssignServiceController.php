@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Services;
+use App\Models\assignServices;
 use Illuminate\Http\Request;
 
-class ServicesController extends Controller
+class AssignServiceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class ServicesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Services  $services
+     * @param  \App\Models\assignServices  $assignServices
      * @return \Illuminate\Http\Response
      */
-    public function show(Services $services)
+    public function show(assignServices $assignServices)
     {
         //
     }
@@ -52,10 +52,10 @@ class ServicesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Services  $services
+     * @param  \App\Models\assignServices  $assignServices
      * @return \Illuminate\Http\Response
      */
-    public function edit(Services $services)
+    public function edit(assignServices $assignServices)
     {
         //
     }
@@ -64,10 +64,10 @@ class ServicesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Services  $services
+     * @param  \App\Models\assignServices  $assignServices
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Services $services)
+    public function update(Request $request, assignServices $assignServices)
     {
         //
     }
@@ -75,10 +75,10 @@ class ServicesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Services  $services
+     * @param  \App\Models\assignServices  $assignServices
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Services $services)
+    public function destroy(assignServices $assignServices)
     {
         //
     }
