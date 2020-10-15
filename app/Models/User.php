@@ -17,9 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'first_name', 'last_name', 'dob', 'phone', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token'
     ];
 
     /**
@@ -55,5 +53,21 @@ class User extends Authenticatable
         $this->save();
 
         return $this->api_token;
+    }
+    /**
+     * Insert the User data from the Employee / Patient 
+     * 
+     */
+    public static function insert($request)
+    {
+        try {
+            $data = User::create($request);
+            return $data->id;
+        } catch (\Exception $e) {
+            report($e);
+            echo $e->getMessage();
+            return false;
+            
+        }
     }
 }

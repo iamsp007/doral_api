@@ -27,6 +27,7 @@ class CreateEmployeesTable extends Migration
             $table->string('npi', 12)->comment('This is optional field');
             $table->foreignId('role_id')->index('role_id');
             $table->foreignId('designation_id')->index('designation_id');
+            $table->foreignId('user_id')->index('user_id');
             $table->string('emg_first_name', 50);
             $table->string('emg_last_name', 50);
             $table->string('emg_address1', 100);
@@ -35,7 +36,7 @@ class CreateEmployeesTable extends Migration
             $table->bigInteger('emg_phone');
             $table->string('emg_email', 70);
             $table->date('join_date');
-            $table->enum('Employeement _type', ['applicant', 'employee', 'rejected']);
+            $table->enum('employeement _type', ['applicant', 'employee', 'rejected']);
             $table->enum('status', ['active', 'inactive', 'applicant', 'employee']);
             $table->timestamps();
         });

@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('login','App\Http\Controllers\UserController@index');
+Route::post('login','App\Http\Controllers\UserController@login');
 Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken');
 Route::post('logout', 'App\Http\Controllers\UserController@logout');
+Route::post('user/store', 'App\Http\Controllers\UserController@store');
+
+Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');

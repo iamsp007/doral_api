@@ -31,6 +31,7 @@ class CreatePatientsTable extends Migration
             $table->string('medi_care_no', 12);
             $table->foreignId('role_id')->index('role_id');
             $table->foreignId('designation_id')->index('designation_id');
+            $table->foreignId('user_id')->index('user_id');
             $table->string('emg_first_name', 50);
             $table->string('emg_last_name', 50);
             $table->string('emg_address1', 100);

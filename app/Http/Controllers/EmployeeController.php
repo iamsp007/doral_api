@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -24,7 +25,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        //  
     }
 
     /**
@@ -33,9 +34,16 @@ class EmployeeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request)
     {
-        //
+        //Post data
+        //$request = json_decode($request->getContent(), true);
+        $id = Employee::insert($request['data']);
+        if ($id) { 
+            echo "inside contion";           
+                    
+        }
+        echo "Record inserted successfully";
     }
 
     /**

@@ -23,7 +23,7 @@ class CreateAssignServicesTable extends Migration
             $table->enum('priority', ['high', 'low', 'mediam']);
             $table->tinyInteger('is_attached');
             $table->string('document_name');
-            $table->sting('document_details');
+            $table->string('document_details');
             $table->timestamps();
         });
     }
