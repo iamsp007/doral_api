@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -58,7 +59,7 @@ class UserController extends Controller
             'dob' => $user['dob'],
             'type' => $user['type'],
             'status' => 'inactive',
-            'password' => 'test123'
+            'password' => Hash::make('test123')
         );
         $id = User::insert($data);
         if ($id) {
