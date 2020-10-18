@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\company;
 use Illuminate\Http\Request;
-
+use App\Models\referral;
+use Exception;
 class CompanyController extends Controller
 {
     /**
@@ -14,7 +15,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
+        return company::all();
     }
 
     /**
@@ -35,7 +36,40 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $status = 0;
+        $message = 'Something wrong';
+        try {
+            //Post data
+            $request = json_decode($request->getContent(), true);
+            $company = $request['data'];
+            // check name and email for company
+            $companyMatch = ['name' => $company['name'], 'email' => $company['email']];
+            $companyData = company::where($companyMatch)->first();
+            if($companyData) {
+                throw new Exception("Company already in available");
+            }
+            $data = array(
+                'name' => $company['name'],
+                'referal_id' => $company['refferal_id'],
+                'email' => $company['email'],
+                'status' => 'Pending',
+            );
+            $id = company::insert($data);
+            if ($id) {
+                $status = 1;
+                $message = 'Company store properly';
+            }
+        } catch(Exception $e) {
+            $status = 0;
+            $message = $e->getMessage();
+        }
+
+        $response = [
+            'status' => $status,
+            'message' => $message
+        ];
+
+        return response()->json($response, 201);
     }
 
     /**
@@ -46,7 +80,7 @@ class CompanyController extends Controller
      */
     public function show(company $company)
     {
-        //
+        return company::find($company);
     }
 
     /**
@@ -57,7 +91,7 @@ class CompanyController extends Controller
      */
     public function edit(company $company)
     {
-        //
+        $company = company::findOrFail($company);
     }
 
     /**
@@ -69,7 +103,10 @@ class CompanyController extends Controller
      */
     public function update(Request $request, company $company)
     {
-        //
+        $company = company::findOrFail($company);
+        $company->update($request->all());
+
+        return response()->json($company, 201);
     }
 
     /**
@@ -80,6 +117,9 @@ class CompanyController extends Controller
      */
     public function destroy(company $company)
     {
-        //
+        $company = company::findOrFail($company);
+        $company->delete();
+
+        return response()->json(null, 204);
     }
 }
