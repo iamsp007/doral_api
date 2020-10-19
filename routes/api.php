@@ -19,5 +19,9 @@ Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken'
 Route::post('logout', 'App\Http\Controllers\UserController@logout');
 Route::post('user/store', 'App\Http\Controllers\UserController@store');
 Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
+Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
+Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
+Route::get('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
+Route::post('company/confirmpassword', 'App\Http\Controllers\CompanyController@confirmPassword');
 
 Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
