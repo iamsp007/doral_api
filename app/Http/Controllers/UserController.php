@@ -132,7 +132,25 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        $request = json_decode($request->getContent(), true);
-        User::login($request);
+        $status = 0;
+        try {
+            $login = json_decode($request->getContent(), true);
+            $data = $login['data'];
+            $password = $data['password'];
+            $user = User::login($data);
+            // Check user exist into database or not   
+            if (!$user) {
+                return response()->json(['status' => $status, 'message' => 'Login Fail, please check email id']);
+            }
+            // Check user password
+            if (!Hash::check($password, $user->password)) {
+                return response()->json(['status' => $status, 'message' => 'Login Fail, pls check password']);
+            }
+            return response()->json(['status' => 1, 'data' => $user]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => $status, 'message' => $e->getMessage()]);
+        }
+
+        
     }
 }

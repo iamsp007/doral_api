@@ -17,10 +17,11 @@ class CreateEmployeesTable extends Migration
             $table->id();
             $table->string('first_name', 50);
             $table->string('last_name', 50);
+            $table->enum('gender', ['male', 'female']);
             $table->string('address1', 100);
             $table->string('address2', 100);
             $table->string('zip', 8);
-            $table->bigInteger('phone');
+            $table->bigInteger('phone')->unique();
             $table->string('email', 70)->unique();
             $table->date('dob');
             $table->string('ssn', 12);
