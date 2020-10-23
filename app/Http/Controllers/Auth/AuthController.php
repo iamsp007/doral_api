@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,15 +29,17 @@ class AuthController extends Controller
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
         if ($request->remember_me)
-            $token->expires_at = Carbon::now()->addWeeks(1);
+            $token->expires_at = Carbon::now()->addMinute(1);
         $token->save();
-        return response()->json([
+        $data=[
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
             )->toDateTimeString()
-        ]);
+        ];
+
+        return $this->generateResponse(true, 'Login Successfully!',$data);
     }
 
     public function register(Request $request)
@@ -61,9 +64,10 @@ class AuthController extends Controller
         $user->employee_id = $request->employee_id;
         $user->patient_id = $request->patient_id;
         $user->save();
-        return response()->json([
+
+        return $this->generateResponse(true, 'Login Successfully!',[
             'message' => 'Successfully created user!'
-        ], 201);
+        ]);
     }
 
     public function logout(Request $request)
