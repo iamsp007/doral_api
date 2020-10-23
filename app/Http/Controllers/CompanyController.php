@@ -74,6 +74,44 @@ class CompanyController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function login(Request $request)
+    {
+        $status = 0;
+        $message = 'Something wrong';
+        try {
+            //Post data
+            $request = json_decode($request->getContent(), true);
+            $company = $request['data'];
+            // check name and email for company
+            $companyMatch = ['email' => $company['email'], 'password' => md5($company['password'])];
+            //dd($companyMatch);
+            $companyData = company::where($companyMatch)->first();
+            //dd($companyData);
+            if($companyData) {
+                 $status = 1;
+                 $message = "Welcome in Doral";
+            } else {
+                throw new Exception("User not available");
+            }
+        } catch(Exception $e) {
+            $status = 0;
+            $message = $e->getMessage();
+        }
+
+        $response = [
+            'status' => $status,
+            'message' => $message
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\company  $company
@@ -219,7 +257,7 @@ class CompanyController extends Controller
             if($company['password'] != $company['confirm_password']) {
                 throw new Exception("Password not match");
             }
-            $password = Hash::make($company['password']);
+            $password = md5($company['password']);
             $data = array(
                 'password' => $password
             );
