@@ -6,10 +6,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -39,13 +40,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     /**
-     * 
+     *
      */
     function login($request)
     {
     }
     /**
-     * 
+     *
      */
     public function generateToken()
     {
@@ -55,8 +56,8 @@ class User extends Authenticatable
         return $this->api_token;
     }
     /**
-     * Insert the User data from the Employee / Patient 
-     * 
+     * Insert the User data from the Employee / Patient
+     *
      */
     public static function insert($request)
     {
@@ -67,7 +68,7 @@ class User extends Authenticatable
             report($e);
             echo $e->getMessage();
             return false;
-            
+
         }
     }
 }

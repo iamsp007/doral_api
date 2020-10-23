@@ -14,9 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('login','App\Http\Controllers\UserController@login');
-Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken');
-Route::post('logout', 'App\Http\Controllers\UserController@logout');
-Route::post('user/store', 'App\Http\Controllers\UserController@store');
-
-Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
+//Route::post('login','App\Http\Controllers\UserController@login');
+//Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken');
+//Route::post('logout', 'App\Http\Controllers\UserController@logout');
+//Route::post('user/store', 'App\Http\Controllers\UserController@store');
+//
+//Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
+Route::group([
+    'prefix' => 'auth'
+], function () {
+    Route::post('login', 'App\Http\Controllers\Auth\AuthController@login')->name('login');
+    Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
+    Route::group([
+        'middleware' => 'auth:api'
+    ], function () {
+        Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
+        Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
+    });
+});
