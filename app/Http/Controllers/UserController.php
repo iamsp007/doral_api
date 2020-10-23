@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -24,7 +25,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        try {
+            $users = User::all();
+            if (!$users) {
+            }
+            return response()->json(['status' => $status, 'data' => $users]);
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -46,6 +53,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //Post data
+        $status = 1;
         $request = json_decode($request->getContent(), true);
         $user = $request['data'];
         $data = array(
@@ -61,15 +69,29 @@ class UserController extends Controller
             'status' => 'inactive',
             'password' => Hash::make('test123')
         );
-        $id = User::insert($data);
-        if ($id) {
-            $request['data']['user_id'] = $id;
-            if ($user['type'] == 'employee') {
-                $this->employeeContoller->store($request);
-            } else if ($user['type'] == 'patient') {
-                $this->patientController->store($request);
+        try {
+            \DB::beginTransaction();
+            $id = User::insert($data);
+            if ($id) {
+                $request['data']['user_id'] = $id;
+                if ($user['type'] == 'employee') {
+                    $result = $this->employeeContoller->store($request);
+                } else if ($user['type'] == 'patient') {
+                    $result = $this->patientController->store($request);
+                }
+                // Check the condition if error into database
+                if (!$result) {
+                    throw new \ErrorException('Error in-Insert ' . $user['type']);
+                }
+                \DB::commit();
+                return response()->json(['status' => $status, 'data' => $result]);
+            } else {
+                throw new \ErrorException('Error found');
             }
-            dd($user);
+        } catch (\Exception $e) {
+            $status = 0;
+            \DB::rollback();
+            return response()->json(['status' => $status, 'message' => $e->getMessage()]);
         }
     }
 
@@ -150,7 +172,5 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => $status, 'message' => $e->getMessage()]);
         }
-
-        
     }
 }

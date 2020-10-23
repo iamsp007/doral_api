@@ -36,14 +36,9 @@ class EmployeeController extends Controller
      */
     public function store($request)
     {
-        //Post data
         //$request = json_decode($request->getContent(), true);
-        $id = Employee::insert($request['data']);
-        if ($id) { 
-            echo "inside contion";           
-                    
-        }
-        echo "Record inserted successfully";
+        $data = Employee::insert($request['data']);
+        return $data;        
     }
 
     /**

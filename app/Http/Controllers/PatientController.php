@@ -33,9 +33,16 @@ class PatientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request)
     {
-        //
+        //$request = json_decode($request->getContent(), true);
+        $data = Patient::insert($request['data']);
+        /*if (!$data) {
+            
+        }
+        return response()->json(['status' => $status, 'message' => $e->getMessage()]);
+        */
+        return $data;
     }
 
     /**
