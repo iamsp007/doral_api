@@ -14,7 +14,7 @@ class EmailTemplateController extends Controller
      */
     public function index()
     {
-        //
+        return emailTemplate::all();
     }
 
     /**
@@ -35,7 +35,20 @@ class EmailTemplateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Post data
+        $request = json_decode($request->getContent(), true);
+        $email = $request['data'];
+        $data = array(
+            'title' => $email['title'],
+            'subject' => $email['subject'],
+            'body' => $email['body'],
+            'is_attached' => $email['is_attached'],
+            'status' => 'Inactive'
+        );
+        $id = emailTemplate::insert($data);
+        if ($id) {
+            dd($email);
+        }
     }
 
     /**
@@ -46,7 +59,7 @@ class EmailTemplateController extends Controller
      */
     public function show(emailTemplate $emailTemplate)
     {
-        //
+        return emailTemplate::find($emailTemplate);
     }
 
     /**
@@ -57,7 +70,7 @@ class EmailTemplateController extends Controller
      */
     public function edit(emailTemplate $emailTemplate)
     {
-        //
+        $EmailTemplate = emailTemplate::findOrFail($emailTemplate);
     }
 
     /**
@@ -69,7 +82,10 @@ class EmailTemplateController extends Controller
      */
     public function update(Request $request, emailTemplate $emailTemplate)
     {
-        //
+        $EmailTemplate = emailTemplate::findOrFail($emailTemplate);
+        $EmailTemplate->update($request->all());
+
+        return response()->json($EmailTemplate, 201);
     }
 
     /**
@@ -80,6 +96,9 @@ class EmailTemplateController extends Controller
      */
     public function destroy(emailTemplate $emailTemplate)
     {
-        //
+        $EmailTemplate = emailTemplate::findOrFail($emailTemplate);
+        $EmailTemplate->delete();
+
+        return response()->json(null, 204);
     }
 }

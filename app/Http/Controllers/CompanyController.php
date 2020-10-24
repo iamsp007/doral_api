@@ -75,6 +75,48 @@ class CompanyController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function login(Request $request)
+    {
+        $status = 0;
+        $message = 'Something wrong';
+        try {
+            //Post data
+            $request = json_decode($request->getContent(), true);
+            $company = $request['data'];
+            // check name and email for company
+            $companyMatch = ['email' => $company['email'], 'password' => md5($company['password'])];
+            $companyData = company::where($companyMatch)->first();
+            if($companyData) {
+                $companyMatch['status'] = 'Active';
+                $companyData = company::where($companyMatch)->first();
+                if($companyData) {
+                    $status = 1;
+                    $message = "Welcome in Doral"; 
+                } else {
+                    throw new Exception("Company not active now!");
+                }
+            } else {
+                throw new Exception("Company not available");
+            }
+        } catch(Exception $e) {
+            $status = 0;
+            $message = $e->getMessage();
+        }
+
+        $response = [
+            'status' => $status,
+            'message' => $message
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\company  $company
@@ -185,14 +227,42 @@ class CompanyController extends Controller
     }
 
     /**
-     * Open view for reset Password
+     * Send email for reset password process
      *
      * @param  \App\Models\company  $company
      * @return \Illuminate\Http\Response
      */
-    public function resetPassword()
+    public function resetPassword(Request $request)
     {
-        // Open Reset Password View Page with with two input box, password / confirm password
+        $status = 0;
+        $message = 'Something wrong';
+        try {
+            //Post data
+            $request = json_decode($request->getContent(), true);
+            $company = $request['data'];
+
+            // Email address
+            $companyMatch = ['email' => $company['email']];
+            $companyData = company::where($companyMatch)->first();
+            if(!$companyData) {
+                throw new Exception("Company not available");
+            }
+
+            // Send Email with resetpassword link
+            $status = 1;
+            $message = "Reset password link sent your email address";
+
+        } catch(Exception $e) {
+            $status = 0;
+            $message = $e->getMessage();
+        }
+
+        $response = [
+            'status' => $status,
+            'message' => $message
+        ];
+        
+        return response()->json($response, 201);
     }
 
     /**
@@ -220,7 +290,7 @@ class CompanyController extends Controller
             if ($company['password'] != $company['confirm_password']) {
                 throw new Exception("Password not match");
             }
-            $password = Hash::make($company['password']);
+            $password = md5($company['password']);
             $data = array(
                 'password' => $password
             );
