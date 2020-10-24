@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\referral;
 use Hash;
 use Exception;
+
 class CompanyController extends Controller
 {
     /**
@@ -46,7 +47,7 @@ class CompanyController extends Controller
             // check name and email for company
             $companyMatch = ['name' => $company['name'], 'email' => $company['email']];
             $companyData = company::where($companyMatch)->first();
-            if($companyData) {
+            if ($companyData) {
                 throw new Exception("Company already in available");
             }
             $data = array(
@@ -60,7 +61,7 @@ class CompanyController extends Controller
                 $status = 1;
                 $message = 'Company store properly';
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $status = 0;
             $message = $e->getMessage();
         }
@@ -140,11 +141,11 @@ class CompanyController extends Controller
             //Post data
             $request = json_decode($request->getContent(), true);
             $company = $request['data'];
-            $url = request()->getHttpHost()."/api/company/resetpassword?email=".urlencode($company['email']);
+            $url = request()->getHttpHost() . "/api/company/resetpassword?email=" . urlencode($company['email']);
 
             // Need to understand all validation
             // Check Phone
-            if(isset($company['phone']) && !empty($company['phone'])) {
+            if (isset($company['phone']) && !empty($company['phone'])) {
             } else {
                 throw new Exception("phone required");
             }
@@ -163,14 +164,14 @@ class CompanyController extends Controller
                 'verification_comment' => isset($company['verification_comment']) ? $company['verification_comment'] : ''
             );
             $updateRecord = company::where('id', $company['company_id'])
-                        ->update($data);
+                ->update($data);
             if ($updateRecord) {
                 // Send Email with Email Template and url
-                $url = request()->getHttpHost()."/api/company/resetpassword?email=".urlencode($company['email']);
+                $url = request()->getHttpHost() . "/api/company/resetpassword?email=" . urlencode($company['email']);
                 $status = 1;
                 $message = 'Profile Save';
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $status = 0;
             $message = $e->getMessage();
         }
@@ -212,11 +213,11 @@ class CompanyController extends Controller
             // Email address
             $companyMatch = ['email' => $company['email']];
             $companyData = company::where($companyMatch)->first();
-            if(!$companyData) {
+            if (!$companyData) {
                 throw new Exception("Company not available");
             }
 
-            if($company['password'] != $company['confirm_password']) {
+            if ($company['password'] != $company['confirm_password']) {
                 throw new Exception("Password not match");
             }
             $password = Hash::make($company['password']);
@@ -224,12 +225,12 @@ class CompanyController extends Controller
                 'password' => $password
             );
             $updateRecord = company::where('email', $company['email'])
-                        ->update($data);
+                ->update($data);
             if ($updateRecord) {
                 $status = 1;
                 $message = 'Password Reset';
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $status = 0;
             $message = $e->getMessage();
         }
@@ -259,19 +260,19 @@ class CompanyController extends Controller
 
             // Check status
             $checkStatus = ["Approve", "Reject", "Pending", "Active"];
-            if(!in_array($company['status'], $checkStatus)) {
+            if (!in_array($company['status'], $checkStatus)) {
                 throw new Exception("Something wrong in Status");
             }
             $data = array(
                 'status' => $company['status']
             );
             $updateRecord = company::where('id', $company['company_id'])
-                        ->update($data);
+                ->update($data);
             if ($updateRecord) {
                 $status = 1;
                 $message = 'Status update';
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $status = 0;
             $message = $e->getMessage();
         }
@@ -283,5 +284,14 @@ class CompanyController extends Controller
 
         return response()->json($response, 201);
     }
-
+    /**
+     * Import the patients from csv
+     */
+    public function patientsImport(request $request)
+    {
+        //Post data
+        $request = json_decode($request->getContent(), true);
+        $company = $request['data'];
+        
+    }
 }
