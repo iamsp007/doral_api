@@ -25,3 +25,4 @@ Route::get('company/resetpassword', 'App\Http\Controllers\CompanyController@rese
 Route::post('company/confirmpassword', 'App\Http\Controllers\CompanyController@confirmPassword');
 
 Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
+Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
