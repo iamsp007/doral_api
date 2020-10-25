@@ -14,20 +14,42 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('login','App\Http\Controllers\UserController@login');
-Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken');
-Route::post('logout', 'App\Http\Controllers\UserController@logout');
-Route::post('user/store', 'App\Http\Controllers\UserController@store');
-Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
-Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
-Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
-Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
-Route::post('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
-Route::post('company/confirmpassword', 'App\Http\Controllers\CompanyController@confirmPassword');
+//Route::post('login', 'App\Http\Controllers\UserController@login');
+//Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken');
+//Route::post('logout', 'App\Http\Controllers\UserController@logout');
+//Route::post('login','App\Http\Controllers\UserController@login');
+//Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken');
+//Route::post('logout', 'App\Http\Controllers\UserController@logout');
+//Route::post('user/store', 'App\Http\Controllers\UserController@store');
+//
+//Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
+Route::group([
+    'prefix' => 'auth'
+], function () {
+    Route::post('login', 'App\Http\Controllers\Auth\AuthController@login')->name('login');
+    Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
+    Route::group([
+        'middleware' => 'auth:api'
+    ], function () {
 
-Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
+        Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
+        //Users URLs
+        Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
+        Route::post('user/store', 'App\Http\Controllers\UserController@store');
+        //Company URLs
+        Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
+        Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
+        Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
+        Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
+        Route::post('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
+        Route::post('company/confirmpassword', 'App\Http\Controllers\CompanyController@confirmPassword');
 
-// Email Template
-Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
-// Patient store
-Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
+        // Employees Urls
+        Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
+
+        // Email Template Urls
+        Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
+        // Patient Referral Urls
+        Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
+    });
+});

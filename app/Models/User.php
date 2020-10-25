@@ -10,7 +10,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -40,7 +40,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     /**
-     * 
+     *
      */
     static function login($request)
     {
@@ -66,7 +66,7 @@ class User extends Authenticatable
         
     }
     /**
-     * 
+     *
      */
     public static function generateToken()
     {
@@ -76,8 +76,8 @@ class User extends Authenticatable
         return $this->api_token;
     }
     /**
-     * Insert the User data from the Employee / Patient 
-     * 
+     * Insert the User data from the Employee / Patient
+     *
      */
     public static function insert($request)
     {
@@ -88,6 +88,10 @@ class User extends Authenticatable
             report($e);
             echo $e->getMessage();
             return false;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/sunil
         }
     }
 }
