@@ -29,3 +29,5 @@ Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
 
 // Email Template
 Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
+// Patient store
+Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
