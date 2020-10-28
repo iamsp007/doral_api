@@ -42,33 +42,13 @@ class User extends Authenticatable
     /**
      *
      */
-    static function login($request)
+    function login($request)
     {
-        $status = 0;
-        try {
-            $username = $request['username'];
-            // Check the User from database
-            $user = User::select('first_name', 'last_name', 'id', 'type', 'password')
-                ->Where(function ($query) use ($username) {
-                    $query->where('email', $username);
-                    $query->orWhere('phone', $username);
-                })->first();
-            return $user;
-        } catch (\Exception $e) {
-            report($e);
-            echo $e->getMessage();
-            $response = [
-                'status' => $status,
-                'message' => $e->getMessage()
-            ];
-            return $response;            
-        }
-        
     }
     /**
      *
      */
-    public static function generateToken()
+    public function generateToken()
     {
         $this->api_token = str_random(60);
         $this->save();
@@ -88,10 +68,7 @@ class User extends Authenticatable
             report($e);
             echo $e->getMessage();
             return false;
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/sunil
         }
     }
 }

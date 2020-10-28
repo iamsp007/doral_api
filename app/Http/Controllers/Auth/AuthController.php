@@ -44,13 +44,13 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
+        $this->validate($request,[
             'fName' => 'required|string',
             'lName' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string',
-            'dob' => 'required|datetime',
-            'phone' => 'required|number',
+            'dob' => 'required|date',
+            'phone' => 'required|numeric',
             'employee_id' => 'required',
             'patient_id' => 'required',
         ]);
