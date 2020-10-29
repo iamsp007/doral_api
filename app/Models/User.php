@@ -42,18 +42,28 @@ class User extends Authenticatable
     /**
      *
      */
-    function login($request)
+    static function login($request)
     {
-    }
-    /**
-     *
-     */
-    public function generateToken()
-    {
-        $this->api_token = str_random(60);
-        $this->save();
+        $status = 0;
+        try {
+            $username = $request['username'];
+            // Check the User from database
+            $user = User::select('first_name', 'last_name', 'id', 'type', 'password')
+                ->Where(function ($query) use ($username) {
+                    $query->where('email', $username);
+                    $query->orWhere('phone', $username);
+                })->first();
+            return $user;
+        } catch (\Exception $e) {
+            report($e);
+            echo $e->getMessage();
+            $response = [
+                'status' => $status,
+                'message' => $e->getMessage()
+            ];
+            return $response;
+        }
 
-        return $this->api_token;
     }
     /**
      * Insert the User data from the Employee / Patient
@@ -68,7 +78,6 @@ class User extends Authenticatable
             report($e);
             echo $e->getMessage();
             return false;
-
         }
     }
 }

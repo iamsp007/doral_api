@@ -43,8 +43,13 @@ return [
 
         'api' => [
             'driver' => 'passport',
-            'provider' => 'users'
+            'provider' => 'users',
         ],
+
+        'company' => [
+            'driver' => 'session',
+            'provider' => 'companies',
+        ]
     ],
 
     /*
@@ -70,10 +75,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'companies' => [
+            'driver' => 'eloquent',
+            'table' => App\Models\company::class,
+        ],
     ],
 
     /*
