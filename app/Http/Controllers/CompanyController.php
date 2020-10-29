@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\company;
 use Illuminate\Http\Request;
 use App\Models\referral;
-use Hash;
 use Exception;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
@@ -17,7 +18,20 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        return company::all();
+        $data = array();
+        try {
+            $companies = company::all()->toArray();
+            if (!$companies) {
+                throw new Exception("No Companies are registered");
+            }
+            $data = [
+                'companies' => $companies
+            ];
+            return $this->generateResponse(true, 'Companies listing!', $data);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
+        }
     }
 
     /**
@@ -39,6 +53,7 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $status = 0;
+        $data = array();
         $message = 'Something wrong';
         try {
             //Post data
@@ -58,20 +73,18 @@ class CompanyController extends Controller
             );
             $id = company::insert($data);
             if ($id) {
-                $status = 1;
+                $status = true;
                 $message = 'Company store properly';
             }
+            $data = [
+                'company_id' => $id
+            ];
+            return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
-            $status = 0;
+            $status = false;
             $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
         }
-
-        $response = [
-            'status' => $status,
-            'message' => $message
-        ];
-
-        return response()->json($response, 201);
     }
 
     /**
@@ -83,29 +96,42 @@ class CompanyController extends Controller
     public function login(Request $request)
     {
         $status = 0;
+        $data = [];
         $message = 'Something wrong';
         try {
             //Post data
             $request = json_decode($request->getContent(), true);
             $company = $request['data'];
             // check name and email for company
-            $companyMatch = ['email' => $company['email'], 'password' => md5($company['password'])];
+            $companyMatch = ['email' => $company['email']];
             $companyData = company::where($companyMatch)->first();
-            if($companyData) {
+            if ($companyData) {
+                //Check Password eith existing password
+                $chkPassword = Hash::check($company['password'], $companyData->password);
+                if(!$chkPassword){
+                    throw new Exception("Company email / password not match");
+                }
                 $companyMatch['status'] = 'Active';
                 $companyData = company::where($companyMatch)->first();
-                if($companyData) {
-                    $status = 1;
-                    $message = "Welcome in Doral"; 
+                if ($companyData) {
+                    $status = true;
+                    $message = "Welcome in Doral";
                 } else {
                     throw new Exception("Company not active now!");
                 }
             } else {
                 throw new Exception("Company not available");
             }
-        } catch(Exception $e) {
-            $status = 0;
-            $message = $e->getMessage();
+            $data = [
+                'company' => $companyData
+            ];
+            $status = true;
+            $message = $message;
+            return $this->generateResponse($status, $message, $data);
+        } catch (Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
         }
 
         $response = [
@@ -114,6 +140,41 @@ class CompanyController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    public function loginToken(Request $request)
+    {
+        /*$request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string'
+        ]);*/
+
+        //Post data
+        $request = json_decode($request->getContent(), true);
+        $company = $request['data'];
+        // check name and email for company
+        $companyMatch = ['email' => $company['email'], 'password' => $company['password']];        
+        if (!Auth::guard('company')->attempt($companyMatch))
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        
+        dd("Auth Match");
+        $user = $request->user();
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->token;
+        if ($request->remember_me)
+            $token->expires_at = Carbon::now()->addMinute(1);
+        $token->save();
+        $data=[
+            'access_token' => $tokenResult->accessToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse(
+                $tokenResult->token->expires_at
+            )->toDateTimeString()
+        ];
+
+        return $this->generateResponse(true, 'Login Successfully!',$data);
     }
 
     /**
@@ -176,8 +237,9 @@ class CompanyController extends Controller
      */
     public function saveProfile(Request $request)
     {
-        $status = 0;
+        $status = false;
         $message = 'Something wrong';
+        $data = array();
         $url = '';
         try {
             //Post data
@@ -202,7 +264,7 @@ class CompanyController extends Controller
                 'npi' => isset($company['npi']) ? $company['npi'] : '',
                 'np_id' => isset($company['np_id']) ? $company['np_id'] : 1,
                 'referal_id' => $company['referal_id'],
-                'employee_id' => $company['employee_id'],
+                'password' => Hash::make($company['password']),
                 'verification_comment' => isset($company['verification_comment']) ? $company['verification_comment'] : ''
             );
             $updateRecord = company::where('id', $company['company_id'])
@@ -210,20 +272,18 @@ class CompanyController extends Controller
             if ($updateRecord) {
                 // Send Email with Email Template and url
                 $url = request()->getHttpHost() . "/api/company/resetpassword?email=" . urlencode($company['email']);
-                $status = 1;
-                $message = 'Profile Save';
+                $status = true;
+                $message = 'Profile Updated successfully';
             }
+            $data = [
+                'company_id' => $updateRecord
+            ];
+            return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
-            $status = 0;
-            $message = $e->getMessage();
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
         }
-
-        $response = [
-            'status' => $status,
-            'message' => $message
-        ];
-
-        return response()->json($response, 201);
     }
 
     /**
@@ -244,15 +304,14 @@ class CompanyController extends Controller
             // Email address
             $companyMatch = ['email' => $company['email']];
             $companyData = company::where($companyMatch)->first();
-            if(!$companyData) {
+            if (!$companyData) {
                 throw new Exception("Company not available");
             }
 
             // Send Email with resetpassword link
             $status = 1;
             $message = "Reset password link sent your email address";
-
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $status = 0;
             $message = $e->getMessage();
         }
@@ -261,7 +320,7 @@ class CompanyController extends Controller
             'status' => $status,
             'message' => $message
         ];
-        
+
         return response()->json($response, 201);
     }
 
@@ -322,6 +381,7 @@ class CompanyController extends Controller
     public function updateStatus(Request $request)
     {
         $status = 0;
+        $data = array();
         $message = 'Something wrong';
         try {
             //Post data
@@ -329,39 +389,27 @@ class CompanyController extends Controller
             $company = $request['data'];
 
             // Check status
-            $checkStatus = ["Approve", "Reject", "Pending", "Active"];
+            /*$checkStatus = ["Approve", "Reject", "Pending", "Active"];
             if (!in_array($company['status'], $checkStatus)) {
                 throw new Exception("Something wrong in Status");
-            }
+            }*/
             $data = array(
                 'status' => $company['status']
             );
             $updateRecord = company::where('id', $company['company_id'])
                 ->update($data);
             if ($updateRecord) {
-                $status = 1;
-                $message = 'Status update';
+                $status = true;
+                $message = 'Status updated';
             }
+            $data = [
+                'company_id' => $updateRecord
+            ];
+            return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
-            $status = 0;
-            $message = $e->getMessage();
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
         }
-
-        $response = [
-            'status' => $status,
-            'message' => $message
-        ];
-
-        return response()->json($response, 201);
-    }
-    /**
-     * Import the patients from csv
-     */
-    public function patientsImport(request $request)
-    {
-        //Post data
-        $request = json_decode($request->getContent(), true);
-        $company = $request['data'];
-        
     }
 }

@@ -66,16 +66,6 @@ class User extends Authenticatable
         
     }
     /**
-     *
-     */
-    public static function generateToken()
-    {
-        $this->api_token = str_random(60);
-        $this->save();
-
-        return $this->api_token;
-    }
-    /**
      * Insert the User data from the Employee / Patient
      *
      */
@@ -88,10 +78,6 @@ class User extends Authenticatable
             report($e);
             echo $e->getMessage();
             return false;
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/sunil
         }
     }
 }

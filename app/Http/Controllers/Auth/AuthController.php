@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -49,20 +50,16 @@ class AuthController extends Controller
             'lName' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string',
-            'dob' => 'required|datetime',
-            'phone' => 'required|number',
-            'employee_id' => 'required',
-            'patient_id' => 'required',
+            'dob' => 'required|date',
+            'phone' => 'required|numeric'            
         ]);
         $user = new User;
         $user->first_name = $request->fName;
         $user->last_name = $request->lName;
         $user->email = $request->email;
-        $user->password = bcrypt($request->password);
+        $user->password = Hash::make($request->password);
         $user->dob = $request->dob;
         $user->phone = $request->phone;
-        $user->employee_id = $request->employee_id;
-        $user->patient_id = $request->patient_id;
         $user->save();
 
         return $this->generateResponse(true, 'Login Successfully!',[

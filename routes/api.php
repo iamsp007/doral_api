@@ -27,9 +27,10 @@ Route::group([
     'prefix' => 'auth'
 ], function () {
     Route::post('login', 'App\Http\Controllers\Auth\AuthController@login')->name('login');
+    Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
     Route::group([
-        'middleware' => 'auth:api'
+        'middleware' => 'auth:api', 'company'
     ], function () {
 
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
@@ -37,12 +38,12 @@ Route::group([
         Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
         Route::post('user/store', 'App\Http\Controllers\UserController@store');
         //Company URLs
-        Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
-        Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
+        Route::post('company/store', 'App\Http\Controllers\CompanyController@store');       
         Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
         Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
         Route::post('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
         Route::post('company/confirmpassword', 'App\Http\Controllers\CompanyController@confirmPassword');
+        Route::get('company', 'App\Http\Controllers\CompanyController@index');
 
         // Employees Urls
         Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
