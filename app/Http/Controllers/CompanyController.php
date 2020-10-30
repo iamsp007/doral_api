@@ -67,7 +67,7 @@ class CompanyController extends Controller
             }
             $data = array(
                 'name' => $company['name'],
-                'referal_id' => $company['refferal_id'],
+                'referal_id' => $company['referral_id'],
                 'email' => $company['email'],
                 'status' => 'Pending',
             );
@@ -108,7 +108,7 @@ class CompanyController extends Controller
             if ($companyData) {
                 //Check Password eith existing password
                 $chkPassword = Hash::check($company['password'], $companyData->password);
-                if(!$chkPassword){
+                if (!$chkPassword) {
                     throw new Exception("Company email / password not match");
                 }
                 $companyMatch['status'] = 'Active';
@@ -153,12 +153,12 @@ class CompanyController extends Controller
         $request = json_decode($request->getContent(), true);
         $company = $request['data'];
         // check name and email for company
-        $companyMatch = ['email' => $company['email'], 'password' => $company['password']];        
+        $companyMatch = ['email' => $company['email'], 'password' => $company['password']];
         if (!Auth::guard('company')->attempt($companyMatch))
             return response()->json([
                 'message' => 'Unauthorized'
             ], 401);
-        
+
         dd("Auth Match");
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
@@ -166,7 +166,7 @@ class CompanyController extends Controller
         if ($request->remember_me)
             $token->expires_at = Carbon::now()->addMinute(1);
         $token->save();
-        $data=[
+        $data = [
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
@@ -174,7 +174,7 @@ class CompanyController extends Controller
             )->toDateTimeString()
         ];
 
-        return $this->generateResponse(true, 'Login Successfully!',$data);
+        return $this->generateResponse(true, 'Login Successfully!', $data);
     }
 
     /**
@@ -185,7 +185,25 @@ class CompanyController extends Controller
      */
     public function show(company $company)
     {
-        return company::find($company);
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $company = company::find($company);
+            if (!$company) {
+                throw new Exception("Company information is not found");
+            }
+            $data = [
+                'company' => $company
+            ];
+            $status = true;
+            $message = "Compnay information";
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**
@@ -196,7 +214,25 @@ class CompanyController extends Controller
      */
     public function edit(company $company)
     {
-        $company = company::findOrFail($company);
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $company = company::find($company);
+            if (!$company) {
+                throw new Exception("Company information is not found");
+            }
+            $data = [
+                'company' => $company
+            ];
+            $status = true;
+            $message = "Compnay information";
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**
@@ -208,10 +244,23 @@ class CompanyController extends Controller
      */
     public function update(Request $request, company $company)
     {
-        $company = company::findOrFail($company);
-        $company->update($request->all());
-
-        return response()->json($company, 201);
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $company = company::findOrFail($company);
+            $company = $company->update($request->all());
+            $data = [
+                'company' => $company
+            ];
+            $status = true;
+            $message = "Compnay updated Succesfully";
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**

@@ -37,7 +37,7 @@ class EmployeeController extends Controller
     public function store($request)
     {
         //$request = json_decode($request->getContent(), true);
-        $data = Employee::insert($request['data']);
+        $data = Employee::insert($request);
         return $data;        
     }
 

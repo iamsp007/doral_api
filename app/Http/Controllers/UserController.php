@@ -25,12 +25,24 @@ class UserController extends Controller
      */
     public function index()
     {
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
         try {
             $users = User::all();
             if (!$users) {
+                throw new Exception("No Users found into database");
             }
+            $data = [
+                'users' => $users
+            ];
+            $status = true;
+            $message = "Compnay information";
             return response()->json(['status' => $status, 'data' => $users]);
         } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
         }
     }
 
@@ -52,28 +64,37 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        //Add Validation
+        $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'gender' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string',
+            'dob' => 'required|date',
+            'phone' => 'required|numeric'            
+        ]);
         //Post data
-        $status = 1;
         $request = json_decode($request->getContent(), true);
-        $user = $request['data'];
+        $user = $request;       
         $data = array(
             'first_name' => $user['first_name'],
-            'last_name' => $user['last_name'],
-            'address1' => $user['address1'],
-            'address2' => $user['address2'],
-            'zip' => $user['zip'],
+            'last_name' => $user['last_name'],            
             'phone' => $user['phone'],
+            'gender' => $user['gender'],
             'email' => $user['email'],
             'dob' => $user['dob'],
-            'type' => $user['type'],
             'status' => 'inactive',
-            'password' => Hash::make('test123')
+            'password' => Hash::make($user['password'])
         );
+        $status = false;
+        $data = [];
+        $message = 'Something wrong';
         try {
             \DB::beginTransaction();
             $id = User::insert($data);
             if ($id) {
-                $request['data']['user_id'] = $id;
+                $request['user_id'] = $id;
                 if ($user['type'] == 'employee') {
                     $result = $this->employeeContoller->store($request);
                 } else if ($user['type'] == 'patient') {
@@ -84,14 +105,20 @@ class UserController extends Controller
                     throw new \ErrorException('Error in-Insert ' . $user['type']);
                 }
                 \DB::commit();
-                return response()->json(['status' => $status, 'data' => $result]);
+                $data = [
+                    'users' => $result
+                ];
+                $status = true;
+                $message = "Employee Added Successfully information";
+                return response()->json(['status' => $status, 'data' => $data]);
             } else {
                 throw new \ErrorException('Error found');
             }
         } catch (\Exception $e) {
-            $status = 0;
             \DB::rollback();
-            return response()->json(['status' => $status, 'message' => $e->getMessage()]);
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
         }
     }
 
