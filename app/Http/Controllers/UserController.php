@@ -78,39 +78,41 @@ class UserController extends Controller
         $request = json_decode($request->getContent(), true);
         $user = $request;       
         $data = array(
-            'first_name' => $user['first_name'],
-            'last_name' => $user['last_name'],            
-            'phone' => $user['phone'],
-            'gender' => $user['gender'],
-            'email' => $user['email'],
-            'dob' => $user['dob'],
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],            
+            'phone' => $request['phone'],
+            'gender' => $request['gender'],
+            'email' => $request['email'],
+            'dob' => $request['dob'],
             'status' => 'inactive',
-            'password' => Hash::make($user['password'])
+            'password' => Hash::make($request['password'])
         );
         $status = false;
-        $data = [];
+        $resp = [];
         $message = 'Something wrong';
         try {
             \DB::beginTransaction();
             $id = User::insert($data);
             if ($id) {
-                $request['user_id'] = $id;
-                if ($user['type'] == 'employee') {
+                $request['user_id'] = $id;                
+                if ($request['type'] == 'employee' || $request['type'] == 'admin') {
+                    unset($request['type']); 
                     $result = $this->employeeContoller->store($request);
-                } else if ($user['type'] == 'patient') {
+                } else if ($request['type'] == 'patient') {
+                    unset($request['type']);
                     $result = $this->patientController->store($request);
                 }
                 // Check the condition if error into database
                 if (!$result) {
-                    throw new \ErrorException('Error in-Insert ' . $user['type']);
+                    throw new \ErrorException('Error in-Insert');
                 }
                 \DB::commit();
-                $data = [
+                $resp = [
                     'users' => $result
                 ];
                 $status = true;
                 $message = "Employee Added Successfully information";
-                return response()->json(['status' => $status, 'data' => $data]);
+                return response()->json(['status' => $status, 'data' => $resp]);
             } else {
                 throw new \ErrorException('Error found');
             }
@@ -118,7 +120,7 @@ class UserController extends Controller
             \DB::rollback();
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
+            return $this->generateResponse($status, $message, $user);
         }
     }
 
