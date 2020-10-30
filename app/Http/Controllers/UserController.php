@@ -85,6 +85,7 @@ class UserController extends Controller
             'email' => $request['email'],
             'dob' => $request['dob'],
             'status' => 'inactive',
+            'type' => $request['type'],
             'password' => Hash::make($request['password'])
         );
         $status = false;
