@@ -38,7 +38,7 @@ class UserController extends Controller
             ];
             $status = true;
             $message = "Compnay information";
-            return response()->json(['status' => $status, 'data' => $users]);
+            return response()->json([$status, $message, $data]);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
@@ -113,7 +113,7 @@ class UserController extends Controller
                 ];
                 $status = true;
                 $message = "Employee Added Successfully information";
-                return response()->json(['status' => $status, 'data' => $resp]);
+                return response()->json([$status, $message, $resp]);
             } else {
                 throw new \ErrorException('Error found');
             }
@@ -121,7 +121,7 @@ class UserController extends Controller
             \DB::rollback();
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $user);
+            return $this->generateResponse($status, $message, $resp);
         }
     }
 
@@ -184,7 +184,8 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        $status = 0;
+        $status = false;
+        $user = [];
         try {
             $login = json_decode($request->getContent(), true);
             $data = $login['data'];
@@ -198,9 +199,16 @@ class UserController extends Controller
             if (!Hash::check($password, $user->password)) {
                 return response()->json(['status' => $status, 'message' => 'Login Fail, pls check password']);
             }
-            return response()->json(['status' => 1, 'data' => $user]);
+            $user = [
+                'users' => $user
+            ];
+            $status = true;
+            $message = "Employee Added Successfully information";
+            return response()->json(['status' => $status, $user]);            
         } catch (\Exception $e) {
-            return response()->json(['status' => $status, 'message' => $e->getMessage()]);
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $user);            
         }
     }
 }

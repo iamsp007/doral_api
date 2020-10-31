@@ -70,6 +70,7 @@ class CompanyController extends Controller
                 'referal_id' => $company['referral_id'],
                 'email' => $company['email'],
                 'status' => 'Pending',
+                'password' => Hash::make('test123')
             );
             $id = company::insert($data);
             if ($id) {
