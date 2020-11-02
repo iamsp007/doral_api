@@ -24,7 +24,7 @@ class employee extends Model
             $data = employee::create($request);
             return $data;
         } catch (\Exception $e) {
-            report($e);
+            report($e);            
             return false;
             exit;
         }

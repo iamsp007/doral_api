@@ -39,4 +39,12 @@ class company extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    /**
+     * 
+     */
+    public static function getCompanyDetails($company = 0)
+    {
+        $company = Company::where('id1', '=', $company)->first();
+        return $company;
+    }
 }

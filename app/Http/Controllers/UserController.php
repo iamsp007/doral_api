@@ -25,12 +25,24 @@ class UserController extends Controller
      */
     public function index()
     {
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
         try {
             $users = User::all();
             if (!$users) {
+                throw new Exception("No Users found into database");
             }
-            return response()->json(['status' => $status, 'data' => $users]);
+            $data = [
+                'users' => $users
+            ];
+            $status = true;
+            $message = "Compnay information";
+            return response()->json([$status, $message, $data]);
         } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
         }
     }
 
@@ -52,46 +64,64 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        //Add Validation
+        $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'gender' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string',
+            'dob' => 'required|date',
+            'phone' => 'required|numeric'            
+        ]);
         //Post data
-        $status = 1;
         $request = json_decode($request->getContent(), true);
-        $user = $request['data'];
+        $user = $request;       
         $data = array(
-            'first_name' => $user['first_name'],
-            'last_name' => $user['last_name'],
-            'address1' => $user['address1'],
-            'address2' => $user['address2'],
-            'zip' => $user['zip'],
-            'phone' => $user['phone'],
-            'email' => $user['email'],
-            'dob' => $user['dob'],
-            'type' => $user['type'],
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],            
+            'phone' => $request['phone'],
+            'gender' => $request['gender'],
+            'email' => $request['email'],
+            'dob' => $request['dob'],
             'status' => 'inactive',
-            'password' => Hash::make('test123')
+            'type' => $request['type'],
+            'password' => Hash::make($request['password'])
         );
+        $status = false;
+        $resp = [];
+        $message = 'Something wrong';
         try {
             \DB::beginTransaction();
             $id = User::insert($data);
             if ($id) {
-                $request['data']['user_id'] = $id;
-                if ($user['type'] == 'employee') {
+                $request['user_id'] = $id;                
+                if ($request['type'] == 'employee' || $request['type'] == 'admin') {
+                    unset($request['type']); 
                     $result = $this->employeeContoller->store($request);
-                } else if ($user['type'] == 'patient') {
+                } else if ($request['type'] == 'patient') {
+                    unset($request['type']);
                     $result = $this->patientController->store($request);
                 }
                 // Check the condition if error into database
                 if (!$result) {
-                    throw new \ErrorException('Error in-Insert ' . $user['type']);
+                    throw new \ErrorException('Error in-Insert');
                 }
                 \DB::commit();
-                return response()->json(['status' => $status, 'data' => $result]);
+                $resp = [
+                    'users' => $result
+                ];
+                $status = true;
+                $message = "Employee Added Successfully information";
+                return response()->json([$status, $message, $resp]);
             } else {
                 throw new \ErrorException('Error found');
             }
         } catch (\Exception $e) {
-            $status = 0;
             \DB::rollback();
-            return response()->json(['status' => $status, 'message' => $e->getMessage()]);
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $resp);
         }
     }
 
@@ -154,7 +184,8 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        $status = 0;
+        $status = false;
+        $user = [];
         try {
             $login = json_decode($request->getContent(), true);
             $data = $login['data'];
@@ -168,9 +199,16 @@ class UserController extends Controller
             if (!Hash::check($password, $user->password)) {
                 return response()->json(['status' => $status, 'message' => 'Login Fail, pls check password']);
             }
-            return response()->json(['status' => 1, 'data' => $user]);
+            $user = [
+                'users' => $user
+            ];
+            $status = true;
+            $message = "Employee Added Successfully information";
+            return response()->json(['status' => $status, $user]);            
         } catch (\Exception $e) {
-            return response()->json(['status' => $status, 'message' => $e->getMessage()]);
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $user);            
         }
     }
 }

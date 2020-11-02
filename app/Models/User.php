@@ -76,7 +76,7 @@ class User extends Authenticatable
             return $data->id;
         } catch (\Exception $e) {
             report($e);
-            echo $e->getMessage();
+            echo $e->getMessage();exit;
             return false;
         }
     }
