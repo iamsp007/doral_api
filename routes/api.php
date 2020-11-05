@@ -32,7 +32,7 @@ Route::group([
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
 //    Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
     Route::group([
-        'middleware' => ['auth:api','permission:Create,web'],
+        'middleware' => ['auth:api','role:administrator|co-ordinator|Supervisor|Clinician'],
     ], function () {
 
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');

@@ -22,7 +22,7 @@ class AuthController extends Controller
 
         $credentials = request(['email', 'password']);
 //         print_r($credentials);die;
-        if (!Auth::attempt($credentials))
+        if (!Auth::guard('web')->attempt($credentials))
             return response()->json([
                 'message' => 'Unauthorized'
             ], 401);
@@ -61,9 +61,8 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->dob = $request->dob;
         $user->phone = $request->phone;
-        $user->hasPermissionTo('Create', 'web');
-//        $user->assignRole($request->type)
-//            ->permissions(['create','edit','update']);
+//        $user->hasPermissionTo('Create', 'web');
+        $user->assignRole($request->type)->syncPermissions(['Create','update']);
         $user->save();
 
         return $this->generateResponse(true, 'Login Successfully!',[

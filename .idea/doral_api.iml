@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bshaffer/oauth2-server-httpfoundation-bridge" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bshaffer/oauth2-server-php" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-permission" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
