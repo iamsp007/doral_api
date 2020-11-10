@@ -42,10 +42,14 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'passport',
             'provider' => 'users',
-            'hash' => false,
         ],
+
+        'company' => [
+            'driver' => 'session',
+            'provider' => 'companies',
+        ]
     ],
 
     /*
@@ -71,10 +75,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'companies' => [
+            'driver' => 'eloquent',
+            'table' => App\Models\company::class,
+        ],
     ],
 
     /*

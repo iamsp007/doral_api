@@ -19,7 +19,7 @@ class CreateEmailTemplatesTable extends Migration
             $table->string('subject');
             $table->text('body');
             $table->tinyInteger('is_attached');
-            $table->enum('status', ['Active', 'InActive']);
+            $table->enum('status', ['active', 'inActive']);
             $table->timestamps();
         });
     }

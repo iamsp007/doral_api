@@ -17,11 +17,10 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
+            $table->enum('gender', ['male', 'female']);
             $table->date('dob');
-            $table->bigInteger('phone');
-            $table->enum('type', ['employee', 'patient'])->comment('If user is Patient: patient, Employee:employee');;
-            $table->foreignId('employee_id')->index('employee_id')->comment('Referance with Employee Table');
-            $table->foreignId('patient_id')->index('patient_id')->comment('REferance with Patients Table');            
+            $table->bigInteger('phone')->unique();
+            $table->enum('type', ['employee', 'patient', 'admin'])->comment('If user is Patient: patient, Employee:employee');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

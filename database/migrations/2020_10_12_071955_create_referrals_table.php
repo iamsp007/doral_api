@@ -16,7 +16,7 @@ class CreateReferralsTable extends Migration
         Schema::create('referrals', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('status', ['Active', 'InActive']);
+            $table->enum('status', ['active', 'inActive']);
             $table->timestamps();
         });
     }
