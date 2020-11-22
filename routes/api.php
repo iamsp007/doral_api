@@ -56,5 +56,13 @@ Route::group([
         Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
         // Patient Referral Urls
         Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
+
     });
+});
+
+Route::group([
+    'middleware' => ['auth:api'],
+], function () {
+// Patient Road L API
+    Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
 });
