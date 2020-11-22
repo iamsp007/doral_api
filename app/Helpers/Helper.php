@@ -25,9 +25,9 @@ class Helper extends BaseController
     public function generateResponse($status = false, $message = NULL,  $data = array(),$statusCode = 200, $error = array(), $url = '')
     {
         $response["status"] = $status;
+        $response["code"] = $statusCode;
         $response["message"] = $message;
         $response["data"] = $data;
-        $response["error"] = $error;
 
         return response()->json($response, $statusCode);
     }
