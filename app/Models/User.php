@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -61,9 +62,9 @@ class User extends Authenticatable
                 'status' => $status,
                 'message' => $e->getMessage()
             ];
-            return $response;            
+            return $response;
         }
-        
+
     }
     /**
      * Insert the User data from the Employee / Patient
