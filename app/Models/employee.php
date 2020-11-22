@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\Helper;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,9 +26,24 @@ class employee extends Model
             $data = employee::create($request);
             return $data;
         } catch (\Exception $e) {
-            report($e);            
             return false;
             exit;
         }
+    }
+
+    public static function search($condition = array())
+    {
+        //try{
+            $data = employee::select('')
+            ->where($condition)
+            ->get();
+            if(!$data) {
+                throw new Exception("Employee data not found");
+                return false;
+            }
+            return $data;
+        /*} catch (\Exception $e) {
+            
+        }*/
     }
 }

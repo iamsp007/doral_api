@@ -36,12 +36,7 @@ class PatientController extends Controller
     public function store($request)
     {
         //$request = json_decode($request->getContent(), true);
-        $data = Patient::insert($request['data']);
-        /*if (!$data) {
-            
-        }
-        return response()->json(['status' => $status, 'message' => $e->getMessage()]);
-        */
+        $data = Patient::insert($request);        
         return $data;
     }
 

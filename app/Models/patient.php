@@ -26,7 +26,7 @@ class patient extends Model
             $data = patient::create($request);
             return $data;
         } catch (\Exception $e) {
-            report($e);
+            echo $e->getMessage();
             return false;
             exit;
         }

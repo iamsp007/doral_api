@@ -101,7 +101,7 @@ class UserController extends Controller
                     $result = $this->employeeContoller->store($request);
                 } else if ($request['type'] == 'patient') {
                     unset($request['type']);
-                    $result = $this->patientController->store($request);
+                    $result = $this->patientController->store($request);                    
                 }
                 // Check the condition if error into database
                 if (!$result) {
