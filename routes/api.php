@@ -14,14 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::post('login', 'App\Http\Controllers\UserController@login');
-//Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken');
-//Route::post('logout', 'App\Http\Controllers\UserController@logout');
-//Route::post('login','App\Http\Controllers\UserController@login');
-//Route::post('generatetoken', 'App\Http\Controllers\UserController@generateToken');
-//Route::post('logout', 'App\Http\Controllers\UserController@logout');
-//Route::post('user/store', 'App\Http\Controllers\UserController@store');
-//
 //Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
 Route::group([
     'prefix' => 'auth'
@@ -37,10 +29,8 @@ Route::group([
 
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
         //Users URLs
-        Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
-        
-        //Company URLs
-              
+        Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');        
+        //Company URLs              
         Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
         Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
         Route::post('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
@@ -48,10 +38,10 @@ Route::group([
         Route::get('company', 'App\Http\Controllers\CompanyController@index');
         Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
         Route::get('company/{company}/edit', 'App\Http\Controllers\CompanyController@edit');
-
         // Employees Urls
         Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
-
+        Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
+        Route::get('employee/search', 'App\Http\Controllers\EmployeeController@search')->name('employee.search');
         // Email Template Urls
         Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
         // Patient Referral Urls
