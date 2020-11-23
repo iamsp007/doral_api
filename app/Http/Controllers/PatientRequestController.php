@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\SendClinicianPatientRequestNotification;
 use App\Http\Requests\CCMReadingRequest;
+use App\Http\Requests\PatientRequestAcceptRequest;
 use App\Models\CCMReading;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
@@ -115,5 +116,10 @@ class PatientRequestController extends Controller
             return $this->generateResponse(true,'CCM Reading Success!');
         }
         return $this->generateResponse(false,'Something Went Wrong!');
+    }
+
+    public function patientRequestAccept(PatientRequestAcceptRequest $request){
+
+
     }
 }
