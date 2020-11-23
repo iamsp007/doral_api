@@ -57,4 +57,5 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
 });

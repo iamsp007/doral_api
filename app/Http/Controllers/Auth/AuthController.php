@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
+use App\Http\Requests\UpdateDeviceTokenRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,10 +21,12 @@ class AuthController extends Controller
     {
         $data = array();
         //validation
-        $request->validate([
-            'username' => 'required|string|email',
-            'password' => 'required|string'
-        ]);
+//        $request->validate([
+//            'username' => 'required|string|email',
+//            'password' => 'required|string',
+//            'device_token' => 'required',
+//            'device_type' => 'required',
+//        ]);
 
         $credentials = request(['email', 'password']);
 //         print_r($credentials);die;
@@ -43,6 +46,14 @@ class AuthController extends Controller
                 $tokenResult->token->expires_at
             )->toDateTimeString()
         ];
+
+        // update device token and type
+        $users = User::find($user->id);
+        if ($users){
+            $users->device_token=$request->device_token;
+            $users->device_type=$request->device_type;
+            $users->save();
+        }
 
         return $this->generateResponse(true, 'Login Successfully!',$data);
         try {
