@@ -48,12 +48,15 @@ class AuthController extends Controller
                 )->toDateTimeString()
             ];
             // update device token and type
-            $users = User::find($user->id);
-            if ($users){
-                $users->device_token=$request->device_token;
-                $users->device_type=$request->device_type;
-                $users->save();
+            if ($request->has('device_token')){
+                $users = User::find($user->id);
+                if ($users){
+                    $users->device_token=$request->device_token;
+                    $users->device_type=$request->device_type;
+                    $users->save();
+                }
             }
+
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
             $status = false;

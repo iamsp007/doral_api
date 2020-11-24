@@ -26,9 +26,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'username' => 'required',
-            'password' => 'required',
-            'device_token' => 'required',
-            'device_type' => 'required',
+            'password' => 'required'
         ];
     }
 
