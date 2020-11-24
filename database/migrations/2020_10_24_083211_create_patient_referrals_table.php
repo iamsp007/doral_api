@@ -21,7 +21,7 @@ class CreatePatientReferralsTable extends Migration
             $table->string('last_name');
             $table->date('dob');
             $table->string('gender')->nullable();
-            $table->bigInteger('patient_id')->nullable();
+            $table->string('patient_id', 20)->nullable();
             $table->string('medicaid_number')->nullable();
             $table->string('medicare_number')->nullable();
             $table->string('ssn')->nullable();
