@@ -22,7 +22,7 @@ class SendClinicianPatientRequestNotification
      */
     public function __construct($data)
     {
-        $user = User::all();
+        $user = User::where('type','=','clinician')->get();
         foreach ($user as $item) {
             $message="test message";
             $title="Test Title";
