@@ -55,7 +55,7 @@ class PatientRequestController extends Controller
             $patient->reason = $request->reason;
             if ($patient->save()){
                 $data=PatientRequest::with('detail')
-                    ->where('user_id','=',$request->user_id)
+                    ->where('user_id','=',$patient->id)
                     ->first();
                 event(new SendClinicianPatientRequestNotification($data));
                 return $this->generateResponse(true,'Add Request Successfully!');
