@@ -150,7 +150,7 @@ class PatientRequestController extends Controller
         $patient->clincial_id=$request->user_id;
         if ($patient->save()){
             $data=PatientRequest::with('detail')
-                ->where('request_id','=',$request->request_id)
+                ->where('id','=',$request->request_id)
                 ->first();
             return $this->generateResponse(true,'Request Accepted!',$data,200);
         }
