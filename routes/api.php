@@ -63,5 +63,5 @@ Route::group([
     'middleware' => ['auth:api'],
 ], function () {
 // Patient Road L API
-    Route::post('patient-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
+    Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
 });
