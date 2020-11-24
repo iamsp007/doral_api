@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendClinicianPatientRequestNotification;
+use App\Http\Requests\CCMReadingRequest;
+use App\Http\Requests\PatientRequestAcceptRequest;
+use App\Models\CCMReading;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
 use App\Notifications\BroadCastNotification;
@@ -101,5 +104,22 @@ class PatientRequestController extends Controller
     public function destroy(PatientRequest $patientRequest)
     {
         //
+    }
+
+    public function ccmReading(CCMReadingRequest $request){
+
+        $ccmReadingModel = new CCMReading();
+        $ccmReadingModel->user_id = $request->user_id;
+        $ccmReadingModel->reading_type = $request->reading_type;
+        $ccmReadingModel->reading_value = $request->reading_value;
+        if ($ccmReadingModel->save()){
+            return $this->generateResponse(true,'CCM Reading Success!');
+        }
+        return $this->generateResponse(false,'Something Went Wrong!');
+    }
+
+    public function patientRequestAccept(PatientRequestAcceptRequest $request){
+
+
     }
 }

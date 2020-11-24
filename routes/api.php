@@ -57,4 +57,13 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
+});
+
+// clincian API
+Route::group([
+    'middleware' => ['auth:api','role:Clinician'],
+], function () {
+// Patient Road L API
+    Route::post('patient-request-accept', 'App\Http\Controllers\PatientRequestController@patientRequestAccept');
 });

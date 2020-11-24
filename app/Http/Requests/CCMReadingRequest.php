@@ -4,9 +4,21 @@ namespace App\Http\Requests;
 
 use App\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class LoginRequest extends FormRequest
+class CCMReadingRequest extends FormRequest
 {
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => Auth::user()->id,
+        ]);
+    }
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,17 +37,15 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required',
-            'password' => 'required',
-            'device_token' => 'required',
-            'device_type' => 'required',
+            'reading_type'=>'required',
+            'reading_value'=>'required',
         ];
     }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         $helper = new Helper();
-        $response = $helper->generateResponse(false,'The given data is invalid',null,200);
+        $response = $helper->generateResponse(false,'Invalid field! try again',null,200);
         throw new \Illuminate\Validation\ValidationException($validator, $response);
     }
 }
