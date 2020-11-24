@@ -144,16 +144,19 @@ class PatientRequestController extends Controller
 
     public function clinicianRequestAccept(ClinicianRequestAcceptRequest $request){
         $patient = \App\Models\PatientRequest::find($request->request_id);
-        if(null!==$patient->clincial_id){
-            return $this->generateResponse(false,'Request Already Accepted!',null,200);
+        if ($patient){
+            if(null!==$patient->clincial_id){
+                return $this->generateResponse(false,'Request Already Accepted!',null,200);
+            }
+            $patient->clincial_id=$request->user_id;
+            if ($patient->save()){
+                $data=PatientRequest::with('detail')
+                    ->where('id','=',$request->request_id)
+                    ->first();
+                return $this->generateResponse(true,'Request Accepted!',$data,200);
+            }
         }
-        $patient->clincial_id=$request->user_id;
-        if ($patient->save()){
-            $data=PatientRequest::with('detail')
-                ->where('id','=',$request->request_id)
-                ->first();
-            return $this->generateResponse(true,'Request Accepted!',$data,200);
-        }
+
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 
