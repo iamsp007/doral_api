@@ -81,4 +81,13 @@ class User extends Authenticatable
             return false;
         }
     }
+    
+    public static function getUserDetails($userId)
+    {
+        $user = User::select('first_name', 'last_name', 'id', 'type')
+                ->Where(function ($query) use ($userId) {
+                    $query->where('id', $userId);
+                })->first();
+        return $user;
+    }
 }
