@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\PatientRequest;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -19,18 +20,18 @@ class SendClinicianPatientRequestNotification
      * @param  \App\Models\User  $order
      * @return void
      */
-    public function __construct()
+    public function __construct($data)
     {
         $user = User::all();
         foreach ($user as $item) {
             $message="test message";
             $title="Test Title";
             $token=$item->device_token;
-            $this->sendPushNotification($token,$title,$message);
+            $this->sendPushNotification($token,$title,$message,$data);
         }
     }
 
-    private function sendPushNotification( $token,$title,$message ) {
+    private function sendPushNotification( $token,$title,$message,$data ) {
 
         // Set POST variables
 
@@ -45,7 +46,8 @@ class SendClinicianPatientRequestNotification
             'to'=>$key,
             'notification'=>array(
                 'title'=>$title,
-                'body'=>$message
+                'body'=>$message,
+                'data'=>$data
             ));
 
         $payload=json_encode($fields);

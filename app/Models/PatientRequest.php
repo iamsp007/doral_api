@@ -9,4 +9,9 @@ use Illuminate\Notifications\Notifiable;
 class PatientRequest extends Model
 {
     use HasFactory;
+
+    public function detail(){
+
+        return $this->hasOne(User::class,'id','user_id');
+    }
 }

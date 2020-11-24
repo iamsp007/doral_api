@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\SendClinicianPatientRequestNotification;
 use App\Http\Requests\CCMReadingRequest;
+use App\Http\Requests\ClinicianRequestAcceptRequest;
 use App\Http\Requests\PatientRequestAcceptRequest;
 use App\Models\CCMReading;
 use App\Models\User;
@@ -53,7 +54,10 @@ class PatientRequestController extends Controller
             $patient->longitude = $request->longitude;
             $patient->reason = $request->reason;
             if ($patient->save()){
-                event(new SendClinicianPatientRequestNotification($patient));
+                $data=PatientRequest::with('detail')
+                    ->where('user_id','=',$request->user_id)
+                    ->first();
+                event(new SendClinicianPatientRequestNotification($data));
                 return $this->generateResponse(true,'Add Request Successfully!');
             }
             return $this->generateResponse(false,'Something Went Wrong!');
@@ -131,41 +135,46 @@ class PatientRequestController extends Controller
                 $this->sendNexmoMessage($userDetails);
             }
         }
-        
+
         if ($ccmReadingModel->save()){
             return $this->generateResponse(true,'CCM Reading Success!');
         }
         return $this->generateResponse(false,'Something Went Wrong!');
     }
 
-    public function patientRequestAccept(PatientRequestAcceptRequest $request){
-
-
-    }
-    
     public function clinicianRequestAccept(ClinicianRequestAcceptRequest $request){
-
-
+        $patient = \App\Models\PatientRequest::find($request->request_id);
+        if(null!==$patient->clincial_id){
+            return $this->generateResponse(false,'Request Already Accepted!',null,200);
+        }
+        $patient->clincial_id=$request->user_id;
+        if ($patient->save()){
+            $data=PatientRequest::with('detail')
+                ->where('request_id','=',$request->request_id)
+                ->first();
+            return $this->generateResponse(true,'Request Accepted!',$data,200);
+        }
+        return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
-    
+
     public function sendNexmoMessage($userDetails,$type){
         $from = "12089104598";
         $to = "5166000122";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
-        
+
         $text = 'Doral Health Connect | Caregiver : Your Patient '.$userDetails->first_name.' is having some issue. http://doralhealthconnect.com/caregiver/1';
         $uri 	= 'https://rest.nexmo.com/sms/json';
-        $fields = 
-           '&from=' .  urlencode( $from ) . 
-           '&text=' . urlencode( $text ) . 
-           '&to=+1' . urlencode( $to ) . 
-           '&api_key=' . urlencode( $api_key ) . 
+        $fields =
+           '&from=' .  urlencode( $from ) .
+           '&text=' . urlencode( $text ) .
+           '&to=+1' . urlencode( $to ) .
+           '&api_key=' . urlencode( $api_key ) .
            '&api_secret=' . urlencode( $api_secret );
         // start cURL
         $res = curl_init($uri);
         // set cURL options
-        curl_setopt( $res, CURLOPT_POST, TRUE ); 
+        curl_setopt( $res, CURLOPT_POST, TRUE );
         curl_setopt( $res, CURLOPT_RETURNTRANSFER, TRUE ); // don't echo
         curl_setopt( $res, CURLOPT_SSL_VERIFYPEER, FALSE );
         curl_setopt( $res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
@@ -184,19 +193,19 @@ class PatientRequestController extends Controller
         $to = "5166000122";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
-        
+
         $text = 'Doral Health Connect | Clinician : Your Patient '.$userDetails->first_name.' is having some issue. http://doralhealthconnect.com/caregiver/1';
         $uri 	= 'https://rest.nexmo.com/sms/json';
-        $fields = 
-           '&from=' .  urlencode( $from ) . 
-           '&text=' . urlencode( $text ) . 
-           '&to=+1' . urlencode( $to ) . 
-           '&api_key=' . urlencode( $api_key ) . 
+        $fields =
+           '&from=' .  urlencode( $from ) .
+           '&text=' . urlencode( $text ) .
+           '&to=+1' . urlencode( $to ) .
+           '&api_key=' . urlencode( $api_key ) .
            '&api_secret=' . urlencode( $api_secret );
         // start cURL
         $res = curl_init($uri);
         // set cURL options
-        curl_setopt( $res, CURLOPT_POST, TRUE ); 
+        curl_setopt( $res, CURLOPT_POST, TRUE );
         curl_setopt( $res, CURLOPT_RETURNTRANSFER, TRUE ); // don't echo
         curl_setopt( $res, CURLOPT_SSL_VERIFYPEER, FALSE );
         curl_setopt( $res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
