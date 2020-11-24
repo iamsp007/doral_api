@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class openVoiceCall extends Model
+class ReferralService extends Model
 {
     use HasFactory;
 }
