@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class patientReferral extends Model
 {
     use HasFactory;
-    protected $fillable = array('referral_id', 'first_name', 'last_name', 'dob');
+    protected $fillable = array('referral_id', 'first_name', 'last_name', 'dob', 'middle_name', 'gender', 'patient_id', 'medicaid_number', 'medicare_number', 'ssn', 'start_date', 'from_date', 'to_date', 'address_1', 'address_2', 'city', 'state', 'county', 'Zip', 'phone1', 'phone2', 'eng_name', 'eng_addres', 'emg_phone', 'emg_relationship');
+    
     protected $guarded = [];
 
     /**
@@ -22,7 +23,6 @@ class patientReferral extends Model
             $data = PatientReferral::create($request);
             return $data->id;
         } catch (\Exception $e) {
-            report($e);
             echo $e->getMessage();
             return false;
         }
