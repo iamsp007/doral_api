@@ -14,7 +14,20 @@ class PatientReferralController extends Controller
      */
     public function index()
     {
-        //
+        $data = array();
+        try {
+            $patientReferral = patientReferral::all()->toArray();
+            if (!$patientReferral) {
+                throw new Exception("No Referance Patients are registered");
+            }
+            $data = [
+                'patientReferral' => $patientReferral
+            ];
+            return $this->generateResponse(true, 'Referance Patients!', $data);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
+        }
     }
 
     /**
@@ -40,18 +53,33 @@ class PatientReferralController extends Controller
         $message = 'Something wrong';
         try {
             //Post data
-            $request = json_decode($request->getContent(), true);
-            $csvData = $request['data'];
-            $filename = $csvData['file_name'];
+            //$request = json_decode($request->getContent(), true);
+            $csvData = $request;
+
+            //upload file
+            if ($request->hasFile('file_name')) {
+                // Get filename with the extension
+                $filenameWithExt = $request->file('file_name')->getClientOriginalName();
+                //Get just filename
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('file_name')->getClientOriginalExtension();
+                // Filename to store
+                $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+                // Upload Image
+                $path = $request->file('file_name')->storeAs('csv', $fileNameToStore);
+                //dd($path);
+                //$user->avatar = $fileNameToStore;
+                //$user->save();
+            }
 
             // Get data from CSV
-            $filename = public_path('csv') . "/" . $filename;
-            if (!file_exists($filename) || !is_readable($filename))
-                throw new \ErrorException('Error file not found ');
-
+            if (!\Storage::disk('local')->exists($path))
+                throw new \ErrorException('File not found');
+            $filePath = storage_path('app/'.$path);
             $header = null;
             $patients = array();
-            if (($handle = fopen($filename, 'r')) !== false) {
+            if (($handle = fopen($filePath, 'r')) !== false) {
                 while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
                     if (!$header)
                         $header = $row;
@@ -60,7 +88,7 @@ class PatientReferralController extends Controller
                 }
                 fclose($handle);
             }
-            
+
             foreach ($patients as $patient) {
                 $data = array(
                     'referral_id' => $csvData['referral_id'],
@@ -73,9 +101,9 @@ class PatientReferralController extends Controller
                     'medicaid_number' => $patient['Medicaid Number'],
                     'medicare_number' => $patient['Medicare Number'],
                     'ssn' => $patient['SSN#'],
-                    'start_date' => date('yyyy-mm-dd', strtotime($patient['Start Date'])),
-                    'from_date' => date('yyyy-mm-dd', strtotime($patient['From Date'])),
-                    'to_date' => date('yyyy-mm-dd', strtotime($patient['To Date'])),
+                    'start_date' => date('yy-m-d', strtotime($patient['Start Date'])),
+                    'from_date' => date('yy-m-d', strtotime($patient['From Date'])),
+                    'to_date' => date('yy-m-d', strtotime($patient['To Date'])),
                     'address_1' => $patient['Address Line 1'],
                     'address_2' => $patient['Address Line 2'],
                     'city' => $patient['City'],
@@ -89,16 +117,16 @@ class PatientReferralController extends Controller
                     'emg_phone' => $patient['Phone 1'],
                     'emg_relationship' => $patient['Relationship'],
                 );
-                $id = PatientReferral::insert($data);
+                $id = patientReferral::insert($data);                
             }
-            
+
             if ($id) {
                 $status = 1;
-                $message = 'Company store properly';
+                $message = 'CSV Uploaded successfully';
             }
         } catch (\Exception $e) {
             $status = 0;
-            $message = $e->getMessage(). $e->getLine();
+            $message = $e->getMessage() . $e->getLine();
         }
 
         $response = [
