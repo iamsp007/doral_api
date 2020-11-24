@@ -43,12 +43,18 @@ class SendClinicianPatientRequestNotification
             'Content-Type:application/json'
         );
         $fields=array(
-            'to'=>$key,
-            'notification'=>array(
-                'title'=>$title,
-                'body'=>$message,
+            'message'=>array(
+                'token'=>$key,
                 'data'=>$data
-            ));
+            )
+        );
+//        $fields=array(
+//            'to'=>$key,
+//            'notification'=>array(
+//                'title'=>$title,
+//                'body'=>$message,
+//                'data'=>$data
+//            ));
 
         $payload=json_encode($fields);
         $curl_session=curl_init();
