@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class assignPatientToCaseManager extends Model
+class AssignPatientToCaseManager extends Model
 {
     use HasFactory;
 }
