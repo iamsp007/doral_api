@@ -116,16 +116,19 @@ class PatientRequestController extends Controller
         $userDetails = User::getUserDetails($request->user_id);
 //        dd($request->all());
         if($request->reading_type == 1) {
-            if($request->reading_value > 85) {
-                return $this->sendNexmoMessage($userDetails);
+            $explodeValue = explode("/",$request->reading_value);
+            if($explodeValue[0] >= 130 && $explodeValue[0] <= 139) {
+                $this->sendNexmoMessage($userDetails,1);
+            }else if($explodeValue[0] >= 140) {
+                $this->sendNexmoMessage($userDetails,2);
             }
         }else if($request->reading_type == 2) {
-            if($request->reading_value > 100) {
-                return $this->sendNexmoMessage($userDetails);
+            if($request->reading_value > 120) {
+                $this->sendNexmoMessage($userDetails);
             }
         }else if($request->reading_type == 3) {
-            if($request->reading_value > 120) {
-                return $this->sendNexmoMessage($userDetails);
+            if($request->reading_value > 110) {
+                $this->sendNexmoMessage($userDetails);
             }
         }
         
@@ -140,13 +143,49 @@ class PatientRequestController extends Controller
 
     }
     
-    public function sendNexmoMessage($userDetails){
+    public function clinicianRequestAccept(ClinicianRequestAcceptRequest $request){
+
+
+    }
+    
+    public function sendNexmoMessage($userDetails,$type){
         $from = "12089104598";
         $to = "5166000122";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
         
-        $text = 'Doral Health Connect : Your Patient'.$userDetails->first_name.' is having some issue. http://doralhealthconnect.com/caregiver/1';
+        $text = 'Doral Health Connect | Caregiver : Your Patient '.$userDetails->first_name.' is having some issue. http://doralhealthconnect.com/caregiver/1';
+        $uri 	= 'https://rest.nexmo.com/sms/json';
+        $fields = 
+           '&from=' .  urlencode( $from ) . 
+           '&text=' . urlencode( $text ) . 
+           '&to=+1' . urlencode( $to ) . 
+           '&api_key=' . urlencode( $api_key ) . 
+           '&api_secret=' . urlencode( $api_secret );
+        // start cURL
+        $res = curl_init($uri);
+        // set cURL options
+        curl_setopt( $res, CURLOPT_POST, TRUE ); 
+        curl_setopt( $res, CURLOPT_RETURNTRANSFER, TRUE ); // don't echo
+        curl_setopt( $res, CURLOPT_SSL_VERIFYPEER, FALSE );
+        curl_setopt( $res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
+//        curl_setopt( $res, CURLOPT_USERPWD, $auth ); // authenticate
+        curl_setopt( $res, CURLOPT_POSTFIELDS, $fields );
+        // send cURL
+        $result = curl_exec( $res );
+        curl_close($res);
+        if($type == 2){
+            return $this->sendNexmoMessageClinician($userDetails);
+        }
+
+    }
+    public function sendNexmoMessageClinician($userDetails){
+        $from = "12089104598";
+        $to = "5166000122";
+        $api_key = "bb78dfeb";
+        $api_secret = "PoZ5ZWbnhEYzP9m4";
+        
+        $text = 'Doral Health Connect | Clinician : Your Patient '.$userDetails->first_name.' is having some issue. http://doralhealthconnect.com/caregiver/1';
         $uri 	= 'https://rest.nexmo.com/sms/json';
         $fields = 
            '&from=' .  urlencode( $from ) . 
