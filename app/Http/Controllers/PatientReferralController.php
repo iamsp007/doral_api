@@ -61,7 +61,7 @@ class PatientReferralController extends Controller
                 // Get filename with the extension
                 $filenameWithExt = $request->file('file_name')->getClientOriginalName();
                 //Get just filename
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $filename =  preg_replace("/[^a-z0-9\_\-\.]/i", '_',pathinfo($filenameWithExt, PATHINFO_FILENAME));
                 // Get just ext
                 $extension = $request->file('file_name')->getClientOriginalExtension();
                 // Filename to store
@@ -95,27 +95,27 @@ class PatientReferralController extends Controller
                     'first_name' => $patient['First Name'],
                     'middle_name' => $patient['Middle Name'],
                     'last_name' => $patient['Last Name'],
-                    'dob' => date('yy-m-d', strtotime($patient['DOB'])),
+                    'dob' => date('yy-m-d', strtotime($patient['Date of Birth'])),
                     'gender' => $patient['Gender'],
-                    'patient_id' => $patient['Patient ID'],
-                    'medicaid_number' => $patient['Medicaid Number'],
-                    'medicare_number' => $patient['Medicare Number'],
-                    'ssn' => $patient['SSN#'],
-                    'start_date' => date('yy-m-d', strtotime($patient['Start Date'])),
-                    'from_date' => date('yy-m-d', strtotime($patient['From Date'])),
-                    'to_date' => date('yy-m-d', strtotime($patient['To Date'])),
-                    'address_1' => $patient['Address Line 1'],
-                    'address_2' => $patient['Address Line 2'],
+                    //'patient_id' => $patient['Patient ID'],
+                    //'medicaid_number' => $patient['Medicaid Number'],
+                    //'medicare_number' => $patient['Medicare Number'],
+                    'ssn' => $patient['SSN'],
+                    'start_date' => date('yy-m-d', strtotime($patient['Hire Date'])),
+                    //'from_date' => date('yy-m-d', strtotime($patient['From Date'])),
+                    //'to_date' => date('yy-m-d', strtotime($patient['To Date'])),
+                    'address_1' => $patient['Street1'],
+                    //'address_2' => $patient['Address Line 2'],
                     'city' => $patient['City'],
                     'state' => $patient['State'],
-                    'county' => $patient['County'],
-                    'Zip' => $patient['Zip'],
+                    'county' => $patient['Country of Birth'],
+                    'Zip' => $patient['Zip Code'],
                     'phone1' => $patient['Home Phone'],
-                    'phone2' => $patient['Home Phone 2'],
-                    'eng_name' => $patient['emg Name'],
-                    'eng_addres' => $patient['Address1'],
-                    'emg_phone' => $patient['Phone 1'],
-                    'emg_relationship' => $patient['Relationship'],
+                    'phone2' => $patient['Phone2'],
+                    //'eng_name' => $patient['emg Name'],
+                    //'eng_addres' => $patient['Address1'],
+                    //'emg_phone' => $patient['Phone 1'],
+                    'emg_relationship' => $patient['Marital Status'],
                 );
                 $id = patientReferral::insert($data);                
             }
