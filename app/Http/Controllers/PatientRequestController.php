@@ -163,10 +163,11 @@ class PatientRequestController extends Controller
     public function sendNexmoMessage($userDetails,$type){
         $from = "12089104598";
         $to = "5166000122";
+//        $to = "9293989855";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
-        $text = 'Doral Health Connect | Caregiver : Your Patient '.$userDetails->first_name.' is having some issue. http://doralhealthconnect.com/caregiver/1';
+        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is slightly higher than regular. http://doralhealthconnect.com/caregiver/1';
         $uri 	= 'https://rest.nexmo.com/sms/json';
         $fields =
            '&from=' .  urlencode( $from ) .
@@ -194,10 +195,11 @@ class PatientRequestController extends Controller
     public function sendNexmoMessageClinician($userDetails){
         $from = "12089104598";
         $to = "5166000122";
+//        $to = "9293989855";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
-        $text = 'Doral Health Connect | Clinician : Your Patient '.$userDetails->first_name.' is having some issue. http://doralhealthconnect.com/caregiver/1';
+        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://doralhealthconnect.com/caregiver/2';
         $uri 	= 'https://rest.nexmo.com/sms/json';
         $fields =
            '&from=' .  urlencode( $from ) .
