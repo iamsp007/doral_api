@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendClinicianPatientRequestNotification;
+use App\Events\SendPatientNotificationMap;
 use App\Http\Requests\CCMReadingRequest;
 use App\Http\Requests\ClinicianRequestAcceptRequest;
 use App\Http\Requests\PatientRequestAcceptRequest;
@@ -150,6 +151,16 @@ class PatientRequestController extends Controller
             }
             $patient->clincial_id=$request->user_id;
             if ($patient->save()){
+
+                $clinician=User::where(['id'=>$patient->user_id,'type'=>'clinician'])->first();
+
+                $data=array(
+                    'latitude'=>$request->latitude,
+                    'longitude'=>$request->longitude,
+                    'clinician'=>$clinician
+                );
+                event(new SendPatientNotificationMap($data,$patient->user_id));
+
                 $data=PatientRequest::with('detail')
                     ->where('id','=',$request->request_id)
                     ->first();

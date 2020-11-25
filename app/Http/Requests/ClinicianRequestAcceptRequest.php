@@ -38,7 +38,9 @@ class ClinicianRequestAcceptRequest extends FormRequest
     public function rules()
     {
         return [
-            'request_id'=>'required'
+            'request_id'=>'required',
+            'latitude'=>'required',
+            'longitude'=>'required'
         ];
     }
 
