@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePermissionUsersTable extends Migration
+class CreateCCMReadingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreatePermissionUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('permission_users', function (Blueprint $table) {
+        Schema::create('c_c_m_readings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->index('company_id');
-            $table->foreignId('sub_module_id')->index('sub_module_id');
-            $table->foreignId('employee_id')->index('employee_id');
-            $table->enum('is_apply', ['y', 'N']);
+            $table->string('user_id');
+            $table->string('reading_type');
+            $table->string('reading_value');
+            $table->string('reading_level')->default(0);
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreatePermissionUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('permission_users');
+        Schema::dropIfExists('c_c_m_readings');
     }
 }

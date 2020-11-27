@@ -26,17 +26,17 @@ Route::group([
 
     Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
-    Route::post('company/store', 'App\Http\Controllers\CompanyController@store'); 
+    Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::get('patient-referral/', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
     Route::group([
-        'middleware' => 'auth:api', 'company'
+        'middleware' => ['auth:api','role:administrator|co-ordinator|Supervisor|Clinician'],
     ], function () {
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
         //Users URLs
-        Route::get('user', 'App\Http\Controllers\Auth\UserController@user');        
-        //Company URLs              
+        Route::get('user', 'App\Http\Controllers\Auth\UserController@user');
+        //Company URLs
         Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
         Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
         Route::post('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
@@ -51,4 +51,20 @@ Route::group([
         // Email Template Urls
         Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
     });
+});
+
+Route::group([
+    'middleware' => ['auth:api'],
+], function () {
+// Patient Road L API
+    Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
+});
+
+// clincian API
+Route::group([
+    'middleware' => ['auth:api'],
+], function () {
+// Patient Road L API
+    Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
 });

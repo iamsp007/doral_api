@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\patientReferral;
+use App\Models\PatientReferral;
 use Illuminate\Http\Request;
 
 class PatientReferralController extends Controller
@@ -140,10 +140,10 @@ class PatientReferralController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\patientReferral  $patientReferral
+     * @param  \App\Models\PatientReferral  $PatientReferral
      * @return \Illuminate\Http\Response
      */
-    public function show(patientReferral $patientReferral)
+    public function show(PatientReferral $PatientReferral)
     {
         //
     }
@@ -151,10 +151,10 @@ class PatientReferralController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\patientReferral  $patientReferral
+     * @param  \App\Models\PatientReferral  $PatientReferral
      * @return \Illuminate\Http\Response
      */
-    public function edit(patientReferral $patientReferral)
+    public function edit(PatientReferral $PatientReferral)
     {
         //
     }
@@ -163,10 +163,10 @@ class PatientReferralController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\patientReferral  $patientReferral
+     * @param  \App\Models\PatientReferral  $PatientReferral
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, patientReferral $patientReferral)
+    public function update(Request $request, PatientReferral $PatientReferral)
     {
         //
     }
@@ -174,10 +174,10 @@ class PatientReferralController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\patientReferral  $patientReferral
+     * @param  \App\Models\PatientReferral  $PatientReferral
      * @return \Illuminate\Http\Response
      */
-    public function destroy(patientReferral $patientReferral)
+    public function destroy(PatientReferral $PatientReferral)
     {
         //
     }

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegistrationRequest;
+use App\Http\Requests\UpdateDeviceTokenRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,33 +18,19 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     //
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $data = array();
-        //validation
-        $request->validate([
-            'username' => 'required|string|email',
-            'password' => 'required|string'
-        ]);
-
         try {
-            $login = json_decode($request->getContent(), true);
-            $username = $login['username'];
-            $password = $login['password'];
+            $username = $request->username;
+            $password = $request->password;
+            $field = 'email';
+            if (is_numeric($request->username)) {
+                $field = 'phone';
+            }
+            $credentials = [$field => $username, 'password' => $password];
 
-            $user = User::login($request);
-            // Check user exist into database or not   
-            if (!$user) {
-                throw new Exception("Login Fail, please check your credential");
-            }
-            // Check user password
-            if (!Hash::check($password, $user->password)) {
-                throw new Exception("Login Fail, pls check password");
-            }
-            $credentials = ['email' => $username, 'password' => $password, 'status' => 'active'];
-            // print_r($credentials);die;
             if (!Auth::attempt($credentials)) {
-                throw new Exception("Login Fail, pls check email/password, Or check Account status");
+                return $this->generateResponse(false, $field . ' or Password are Incorrect!');
             }
             $user = $request->user();
             $tokenResult = $user->createToken('Personal Access Token');
@@ -57,31 +46,43 @@ class AuthController extends Controller
                     $tokenResult->token->expires_at
                 )->toDateTimeString()
             ];
+            // update device token and type
+            if ($request->has('device_token')) {
+                $users = User::find($user->id);
+                if ($users) {
+                    $users->device_token = $request->device_token;
+                    $users->device_type = $request->device_type;
+                    $users->save();
+                }
+            }
+
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
+            return $this->generateResponse($status, $message, null);
         }
     }
 
-    public function register(Request $request)
+    public function register(RegistrationRequest $request)
     {
         $request->validate([
-            'fName' => 'required|string',
-            'lName' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|min:6',
             'dob' => 'required|date',
             'phone' => 'required|numeric'
         ]);
         $user = new User;
-        $user->first_name = $request->fName;
-        $user->last_name = $request->lName;
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->dob = $request->dob;
         $user->phone = $request->phone;
+        //        $user->hasPermissionTo('Create', 'web');
+        $user->assignRole($request->type)->syncPermissions(['Create', 'update']);
         $user->save();
 
         return $this->generateResponse(true, 'Login Successfully!', [
@@ -92,14 +93,12 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+        return $this->generateResponse(true, 'Successfully logged out');
     }
 
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        return $this->generateResponse(true, 'user detail', $request->user());
     }
 
     public function forgotPassword(Request $request)

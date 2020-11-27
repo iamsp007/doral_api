@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class patientReferral extends Model
+class PatientReferral extends Model
 {
     use HasFactory;
     protected $fillable = array('referral_id', 'first_name', 'last_name', 'dob', 'middle_name', 'gender', 'patient_id', 'medicaid_number', 'medicare_number', 'ssn', 'start_date', 'from_date', 'to_date', 'address_1', 'address_2', 'city', 'state', 'county', 'Zip', 'phone1', 'phone2', 'eng_name', 'eng_addres', 'emg_phone', 'emg_relationship');
