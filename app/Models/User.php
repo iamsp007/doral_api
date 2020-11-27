@@ -61,9 +61,8 @@ class User extends Authenticatable
                 'status' => $status,
                 'message' => $e->getMessage()
             ];
-            return $response;            
+            return $response;
         }
-        
     }
     /**
      * Insert the User data from the Employee / Patient
@@ -76,7 +75,24 @@ class User extends Authenticatable
             return $data->id;
         } catch (\Exception $e) {
             report($e);
-            echo $e->getMessage();exit;
+            echo $e->getMessage();
+            exit;
+            return false;
+        }
+    }
+    /**
+     * Insert the User data from the Employee / Patient
+     *
+     */
+    public static function gethUserUsingEmail($email)
+    {
+        try {
+            $data = User::select('id', 'first_name', 'last_name', 'password')
+                ->where('email', $email)
+                ->first();
+            return $data;
+        } catch (\Exception $e) {
+            report($e);
             return false;
         }
     }

@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\referral;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -27,7 +28,7 @@ class AuthController extends Controller
             $login = json_decode($request->getContent(), true);
             $username = $login['username'];
             $password = $login['password'];
-            
+
             $user = User::login($request);
             // Check user exist into database or not   
             if (!$user) {
@@ -70,7 +71,7 @@ class AuthController extends Controller
             'fName' => 'required|string',
             'lName' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string',
+            'password' => 'required|min:6',
             'dob' => 'required|date',
             'phone' => 'required|numeric'
         ]);
@@ -99,5 +100,75 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $data = [];
+        $input = $request->all();
+        $rules = array(
+            'email' => "required|email",
+        );
+        $validator = \Validator::make($input, $rules);
+        if ($validator->fails()) {
+            $arr = array("status" => 400, "message" => $validator->errors()->first(), "data" => array());
+        } else {
+            try {
+                $response = \Password::sendResetLink($request->only('email'));
+                switch ($response) {
+                    case \Password::RESET_LINK_SENT:
+                        $message = trans($response);
+                        return $this->generateResponse(true, $message, $data);
+                    case \Password::INVALID_USER:
+                        $message = trans($response);
+                        return $this->generateResponse(true, $message, $data);
+                }
+            } catch (\Swift_TransportException $ex) {
+                $message = $ex->getMessage();
+                return $this->generateResponse(false, $message, $data);
+            } catch (Exception $ex) {
+                $message = $ex->getMessage();
+                return $this->generateResponse(false, $message, $data);
+            }
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $input = $request->all();
+        $data = array();
+        $user = User::gethUserUsingEmail($input['email']);
+        $userid = $user->id;
+        $rules = array(
+            'old_password' => 'required',
+            'new_password' => 'required|min:6',
+            'confirm_password' => 'required|same:new_password',
+        );
+        $validator = \Validator::make($input, $rules);
+        if ($validator->fails()) {
+            $message =  $validator->errors()->first();
+            return $this->generateResponse(false, $message, $data);
+        } else {
+            try {
+                if ((Hash::check(request('old_password'), $user->password)) == false) {
+                    $message = "Check your old password.";
+                    return $this->generateResponse(false, $message, $data);
+                } else if ((Hash::check(request('new_password'), $user->password)) == true) {
+                    $message = "Please enter a password which is not similar then current password.";
+                    return $this->generateResponse(false, $message, $data);
+                } else {
+                    User::where('id', $userid)->update(['password' => Hash::make($input['new_password'])]);
+                    $message = "Password updated successfully.";
+                    return $this->generateResponse(true, $message, $data);
+                }
+            } catch (\Exception $ex) {
+                if (isset($ex->errorInfo[2])) {
+                    $message = $ex->errorInfo[2];
+                } else {
+                    $message = $ex->getMessage();
+                }
+                return $this->generateResponse(false, $message, $data);
+            }
+        }
     }
 }
