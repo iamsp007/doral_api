@@ -76,8 +76,8 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->dob = $request->dob;
         $user->phone = $request->phone;
-//        $user->hasPermissionTo('Create', 'web');
-        $user->assignRole($request->type)->syncPermissions(['Create','update']);
+        $user->type = $request->type;
+        $user->assignRole($request->type);
         $user->save();
 
         return $this->generateResponse(true, 'Login Successfully!', [
@@ -93,6 +93,7 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return $this->generateResponse(true,'user detail',$request->user());
+        $user = $request->user()->assignRole();
+        return $this->generateResponse(true,'user detail',$user);
     }
 }
