@@ -26,16 +26,14 @@ class LoginRequest extends FormRequest
     {
         return [
             'username' => 'required',
-            'password' => 'required',
-            'device_token' => 'required',
-            'device_type' => 'required',
+            'password' => 'required'
         ];
     }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         $helper = new Helper();
-        $response = $helper->generateResponse(false,'The given data is invalid',null,200);
+        return $helper->generateResponse(false,'The given data is invalid',null,200);
         throw new \Illuminate\Validation\ValidationException($validator, $response);
     }
 }

@@ -3,10 +3,23 @@
 namespace App\Http\Requests;
 
 use App\Helpers\Helper;
+use App\Models\Patient;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class RegistrationRequest extends FormRequest
+class ClinicianRequestAcceptRequest extends FormRequest
 {
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => Auth::user()->id,
+        ]);
+    }
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,19 +38,17 @@ class RegistrationRequest extends FormRequest
     public function rules()
     {
         return [
-            'fName' => 'required|string',
-            'lName' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string',
-            'dob' => 'required|date',
-            'phone' => 'required|numeric'
+            'request_id'=>'required',
+            'latitude'=>'required',
+            'longitude'=>'required'
         ];
     }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         $helper = new Helper();
-        return $helper->generateResponse(false,'The given data is invalid',null,200);
+        $response = $helper->generateResponse(false,'The given data was Invalid',null,200);
         throw new \Illuminate\Validation\ValidationException($validator, $response);
+
     }
 }
