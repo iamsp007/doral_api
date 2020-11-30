@@ -109,15 +109,11 @@ class UserController extends Controller
                 }
                 \DB::commit();
                 $resp = [
-                    
+                    'user' => $result
                 ];
                 $status = true;
                 $message = "Employee Added Successfully information";
-                $data=[                    
-                    'user' => $user                    
-                ];
-        
-                return $this->generateResponse($status, $message,$data);
+                return $this->generateResponse($status, $message,$resp);
             } else {
                 throw new \ErrorException('Error found');
             }

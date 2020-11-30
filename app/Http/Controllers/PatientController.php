@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use Exception;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -35,10 +36,83 @@ class PatientController extends Controller
      */
     public function store($request)
     {
-        //$request = json_decode($request->getContent(), true);
-        $data = Patient::insert($request);        
+        $data = Patient::insert($request);
         return $data;
     }
+
+    /**
+     * StoreInformation is store pateint detailed information based on different steps
+     * This services is call from App only. There is not web API for patent registation
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeInfomation($step, Request $request)
+    {
+        $status = false;
+        $resp = [];
+        if ($step == 1) {
+            $request->validate([
+                'ssn' => 'required',
+                'medicaid_number' => 'numeric',
+                'medicare_number' => 'numeric',
+                'address1' => 'required',
+                'address2' => 'required',
+                'zip' => 'required',
+                'service_key' => 'required'
+            ]);
+        }
+
+        try {
+            $request = json_decode($request->getContent(), true);
+            if (!$step) {
+                throw new Exception("Invalid parameter are required");
+            }
+            if (!$request['id']) {
+                throw new Exception("Invalid parameter Id are required");
+            }
+            $id = $request['id'];
+            unset($request['id']);
+            $patient = Patient::find($id);
+            if (!$patient) {
+                throw new Exception("Patient are not found into database");
+            }
+            switch ($step) {
+                case '1':
+                    $data = Patient::updatePatient($id, $request);
+                    if ($data) {
+                        $status = true;
+                        $message = "Patient information saved Successfully";
+                        return $this->generateResponse($status, $message, $resp);
+                    }
+                    break;
+                case '2': // Insert services
+                    $data = Patient::updateServices($id, $request);
+                    if ($data) {
+                        $status = true;
+                        $message = "Patient serives saved Successfully";
+                        return $this->generateResponse($status, $message, $resp);
+                    }
+                    break;
+                case '3': // Insert services
+                    $data = Patient::updateInsurance($id, $request);
+                    if ($data) {
+                        $status = true;
+                        $message = "Patient Insurance saved Successfully";
+                        return $this->generateResponse($status, $message, $resp);
+                    }
+                    break;
+                default:
+                    throw new Exception("Invalid Parameters");
+                    break;
+            }
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $resp);
+        }
+    }
+
 
     /**
      * Display the specified resource.
