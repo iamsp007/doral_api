@@ -85,7 +85,7 @@ class Patient extends Model
     {
         try {
             $patient = Patient::find($id);
-            $response = $patient->patientService()->createMany($request['PatientInsurance']);
+            $response = $patient->patientInsurance()->createMany($request['PatientInsurance']);
             return $response;
         } catch (\Exception $e) {
             echo $e->getMessage();

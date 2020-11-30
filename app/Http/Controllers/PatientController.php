@@ -94,7 +94,7 @@ class PatientController extends Controller
                         return $this->generateResponse($status, $message, $resp);
                     }
                     break;
-                case '3': // Insert services
+                case '3': // Insert Insurance
                     $data = Patient::updateInsurance($id, $request);
                     if ($data) {
                         $status = true;
