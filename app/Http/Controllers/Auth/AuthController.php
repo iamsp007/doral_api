@@ -137,8 +137,6 @@ class AuthController extends Controller
     {
         $input = $request->all();
         $data = array();
-        $user = User::gethUserUsingEmail($input['email']);
-        $userid = $user->id;
         $rules = array(
             'old_password' => 'required',
             'new_password' => 'required|min:6',
@@ -150,6 +148,11 @@ class AuthController extends Controller
             return $this->generateResponse(false, $message, $data);
         } else {
             try {
+                $user = User::gethUserUsingEmail($input['email']);
+                if (!$user) {
+                    throw new Exception("Email not match with database");
+                }
+                $userid = $user->id;
                 if ((Hash::check(request('old_password'), $user->password)) == false) {
                     $message = "Check your old password.";
                     return $this->generateResponse(false, $message, $data);
