@@ -21,6 +21,9 @@ Route::group([
     Route::post('login', 'App\Http\Controllers\Auth\AuthController@login')->name('login');
     Route::post('forgot', 'App\Http\Controllers\Auth\AuthController@forgotPassword')->name('forgot');
     Route::post('reset', 'App\Http\Controllers\Auth\AuthController@reset')->name('reset');
+    Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\AuthController@reset')->name('password.reset');
+    Route::post('password/reset', 'App\Http\Controllers\Auth\AuthController@resetPassword')->name('password.update');
+
     Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');

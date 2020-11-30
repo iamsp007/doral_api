@@ -128,8 +128,10 @@ class PatientRequestController extends Controller
                 $this->sendNexmoMessage($userDetails,2);
             }
         }else if($request->reading_type == 2) {
-            if($request->reading_value > 120) {
-                $this->sendNexmoMessage($userDetails);
+            if($request->reading_value > 250) {
+                $this->sendNexmoMessageForGluco($userDetails,4);
+            }else if($request->reading_value < 60) {
+                $this->sendNexmoMessageForGluco($userDetails,3);
             }
         }else if($request->reading_type == 3) {
             if($request->reading_value > 110) {
@@ -203,10 +205,47 @@ class PatientRequestController extends Controller
         }
 
     }
+    public function sendNexmoMessageForGluco($userDetails,$type){
+        if($type == 3) {
+            $le = 'lower';
+        }else {
+            $le = 'higher';
+        }
+        $from = "12089104598";
+//        $to = "5166000122";
+        $to = "9173646218";
+        $api_key = "bb78dfeb";
+        $api_secret = "PoZ5ZWbnhEYzP9m4";
+
+        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://doralhealthconnect.com/caregiver/'.$type;
+        $uri 	= 'https://rest.nexmo.com/sms/json';
+        $fields =
+           '&from=' .  urlencode( $from ) .
+           '&text=' . urlencode( $text ) .
+           '&to=+1' . urlencode( $to ) .
+           '&api_key=' . urlencode( $api_key ) .
+           '&api_secret=' . urlencode( $api_secret );
+        // start cURL
+        $res = curl_init($uri);
+        // set cURL options
+        curl_setopt( $res, CURLOPT_POST, TRUE );
+        curl_setopt( $res, CURLOPT_RETURNTRANSFER, TRUE ); // don't echo
+        curl_setopt( $res, CURLOPT_SSL_VERIFYPEER, FALSE );
+        curl_setopt( $res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
+//        curl_setopt( $res, CURLOPT_USERPWD, $auth ); // authenticate
+        curl_setopt( $res, CURLOPT_POSTFIELDS, $fields );
+        // send cURL
+        $result = curl_exec( $res );
+        curl_close($res);
+        if($type == 2){
+            return $this->sendNexmoMessageClinician($userDetails);
+        }
+
+    }
     public function sendNexmoMessageClinician($userDetails){
         $from = "12089104598";
         $to = "5166000122";
-//        $to = "9293989855";
+//        $to = "9173646218";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
