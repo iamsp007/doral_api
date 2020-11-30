@@ -67,7 +67,7 @@ class CompanyController extends Controller
             }
             $data = array(
                 'name' => $Company['name'],
-                'referal_id' => $Company['Referral_id'],
+                'referal_id' => $Company['referral_id'],
                 'email' => $Company['email'],
                 'status' => 'Pending',
                 'password' => Hash::make('test123')
