@@ -30,7 +30,7 @@ Route::group([
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
-    Route::get('patient-referral/', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+    Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
     Route::group([
         'middleware' => ['auth:api','role:administrator|co-ordinator|Supervisor|Clinician'],
     ], function () {

@@ -12,11 +12,12 @@ class PatientReferralController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
         $data = array();
         try {
-            $patientReferral = patientReferral::all()->toArray();
+            $patientReferral = patientReferral::where('service_id', $id)
+            ->get();
             if (!$patientReferral) {
                 throw new Exception("No Referance Patients are registered");
             }
@@ -88,36 +89,40 @@ class PatientReferralController extends Controller
                 }
                 fclose($handle);
             }
-
+            $patients = array_filter($patients); 
+            $patients = array_values($patients);
             foreach ($patients as $patient) {
-                $data = array(
-                    'referral_id' => $csvData['referral_id'],
-                    'first_name' => $patient['First Name'],
-                    'middle_name' => $patient['Middle Name'],
-                    'last_name' => $patient['Last Name'],
-                    'dob' => date('yy-m-d', strtotime($patient['Date of Birth'])),
-                    'gender' => $patient['Gender'],
-                    //'patient_id' => $patient['Patient ID'],
-                    //'medicaid_number' => $patient['Medicaid Number'],
-                    //'medicare_number' => $patient['Medicare Number'],
-                    'ssn' => $patient['SSN'],
-                    'start_date' => date('yy-m-d', strtotime($patient['Hire Date'])),
-                    //'from_date' => date('yy-m-d', strtotime($patient['From Date'])),
-                    //'to_date' => date('yy-m-d', strtotime($patient['To Date'])),
-                    'address_1' => $patient['Street1'],
-                    //'address_2' => $patient['Address Line 2'],
-                    'city' => $patient['City'],
-                    'state' => $patient['State'],
-                    'county' => $patient['Country of Birth'],
-                    'Zip' => $patient['Zip Code'],
-                    'phone1' => $patient['Home Phone'],
-                    'phone2' => $patient['Phone2'],
-                    //'eng_name' => $patient['emg Name'],
-                    //'eng_addres' => $patient['Address1'],
-                    //'emg_phone' => $patient['Phone 1'],
-                    'emg_relationship' => $patient['Marital Status'],
-                );
-                $id = patientReferral::insert($data);                
+                if($patient['First Name'] != '') {
+                    $data = array(
+                        'referral_id' => $csvData['referral_id'],
+                        'service_id' => $csvData['service_id'],
+                        'first_name' => $patient['First Name'],
+                        'middle_name' => $patient['Middle Name'],
+                        'last_name' => $patient['Last Name'],
+                        'dob' => date('yy-m-d', strtotime($patient['Date of Birth'])),
+                        'gender' => $patient['Gender'],
+                        //'patient_id' => $patient['Patient ID'],
+                        //'medicaid_number' => $patient['Medicaid Number'],
+                        //'medicare_number' => $patient['Medicare Number'],
+                        'ssn' => $patient['SSN'],
+                        'start_date' => date('yy-m-d', strtotime($patient['Hire Date'])),
+                        //'from_date' => date('yy-m-d', strtotime($patient['From Date'])),
+                        //'to_date' => date('yy-m-d', strtotime($patient['To Date'])),
+                        'address_1' => $patient['Street1'],
+                        //'address_2' => $patient['Address Line 2'],
+                        'city' => $patient['City'],
+                        'state' => $patient['State'],
+                        'county' => $patient['Country of Birth'],
+                        'Zip' => $patient['Zip Code'],
+                        'phone1' => $patient['Home Phone'],
+                        'phone2' => $patient['Phone2'],
+                        //'eng_name' => $patient['emg Name'],
+                        //'eng_addres' => $patient['Address1'],
+                        //'emg_phone' => $patient['Phone 1'],
+                        'emg_relationship' => $patient['Marital Status'],
+                    );
+                    $id = patientReferral::insert($data);
+                }                
             }
 
             if ($id) {
