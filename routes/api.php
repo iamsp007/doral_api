@@ -32,6 +32,9 @@ Route::group([
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
 
+    // Employee
+    Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
+    
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
@@ -55,7 +58,7 @@ Route::group([
         Route::get('company/{company}/edit', 'App\Http\Controllers\CompanyController@edit');
         // Employees Urls
         Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
-        Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
+        //Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
         Route::get('employee/search', 'App\Http\Controllers\EmployeeController@search')->name('employee.search');
         // Email Template Urls
         Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');

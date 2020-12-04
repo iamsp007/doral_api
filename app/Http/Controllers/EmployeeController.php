@@ -16,11 +16,20 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        $data = array();
         try {
-            $result = Employee::getAll();
             
+            $employee = Employee::all()->toArray();
+            if (!$employee) {
+                throw new Exception("No employee are registered");
+            }
+            $data = [
+                'employee' => $employee
+            ];
+            return $this->generateResponse(true, 'employee listing!', $data);
         } catch (\Exception $e) {
-
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
         }
     }
 
