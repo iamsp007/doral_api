@@ -31,6 +31,10 @@ Route::group([
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+
+    Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
+    Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
+    Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
@@ -42,12 +46,12 @@ Route::group([
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\UserController@user');
         //Company URLs
-        Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
+        //Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
         Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
         Route::post('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
         Route::post('company/confirmpassword', 'App\Http\Controllers\CompanyController@confirmPassword');
-        Route::get('company', 'App\Http\Controllers\CompanyController@index');
-        Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
+        //Route::get('company', 'App\Http\Controllers\CompanyController@index');
+        //Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
         Route::get('company/{company}/edit', 'App\Http\Controllers\CompanyController@edit');
         // Employees Urls
         Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');

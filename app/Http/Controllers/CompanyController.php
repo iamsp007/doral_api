@@ -16,11 +16,19 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
         $data = array();
         try {
+            if($id == 1)
             $companies = Company::all()->toArray();
+            else if($id == 2) 
+            $companies = Company::where('status', 'active')->get();
+            else if($id == 3) 
+            $companies = Company::where('status', 'reject')->get();
+            else
+            $companies = Company::all()->toArray();
+        
             if (!$companies) {
                 throw new Exception("No Companies are registered");
             }
