@@ -32,9 +32,13 @@ Route::group([
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
     Route::group([
-        'middleware' => ['auth:api','role:administrator|co-ordinator|Supervisor|Clinician'],
+        'middleware' => ['auth:api'],
     ], function () {
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
+        //Services
+        Route::get('service', 'App\Http\Controllers\ServicesController@index');
+        Route::post('service/store', 'App\Http\Controllers\ServicesController@store');
+        Route::put('service/{service}', 'App\Http\Controllers\ServicesController@update');
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\UserController@user');
         //Company URLs

@@ -22,7 +22,7 @@ class Patient extends Model
      */
     public function patientService()
     {
-        return $this->hasMany('App\Models\patientService');
+        return $this->hasMany('App\Models\PatientService');
     }
 
     /**
@@ -30,7 +30,7 @@ class Patient extends Model
      */
     public function patientInsurance()
     {
-        return $this->hasMany('App\Models\patientInsurance');
+        return $this->hasMany('App\Models\PatientInsurance');
     }
 
     /**
