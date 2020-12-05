@@ -173,6 +173,14 @@ class PatientRequestController extends Controller
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 
+    public function clinicianPatientRequestList(Request $request){
+        $patientRequestList = PatientRequest::with('detail')->where('is_active','=','1')->get();
+        if (count($patientRequestList)>0){
+            return $this->generateResponse(true,'Patient Request List',$patientRequestList,200);
+        }
+        return $this->generateResponse(false,'Something Went Wrong',null,200);
+    }
+
     public function sendNexmoMessage($userDetails,$type){
         $from = "12089104598";
         $to = "5166000122";

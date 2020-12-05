@@ -34,7 +34,7 @@ Route::group([
 
     // Employee
     Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
-    
+
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
@@ -79,4 +79,5 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
+    Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
 });
