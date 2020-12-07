@@ -70,6 +70,9 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
+    Route::post('roadl-information', 'App\Http\Controllers\RoadlController@create');
+    Route::post('roadl-information-show', 'App\Http\Controllers\RoadlController@show');
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
 });
 

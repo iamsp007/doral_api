@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RoadlSelectedDiesesRequest;
 use App\Models\Patient;
+use App\Models\PatientRequest;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -157,5 +159,25 @@ class PatientController extends Controller
     public function destroy(Patient $patient)
     {
         //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\PatientDieses  $patient
+     * @return \Illuminate\Http\Response
+     */
+    public function roadlSelectedDisease(Request $request)
+    {
+        $patientRequest = PatientRequest::find($request->patient_request_id);
+        if ($patientRequest){
+            $patientRequest->dieses=$request->dieses;
+            $patientRequest->symptoms=$request->symptoms;
+            $patientRequest->is_parking=$request->is_parking;
+            $patientRequest->status='active';
+            $patientRequest->save();
+            return $this->generateResponse(true, 'Detail Update Successfully!', $patientRequest,200);
+        }
+        return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 }

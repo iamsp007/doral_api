@@ -279,4 +279,5 @@ class PatientRequestController extends Controller
         curl_close($res);
 
     }
+
 }
