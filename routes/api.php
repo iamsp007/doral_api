@@ -33,8 +33,12 @@ Route::group([
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
 
     // Employee
+    Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
     Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
-
+    Route::get('employee/show/{employee}', 'App\Http\Controllers\EmployeeController@show')->name('employee.show');
+    Route::get('employee/remove/{employee}', 'App\Http\Controllers\EmployeeController@destroy')->name('employee.remove');
+    Route::post('employee/store', 'App\Http\Controllers\EmployeeController@store')->name('employee.store');
+    
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
