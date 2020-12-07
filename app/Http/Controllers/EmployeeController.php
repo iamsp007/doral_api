@@ -49,11 +49,46 @@ class EmployeeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request)
+    public function store(Request $request)
     {
-        //$request = json_decode($request->getContent(), true);
-        $data = Employee::insert($request);
-        return $data;        
+        $status = 0;
+        $data = array();
+        $message = 'Something wrong';
+        try {
+            //Post data
+            $employee = $request;
+
+            $data = array(
+                'first_name' => $employee['first_name'],
+                'last_name' => $employee['last_name'],
+                'dob' => $employee['dob'],
+                'gender' => $employee['gender'],
+                'address1' => $employee['address1'],
+                'city' => $employee['city'],
+                'state' => $employee['state'],
+                'zip' => $employee['zip'],
+                'country' => $employee['country'],
+                'home_phone' => $employee['home_phone'],
+                'phone' => $employee['phone'],
+                'alternate_phone' => $employee['alternate_phone'],
+                'email' => $employee['email'],
+                'marital_status' => $employee['marital_status'],
+                'blood_group' => $employee['blood_group']
+            );
+            $record = Employee::create($data);
+            if ($record->id) {
+                $status = true;
+                $message = 'Employee store properly';
+            }
+            $data = [
+                'Employee_id' => $record->id
+            ];
+            return $this->generateResponse($status, $message, $record);
+        } catch (Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
+        }  
     }
 
     /**
@@ -64,7 +99,25 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
-        //
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $Employee = Employee::find($employee);
+            if (!$Employee) {
+                throw new Exception("Employee information is not found");
+            }
+            $data = [
+                'employee' => $Employee
+            ];
+            $status = true;
+            $message = "Employee information";
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**
@@ -98,6 +151,9 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        //
+        $employee = Employee::findOrFail($employee);
+        $employee->delete();
+
+        return response()->json(null, 204);
     }
 }
