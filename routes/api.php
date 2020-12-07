@@ -74,6 +74,8 @@ Route::group([
     Route::post('roadl-information', 'App\Http\Controllers\RoadlController@create');
     Route::post('roadl-information-show', 'App\Http\Controllers\RoadlController@show');
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
+    Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
+    Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
 });
 
 // clincian API
