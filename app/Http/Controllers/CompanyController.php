@@ -21,7 +21,7 @@ class CompanyController extends Controller
         $data = array();
         try {
             if($id == 1)
-            $companies = Company::all()->toArray();
+            $companies = Company::where('status', 'pending')->get();
             else if($id == 2) 
             $companies = Company::where('status', 'active')->get();
             else if($id == 3) 
@@ -438,6 +438,7 @@ class CompanyController extends Controller
      */
     public function updateStatus(Request $request)
     {
+        //echo "1";
         $status = 0;
         $data = array();
         $message = 'Something wrong';
@@ -446,14 +447,11 @@ class CompanyController extends Controller
             $request = json_decode($request->getContent(), true);
             $Company = $request['data'];
 
-            // Check status
-            /*$checkStatus = ["Approve", "Reject", "Pending", "Active"];
-            if (!in_array($Company['status'], $checkStatus)) {
-                throw new Exception("Something wrong in Status");
-            }*/
+            
             $data = array(
                 'status' => $Company['status']
             );
+            
             $updateRecord = Company::where('id', $Company['Company_id'])
                 ->update($data);
             if ($updateRecord) {
@@ -465,6 +463,7 @@ class CompanyController extends Controller
             ];
             return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
+            //dd($e);
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);
