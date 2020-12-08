@@ -83,6 +83,42 @@ class EmployeeController extends Controller
             $data = [
                 'Employee_id' => $record->id
             ];
+            return $this->generateResponse($status, $message, $data);
+        } catch (Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
+        }  
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function work(Request $request)
+    {
+        $status = 0;
+        $data = array();
+        $message = 'Something wrong';
+        try {
+            $request = json_decode($request->getContent(), true);
+            $data = array(
+                'designation_id' => $request['designation_id'],
+                'experience' => $request['experience'],
+                'current_job_location' => $request['current_job_location'],
+                'employeement_type' => $request['employeement_type'],
+                'language_known' => $request['language_known']
+            );
+
+            $record = Employee::where('id', $request['employee_id'])
+                            ->update($data);
+            if ($record) {
+                $status = true;
+                $message = 'Employee update properly';
+            }
+            
             return $this->generateResponse($status, $message, $record);
         } catch (Exception $e) {
             $status = false;
