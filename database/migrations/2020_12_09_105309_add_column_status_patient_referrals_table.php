@@ -14,7 +14,7 @@ class AddColumnStatusPatientReferralsTable extends Migration
     public function up()
     {
         Schema::table('',function (Blueprint $table){
-            $table->enum('status',['pending','accept','running','completed','reject','finish'])->default('active');
+            $table->enum('status',['pending','accept','running','completed','reject','finish'])->default('pending');
         });
     }
 
