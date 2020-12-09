@@ -13,7 +13,7 @@ class AddColumnStatusPatientReferralsTable extends Migration
      */
     public function up()
     {
-        Schema::table('',function (Blueprint $table){
+        Schema::table('patient_referrals',function (Blueprint $table){
             $table->enum('status',['pending','accept','running','completed','reject','finish'])->default('pending');
         });
     }
@@ -25,7 +25,7 @@ class AddColumnStatusPatientReferralsTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('patient_referrals', function (Blueprint $table) {
             $table->dropColumn('status');
         });
     }
