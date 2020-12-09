@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Patient;
 use App\Models\PatientReferral;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class PatientReferralController extends Controller
 {
@@ -97,61 +94,42 @@ class PatientReferralController extends Controller
             foreach ($patients as $patient) {
                 if($patient['SSN'] != '') {
 
-                    $firstname=isset($patient['First Name']) ? $patient['First Name'] : NULL;
-                    $email = isset($patient['Email']) ? $patient['Email'] : strtolower($firstname).'@gmail.com';
-
-                    $userdata = array(
-                        'first_name' => $firstname,
+                    $data = array(
+                        'referral_id' => $csvData['referral_id'],
+                        'service_id' => $csvData['service_id'],
+                        'file_type' => $csvData['file_type'],
+                        'first_name' => isset($patient['First Name']) ? $patient['First Name'] : NULL,
+                        'middle_name' => isset($patient['Middle Name']) ? $patient['Middle Name'] : NULL,
                         'last_name' => isset($patient['Last Name']) ? $patient['Last Name'] : NULL,
-                        'phone' => isset($patient['Phone2']) ? $patient['Phone2'] : NULL,
-                        'gender' => isset($patient['Gender']) ? $patient['Gender'] : NULL,
-                        'email' => $email,
                         'dob' => isset($patient['Date of Birth']) ? date('yy-m-d', strtotime($patient['Date of Birth'])) : NULL,
-                        'status' => 'pending',
-                        'type' => 'patient',
-                        'password' => Hash::make('test123')
+                        'gender' => isset($patient['Gender']) ? $patient['Gender'] : NULL,
+                        'patient_id' => isset($patient['Patient ID']) ? $patient['Patient ID'] : NULL,
+                        'medicaid_number' => isset($patient['Medicaid Number']) ? $patient['Medicaid Number'] : NULL,
+                        'medicare_number' => isset($patient['Medicare Number']) ? $patient['Medicare Number'] : NULL,
+                        'ssn' => $patient['SSN'],
+                        'start_date' => isset($patient['Hire Date']) ? date('yy-m-d', strtotime($patient['Hire Date'])) : NULL,
+                        'from_date' => isset($patient['From Date']) ? date('yy-m-d', strtotime($patient['From Date'])) : NULL,
+                        'to_date' => isset($patient['To Date']) ? date('yy-m-d', strtotime($patient['To Date'])) : NULL,
+                        'address_1' => isset($patient['Street1']) ? $patient['Street1'] : NULL,
+                        'address_2' => isset($patient['Address Line 2']) ? $patient['Address Line 2'] : NULL,
+                        'city' => isset($patient['City']) ? $patient['City'] : NULL,
+                        'state' => isset($patient['State']) ? $patient['State'] : NULL,
+                        'county' => isset($patient['Country of Birth']) ? $patient['Country of Birth'] : NULL,
+                        'Zip' => isset($patient['Zip Code']) ? $patient['Zip Code'] : NULL,
+                        'phone1' => isset($patient['Home Phone']) ? $patient['Home Phone'] : NULL,
+                        'phone2' => isset($patient['Phone2']) ? $patient['Phone2'] : NULL,
+                        'eng_name' => isset($patient['emg Name']) ? $patient['emg Name'] : NULL,
+                        'eng_addres' => isset($patient['Address1']) ? $patient['Address1'] : NULL,
+                        'emg_phone' => isset($patient['Phone 1']) ? $patient['Phone 1'] : NULL,
+                        'emg_relationship' => isset($patient['Marital Status']) ? $patient['Marital Status'] : NULL,
                     );
-                    $id = User::insert($userdata);
-                    if ($id){
-                        $userdata['user_id']=$id;
-                        $result = Patient::insert($userdata);
-
-                        $data = array(
-                            'referral_id' => $csvData['referral_id'],
-                            'service_id' => $csvData['service_id'],
-                            'file_type' => $csvData['file_type'],
-                            'first_name' => isset($patient['First Name']) ? $patient['First Name'] : NULL,
-                            'middle_name' => isset($patient['Middle Name']) ? $patient['Middle Name'] : NULL,
-                            'last_name' => isset($patient['Last Name']) ? $patient['Last Name'] : NULL,
-                            'dob' => isset($patient['Date of Birth']) ? date('yy-m-d', strtotime($patient['Date of Birth'])) : NULL,
-                            'gender' => isset($patient['Gender']) ? $patient['Gender'] : NULL,
-                            'patient_id' => $id,
-                            'medicaid_number' => isset($patient['Medicaid Number']) ? $patient['Medicaid Number'] : NULL,
-                            'medicare_number' => isset($patient['Medicare Number']) ? $patient['Medicare Number'] : NULL,
-                            'ssn' => $patient['SSN'],
-                            'start_date' => isset($patient['Hire Date']) ? date('yy-m-d', strtotime($patient['Hire Date'])) : NULL,
-                            'from_date' => isset($patient['From Date']) ? date('yy-m-d', strtotime($patient['From Date'])) : NULL,
-                            'to_date' => isset($patient['To Date']) ? date('yy-m-d', strtotime($patient['To Date'])) : NULL,
-                            'address_1' => isset($patient['Street1']) ? $patient['Street1'] : NULL,
-                            'address_2' => isset($patient['Address Line 2']) ? $patient['Address Line 2'] : NULL,
-                            'city' => isset($patient['City']) ? $patient['City'] : NULL,
-                            'state' => isset($patient['State']) ? $patient['State'] : NULL,
-                            'county' => isset($patient['Country of Birth']) ? $patient['Country of Birth'] : NULL,
-                            'Zip' => isset($patient['Zip Code']) ? $patient['Zip Code'] : NULL,
-                            'phone1' => isset($patient['Home Phone']) ? $patient['Home Phone'] : NULL,
-                            'phone2' => isset($patient['Phone2']) ? $patient['Phone2'] : NULL,
-                            'eng_name' => isset($patient['emg Name']) ? $patient['emg Name'] : NULL,
-                            'eng_addres' => isset($patient['Address1']) ? $patient['Address1'] : NULL,
-                            'emg_phone' => isset($patient['Phone 1']) ? $patient['Phone 1'] : NULL,
-                            'emg_relationship' => isset($patient['Marital Status']) ? $patient['Marital Status'] : NULL,
-                        );
-                        $patient_referral_id = patientReferral::insert($data);
-                        if ($patient_referral_id) {
-                            $status = 1;
-                            $message = 'CSV Uploaded successfully';
-                        }
-                    }
+                    $id = patientReferral::insert($data);
                 }
+            }
+
+            if ($id) {
+                $status = 1;
+                $message = 'CSV Uploaded successfully';
             }
         } catch (\Exception $e) {
             $status = 0;
