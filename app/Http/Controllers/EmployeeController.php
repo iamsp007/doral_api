@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\employee as ModelsEmployee;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -58,6 +59,19 @@ class EmployeeController extends Controller
             //Post data
             $employee = $request;
 
+            // User Add
+            $user = new User;
+            $user->first_name = $employee['first_name'];
+            $user->last_name = $employee['last_name'];
+            $user->email = $employee['email'];
+            $user->password = Hash::make('test123');
+            $user->dob = $employee['dob'];
+            $user->phone = $employee['phone'];
+            $user->type = 'admin';
+            $user->save();
+
+            $userId = $user->id;
+
             $data = array(
                 'first_name' => $employee['first_name'],
                 'last_name' => $employee['last_name'],
@@ -73,9 +87,11 @@ class EmployeeController extends Controller
                 'alternate_phone' => $employee['alternate_phone'],
                 'email' => $employee['email'],
                 'marital_status' => $employee['marital_status'],
-                'blood_group' => $employee['blood_group']
+                'blood_group' => $employee['blood_group'],
+                'user_id' => $userId
             );
             $record = Employee::create($data);
+
             if ($record->id) {
                 $status = true;
                 $message = 'Employee store properly';
@@ -105,7 +121,7 @@ class EmployeeController extends Controller
         try {
             $request = json_decode($request->getContent(), true);
             $data = array(
-                'designation_id' => $request['designation_id'],
+                'role_id' => $request['role_id'],
                 'experience' => $request['experience'],
                 'current_job_location' => $request['current_job_location'],
                 'employeement_type' => $request['employeement_type'],
