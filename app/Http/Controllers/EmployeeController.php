@@ -59,6 +59,19 @@ class EmployeeController extends Controller
             //Post data
             $employee = $request;
 
+            // User Add
+            $user = new User;
+            $user->first_name = $employee['first_name'];
+            $user->last_name = $employee['last_name'];
+            $user->email = $employee['email'];
+            $user->password = Hash::make('test123');
+            $user->dob = $employee['dob'];
+            $user->phone = $employee['phone'];
+            $user->type = 'admin';
+            $user->save();
+
+            $userId = $user->id;
+
             $data = array(
                 'first_name' => $employee['first_name'],
                 'last_name' => $employee['last_name'],
@@ -74,20 +87,10 @@ class EmployeeController extends Controller
                 'alternate_phone' => $employee['alternate_phone'],
                 'email' => $employee['email'],
                 'marital_status' => $employee['marital_status'],
-                'blood_group' => $employee['blood_group']
+                'blood_group' => $employee['blood_group'],
+                'user_id' => $userId
             );
             $record = Employee::create($data);
-
-            // User Add
-            $user = new User;
-            $user->first_name = $employee['first_name'];
-            $user->last_name = $employee['last_name'];
-            $user->email = $employee['email'];
-            $user->password = Hash::make('test123');
-            $user->dob = $employee['dob'];
-            $user->phone = $employee['phone'];
-            $user->type = 'employee';
-            $user->save();
 
             if ($record->id) {
                 $status = true;
