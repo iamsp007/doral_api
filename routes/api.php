@@ -38,6 +38,7 @@ Route::group([
     Route::get('employee/show/{employee}', 'App\Http\Controllers\EmployeeController@show')->name('employee.show');
     Route::get('employee/remove/{employee}', 'App\Http\Controllers\EmployeeController@destroy')->name('employee.remove');
     Route::post('employee/store', 'App\Http\Controllers\EmployeeController@store')->name('employee.store');
+    Route::post('employee/work', 'App\Http\Controllers\EmployeeController@work')->name('employee.work');
     
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
