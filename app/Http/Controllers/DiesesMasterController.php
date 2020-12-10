@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\designation;
+use App\Models\DiesesMaster;
 use Illuminate\Http\Request;
 
-class DesignationController extends Controller
+class DiesesMasterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,22 +14,11 @@ class DesignationController extends Controller
      */
     public function index()
     {
-        //
-        $data = array();
-        try {
-            
-            $designation = designation::all()->toArray();
-            if (!$designation) {
-                throw new Exception("No designation are registered");
-            }
-            $data = [
-                'designation' => $designation
-            ];
-            return $this->generateResponse(true, 'designation listing!', $data);
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            return $this->generateResponse(false, $message, $data);
+        $dieses = DiesesMaster::where('status','=',1)->get();
+        if (count($dieses)>0){
+            return $this->generateResponse(true,'Dieses Get Successfully!',$dieses,200);
         }
+        return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 
     /**
@@ -56,10 +45,10 @@ class DesignationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\DiesesMaster  $diesesMaster
      * @return \Illuminate\Http\Response
      */
-    public function show(designation $designation)
+    public function show(DiesesMaster $diesesMaster)
     {
         //
     }
@@ -67,10 +56,10 @@ class DesignationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\DiesesMaster  $diesesMaster
      * @return \Illuminate\Http\Response
      */
-    public function edit(designation $designation)
+    public function edit(DiesesMaster $diesesMaster)
     {
         //
     }
@@ -79,10 +68,10 @@ class DesignationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\DiesesMaster  $diesesMaster
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, designation $designation)
+    public function update(Request $request, DiesesMaster $diesesMaster)
     {
         //
     }
@@ -90,10 +79,10 @@ class DesignationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\DiesesMaster  $diesesMaster
      * @return \Illuminate\Http\Response
      */
-    public function destroy(designation $designation)
+    public function destroy(DiesesMaster $diesesMaster)
     {
         //
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDeviceTokenToUsersTable extends Migration
+class AddColumnStatusPatientReferralsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddDeviceTokenToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('device_token')->nullable();
-            $table->string('device_type')->nullable();
+        Schema::table('patient_referrals',function (Blueprint $table){
+            $table->enum('status',['pending','accept','running','completed','reject','finish'])->default('pending');
         });
     }
 
@@ -26,9 +25,8 @@ class AddDeviceTokenToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('device_token');
-            $table->dropColumn('device_type');
+        Schema::table('patient_referrals', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 }

@@ -31,6 +31,18 @@ Route::group([
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+
+    // Employee
+    Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
+    Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
+    Route::get('employee/show/{employee}', 'App\Http\Controllers\EmployeeController@show')->name('employee.show');
+    Route::get('employee/remove/{employee}', 'App\Http\Controllers\EmployeeController@destroy')->name('employee.remove');
+    Route::post('employee/store', 'App\Http\Controllers\EmployeeController@store')->name('employee.store');
+    Route::post('employee/work', 'App\Http\Controllers\EmployeeController@work')->name('employee.work');
+    
+    Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
+    Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
+    Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
@@ -48,12 +60,12 @@ Route::group([
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\UserController@user');
         //Company URLs
-        Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
+        //Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
         Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
         Route::post('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
         Route::post('company/confirmpassword', 'App\Http\Controllers\CompanyController@confirmPassword');
-        Route::get('company', 'App\Http\Controllers\CompanyController@index');
-        Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
+        //Route::get('company', 'App\Http\Controllers\CompanyController@index');
+        //Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
         Route::get('company/{company}/edit', 'App\Http\Controllers\CompanyController@edit');
         // Employees Urls
         Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
@@ -69,7 +81,12 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
+    Route::post('roadl-information', 'App\Http\Controllers\RoadlController@create');
+    Route::post('roadl-information-show', 'App\Http\Controllers\RoadlController@show');
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
+    Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
+    Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
 });
 
 // clincian API
@@ -78,4 +95,5 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
+    Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
 });

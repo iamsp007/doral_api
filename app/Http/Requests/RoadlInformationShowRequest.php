@@ -6,7 +6,7 @@ use App\Helpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class PatientRequest extends FormRequest
+class RoadlInformationShowRequest extends FormRequest
 {
     /**
      * Prepare the data for validation.
@@ -37,16 +37,14 @@ class PatientRequest extends FormRequest
     public function rules()
     {
         return [
-            'latitude'=>'required',
-            'longitude'=>'required',
-            'reason'=>'required',
+            'user_id'=>'required',
+            'patient_requests_id'=>'required',
         ];
     }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         $helper = new Helper();
-        $response = $helper->generateResponse(false,'Invalid field! try again',null,200);
-        throw new \Illuminate\Validation\ValidationException($validator, $response);
+        return $helper->generateResponse(false,'The given data is invalid',null,200);
     }
 }

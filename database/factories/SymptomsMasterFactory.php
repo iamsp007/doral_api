@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\PatientRequest;
+use App\Models\SymptomsMaster;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PatientRequestFactory extends Factory
+class SymptomsMasterFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = PatientRequest::class;
+    protected $model = SymptomsMaster::class;
 
     /**
      * Define the model's default state.

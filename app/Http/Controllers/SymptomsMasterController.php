@@ -2,34 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\designation;
+use App\Models\SymptomsMaster;
 use Illuminate\Http\Request;
 
-class DesignationController extends Controller
+class SymptomsMasterController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($dieser_id)
     {
-        //
-        $data = array();
-        try {
-            
-            $designation = designation::all()->toArray();
-            if (!$designation) {
-                throw new Exception("No designation are registered");
-            }
-            $data = [
-                'designation' => $designation
-            ];
-            return $this->generateResponse(true, 'designation listing!', $data);
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            return $this->generateResponse(false, $message, $data);
+        $data = SymptomsMaster::where([['dieser_id','=',$dieser_id],['status','=',1]])->get();
+        if (count($data)>0){
+            return $this->generateResponse(true,'Symptoms Get Successfully!',$data,200);
         }
+        return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 
     /**
@@ -56,10 +45,10 @@ class DesignationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\SymptomsMaster  $symptomsMaster
      * @return \Illuminate\Http\Response
      */
-    public function show(designation $designation)
+    public function show(SymptomsMaster $symptomsMaster)
     {
         //
     }
@@ -67,10 +56,10 @@ class DesignationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\SymptomsMaster  $symptomsMaster
      * @return \Illuminate\Http\Response
      */
-    public function edit(designation $designation)
+    public function edit(SymptomsMaster $symptomsMaster)
     {
         //
     }
@@ -79,10 +68,10 @@ class DesignationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\SymptomsMaster  $symptomsMaster
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, designation $designation)
+    public function update(Request $request, SymptomsMaster $symptomsMaster)
     {
         //
     }
@@ -90,10 +79,10 @@ class DesignationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\SymptomsMaster  $symptomsMaster
      * @return \Illuminate\Http\Response
      */
-    public function destroy(designation $designation)
+    public function destroy(SymptomsMaster $symptomsMaster)
     {
         //
     }
