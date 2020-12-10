@@ -19,6 +19,21 @@ class Employee extends Model
         'first_name', 'last_name', 'gender', 'address1', 'address2', 'zip', 'phone', 'email', 'dob', 'ssn', 'npi', 'role_id', 'designation_id', 'emg_first_name', 'emg_last_name', 'emg_address1', 'emg_address2', 'emg_zip', 'emg_phone', 'emg_email', 'join_date', 'Employeement _type', 'status', 'user_id'
     ];
 
+    /**
+     * Relation with Appointment
+     */
+    public function paAppointment()
+    {
+        return $this->hasMany('App\Models\Appointment', 'provider1', 'id');
+    }
+
+    /**
+     * Relation with Appointment
+     */
+    public function Appointment()
+    {
+        return $this->hasMany('App\Models\Appointment', 'provider2', 'id');
+    }
 
     public static function insert($request)
     {
@@ -30,20 +45,37 @@ class Employee extends Model
             exit;
         }
     }
-
-    public static function search($condition = array())
+    /**
+     * Get all Appointment of PA / MA
+     */
+    public static function getAppoinmentByEmployeeId($id)
     {
-        //try{
-            $data = employee::select('')
-            ->where($condition)
-            ->get();
-            if(!$data) {
-                throw new Exception("Employee data not found");
-                return false;
+        try {
+            $resp = Employee::select('id', 'first_name', 'last_name', 'phone', 'email', 'dob')
+                ->with('paAppointment')
+                ->where('id', $id)
+                ->get()
+                ->toArray();
+            if (!$resp) {
+                throw new Exception("No Appointment found");
             }
-            return $data;
-        /*} catch (\Exception $e) {
-            
-        }*/
+            dd($resp);
+            $status =  true;
+            $response = [
+                'status' => $status,
+                'message' => "All Appointments Of Employee",
+                'data' => $resp
+            ];
+            return $response;
+        } catch (\Exception $e) {
+            report($e);
+            $status =  false;
+            $response = [
+                'status' => $status,
+                'message' => $e->getMessage()
+            ];
+            return $response;
+            exit;
+        }
     }
 }

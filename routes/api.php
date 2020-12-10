@@ -35,10 +35,16 @@ Route::group([
         'middleware' => ['auth:api'],
     ], function () {
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
+        //Patient
+        Route::get('patient/search/{keyword}', 'App\Http\Controllers\PatientController@searchByEmailNamePhone');
         //Services
         Route::get('service', 'App\Http\Controllers\ServicesController@index');
         Route::post('service/store', 'App\Http\Controllers\ServicesController@store');
         Route::put('service/{service}', 'App\Http\Controllers\ServicesController@update');
+        //Appointment
+        Route::get('appointment', 'App\Http\Controllers\AppointmentController@index');
+        Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store');
+        Route::put('appointment/{appointment}', 'App\Http\Controllers\AppointmentController@update');
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\UserController@user');
         //Company URLs
@@ -52,7 +58,7 @@ Route::group([
         // Employees Urls
         Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
         Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
-        Route::get('employee/search', 'App\Http\Controllers\EmployeeController@search')->name('employee.search');
+        Route::get('employee/search/getAppoinment', 'App\Http\Controllers\EmployeeController@getAppoinment');
         // Email Template Urls
         Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
     });

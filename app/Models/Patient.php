@@ -34,6 +34,37 @@ class Patient extends Model
     }
 
     /**
+     * 
+     */
+    public static function searchByEmailNamePhone($keyword)
+    {
+        try {
+            $resp = Patient::select(\DB::raw('concat(first_name, " ",last_name) as name'), 'email', 'phone')
+                ->orWhere('email', 'like', '%' . $keyword . '%')
+                ->orWhere('email', 'like', '%' . $keyword . '%')
+                ->orWhere(\DB::raw('concat(first_name, " ",last_name)'), 'like', '%' . $keyword . '%')
+                ->get()
+                ->toArray();
+            $status =  true;
+            $response = [
+                'status' => $status,
+                'message' => "All Appointments",
+                'data' => $resp
+            ];
+            return $response;
+        } catch (\Exception $e) {
+            report($e);
+            $status =  false;
+            $response = [
+                'status' => $status,
+                'message' => $e->getMessage()
+            ];
+            return $response;
+            exit;
+        }
+    }
+
+    /**
      * Insert data into Patient table
      */
     public static function insert($request)

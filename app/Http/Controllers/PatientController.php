@@ -19,6 +19,32 @@ class PatientController extends Controller
     }
 
     /**
+     * Search patient by name / Email / phone
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAppoinment($keyword)
+    {
+        $status = false;
+        $data = [];
+        $message = "";
+        try {
+            $res = Patient::searchByEmailNamePhone($keyword);
+            dd($res);
+            $status = true;
+            $message = $res['message'];
+            $data = [
+                'data' => $res['data']
+            ];
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getFile(). $e->getMessage(). $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
