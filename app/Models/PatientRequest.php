@@ -14,4 +14,11 @@ class PatientRequest extends Model
 
         return $this->hasOne(User::class,'id','user_id');
     }
+    public function patientDetail(){
+
+        return $this->hasOne(Patient::class,'user_id','user_id');
+    }
+    public function ccrm(){
+        return $this->hasMany(CCMReading::class,'user_id','user_id');
+    }
 }
