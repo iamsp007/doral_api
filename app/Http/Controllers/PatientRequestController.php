@@ -213,7 +213,7 @@ class PatientRequestController extends Controller
         }
 
     }
-    public function sendNexmoMessageForGluco($userDetails,$type){
+    public function sendNexmoMessageForGluco($userDetails,$type) {
         if($type == 3) {
             $le = 'lower';
         }else {
