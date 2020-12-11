@@ -183,8 +183,8 @@ class PatientRequestController extends Controller
 
     public function sendNexmoMessage($userDetails,$type){
         $from = "12089104598";
-        $to = "5166000122";
-//        $to = "9293989855";
+        //$to = "5166000122";
+        $to = "9293989855";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
