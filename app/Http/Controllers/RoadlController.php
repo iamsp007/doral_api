@@ -50,7 +50,9 @@ class RoadlController extends Controller
             $markers = collect($clinicianIds)->map(function($item) use ($patient_requests){
                 $item['distance'] = $this->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $patient_requests->latitude,$patient_requests->longitude);
                 return $item;
-            })->where('distance','<=',20)->pluck('id');
+            })
+                // ->where('distance','<=',20)
+                ->pluck('id');
             $clinicianList = User::whereIn('id',$markers)->get();
             $data=PatientRequest::with('detail')
                 ->where('id','=',$patient_request_id)
@@ -94,6 +96,27 @@ class RoadlController extends Controller
         // If you want calculate the distance in miles instead of kilometers, replace 6371 with 3959.
 
         return $distance;
+    }
+
+    public function getRoadLProccess(Request $request,$patient_request_id){
+
+        $data = PatientRequest::with('routes')
+            ->where([['id','=',$patient_request_id],['status','=','active']])
+            ->first();
+        if ($data){
+            if (count($data->routes)>0){
+                $data->destination = array(
+                    'latitude'=>$data->routes[count($data->routes)-1]->latitude,
+                    'longitude'=>$data->routes[count($data->routes)-1]->longitude);
+            }else{
+                $data->destination = array(
+                    'latitude'=>$data->latitude,
+                    'longitude'=>$data->longitude);
+            }
+            return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
+        }
+
+        return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 
 }

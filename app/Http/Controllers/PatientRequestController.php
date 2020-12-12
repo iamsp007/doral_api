@@ -188,7 +188,10 @@ class PatientRequestController extends Controller
     }
 
     public function clinicianPatientRequestList(Request $request){
-        $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail')->where('is_active','=','1')->get();
+        $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail')
+            ->where('is_active','=','1')
+            ->orderBy('id','desc')
+            ->get();
         if (count($patientRequestList)>0){
             return $this->generateResponse(true,'Patient Request List',$patientRequestList,200);
         }
