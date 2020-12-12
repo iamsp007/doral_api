@@ -39,7 +39,7 @@ Route::group([
     Route::get('employee/remove/{employee}', 'App\Http\Controllers\EmployeeController@destroy')->name('employee.remove');
     Route::post('employee/store', 'App\Http\Controllers\EmployeeController@store')->name('employee.store');
     Route::post('employee/work', 'App\Http\Controllers\EmployeeController@work')->name('employee.work');
-    
+
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
@@ -99,4 +99,5 @@ Route::group([
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
+    Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
 });
