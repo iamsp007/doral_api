@@ -54,9 +54,9 @@ class AuthController extends Controller
                     $users->device_token = $request->device_token;
                     $users->device_type = $request->device_type;
                     $users->save();
+
                 }
             }
-
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
             $status = false;
@@ -93,7 +93,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $users = User::find($request->user()->id);
+        if ($users){
+            $users->is_available = 0;
+            $users->save();
+        }
         $request->user()->token()->revoke();
+
         return $this->generateResponse(true, 'Successfully logged out');
     }
 
