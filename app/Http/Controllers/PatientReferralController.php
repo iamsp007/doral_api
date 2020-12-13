@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class PatientReferralController extends Controller
 {
@@ -56,11 +57,7 @@ class PatientReferralController extends Controller
         $delimiter = ",";
         $message = 'Something wrong';
         try {
-            //Post data
-            //$request = json_decode($request->getContent(), true);
             $csvData = $request;
-            //dd($csvData);
-            //upload file
             if ($request->hasFile('file_name')) {
                 // Get filename with the extension
                 $filenameWithExt = $request->file('file_name')->getClientOriginalName();
@@ -110,8 +107,7 @@ class PatientReferralController extends Controller
                     } elseif(isset($patient['Phone2']) && !empty($patient['Phone2'])) {
                         $user->phone = str_replace('-', '', $patient['Phone2']);
                     }
-                    
-                    $user->type = 'patient';
+                    $user->assignRole('patient')->syncPermissions(Permission::all());
                     $user->save();
 
                     $userId = $user->id;
@@ -119,7 +115,7 @@ class PatientReferralController extends Controller
 
                     $data = array(
                         'referral_id' => $csvData['referral_id'],
-                        'service_id' => $csvData['service_id'],
+                        'service_id' => $request->has('service_id')?$csvData['service_id']:1,
                         'file_type' => $csvData['file_type'],
                         'user_id' => $userId,
                         'first_name' => isset($patient['First Name']) ? $patient['First Name'] : NULL,
@@ -151,7 +147,7 @@ class PatientReferralController extends Controller
                     $id = patientReferral::insert($data);
                     }
                     catch(Exception $e) {
-                        echo $e->getMessage()."<br>";
+//                        echo $e->getMessage()."<br>";
                     }
                 }
             }

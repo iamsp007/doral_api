@@ -15,7 +15,7 @@ class AddDeviceTokenToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('device_token')->nullable();
-            $table->string('device_type')->nullable();
+            $table->integer('device_type')->default('0')->comment('0=web,1=Android,2=IOS');
         });
     }
 

@@ -24,7 +24,8 @@ Route::group([
     Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\AuthController@reset')->name('password.reset');
     Route::post('password/reset', 'App\Http\Controllers\Auth\AuthController@resetPassword')->name('password.update');
 
-    Route::post('register', 'App\Http\Controllers\UserController@store');
+//    Route::post('register', 'App\Http\Controllers\UserController@store');
+    Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
     Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
     Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
@@ -80,7 +81,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['auth:api'],
+    'middleware' => ['auth:api','role:patient'],
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
@@ -94,11 +95,18 @@ Route::group([
 
 // clincian API
 Route::group([
-    'middleware' => ['auth:api'],
+    'middleware' => ['auth:api','role:clinician'],
 ], function () {
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
+});
+
+// Referral
+Route::group([
+    'middleware' => ['auth:api','role:referral'],
+], function () {
+
 });
