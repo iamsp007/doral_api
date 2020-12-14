@@ -119,6 +119,7 @@ class PatientReferralController extends Controller
                         'referral_id' => $csvData['referral_id'],
                         'service_id' => $csvData['service_id'],
                         'file_type' => $csvData['file_type'],
+                        'form_id' => isset($csvData['form_id']) ? $csvData['form_id'] : NULL,
                         'user_id' => $userId,
                         'first_name' => isset($patient['First Name']) ? $patient['First Name'] : NULL,
                         'middle_name' => isset($patient['Middle Name']) ? $patient['Middle Name'] : NULL,
