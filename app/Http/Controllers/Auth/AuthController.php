@@ -75,7 +75,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->dob = $request->dob;
         $user->phone = $request->phone;
-        $user->status = 1;
+        $user->status = '1';
         //        $user->hasPermissionTo('Create', 'web');
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()){
