@@ -58,6 +58,7 @@ class PatientReferralController extends Controller
         $message = 'Something wrong';
         try {
             $csvData = $request;
+
             if ($request->hasFile('file_name')) {
                 // Get filename with the extension
                 $filenameWithExt = $request->file('file_name')->getClientOriginalName();
@@ -92,6 +93,7 @@ class PatientReferralController extends Controller
             $patients = array_filter($patients);
             $patients = array_values($patients);
             foreach ($patients as $patient) {
+                \Log::info($csvData);
                 if($patient['SSN'] != '') {
 
                     try {
@@ -115,7 +117,7 @@ class PatientReferralController extends Controller
 
                     $data = array(
                         'referral_id' => $csvData['referral_id'],
-                        'service_id' => $request->has('service_id')?$csvData['service_id']:1,
+                        'service_id' => $csvData['service_id'],
                         'file_type' => $csvData['file_type'],
                         'user_id' => $userId,
                         'first_name' => isset($patient['First Name']) ? $patient['First Name'] : NULL,
@@ -144,6 +146,7 @@ class PatientReferralController extends Controller
                         'emg_phone' => isset($patient['Phone 1']) ? $patient['Phone 1'] : NULL,
                         'emg_relationship' => isset($patient['Marital Status']) ? $patient['Marital Status'] : NULL,
                     );
+
                     $id = patientReferral::insert($data);
                     }
                     catch(Exception $e) {
