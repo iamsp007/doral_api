@@ -62,7 +62,7 @@ Route::group([
         Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store');
         Route::put('appointment/{appointment}', 'App\Http\Controllers\AppointmentController@update');
         //Users URLs
-        Route::get('user', 'App\Http\Controllers\Auth\UserController@user');
+        Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
         //Company URLs
         //Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
         Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
