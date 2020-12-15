@@ -57,6 +57,9 @@ Route::group([
         Route::get('appointment', 'App\Http\Controllers\AppointmentController@index');
         Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store');
         Route::put('appointment/{appointment}', 'App\Http\Controllers\AppointmentController@update');
+        Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
+        Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
+        Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\UserController@user');
         //Company URLs
