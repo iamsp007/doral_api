@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\PatientReferral;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Exception;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class PatientReferralController extends Controller
 {
@@ -53,11 +57,8 @@ class PatientReferralController extends Controller
         $delimiter = ",";
         $message = 'Something wrong';
         try {
-            //Post data
-            //$request = json_decode($request->getContent(), true);
             $csvData = $request;
 
-            //upload file
             if ($request->hasFile('file_name')) {
                 // Get filename with the extension
                 $filenameWithExt = $request->file('file_name')->getClientOriginalName();
@@ -92,12 +93,34 @@ class PatientReferralController extends Controller
             $patients = array_filter($patients);
             $patients = array_values($patients);
             foreach ($patients as $patient) {
+                \Log::info($csvData);
                 if($patient['SSN'] != '') {
+
+                    try {
+                    // User Add
+                    $user = new User;
+                    $user->first_name = isset($patient['First Name']) ? $patient['First Name'] : NULL;
+                    $user->last_name = isset($patient['Last Name']) ? $patient['Last Name'] : NULL;
+                    $user->email = isset($patient['email']) ? $patient['email'] : NULL;
+                    $user->password = Hash::make('test123');
+                    $user->dob = isset($patient['Date of Birth']) ? date('yy-m-d', strtotime($patient['Date of Birth'])) : NULL;
+                    if(isset($patient['Home Phone']) && !empty($patient['Home Phone'])) {
+                        $user->phone = str_replace('-', '', $patient['Home Phone']);
+                    } elseif(isset($patient['Phone2']) && !empty($patient['Phone2'])) {
+                        $user->phone = str_replace('-', '', $patient['Phone2']);
+                    }
+                    $user->assignRole('patient')->syncPermissions(Permission::all());
+                    $user->save();
+
+                    $userId = $user->id;
+                    //dd($userId);
 
                     $data = array(
                         'referral_id' => $csvData['referral_id'],
                         'service_id' => $csvData['service_id'],
                         'file_type' => $csvData['file_type'],
+                        'form_id' => isset($csvData['form_id']) ? $csvData['form_id'] : NULL,
+                        'user_id' => $userId,
                         'first_name' => isset($patient['First Name']) ? $patient['First Name'] : NULL,
                         'middle_name' => isset($patient['Middle Name']) ? $patient['Middle Name'] : NULL,
                         'last_name' => isset($patient['Last Name']) ? $patient['Last Name'] : NULL,
@@ -118,12 +141,18 @@ class PatientReferralController extends Controller
                         'Zip' => isset($patient['Zip Code']) ? $patient['Zip Code'] : NULL,
                         'phone1' => isset($patient['Home Phone']) ? $patient['Home Phone'] : NULL,
                         'phone2' => isset($patient['Phone2']) ? $patient['Phone2'] : NULL,
+                        'email' => isset($patient['Email']) ? $patient['Email'] : NULL,
                         'eng_name' => isset($patient['emg Name']) ? $patient['emg Name'] : NULL,
                         'eng_addres' => isset($patient['Address1']) ? $patient['Address1'] : NULL,
                         'emg_phone' => isset($patient['Phone 1']) ? $patient['Phone 1'] : NULL,
                         'emg_relationship' => isset($patient['Marital Status']) ? $patient['Marital Status'] : NULL,
                     );
+
                     $id = patientReferral::insert($data);
+                    }
+                    catch(Exception $e) {
+//                        echo $e->getMessage()."<br>";
+                    }
                 }
             }
 

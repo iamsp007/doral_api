@@ -20,10 +20,10 @@ class SendClinicianPatientRequestNotification
      * @param  \App\Models\User  $order
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data,$clinicianList)
     {
-        $user = User::where('type','=','clinician')->get();
-        foreach ($user as $item) {
+//        $user = User::where('type','=','clinician')->get();
+        foreach ($clinicianList as $item) {
             $message="Patient RoadL Request ";
             $title="Patient RoadL Request ";
             $token=$item->device_token;

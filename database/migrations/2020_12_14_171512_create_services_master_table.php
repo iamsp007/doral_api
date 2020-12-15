@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSymptomsMastersTable extends Migration
+class CreateServicesMasterTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateSymptomsMastersTable extends Migration
      */
     public function up()
     {
-        Schema::create('symptoms_masters', function (Blueprint $table) {
+        Schema::create('services_master', function (Blueprint $table) {
             $table->id();
-            $table->string('dieser_id',255);
-            $table->string('name',255);
-            $table->string('img',255);
-            $table->boolean('status')->default(1);
+            $table->string('name',100);
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreateSymptomsMastersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('symptoms_masters');
+        Schema::dropIfExists('services_master');
     }
 }

@@ -14,6 +14,7 @@ use App\Models\referral;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
 {
@@ -28,7 +29,7 @@ class AuthController extends Controller
                 $field = 'phone';
             }
             //$credentials = [$field => $username, 'password' => $password];
-            $credentials = [$field => $username, 'password' => $password, 'status' => 'active'];
+            $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
             // print_r($credentials);die;
             if (!Auth::attempt($credentials)) {
                 return $this->generateResponse(false, $field . ' or Password are Incorrect!');
@@ -54,9 +55,9 @@ class AuthController extends Controller
                     $users->device_token = $request->device_token;
                     $users->device_type = $request->device_type;
                     $users->save();
+
                 }
             }
-
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
             $status = false;
@@ -67,14 +68,6 @@ class AuthController extends Controller
 
     public function register(RegistrationRequest $request)
     {
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|min:6',
-            'dob' => 'required|date',
-            'phone' => 'required|numeric'
-        ]);
         $user = new User;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
@@ -82,18 +75,27 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->dob = $request->dob;
         $user->phone = $request->phone;
+        $user->status = '1';
         //        $user->hasPermissionTo('Create', 'web');
-        $user->assignRole($request->type)->syncPermissions(['Create', 'update']);
-        $user->save();
+        $user->assignRole($request->type)->syncPermissions(Permission::all());
+        if ($user->save()){
+            return $this->generateResponse(true, 'Registration Successfully!', $user,200);
+        }
+        return $this->generateResponse(false, 'Something Went Wrong!', [
+            'message' => 'Invalid Daata'
+        ],200);
 
-        return $this->generateResponse(true, 'Login Successfully!', [
-            'message' => 'Successfully created user!'
-        ]);
     }
 
     public function logout(Request $request)
     {
+        $users = User::find($request->user()->id);
+        if ($users){
+            $users->is_available = 0;
+            $users->save();
+        }
         $request->user()->token()->revoke();
+
         return $this->generateResponse(true, 'Successfully logged out');
     }
 

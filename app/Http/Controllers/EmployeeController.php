@@ -41,7 +41,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //  
+        //
     }
 
     /**
@@ -210,7 +210,7 @@ class EmployeeController extends Controller
     }
     /**
      * Search employee by id
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */

@@ -21,14 +21,14 @@ class CompanyController extends Controller
         $data = array();
         try {
             if($id == 1)
-            $companies = Company::where('status', 'pending')->get();
-            else if($id == 2) 
-            $companies = Company::where('status', 'active')->get();
-            else if($id == 3) 
-            $companies = Company::where('status', 'reject')->get();
+            $companies = Company::where('status', '0')->get();
+            else if($id == 2)
+            $companies = Company::where('status', '1')->get();
+            else if($id == 3)
+            $companies = Company::where('status', '3')->get();
             else
             $companies = Company::all()->toArray();
-        
+
             if (!$companies) {
                 throw new Exception("No Companies are registered");
             }
@@ -447,11 +447,11 @@ class CompanyController extends Controller
             $request = json_decode($request->getContent(), true);
             $Company = $request['data'];
 
-            
+
             $data = array(
                 'status' => $Company['status']
             );
-            
+
             $updateRecord = Company::where('id', $Company['Company_id'])
                 ->update($data);
             if ($updateRecord) {

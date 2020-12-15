@@ -15,7 +15,7 @@ class DiesesMasterSeeder extends Seeder
      */
     public function run()
     {
-        $dieses=['pain','fever'.'flue','besavioral'];
+        $dieses=['pain','fever'.'flue','behavioural'];
         foreach ($dieses as $diese) {
             $dieses = new DiesesMaster();
             $dieses->name = $diese;

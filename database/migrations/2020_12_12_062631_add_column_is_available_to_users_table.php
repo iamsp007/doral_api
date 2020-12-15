@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDeviceTokenToUsersTable extends Migration
+class AddColumnIsAvailableToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,9 @@ class AddDeviceTokenToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('device_token')->nullable();
-            $table->integer('device_type')->default('0')->comment('0=web,1=Android,2=IOS');
+            $table->string('latitude',255)->nullable();
+            $table->string('longitude',255)->nullable();
+            $table->string('is_available')->default('0')->comment('0= offline,1= online,2= service running');
         });
     }
 
@@ -27,8 +28,9 @@ class AddDeviceTokenToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('device_token');
-            $table->dropColumn('device_type');
+            $table->dropColumn('latitude');
+            $table->dropColumn('longitude');
+            $table->dropColumn('is_available');
         });
     }
 }

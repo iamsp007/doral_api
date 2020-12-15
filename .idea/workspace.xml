@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/LoginRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/LoginRequest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,6 +154,13 @@
       <path value="$PROJECT_DIR$/vendor/psr/cache" />
       <path value="$PROJECT_DIR$/vendor/giggsey/libphonenumber-for-php" />
       <path value="$PROJECT_DIR$/vendor/mtdowling/jmespath.php" />
+      <path value="$PROJECT_DIR$/vendor/phpoffice/phpspreadsheet" />
+      <path value="$PROJECT_DIR$/vendor/markbaker/complex" />
+      <path value="$PROJECT_DIR$/vendor/markbaker/matrix" />
+      <path value="$PROJECT_DIR$/vendor/myclabs/php-enum" />
+      <path value="$PROJECT_DIR$/vendor/lcobucci/clock" />
+      <path value="$PROJECT_DIR$/vendor/maatwebsite/excel" />
+      <path value="$PROJECT_DIR$/vendor/maennchen/zipstream-php" />
     </include_path>
   </component>
   <component name="ProjectId" id="1jExH90K84QkoSjIviyVDY4aK6W" />
@@ -226,44 +229,13 @@
       <workItem from="1606155680972" duration="991000" />
       <workItem from="1606157545886" duration="1794000" />
       <workItem from="1606159362972" duration="1175000" />
+      <workItem from="1607864745366" duration="799000" />
+      <workItem from="1607872570022" duration="1185000" />
+      <workItem from="1607924801974" duration="1324000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="449" y="145" width="524" height="502" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1603476225603">
-      <screen x="67" y="27" width="1299" height="741" />
-    </state>
-    <state x="449" y="145" width="524" height="502" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/67.27.1299.741@67.27.1299.741" timestamp="1603476225603" />
-    <state x="449" y="154" width="524" height="484" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1606158092366">
-      <screen x="67" y="27" width="1299" height="741" />
-    </state>
-    <state x="449" y="154" width="524" height="484" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/67.27.1299.741@67.27.1299.741" timestamp="1606158092366" />
-    <state x="499" y="154" width="424" height="484" key="FileChooserDialogImpl" timestamp="1606063631560">
-      <screen x="67" y="27" width="1299" height="741" />
-    </state>
-    <state x="499" y="154" width="424" height="484" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1606063631560" />
-    <state x="187" y="85" width="1039" height="622" key="MergeDialog" timestamp="1606066512671">
-      <screen x="67" y="27" width="1299" height="741" />
-    </state>
-    <state x="187" y="85" width="1039" height="622" key="MergeDialog/67.27.1299.741@67.27.1299.741" timestamp="1606066512671" />
-    <state x="347" y="157" width="728" height="478" key="MultipleFileMergeDialog" timestamp="1606066512679">
-      <screen x="67" y="27" width="1299" height="741" />
-    </state>
-    <state x="347" y="157" width="728" height="478" key="MultipleFileMergeDialog/67.27.1299.741@67.27.1299.741" timestamp="1606066512679" />
-    <state x="167" y="125" width="1099" height="543" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1606159339838">
-      <screen x="67" y="27" width="1299" height="741" />
-    </state>
-    <state x="167" y="125" width="1099" height="543" key="com.intellij.history.integration.ui.views.FileHistoryDialog/67.27.1299.741@67.27.1299.741" timestamp="1606159339838" />
-    <state x="380" y="175" key="run.anything.popup" timestamp="1606159261367">
-      <screen x="67" y="27" width="1299" height="741" />
-    </state>
-    <state x="380" y="175" key="run.anything.popup/67.27.1299.741@67.27.1299.741" timestamp="1606159261367" />
-    <state x="441" y="310" width="540" height="172" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1603910349727">
-      <screen x="67" y="27" width="1299" height="741" />
-    </state>
-    <state x="441" y="310" width="540" height="172" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/67.27.1299.741@67.27.1299.741" timestamp="1603910349727" />
   </component>
 </project>

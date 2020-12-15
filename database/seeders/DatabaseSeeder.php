@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\FileTypeMaster;
+use App\Models\ServiceMaster;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -15,23 +17,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        $this->call(
-            DiesesMasterSeeder::class,
-//            SymptomsMasterSeeder::class
-        );
-
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'administrator']);
 //        $role = Role::create(['guard_name' => 'web', 'name' => 'admin']);
 //        $role = Role::create(['guard_name' => 'web', 'name' => 'co-ordinator']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'Supervisor']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'Clinician']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'Patient']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'Referral']);
+//        $role = Role::create(['guard_name' => 'web', 'name' => 'supervisor']);
+//        $role = Role::create(['guard_name' => 'web', 'name' => 'clinician']);
+//        $role = Role::create(['guard_name' => 'web', 'name' => 'patient']);
+//        $role = Role::create(['guard_name' => 'referral', 'name' => 'referral']);
 //
-//        $permission = Permission::create(['guard_name' => 'web', 'name' => 'Create']);
-//        $permission = Permission::create(['guard_name' => 'web', 'name' => 'edit']);
-//        $permission = Permission::create(['guard_name' => 'web', 'name' => 'update']);
+//        $this->call(
+//            AdminSeeder::class,
+//            DiesesMasterSeeder::class,
+//        );
+
+        // File type seeder
+        $filetypes = array('Demographic','Clinical','COMPLIANCE DUE DATES','PREVIOUS MD ORDER');
+        foreach ($filetypes as $fvalue) {
+            $filetypesModel = new FileTypeMaster();
+            $filetypesModel->name = $fvalue;
+            $filetypesModel->save();
+        }
+
+        $data = array('VBC','MD Order','Occupational Health','Telehealth','roadL');
+        foreach ($data as $datum) {
+            $serviceModel = new ServiceMaster();
+            $serviceModel->name = $datum;
+            $serviceModel->save();
+        }
+
     }
 }

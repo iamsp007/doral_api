@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\FileTypeMaster;
 use Illuminate\Database\Seeder;
 
-class SymptomsMasterSeeder extends Seeder
+class FileTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +14,6 @@ class SymptomsMasterSeeder extends Seeder
      */
     public function run()
     {
-        //
+
     }
 }

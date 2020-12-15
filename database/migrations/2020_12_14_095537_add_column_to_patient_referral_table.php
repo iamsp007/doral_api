@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnStatusPatientReferralsTable extends Migration
+class AddColumnToPatientReferralTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddColumnStatusPatientReferralsTable extends Migration
      */
     public function up()
     {
-        Schema::table('patient_referrals',function (Blueprint $table){
-            $table->enum('status',['pending','accept','running','completed','reject','finish'])->default('pending');
+        Schema::table('patient_referrals', function (Blueprint $table) {
+            $table->integer('service_id')->nullable();
+            $table->integer('file_type')->nullable();
         });
     }
 
@@ -26,7 +27,8 @@ class AddColumnStatusPatientReferralsTable extends Migration
     public function down()
     {
         Schema::table('patient_referrals', function (Blueprint $table) {
-            $table->dropColumn('status');
+            $table->dropColumn('service_id');
+            $table->dropColumn('file_type');
         });
     }
 }

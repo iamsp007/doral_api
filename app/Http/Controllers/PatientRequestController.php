@@ -8,6 +8,7 @@ use App\Http\Requests\CCMReadingRequest;
 use App\Http\Requests\ClinicianRequestAcceptRequest;
 use App\Http\Requests\PatientRequestAcceptRequest;
 use App\Models\CCMReading;
+use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
@@ -55,10 +56,11 @@ class PatientRequestController extends Controller
             $patient->longitude = $request->longitude;
             $patient->reason = $request->reason;
             if ($patient->save()){
+                $clinicianList = User::where([['type','=','clinician'],['is_available','=','1']])->get();
                 $data=PatientRequest::with('detail')
                     ->where('id','=',$patient->id)
                     ->first();
-                event(new SendClinicianPatientRequestNotification($data));
+                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
                 return $this->generateResponse(true,'Add Request Successfully!');
             }
             return $this->generateResponse(false,'Something Went Wrong!');
@@ -153,6 +155,18 @@ class PatientRequestController extends Controller
             }
             $patient->clincial_id=$request->user_id;
             if ($patient->save()){
+                $users = User::find($request->user_id);
+                $users->is_available = 2;
+                $users->save();
+
+                $roadlInformation = new RoadlInformation();
+                $roadlInformation->user_id = $patient->user_id;
+                $roadlInformation->patient_requests_id = $patient->id;
+                $roadlInformation->client_id = $request->user_id;
+                $roadlInformation->latitude = $request->latitude;
+                $roadlInformation->longitude = $request->longitude;
+                $roadlInformation->status = "start";
+                $roadlInformation->save();
 
                 $clinician=User::where(['id'=>$patient->user_id,'type'=>'clinician'])->first();
 
@@ -174,7 +188,10 @@ class PatientRequestController extends Controller
     }
 
     public function clinicianPatientRequestList(Request $request){
-        $patientRequestList = PatientRequest::with('detail')->where('is_active','=','1')->get();
+        $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail')
+            ->where('is_active','=','1')
+            ->orderBy('id','desc')
+            ->get();
         if (count($patientRequestList)>0){
             return $this->generateResponse(true,'Patient Request List',$patientRequestList,200);
         }
@@ -183,8 +200,8 @@ class PatientRequestController extends Controller
 
     public function sendNexmoMessage($userDetails,$type){
         $from = "12089104598";
-        $to = "5166000122";
-//        $to = "9293989855";
+        //$to = "5166000122";
+        $to = "9293989855";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
@@ -213,7 +230,7 @@ class PatientRequestController extends Controller
         }
 
     }
-    public function sendNexmoMessageForGluco($userDetails,$type){
+    public function sendNexmoMessageForGluco($userDetails,$type) {
         if($type == 3) {
             $le = 'lower';
         }else {

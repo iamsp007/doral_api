@@ -11,4 +11,9 @@ class RoadlInformation extends Model
 
     protected $table='roadl_information';
     protected $primaryKey='id';
+
+    public function user(){
+
+        return $this->hasOne(User::class,'id','user_id');
+    }
 }
