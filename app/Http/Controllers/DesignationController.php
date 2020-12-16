@@ -15,6 +15,21 @@ class DesignationController extends Controller
     public function index()
     {
         //
+        $data = array();
+        try {
+            
+            $designation = designation::all()->toArray();
+            if (!$designation) {
+                throw new Exception("No designation are registered");
+            }
+            $data = [
+                'designation' => $designation
+            ];
+            return $this->generateResponse(true, 'designation listing!', $data);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
+        }
     }
 
     /**

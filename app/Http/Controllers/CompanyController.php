@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\company;
+use App\Models\Company;
 use Illuminate\Http\Request;
-use App\Models\referral;
+use App\Models\Referral;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -16,11 +16,19 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
         $data = array();
         try {
-            $companies = company::all()->toArray();
+            if($id == 1)
+            $companies = Company::where('status', '0')->get();
+            else if($id == 2)
+            $companies = Company::where('status', '1')->get();
+            else if($id == 3)
+            $companies = Company::where('status', '3')->get();
+            else
+            $companies = Company::all()->toArray();
+
             if (!$companies) {
                 throw new Exception("No Companies are registered");
             }
@@ -58,27 +66,27 @@ class CompanyController extends Controller
         try {
             //Post data
             $request = json_decode($request->getContent(), true);
-            $company = $request['data'];
-            // check name and email for company
-            $companyMatch = ['name' => $company['name'], 'email' => $company['email']];
-            $companyData = company::where($companyMatch)->first();
-            if ($companyData) {
+            $Company = $request['data'];
+            // check name and email for Company
+            $CompanyMatch = ['name' => $Company['name'], 'email' => $Company['email']];
+            $CompanyData = Company::where($CompanyMatch)->first();
+            if ($CompanyData) {
                 throw new Exception("Company already in available");
             }
             $data = array(
-                'name' => $company['name'],
-                'referal_id' => $company['referral_id'],
-                'email' => $company['email'],
+                'name' => $Company['name'],
+                'referal_id' => $Company['referral_id'],
+                'email' => $Company['email'],
                 'status' => 'Pending',
                 'password' => Hash::make('test123')
             );
-            $id = company::insert($data);
+            $id = Company::insert($data);
             if ($id) {
                 $status = true;
                 $message = 'Company store properly';
             }
             $data = [
-                'company_id' => $id
+                'Company_id' => $id
             ];
             return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
@@ -102,19 +110,19 @@ class CompanyController extends Controller
         try {
             //Post data
             $request = json_decode($request->getContent(), true);
-            $company = $request['data'];
-            // check name and email for company
-            $companyMatch = ['email' => $company['email']];
-            $companyData = company::where($companyMatch)->first();
-            if ($companyData) {
+            $Company = $request['data'];
+            // check name and email for Company
+            $CompanyMatch = ['email' => $Company['email']];
+            $CompanyData = Company::where($CompanyMatch)->first();
+            if ($CompanyData) {
                 //Check Password eith existing password
-                $chkPassword = Hash::check($company['password'], $companyData->password);
+                $chkPassword = Hash::check($Company['password'], $CompanyData->password);
                 if (!$chkPassword) {
                     throw new Exception("Company email / password not match");
                 }
-                $companyMatch['status'] = 'Active';
-                $companyData = company::where($companyMatch)->first();
-                if ($companyData) {
+                $CompanyMatch['status'] = 'Active';
+                $CompanyData = Company::where($CompanyMatch)->first();
+                if ($CompanyData) {
                     $status = true;
                     $message = "Welcome in Doral";
                 } else {
@@ -124,7 +132,7 @@ class CompanyController extends Controller
                 throw new Exception("Company not available");
             }
             $data = [
-                'company' => $companyData
+                'Company' => $CompanyData
             ];
             $status = true;
             $message = $message;
@@ -152,10 +160,10 @@ class CompanyController extends Controller
 
         //Post data
         $request = json_decode($request->getContent(), true);
-        $company = $request['data'];
-        // check name and email for company
-        $companyMatch = ['email' => $company['email'], 'password' => $company['password']];
-        if (!Auth::guard('company')->attempt($companyMatch))
+        $Company = $request['data'];
+        // check name and email for Company
+        $CompanyMatch = ['email' => $Company['email'], 'password' => $Company['password']];
+        if (!Auth::guard('Company')->attempt($CompanyMatch))
             return response()->json([
                 'message' => 'Unauthorized'
             ], 401);
@@ -181,21 +189,21 @@ class CompanyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\company  $company
+     * @param  \App\Models\Company  $Company
      * @return \Illuminate\Http\Response
      */
-    public function show(company $company)
+    public function show(Company $Company)
     {
         $status = 0;
         $data = [];
         $message = 'Something wrong';
         try {
-            $company = company::find($company);
-            if (!$company) {
+            $Company = Company::find($Company);
+            if (!$Company) {
                 throw new Exception("Company information is not found");
             }
             $data = [
-                'company' => $company
+                'Company' => $Company
             ];
             $status = true;
             $message = "Compnay information";
@@ -210,21 +218,21 @@ class CompanyController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\company  $company
+     * @param  \App\Models\Company  $Company
      * @return \Illuminate\Http\Response
      */
-    public function edit(company $company)
+    public function edit(Company $Company)
     {
         $status = 0;
         $data = [];
         $message = 'Something wrong';
         try {
-            $company = company::find($company);
-            if (!$company) {
+            $Company = Company::find($Company);
+            if (!$Company) {
                 throw new Exception("Company information is not found");
             }
             $data = [
-                'company' => $company
+                'Company' => $Company
             ];
             $status = true;
             $message = "Compnay information";
@@ -240,19 +248,19 @@ class CompanyController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\company  $company
+     * @param  \App\Models\Company  $Company
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, company $company)
+    public function update(Request $request, Company $Company)
     {
         $status = 0;
         $data = [];
         $message = 'Something wrong';
         try {
-            $company = company::findOrFail($company);
-            $company = $company->update($request->all());
+            $Company = Company::findOrFail($Company);
+            $Company = $Company->update($request->all());
             $data = [
-                'company' => $company
+                'Company' => $Company
             ];
             $status = true;
             $message = "Compnay updated Succesfully";
@@ -267,20 +275,20 @@ class CompanyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\company  $company
+     * @param  \App\Models\Company  $Company
      * @return \Illuminate\Http\Response
      */
-    public function destroy(company $company)
+    public function destroy(Company $Company)
     {
-        $company = company::findOrFail($company);
-        $company->delete();
+        $Company = Company::findOrFail($Company);
+        $Company->delete();
 
         return response()->json(null, 204);
     }
 
 
     /**
-     * update company profile save
+     * update Company profile save
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -294,39 +302,39 @@ class CompanyController extends Controller
         try {
             //Post data
             $request = json_decode($request->getContent(), true);
-            $company = $request['data'];
-            $url = request()->getHttpHost() . "/api/company/resetpassword?email=" . urlencode($company['email']);
+            $Company = $request['data'];
+            $url = request()->getHttpHost() . "/api/Company/resetpassword?email=" . urlencode($Company['email']);
 
             // Need to understand all validation
             // Check Phone
-            if (isset($company['phone']) && !empty($company['phone'])) {
+            if (isset($Company['phone']) && !empty($Company['phone'])) {
             } else {
                 throw new Exception("phone required");
             }
 
             $data = array(
-                'name' => isset($company['name']) ? $company['name'] : '',
-                'address1' => isset($company['address1']) ? $company['address1'] : '',
-                'address2' => isset($company['address2']) ? $company['address2'] : '',
-                'zip' => isset($company['zip']) ? $company['zip'] : '',
-                'email' => $company['email'],
-                'phone' => isset($company['phone']) ? $company['phone'] : '',
-                'npi' => isset($company['npi']) ? $company['npi'] : '',
-                'np_id' => isset($company['np_id']) ? $company['np_id'] : 1,
-                'referal_id' => $company['referal_id'],
-                'password' => Hash::make($company['password']),
-                'verification_comment' => isset($company['verification_comment']) ? $company['verification_comment'] : ''
+                'name' => isset($Company['name']) ? $Company['name'] : '',
+                'address1' => isset($Company['address1']) ? $Company['address1'] : '',
+                'address2' => isset($Company['address2']) ? $Company['address2'] : '',
+                'zip' => isset($Company['zip']) ? $Company['zip'] : '',
+                'email' => $Company['email'],
+                'phone' => isset($Company['phone']) ? $Company['phone'] : '',
+                'npi' => isset($Company['npi']) ? $Company['npi'] : '',
+                'np_id' => isset($Company['np_id']) ? $Company['np_id'] : 1,
+                'referal_id' => $Company['referal_id'],
+                'password' => Hash::make($Company['password']),
+                'verification_comment' => isset($Company['verification_comment']) ? $Company['verification_comment'] : ''
             );
-            $updateRecord = company::where('id', $company['company_id'])
+            $updateRecord = Company::where('id', $Company['Company_id'])
                 ->update($data);
             if ($updateRecord) {
                 // Send Email with Email Template and url
-                $url = request()->getHttpHost() . "/api/company/resetpassword?email=" . urlencode($company['email']);
+                $url = request()->getHttpHost() . "/api/Company/resetpassword?email=" . urlencode($Company['email']);
                 $status = true;
                 $message = 'Profile Updated successfully';
             }
             $data = [
-                'company_id' => $updateRecord
+                'Company_id' => $updateRecord
             ];
             return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
@@ -339,7 +347,7 @@ class CompanyController extends Controller
     /**
      * Send email for reset password process
      *
-     * @param  \App\Models\company  $company
+     * @param  \App\Models\Company  $Company
      * @return \Illuminate\Http\Response
      */
     public function resetPassword(Request $request)
@@ -349,12 +357,12 @@ class CompanyController extends Controller
         try {
             //Post data
             $request = json_decode($request->getContent(), true);
-            $company = $request['data'];
+            $Company = $request['data'];
 
             // Email address
-            $companyMatch = ['email' => $company['email']];
-            $companyData = company::where($companyMatch)->first();
-            if (!$companyData) {
+            $CompanyMatch = ['email' => $Company['email']];
+            $CompanyData = Company::where($CompanyMatch)->first();
+            if (!$CompanyData) {
                 throw new Exception("Company not available");
             }
 
@@ -387,23 +395,23 @@ class CompanyController extends Controller
         try {
             //Post data
             $request = json_decode($request->getContent(), true);
-            $company = $request['data'];
+            $Company = $request['data'];
 
             // Email address
-            $companyMatch = ['email' => $company['email']];
-            $companyData = company::where($companyMatch)->first();
-            if (!$companyData) {
+            $CompanyMatch = ['email' => $Company['email']];
+            $CompanyData = Company::where($CompanyMatch)->first();
+            if (!$CompanyData) {
                 throw new Exception("Company not available");
             }
 
-            if ($company['password'] != $company['confirm_password']) {
+            if ($Company['password'] != $Company['confirm_password']) {
                 throw new Exception("Password not match");
             }
-            $password = md5($company['password']);
+            $password = md5($Company['password']);
             $data = array(
                 'password' => $password
             );
-            $updateRecord = company::where('email', $company['email'])
+            $updateRecord = Company::where('email', $Company['email'])
                 ->update($data);
             if ($updateRecord) {
                 $status = 1;
@@ -423,40 +431,39 @@ class CompanyController extends Controller
     }
 
     /**
-     * update company status
+     * update Company status
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function updateStatus(Request $request)
     {
+        //echo "1";
         $status = 0;
         $data = array();
         $message = 'Something wrong';
         try {
             //Post data
             $request = json_decode($request->getContent(), true);
-            $company = $request['data'];
+            $Company = $request['data'];
 
-            // Check status
-            /*$checkStatus = ["Approve", "Reject", "Pending", "Active"];
-            if (!in_array($company['status'], $checkStatus)) {
-                throw new Exception("Something wrong in Status");
-            }*/
+
             $data = array(
-                'status' => $company['status']
+                'status' => $Company['status']
             );
-            $updateRecord = company::where('id', $company['company_id'])
+
+            $updateRecord = Company::where('id', $Company['Company_id'])
                 ->update($data);
             if ($updateRecord) {
                 $status = true;
                 $message = 'Status updated';
             }
             $data = [
-                'company_id' => $updateRecord
+                'Company_id' => $updateRecord
             ];
             return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
+            //dd($e);
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);

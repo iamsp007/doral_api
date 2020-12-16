@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +31,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+//    protected $dateFormat='m/d/Y';
+//
+//    protected $dates = [ 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
@@ -61,9 +66,8 @@ class User extends Authenticatable
                 'status' => $status,
                 'message' => $e->getMessage()
             ];
-            return $response;            
+            return $response;
         }
-        
     }
     /**
      * Insert the User data from the Employee / Patient
@@ -76,8 +80,35 @@ class User extends Authenticatable
             return $data->id;
         } catch (\Exception $e) {
             report($e);
-            echo $e->getMessage();exit;
+            echo $e->getMessage();
+            exit;
             return false;
         }
     }
+    /**
+     * Insert the User data from the Employee / Patient
+     *
+     */
+    public static function gethUserUsingEmail($email)
+    {
+        try {
+            $data = User::select('id', 'first_name', 'last_name', 'password')
+                ->where('email', $email)
+                ->first();
+            return $data;
+        } catch (\Exception $e) {
+            report($e);
+            return false;
+        }
+    }
+
+    public static function getUserDetails($userId)
+    {
+        $user = User::select('first_name', 'last_name', 'id', 'type')
+                ->Where(function ($query) use ($userId) {
+                    $query->where('id', $userId);
+                })->first();
+        return $user;
+    }
+
 }

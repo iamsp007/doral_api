@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Services;
+use Exception;
 use Illuminate\Http\Request;
 
 class ServicesController extends Controller
@@ -14,7 +15,25 @@ class ServicesController extends Controller
      */
     public function index()
     {
-        //
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $services = Services::all();
+            if (!$services) {
+                throw new Exception("No Services are found into database");
+            }
+            $data = [
+                'services' => $services
+            ];
+            $status = true;
+            $message = "services List";
+            return response()->json([$status, $message, $data]);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**
@@ -35,7 +54,20 @@ class ServicesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request = json_decode($request->getContent(), true);
+            $service = Services::insert($request);
+            $data = [
+                'service' => $service
+            ];
+            $status = true;
+            $message = "service Inserted successfully";
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**
@@ -67,9 +99,28 @@ class ServicesController extends Controller
      * @param  \App\Models\Services  $services
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Services $services)
+    public function update(Request $request, $services)
     {
-        //
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $request = json_decode($request->getContent(), true);
+            $services = Services::setServices($services, $request);
+            if (!$services) {
+                throw new Exception("Error in update the services");
+            }
+            $data = [
+                'services' => $services
+            ];
+            $status = true;
+            $message = "Services updated Succesfully";
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**
