@@ -27,8 +27,8 @@ class AddEmailToPatientReferralsTable extends Migration
     public function down()
     {
         Schema::table('patient_referrals', function (Blueprint $table) {
-            $table->string('email')->nullable();
-            $table->integer('user_id')->nullable();
+            $table->dropColumn('email');
+            $table->dropColumn('user_id');
         });
     }
 }

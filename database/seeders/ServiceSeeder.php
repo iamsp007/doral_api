@@ -14,6 +14,11 @@ class ServiceSeeder extends Seeder
      */
     public function run()
     {
-
+        $data = array('VBC','MD Order','Occupational Health','Telehealth','roadL');
+        foreach ($data as $datum) {
+            $serviceModel = new ServiceMaster();
+            $serviceModel->name = $datum;
+            $serviceModel->save();
+        }
     }
 }
