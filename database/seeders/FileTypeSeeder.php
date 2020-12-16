@@ -14,6 +14,12 @@ class FileTypeSeeder extends Seeder
      */
     public function run()
     {
-
+// File type seeder
+        $filetypes = array('Demographic','Clinical','COMPLIANCE DUE DATES','PREVIOUS MD ORDER');
+        foreach ($filetypes as $fvalue) {
+            $filetypesModel = new FileTypeMaster();
+            $filetypesModel->name = $fvalue;
+            $filetypesModel->save();
+        }
     }
 }
