@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Helper;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,9 @@ class Cors
                     'Content-Type, Authorization, X-Requested-With, X-XSRF-TOKEN');
         }
 
-        return response()->json(['message'=>'Forbbiden'],403);
+        $helper = new Helper();
+
+        return $helper->generateResponse(false,'Forbbiden',null,403);
 
     }
 }

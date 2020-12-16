@@ -15,20 +15,18 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->enum('gender', ['male', 'female']);
+            $table->string('first_name',30);
+            $table->string('last_name',30);
+            $table->enum('gender', ['1', '2','3'])->comment('1=male,2=female,3=other');
             $table->date('dob');
-            $table->bigInteger('phone')->unique();
-            $table->enum('type', ['employee', 'patient', 'admin'])->comment('If user is Patient: patient, Employee:employee');
-            $table->string('email')->unique();
+            $table->bigInteger('phone')->nullable()->unique();
+            $table->string('email',50)->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('status', ['active', 'inactive', 'applicant', 'employee']);
+            $table->enum('status', ['0', '1', '2', '3'])->default('0')->comment('0=pending,1=active,2=inactive,3=reject');
             $table->rememberToken();
-            $table->enum('level', ['easy', 'hard']);
-            $table->timestamps();           
-        });        
+            $table->timestamps();
+        });
     }
 
     /**

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\patientReferral;
+use App\Models\PatientReferral;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Exception;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class PatientReferralController extends Controller
 {
@@ -12,9 +16,23 @@ class PatientReferralController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $data = array();
+        try {
+            $patientReferral = patientReferral::where('service_id', $id)
+            ->get();
+            if (!$patientReferral) {
+                throw new Exception("No Referance Patients are registered");
+            }
+            $data = [
+                'patientReferral' => $patientReferral
+            ];
+            return $this->generateResponse(true, 'Referance Patients!', $data);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
+        }
     }
 
     /**
@@ -39,19 +57,31 @@ class PatientReferralController extends Controller
         $delimiter = ",";
         $message = 'Something wrong';
         try {
-            //Post data
-            $request = json_decode($request->getContent(), true);
-            $csvData = $request['data'];
-            $filename = $csvData['file_name'];
+            $csvData = $request;
+
+            if ($request->hasFile('file_name')) {
+                // Get filename with the extension
+                $filenameWithExt = $request->file('file_name')->getClientOriginalName();
+                //Get just filename
+                $filename =  preg_replace("/[^a-z0-9\_\-\.]/i", '_',pathinfo($filenameWithExt, PATHINFO_FILENAME));
+                // Get just ext
+                $extension = $request->file('file_name')->getClientOriginalExtension();
+                // Filename to store
+                $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+                // Upload Image
+                $path = $request->file('file_name')->storeAs('csv', $fileNameToStore);
+                //dd($path);
+                //$user->avatar = $fileNameToStore;
+                //$user->save();
+            }
 
             // Get data from CSV
-            $filename = public_path('csv') . "/" . $filename;
-            if (!file_exists($filename) || !is_readable($filename))
-                throw new \ErrorException('Error file not found ');
-
+            if (!\Storage::disk('local')->exists($path))
+                throw new \ErrorException('File not found');
+            $filePath = storage_path('app/'.$path);
             $header = null;
             $patients = array();
-            if (($handle = fopen($filename, 'r')) !== false) {
+            if (($handle = fopen($filePath, 'r')) !== false) {
                 while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
                     if (!$header)
                         $header = $row;
@@ -60,45 +90,79 @@ class PatientReferralController extends Controller
                 }
                 fclose($handle);
             }
-            
+            $patients = array_filter($patients);
+            $patients = array_values($patients);
             foreach ($patients as $patient) {
-                $data = array(
-                    'referral_id' => $csvData['referral_id'],
-                    'first_name' => $patient['First Name'],
-                    'middle_name' => $patient['Middle Name'],
-                    'last_name' => $patient['Last Name'],
-                    'dob' => date('yy-m-d', strtotime($patient['DOB'])),
-                    'gender' => $patient['Gender'],
-                    'patient_id' => $patient['Patient ID'],
-                    'medicaid_number' => $patient['Medicaid Number'],
-                    'medicare_number' => $patient['Medicare Number'],
-                    'ssn' => $patient['SSN#'],
-                    'start_date' => date('yyyy-mm-dd', strtotime($patient['Start Date'])),
-                    'from_date' => date('yyyy-mm-dd', strtotime($patient['From Date'])),
-                    'to_date' => date('yyyy-mm-dd', strtotime($patient['To Date'])),
-                    'address_1' => $patient['Address Line 1'],
-                    'address_2' => $patient['Address Line 2'],
-                    'city' => $patient['City'],
-                    'state' => $patient['State'],
-                    'county' => $patient['County'],
-                    'Zip' => $patient['Zip'],
-                    'phone1' => $patient['Home Phone'],
-                    'phone2' => $patient['Home Phone 2'],
-                    'eng_name' => $patient['emg Name'],
-                    'eng_addres' => $patient['Address1'],
-                    'emg_phone' => $patient['Phone 1'],
-                    'emg_relationship' => $patient['Relationship'],
-                );
-                $id = patientReferral::insert($data);
+                \Log::info($csvData);
+                if($patient['SSN'] != '') {
+
+                    try {
+                    // User Add
+                    $user = new User;
+                    $user->first_name = isset($patient['First Name']) ? $patient['First Name'] : NULL;
+                    $user->last_name = isset($patient['Last Name']) ? $patient['Last Name'] : NULL;
+                    $user->email = isset($patient['email']) ? $patient['email'] : NULL;
+                    $user->password = Hash::make('test123');
+                    $user->dob = isset($patient['Date of Birth']) ? date('yy-m-d', strtotime($patient['Date of Birth'])) : NULL;
+                    if(isset($patient['Home Phone']) && !empty($patient['Home Phone'])) {
+                        $user->phone = str_replace('-', '', $patient['Home Phone']);
+                    } elseif(isset($patient['Phone2']) && !empty($patient['Phone2'])) {
+                        $user->phone = str_replace('-', '', $patient['Phone2']);
+                    }
+                    $user->assignRole('patient')->syncPermissions(Permission::all());
+                    $user->save();
+
+                    $userId = $user->id;
+                    //dd($userId);
+
+                    $data = array(
+                        'referral_id' => $csvData['referral_id'],
+                        'service_id' => $csvData['service_id'],
+                        'file_type' => $csvData['file_type'],
+                        'form_id' => isset($csvData['form_id']) ? $csvData['form_id'] : NULL,
+                        'user_id' => $userId,
+                        'first_name' => isset($patient['First Name']) ? $patient['First Name'] : NULL,
+                        'middle_name' => isset($patient['Middle Name']) ? $patient['Middle Name'] : NULL,
+                        'last_name' => isset($patient['Last Name']) ? $patient['Last Name'] : NULL,
+                        'dob' => isset($patient['Date of Birth']) ? date('yy-m-d', strtotime($patient['Date of Birth'])) : NULL,
+                        'gender' => isset($patient['Gender']) ? $patient['Gender'] : NULL,
+                        'patient_id' => isset($patient['Patient ID']) ? $patient['Patient ID'] : NULL,
+                        'medicaid_number' => isset($patient['Medicaid Number']) ? $patient['Medicaid Number'] : NULL,
+                        'medicare_number' => isset($patient['Medicare Number']) ? $patient['Medicare Number'] : NULL,
+                        'ssn' => $patient['SSN'],
+                        'start_date' => isset($patient['Hire Date']) ? date('yy-m-d', strtotime($patient['Hire Date'])) : NULL,
+                        'from_date' => isset($patient['From Date']) ? date('yy-m-d', strtotime($patient['From Date'])) : NULL,
+                        'to_date' => isset($patient['To Date']) ? date('yy-m-d', strtotime($patient['To Date'])) : NULL,
+                        'address_1' => isset($patient['Street1']) ? $patient['Street1'] : NULL,
+                        'address_2' => isset($patient['Address Line 2']) ? $patient['Address Line 2'] : NULL,
+                        'city' => isset($patient['City']) ? $patient['City'] : NULL,
+                        'state' => isset($patient['State']) ? $patient['State'] : NULL,
+                        'county' => isset($patient['Country of Birth']) ? $patient['Country of Birth'] : NULL,
+                        'Zip' => isset($patient['Zip Code']) ? $patient['Zip Code'] : NULL,
+                        'phone1' => isset($patient['Home Phone']) ? $patient['Home Phone'] : NULL,
+                        'phone2' => isset($patient['Phone2']) ? $patient['Phone2'] : NULL,
+                        'email' => isset($patient['Email']) ? $patient['Email'] : NULL,
+                        'eng_name' => isset($patient['emg Name']) ? $patient['emg Name'] : NULL,
+                        'eng_addres' => isset($patient['Address1']) ? $patient['Address1'] : NULL,
+                        'emg_phone' => isset($patient['Phone 1']) ? $patient['Phone 1'] : NULL,
+                        'emg_relationship' => isset($patient['Marital Status']) ? $patient['Marital Status'] : NULL,
+                    );
+
+                    $id = patientReferral::insert($data);
+                    }
+                    catch(Exception $e) {
+//                        echo $e->getMessage()."<br>";
+                    }
+                }
             }
-            
+
             if ($id) {
                 $status = 1;
-                $message = 'Company store properly';
+                $message = 'CSV Uploaded successfully';
             }
         } catch (\Exception $e) {
             $status = 0;
-            $message = $e->getMessage(). $e->getLine();
+            $message = $e->getMessage() . $e->getLine();
         }
 
         $response = [
@@ -112,10 +176,10 @@ class PatientReferralController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\patientReferral  $patientReferral
+     * @param  \App\Models\PatientReferral  $PatientReferral
      * @return \Illuminate\Http\Response
      */
-    public function show(patientReferral $patientReferral)
+    public function show(PatientReferral $PatientReferral)
     {
         //
     }
@@ -123,10 +187,10 @@ class PatientReferralController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\patientReferral  $patientReferral
+     * @param  \App\Models\PatientReferral  $PatientReferral
      * @return \Illuminate\Http\Response
      */
-    public function edit(patientReferral $patientReferral)
+    public function edit(PatientReferral $PatientReferral)
     {
         //
     }
@@ -135,10 +199,10 @@ class PatientReferralController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\patientReferral  $patientReferral
+     * @param  \App\Models\PatientReferral  $PatientReferral
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, patientReferral $patientReferral)
+    public function update(Request $request, PatientReferral $PatientReferral)
     {
         //
     }
@@ -146,10 +210,10 @@ class PatientReferralController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\patientReferral  $patientReferral
+     * @param  \App\Models\PatientReferral  $PatientReferral
      * @return \Illuminate\Http\Response
      */
-    public function destroy(patientReferral $patientReferral)
+    public function destroy(PatientReferral $PatientReferral)
     {
         //
     }

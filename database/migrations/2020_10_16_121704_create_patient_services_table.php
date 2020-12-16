@@ -17,11 +17,11 @@ class CreatePatientServicesTable extends Migration
             $table->id();
             $table->foreignId('patient_id')->index('patient_id');
             $table->foreignId('service_id')->index('service_id');
-            $table->foreignId('company_id')->index('compnay_id');
-            $table->foreignId('employee_id')->index('employee_id');
-            $table->string('comment');            
-            $table->dateTime('request_date');
-            $table->enum('status', ['active', 'rejected', 'accept']);
+            $table->foreignId('company_id')->nullable();;
+            $table->foreignId('employee_id')->nullable();;
+            $table->string('comment')->nullable();;            
+            $table->dateTime('request_date')->nullable();;
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
     }

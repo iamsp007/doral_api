@@ -29,7 +29,8 @@ class CreatePatientsTable extends Migration
             $table->date('date_of_examination')->nullable();
             $table->string('condition_state', 30)->default('NULL');
             $table->string('cin_no', 12)->default('NULL');
-            $table->string('medicaid_number', 12)->nullable();
+            $table->string('service_key', 12)->default('NULL');
+            $table->string('medicaid_number', 50)->nullable();
             $table->string('medicare_number', 12)->nullable();
             $table->foreignId('user_id')->index('user_id');
             $table->string('emg_first_name', 50)->nullable();
