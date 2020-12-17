@@ -8,6 +8,9 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
+use Excel;
+use App\Imports\BulkImport;
+use App\Imports\BulkCertImport;
 
 class PatientReferralController extends Controller
 {
@@ -59,6 +62,16 @@ class PatientReferralController extends Controller
         try {
             $csvData = $request;
 
+            $folder = "csv";
+            if($csvData['file_type'] == 1) {
+                $folder = "demographic";
+            } elseif ($csvData['file_type'] == 2) {
+                $folder = "clinical";
+            } elseif ($csvData['file_type'] == 3) {
+                $folder = "compliance_due";
+            } elseif ($csvData['file_type'] == 4) {
+                $folder = "previous_md";
+            }
             if ($request->hasFile('file_name')) {
                 // Get filename with the extension
                 $filenameWithExt = $request->file('file_name')->getClientOriginalName();
@@ -69,14 +82,22 @@ class PatientReferralController extends Controller
                 // Filename to store
                 $fileNameToStore = $filename . '_' . time() . '.' . $extension;
                 // Upload Image
-                $path = $request->file('file_name')->storeAs('csv', $fileNameToStore);
+                $path = $request->file('file_name')->storeAs($folder, $fileNameToStore);
                 //dd($path);
                 //$user->avatar = $fileNameToStore;
                 //$user->save();
             }
+            $filePath = storage_path('app/'.$path);
 
+            $data = Excel::import(new BulkImport(
+                    $csvData['referral_id'], 
+                    $csvData['service_id'],
+                    $csvData['file_type'],
+                    $csvData['form_id']
+                ), $filePath);
+            //dd($data);
             // Get data from CSV
-            if (!\Storage::disk('local')->exists($path))
+            /*if (!\Storage::disk('local')->exists($path))
                 throw new \ErrorException('File not found');
             $filePath = storage_path('app/'.$path);
             $header = null;
@@ -91,8 +112,8 @@ class PatientReferralController extends Controller
                 fclose($handle);
             }
             $patients = array_filter($patients);
-            $patients = array_values($patients);
-            foreach ($patients as $patient) {
+            $patients = array_values($patients);*/
+            /*foreach ($patients as $patient) {
                 \Log::info($csvData);
                 if($patient['SSN'] != '') {
 
@@ -154,12 +175,79 @@ class PatientReferralController extends Controller
 //                        echo $e->getMessage()."<br>";
                     }
                 }
-            }
+            }*/
 
-            if ($id) {
+            //if ($id) {
                 $status = 1;
                 $message = 'CSV Uploaded successfully';
+            //}
+        } catch (\Exception $e) {
+            $status = 0;
+            $message = $e->getMessage() . $e->getLine();
+        }
+
+        $response = [
+            'status' => $status,
+            'message' => $message
+        ];
+
+        return response()->json($response, 201);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeCertDate(Request $request)
+    {
+        $status = 0;
+        $delimiter = ",";
+        $message = 'Something wrong';
+        try {
+            $csvData = $request;
+
+            $folder = "csv";
+            if($csvData['file_type'] == 1) {
+                $folder = "demographic";
+            } elseif ($csvData['file_type'] == 2) {
+                $folder = "clinical";
+            } elseif ($csvData['file_type'] == 3) {
+                $folder = "compliance_due";
+            } elseif ($csvData['file_type'] == 4) {
+                $folder = "previous_md";
             }
+            if ($request->hasFile('file_name')) {
+                // Get filename with the extension
+                $filenameWithExt = $request->file('file_name')->getClientOriginalName();
+                //Get just filename
+                $filename =  preg_replace("/[^a-z0-9\_\-\.]/i", '_',pathinfo($filenameWithExt, PATHINFO_FILENAME));
+                // Get just ext
+                $extension = $request->file('file_name')->getClientOriginalExtension();
+                // Filename to store
+                $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+                // Upload Image
+                $path = $request->file('file_name')->storeAs($folder, $fileNameToStore);
+                //dd($path);
+                //$user->avatar = $fileNameToStore;
+                //$user->save();
+            }
+
+            $filePath = storage_path('app/'.$path);
+
+            $data = Excel::import(new BulkCertImport(
+                    $csvData['referral_id'], 
+                    $csvData['service_id'],
+                    $csvData['file_type'],
+                    $csvData['form_id']
+                ), $filePath);
+            
+            dd($data);
+            //if ($id) {
+                $status = 1;
+                $message = 'CSV Uploaded successfully';
+            //}
         } catch (\Exception $e) {
             $status = 0;
             $message = $e->getMessage() . $e->getLine();
