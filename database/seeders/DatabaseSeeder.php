@@ -17,17 +17,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'admin']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'co-ordinator']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'supervisor']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'clinician']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'patient']);
-//        $role = Role::create(['guard_name' => 'referral', 'name' => 'referral']);
-//
-//        $this->call(
-//            AdminSeeder::class,
-//            DiesesMasterSeeder::class,
-//        );
+        $role = Role::create(['guard_name' => 'web', 'name' => 'admin']);
+        $role = Role::create(['guard_name' => 'web', 'name' => 'co-ordinator']);
+        $role = Role::create(['guard_name' => 'web', 'name' => 'supervisor']);
+        $role = Role::create(['guard_name' => 'web', 'name' => 'clinician']);
+        $role = Role::create(['guard_name' => 'web', 'name' => 'patient']);
+        $role = Role::create(['guard_name' => 'referral', 'name' => 'referral']);
+
+        $this->call(
+            AdminSeeder::class,
+            DiesesMasterSeeder::class
+        );
 
         // File type seeder
         $filetypes = array('Demographic','Clinical','COMPLIANCE DUE DATES','PREVIOUS MD ORDER');
