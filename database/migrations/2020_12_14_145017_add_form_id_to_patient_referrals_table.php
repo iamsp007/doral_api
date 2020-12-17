@@ -26,7 +26,7 @@ class AddFormIdToPatientReferralsTable extends Migration
     public function down()
     {
         Schema::table('patient_referrals', function (Blueprint $table) {
-            $table->integer('form_id')->nullable();
+            $table->dropColumn('form_id');
         });
     }
 }
