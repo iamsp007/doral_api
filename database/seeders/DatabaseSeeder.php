@@ -24,10 +24,10 @@ class DatabaseSeeder extends Seeder
         $role = Role::create(['guard_name' => 'web', 'name' => 'patient']);
         $role = Role::create(['guard_name' => 'referral', 'name' => 'referral']);
       
-        $this->call(
-            AdminSeeder::class,
-            DiesesMasterSeeder::class
-        );
+//        $this->call(
+//            AdminSeeder::class,
+//            DiesesMasterSeeder::class
+//        );
 
         // File type seeder
         $filetypes = array('Demographic','Clinical','COMPLIANCE DUE DATES','PREVIOUS MD ORDER');
