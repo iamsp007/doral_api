@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFormsTable extends Migration
+class CreateMdformsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateFormsTable extends Migration
      */
     public function up()
     {
-        Schema::create('forms', function (Blueprint $table) {
+        Schema::create('md_forms', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
-            $table->string('comment', 250);
-            $table->enum('status', ['active', 'inactive']);
+            $table->string('name',50)->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateFormsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('forms');
+        Schema::dropIfExists('md_forms');
     }
 }
