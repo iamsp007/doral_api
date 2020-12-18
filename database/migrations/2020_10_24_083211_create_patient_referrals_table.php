@@ -19,7 +19,7 @@ class CreatePatientReferralsTable extends Migration
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('last_name');
-            $table->date('dob');
+            $table->date('dob')->nullable();
             $table->string('gender')->nullable();
             $table->string('patient_id', 20)->nullable();
             $table->string('medicaid_number')->nullable();

@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Http\Requests\UpdateDeviceTokenRequest;
 use App\Models\User;
+use App\Models\VirtualRoom;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,6 +15,8 @@ use App\Models\referral;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use OpenTok\MediaMode;
+use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
@@ -79,12 +82,37 @@ class AuthController extends Controller
         //        $user->hasPermissionTo('Create', 'web');
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()){
+            if ($request->type==='clinician'){
+                $this->createRoom($user);
+            }
             return $this->generateResponse(true, 'Registration Successfully!', $user,200);
         }
         return $this->generateResponse(false, 'Something Went Wrong!', [
             'message' => 'Invalid Daata'
         ],200);
 
+    }
+
+    public function createRoom($user){
+        try {
+            // Instantiate a new OpenTok object with our api key & secret
+            $opentok = new OpenTok(env('VONAGE_API_KEY'), env('VONAGE_API_SECRET'));
+
+            // Creates a new session (Stored in the Vonage API cloud)
+            $session = $opentok->createSession(array('mediaMode' => MediaMode::RELAYED));
+
+            // Create a new virtual class that would be stored in db
+            $class = new VirtualRoom();
+            // Generate a name based on the name the teacher entered
+            $class->name = 'Dr. '.$user->first_name . " " . $user->last_name . " Room - ".$user->id;
+            // Store the unique ID of the session
+            $class->user_id = $user->id;
+            $class->session_id = $session->getSessionId();
+            // Save this class as a relationship to the teacher
+            $user->myRoom()->save($class);
+        }catch (\Exception $exception){
+
+        }
     }
 
     public function logout(Request $request)

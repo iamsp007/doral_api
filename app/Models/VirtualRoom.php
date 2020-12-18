@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceMaster extends Model
+class VirtualRoom extends Model
 {
     use HasFactory;
 
-    protected $table='services_master';
+    protected $table='virtual_room';
+    protected $primaryKey='id';
 }

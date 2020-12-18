@@ -105,6 +105,7 @@ Route::group([
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
+    Route::post('create-virtual-room', 'App\Http\Controllers\SessionsController@createRoom');
 });
 
 // Referral
