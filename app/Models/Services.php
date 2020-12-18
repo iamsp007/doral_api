@@ -13,6 +13,7 @@ class services extends Model
      *
      * @var array
      */
+    protected $table='services';
     protected $fillable = [
         'name', 'status'
     ];
