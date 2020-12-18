@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFiletypeMasterTable extends Migration
+class RemoveServicesMasterTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,7 @@ class CreateFiletypeMasterTable extends Migration
      */
     public function up()
     {
-        Schema::create('filetype_master', function (Blueprint $table) {
-            $table->id();
-            $table->string('name',100);
-            $table->timestamps();
-        });
+        Schema::dropIfExists('services_master');
     }
 
     /**
@@ -27,6 +23,6 @@ class CreateFiletypeMasterTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('filetype_master');
+        //
     }
 }

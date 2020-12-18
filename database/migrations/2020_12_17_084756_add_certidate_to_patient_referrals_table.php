@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnToPatientReferralTable extends Migration
+class AddCertidateToPatientReferralsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,9 @@ class AddColumnToPatientReferralTable extends Migration
     public function up()
     {
         Schema::table('patient_referrals', function (Blueprint $table) {
-            $table->integer('service_id')->nullable();
-            $table->integer('file_type')->nullable();
+            $table->date('cert_start_date')->nullable();
+            $table->date('cert_end_date')->nullable();
+            $table->date('cert_next_date')->nullable();
         });
     }
 
@@ -27,8 +28,9 @@ class AddColumnToPatientReferralTable extends Migration
     public function down()
     {
         Schema::table('patient_referrals', function (Blueprint $table) {
-            $table->dropColumn('service_id');
-            $table->dropColumn('file_type');
+            $table->dropColumn('cert_start_date');
+            $table->dropColumn('cert_end_date');
+            $table->dropColumn('cert_next_date');
         });
     }
 }

@@ -15,6 +15,7 @@ class CreateAppointmentsTable extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
+            $table->string('title', 100);
             $table->dateTime('book_datetime');
             $table->dateTime('start_datetime');
             $table->dateTime('end_datetime');
@@ -25,6 +26,7 @@ class CreateAppointmentsTable extends Migration
             $table->foreignId('service_id')->index('service_id');
             $table->string('Note', 500)->nullable();
             $table->string('appointment_url', 500);
+            $table->enum('status', ['open', 'completed', 'cancel', 'reject'])->default('open');
             $table->timestamps();
         });
     }

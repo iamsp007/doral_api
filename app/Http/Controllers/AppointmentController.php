@@ -27,6 +27,7 @@ class AppointmentController extends Controller
             $data = [
                 'appointments' => $respons['data']
             ];
+            $status = true;
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
@@ -128,5 +129,92 @@ class AppointmentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Upcoming Appointment
+     */
+    public function upcomingPatientAppointment(Request $request){
+        $status = false;
+        $data = [];
+        $message = "";
+        try {
+            $request = $request->all();
+            if(!$request['patient_id']){
+                throw new Exception("Invalid parameter passed");
+            }
+            $respons = Appointment::getUpcomingPatientAppointment($request);
+            if (!$respons['status']) {
+                throw new Exception($respons['message']);
+            }
+            $message = $respons['message'];
+            $data = [
+                'appointments' => $respons['data']
+            ];
+            $status = true;
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
+        }
+    }
+
+    /**
+     * Upcoming Appointment
+     */
+    public function cancelPatientAppointment(Request $request){
+        $status = false;
+        $data = [];
+        $message = "";
+        try {
+            $request = $request->all();
+            if(!$request['patient_id']){
+                throw new Exception("Invalid parameter passed");
+            }
+            $respons = Appointment::getCancelPatientAppointment($request);
+            if (!$respons['status']) {
+                throw new Exception($respons['message']);
+            }
+            $message = $respons['message'];
+            $data = [
+                'appointments' => $respons['data']
+            ];
+            $status = true;
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
+        }
+    }
+
+    /**
+     * Past Appointment
+     */
+    public function pastPatientAppointment(Request $request){
+        $status = false;
+        $data = [];
+        $message = "";
+        try {
+            $request = $request->all();
+            if(!$request['patient_id']){
+                throw new Exception("Invalid parameter passed");
+            }
+            $respons = Appointment::getPastPatientAppointment($request);
+            if (!$respons['status']) {
+                throw new Exception($respons['message']);
+            }
+            $message = $respons['message'];
+            $data = [
+                'appointments' => $respons['data']
+            ];
+            $status = true;
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 }

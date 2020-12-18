@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\form;
+use App\Models\MDForms;
 use Illuminate\Http\Request;
 
 class FormController extends Controller
@@ -31,7 +31,7 @@ class FormController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\form  $form
+     * @param  \App\Models\MDForms  $form
      * @return \Illuminate\Http\Response
      */
     public function show(form $form)
@@ -43,7 +43,7 @@ class FormController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\form  $form
+     * @param  \App\Models\MDForms  $form
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, form $form)
@@ -54,7 +54,7 @@ class FormController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\form  $form
+     * @param  \App\Models\MDForms  $form
      * @return \Illuminate\Http\Response
      */
     public function destroy(form $form)

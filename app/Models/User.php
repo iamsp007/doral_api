@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -32,9 +33,18 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-//    protected $dateFormat='m/d/Y';
-//
+////
 //    protected $dates = [ 'created_at', 'updated_at'];
+
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getDobAttribute($value)
+    {
+        return Carbon::parse(strtotime($value))->format(config('app.date_format'));
+    }
 
     /**
      * The attributes that should be cast to native types.
@@ -42,6 +52,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
         'email_verified_at' => 'datetime',
     ];
     /**
@@ -109,6 +121,10 @@ class User extends Authenticatable
                     $query->where('id', $userId);
                 })->first();
         return $user;
+    }
+
+    public function myRoom(){
+        return $this->hasOne(VirtualRoom::class,'id','user_id');
     }
 
 }

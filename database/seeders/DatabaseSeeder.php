@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Designation;
 use App\Models\FileTypeMaster;
 use App\Models\ServiceMaster;
 use Illuminate\Database\Seeder;
@@ -17,32 +18,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'admin']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'co-ordinator']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'supervisor']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'clinician']);
-//        $role = Role::create(['guard_name' => 'web', 'name' => 'patient']);
-//        $role = Role::create(['guard_name' => 'referral', 'name' => 'referral']);
-//
-//        $this->call(
-//            AdminSeeder::class,
-//            DiesesMasterSeeder::class,
-//        );
-
-        // File type seeder
-        $filetypes = array('Demographic','Clinical','COMPLIANCE DUE DATES','PREVIOUS MD ORDER');
-        foreach ($filetypes as $fvalue) {
-            $filetypesModel = new FileTypeMaster();
-            $filetypesModel->name = $fvalue;
-            $filetypesModel->save();
-        }
-
-        $data = array('VBC','MD Order','Occupational Health','Telehealth','roadL');
-        foreach ($data as $datum) {
-            $serviceModel = new ServiceMaster();
-            $serviceModel->name = $datum;
-            $serviceModel->save();
-        }
-
+        $role = Role::create(['guard_name' => 'web', 'name' => 'admin']);
+        $role = Role::create(['guard_name' => 'web', 'name' => 'co-ordinator']);
+        $role = Role::create(['guard_name' => 'web', 'name' => 'supervisor']);
+        $role = Role::create(['guard_name' => 'web', 'name' => 'clinician']);
+        $role = Role::create(['guard_name' => 'web', 'name' => 'patient']);
+        $role = Role::create(['guard_name' => 'referral', 'name' => 'referral']);
+      
+        $this->call([
+            AdminSeeder::class,
+            ClinicianSeeder::class,
+            PatientSeeder::class,
+            SupervisorSeeder::class,
+            CoordinatorSeeder::class,
+            DesignationSeeder::class,
+            DiesesMasterSeeder::class,
+            FileTypeSeeder::class,
+            ServicesSeeder::class,
+            MDFormsSeeder::class
+        ]);
     }
 }

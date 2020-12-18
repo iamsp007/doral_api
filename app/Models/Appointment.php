@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Helper;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -125,6 +126,151 @@ class Appointment extends Model
         } catch (\Exception $e) {
             echo $e->getMessage();
             return false;
+            exit;
+        }
+    }
+    /**
+     * Upcoming Patient Appointment
+     */
+    public static function getUpcomingPatientAppointment($request)
+    {
+        $status = 0;
+        try {
+            $currentDate = Helper::curretntDate();
+            //\DB::enableQueryLog();;
+            $resp = Appointment::with(['bookedDetails' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+                ->with(['patients' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->with(['provider1Details' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->with(['provider2Details' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->where([
+                    ['start_datetime', '>=', $currentDate],
+                    ['patient_id', '=', $request['patient_id']]
+                ])
+                ->get()
+                ->toArray();
+            //dd(\DB::getQueryLog());
+           
+            $data = $resp;
+            $status =  true;
+            $response = [
+                'status' => $status,
+                'message' => "Upcoming Appoinments",
+                'data' => $data
+            ];
+            return $response;
+        } catch (\Exception $e) {
+            report($e);
+            $status =  false;
+            $response = [
+                'status' => $status,
+                'message' => $e->getMessage()
+            ];
+            return $response;
+            exit;
+        }
+    }
+    /**
+     * Cancel Patient Appointment
+     */
+    public static function getCancelPatientAppointment($request)
+    {
+        $status = 0;
+        try {
+            $currentDate = Helper::curretntDate();
+            //\DB::enableQueryLog();;
+            $resp = Appointment::with(['bookedDetails' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+                ->with(['patients' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->with(['provider1Details' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->with(['provider2Details' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->where([
+                    ['status', '=', 'cancel'],
+                    ['patient_id', '=', $request['patient_id']]
+                ])
+                ->get()
+                ->toArray();
+            //dd(\DB::getQueryLog());
+           
+            $data = $resp;
+            $status =  true;
+            $response = [
+                'status' => $status,
+                'message' => "Upcoming Appoinments",
+                'data' => $data
+            ];
+            return $response;
+        } catch (\Exception $e) {
+            report($e);
+            $status =  false;
+            $response = [
+                'status' => $status,
+                'message' => $e->getMessage()
+            ];
+            return $response;
+            exit;
+        }
+    }
+    /**
+     * Cancel Patient Appointment
+     */
+    public static function getPastPatientAppointment($request)
+    {
+        $status = 0;
+        try {
+            $currentDate = Helper::curretntDate();
+            //\DB::enableQueryLog();;
+            $resp = Appointment::with(['bookedDetails' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+                ->with(['patients' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->with(['provider1Details' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->with(['provider2Details' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->where([
+                    ['start_datetime', '<=', $currentDate],
+                    ['status', '=', 'completed'],
+                    ['patient_id', '=', $request['patient_id']]
+                ])
+                ->get()
+                ->toArray();
+            //dd(\DB::getQueryLog());
+           
+            $data = $resp;
+            $status =  true;
+            $response = [
+                'status' => $status,
+                'message' => "Upcoming Appoinments",
+                'data' => $data
+            ];
+            return $response;
+        } catch (\Exception $e) {
+            report($e);
+            $status =  false;
+            $response = [
+                'status' => $status,
+                'message' => $e->getMessage()
+            ];
+            return $response;
             exit;
         }
     }

@@ -31,6 +31,7 @@ Route::group([
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
+    Route::post('patient-referral/storecert', 'App\Http\Controllers\PatientReferralController@storeCertDate');
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
 
     // Employee
@@ -61,6 +62,9 @@ Route::group([
         Route::get('appointment', 'App\Http\Controllers\AppointmentController@index');
         Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store');
         Route::put('appointment/{appointment}', 'App\Http\Controllers\AppointmentController@update');
+        Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
+        Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
+        Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
         //Company URLs
@@ -102,6 +106,7 @@ Route::group([
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
+    Route::post('create-virtual-room', 'App\Http\Controllers\SessionsController@createRoom');
 });
 
 // Referral
