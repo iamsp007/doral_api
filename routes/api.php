@@ -57,6 +57,10 @@ Route::group([
         Route::get('service', 'App\Http\Controllers\ServicesController@index');
         Route::post('service/store', 'App\Http\Controllers\ServicesController@store');
         Route::put('service/{service}', 'App\Http\Controllers\ServicesController@update');
+        //Request
+        Route::get('request', 'App\Http\Controllers\RequestController@index');
+        Route::post('request/store', 'App\Http\Controllers\RequestController@store');
+        Route::put('request/{request}', 'App\Http\Controllers\RequestController@update');
         //Appointment
         Route::get('appointment', 'App\Http\Controllers\AppointmentController@index');
         Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store');
