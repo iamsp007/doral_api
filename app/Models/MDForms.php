@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceMaster extends Model
+class MDForms extends Model
 {
     use HasFactory;
-
-    protected $table='services_master';
+    protected $table='md_forms';
 }

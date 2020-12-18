@@ -16,9 +16,9 @@ class CreatePatientReferralsTable extends Migration
         Schema::create('patient_referrals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('referral_id');
-            $table->string('first_name');
+            $table->string('first_name')->nullable();
             $table->string('middle_name')->nullable();
-            $table->string('last_name');
+            $table->string('last_name')->nullable();
             $table->date('dob')->nullable();
             $table->string('gender')->nullable();
             $table->string('patient_id', 20)->nullable();
