@@ -16,16 +16,20 @@ class AppointmentController extends Controller
     public function index()
     {
         $status = false;
-        $data = [];
+        $data = $services = [];
         $message = "";
         try {
             $respons = Appointment::getAllAppointment();
+            //Get Services
+            //Get PM/MA
+            //Get Co-ordinator
             if (!$respons['status']) {
                 throw new Exception($respons['message']);
             }
             $message = $respons['message'];
             $data = [
-                'appointments' => $respons['data']
+                "appointments" => $respons['data'],
+                "services"=> $services
             ];
             $status = true;
             return $this->generateResponse($status, $message, $data);
@@ -56,6 +60,7 @@ class AppointmentController extends Controller
     {
         //
         $request->validate([
+            'title' => 'required',
             'book_datetime' => 'required',
             'start_datetime' => 'required',
             'end_datetime' => 'required',

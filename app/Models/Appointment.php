@@ -16,7 +16,7 @@ class Appointment extends Model
      * @var array
      */
     protected $fillable = [
-        'book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url'
+        'title', 'book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url'
     ];
     /**
      * Get Patient details
