@@ -111,6 +111,9 @@ Route::group([
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
     Route::post('create-virtual-room', 'App\Http\Controllers\SessionsController@createRoom');
+    Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
+    Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
+    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
 });
 
 // Referral

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RoadlSelectedDiesesRequest;
 use App\Models\Patient;
+use App\Models\PatientReferral;
 use App\Models\PatientRequest;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class PatientController extends Controller
 {
@@ -205,5 +208,59 @@ class PatientController extends Controller
             return $this->generateResponse(true, 'Detail Update Successfully!', $patientRequest,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
+    }
+
+    public function getPatientList(Request $request){
+        $patientList = PatientReferral::with('detail','service','filetype')
+            ->whereHas('detail',function ($q){
+                $q->where('status','=','1');
+            })
+            ->get();
+        return $this->generateResponse(true,'get patient list',$patientList,200);
+    }
+
+    public function getNewPatientList(Request $request){
+        $patientList = PatientReferral::with('detail','service','filetype')
+            ->whereHas('detail',function ($q){
+                $q->where('status','=','0');
+            })
+            ->get();
+        return $this->generateResponse(true,'get new patient list',$patientList,200);
+    }
+
+    public function changePatientStatus(Request $request){
+        $this->validate($request,[
+            'id'=>'required',
+            'status'=>'required'
+        ]);
+        $status='accept';
+        if ($request->status==0){
+            $status='reject';
+        }
+
+        $updatePatient = PatientReferral::whereIn('id',$request->id)->update(['status'=>$status]);
+
+        $ids = $request->id;
+
+        if (count($ids)>0){
+            $message='';
+            foreach ($ids as $id) {
+                $patient = PatientReferral::find($id);
+                if ($patient){
+                    $patient->status = $status;
+                    if ($status==="accept") {
+                        $users = User::find($patient->user_id);
+                        if ($users){
+                            $users->status = '1';
+                            $users->save();
+                        }
+                    }
+                    $patient->save();
+                    $message='Change Patient Status Successfully';
+                }
+            }
+            return $this->generateResponse(true,$message,null,200);
+        }
+        return $this->generateResponse(false,'No Patient Referral Ids Found',null,422);
     }
 }
