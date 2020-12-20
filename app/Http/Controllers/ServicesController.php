@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Services;
+use App\Models\ServiceMaster;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -132,5 +133,28 @@ class ServicesController extends Controller
     public function destroy(Services $services)
     {
         //
+    }
+
+    public function serviceMaster()
+    {
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $services = ServiceMaster::all();
+            if (!$services) {
+                throw new Exception("No Services are found into database");
+            }
+            $data = [
+                'services' => $services
+            ];
+            $status = true;
+            $message = "Services List";
+            return response()->json([$status, $message, $data]);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 }
