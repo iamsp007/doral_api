@@ -211,6 +211,7 @@ class PatientController extends Controller
     }
 
     public function getPatientList(Request $request){
+        // user table active patient list
         $patientList = PatientReferral::with('detail','service','filetype')
             ->whereHas('detail',function ($q){
                 $q->where('status','=','1');
@@ -220,10 +221,9 @@ class PatientController extends Controller
     }
 
     public function getNewPatientList(Request $request){
+        // patient referral pending status patient list
         $patientList = PatientReferral::with('detail','service','filetype')
-            ->whereHas('detail',function ($q){
-                $q->where('status','=','0');
-            })
+            ->where('status','=','pending')
             ->get();
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
