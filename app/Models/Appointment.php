@@ -47,6 +47,13 @@ class Appointment extends Model
         return $this->belongsTo('App\Models\Employee', 'provider2', 'id');
     }
     /**
+     * Get Cancel Appointment Reasons
+     */
+    public function cancelAppointmentReasons()
+    {
+        return $this->belongsTo('App\Models\CancelAppointmentReasons', 'reason_id', 'id');
+    }
+    /**
      * Insert data into Patient table
      */
     public static function getAllAppointment()
@@ -272,6 +279,36 @@ class Appointment extends Model
             ];
             return $response;
             exit;
+        }
+    }
+
+    /**
+     * Cancel Appointment
+     */
+    public static function cancelAppointment($request)
+    {
+        $status = 0;
+        try {
+            $appointment = Appointment::findOrFail($request['appointment_id']);
+            $appointment->reason_id = $request['reason_id'];
+            $appointment->reason_notes = isset($request['reason_notes']) ? $request['reason_notes'] : null;
+            $appointment->cancel_user = $request['cancel_user'];
+
+            $appointment->save();
+            $response = [
+                'status' => true,
+                'message' => "Appoinment cancelled.",
+                'data' => $appointment
+            ];
+            return $response;
+        } catch (\Exception $e) {
+            report($e);
+            $status = false;
+            $response = [
+                'status' => $status,
+                'message' => $e->getMessage()
+            ];
+            return $response;
         }
     }
 }
