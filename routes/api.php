@@ -32,6 +32,7 @@ Route::group([
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::post('patient-referral/storecert', 'App\Http\Controllers\PatientReferralController@storeCertDate');
+    Route::post('patient-referral/storeoccupational', 'App\Http\Controllers\PatientReferralController@storeOccupational');
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
 
     // Employee
