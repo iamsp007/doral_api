@@ -244,4 +244,34 @@ class AppointmentController extends Controller
             return $this->generateResponse($status, $message, $data);
         }
     }
+
+    /**
+     * Cancel The Appointment
+     */
+    public function cancelAppointment(Request $request)
+    {
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $request = $request->all();
+            if(!$request['appointment_id'] || !$request['reason_id'] || !$request['cancel_user']){
+                throw new Exception("Invalid parameter passed");
+            }
+            $cancel = Appointment::cancelAppointment($request);
+            if (!$cancel['status']) {
+                throw new Exception($cancel['message']);
+            }
+            $message = $cancel['message'];
+            $data = [
+                'appointments' => $cancel['data']
+            ];
+            $status = true;
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
+    }
 }

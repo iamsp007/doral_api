@@ -69,7 +69,8 @@ Route::group([
         Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
         Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
         Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
-        Route::get('cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@getCancelAppointmentReasons');
+        Route::get('appointment/cancel-appointment-reasons', 'App\Http\Controllers\AppointmentController@getCancelAppointmentReasons');
+        Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' );
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
         //Company URLs
