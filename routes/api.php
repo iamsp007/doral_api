@@ -115,6 +115,9 @@ Route::group([
     Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
     Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
+    
+    //new patient list for appointment
+    Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
 });
 
 // Referral
