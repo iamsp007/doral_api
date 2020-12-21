@@ -72,14 +72,14 @@ class UserController extends Controller
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string',
             'dob' => 'required|date',
-            'phone' => 'required|numeric'            
+            'phone' => 'required|numeric'
         ]);
         //Post data
         $request = json_decode($request->getContent(), true);
-        $user = $request;       
+        $user = $request;
         $data = array(
             'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],            
+            'last_name' => $request['last_name'],
             'phone' => $request['phone'],
             'gender' => $request['gender'],
             'email' => $request['email'],
@@ -95,9 +95,9 @@ class UserController extends Controller
             \DB::beginTransaction();
             $id = User::insert($data);
             if ($id) {
-                $request['user_id'] = $id;                
+                $request['user_id'] = $id;
                 if ($request['type'] == 'employee' || $request['type'] == 'admin') {
-                    unset($request['type']); 
+                    unset($request['type']);
                     $result = $this->employeeContoller->store($request);
                 } else if ($request['type'] == 'patient') {
                     unset($request['type']);
@@ -109,15 +109,11 @@ class UserController extends Controller
                 }
                 \DB::commit();
                 $resp = [
-                    
+                    'user' => $result
                 ];
                 $status = true;
                 $message = "Employee Added Successfully information";
-                $data=[                    
-                    'user' => $user                    
-                ];
-        
-                return $this->generateResponse($status, $message,$data);
+                return $this->generateResponse($status, $message,$resp);
             } else {
                 throw new \ErrorException('Error found');
             }
@@ -195,7 +191,7 @@ class UserController extends Controller
             $data = $login['data'];
             $password = $data['password'];
             $user = User::login($data);
-            // Check user exist into database or not   
+            // Check user exist into database or not
             if (!$user) {
                 return response()->json(['status' => $status, 'message' => 'Login Fail, please check email id']);
             }
@@ -208,11 +204,11 @@ class UserController extends Controller
             ];
             $status = true;
             $message = "Employee Added Successfully information";
-            return response()->json(['status' => $status, $user]);            
+            return response()->json(['status' => $status, $user]);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $user);            
+            return $this->generateResponse($status, $message, $user);
         }
     }
 }
