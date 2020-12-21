@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\CancelAppointmentReasons;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -214,6 +215,32 @@ class AppointmentController extends Controller
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
+        }
+    }
+
+    /**
+     * Get Cancel Appointment Reasons
+     */
+    public function getCancelAppointmentReasons()
+    {
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $reasons = CancelAppointmentReasons::all();
+            if (!$reasons) {
+                throw new Exception("No reasons are found into database");
+            }
+            $data = [
+                'reasons' => $reasons
+            ];
+            $status = true;
+            $message = "Reasons List";
+            return response()->json([$status, $message, $data]);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);
         }
     }

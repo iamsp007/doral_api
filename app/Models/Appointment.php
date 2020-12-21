@@ -47,6 +47,13 @@ class Appointment extends Model
         return $this->belongsTo('App\Models\Employee', 'provider2', 'id');
     }
     /**
+     * Get Cancel Appointment Reasons
+     */
+    public function cancelAppointmentReasons()
+    {
+        return $this->belongsTo('App\Models\CancelAppointmentReasons', 'reason_id', 'id');
+    }
+    /**
      * Insert data into Patient table
      */
     public static function getAllAppointment()
