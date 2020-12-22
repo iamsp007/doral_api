@@ -209,7 +209,7 @@ class PatientRequestController extends Controller
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
-        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is slightly higher than regular. http://doralhealthconnect.com/caregiver/1';
+        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is slightly higher than regular. http://app.doralhealthconnect.com/caregiver/1';
         $uri 	= 'https://rest.nexmo.com/sms/json';
         $fields =
            '&from=' .  urlencode( $from ) .
@@ -246,7 +246,7 @@ class PatientRequestController extends Controller
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
-        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://doralhealthconnect.com/caregiver/'.$type;
+        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://app.doralhealthconnect.com/caregiver/'.$type;
         $uri 	= 'https://rest.nexmo.com/sms/json';
         $fields =
            '&from=' .  urlencode( $from ) .
@@ -278,7 +278,7 @@ class PatientRequestController extends Controller
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
-        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://doralhealthconnect.com/caregiver/2';
+        $text = 'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/2';
         $uri 	= 'https://rest.nexmo.com/sms/json';
         $fields =
            '&from=' .  urlencode( $from ) .
