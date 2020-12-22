@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\ServiceMaster;
+use App\Models\Services;
 use Illuminate\Database\Seeder;
 
-class ServiceSeeder extends Seeder
+class ServicesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,11 +14,12 @@ class ServiceSeeder extends Seeder
      */
     public function run()
     {
+        
         $data = array('VBC','MD Order','Occupational Health','Telehealth','roadL');
         foreach ($data as $datum) {
-            $serviceModel = new ServiceMaster();
-            $serviceModel->name = $datum;
-            $serviceModel->save();
+            $designation = new Services();
+            $designation->name = $datum;
+            $designation->save();
         }
     }
 }

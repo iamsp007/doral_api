@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateServicesMasterTable extends Migration
+class CreateVirtualRoomTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateServicesMasterTable extends Migration
      */
     public function up()
     {
-        Schema::create('services_master', function (Blueprint $table) {
+        Schema::create('virtual_room', function (Blueprint $table) {
             $table->id();
-            $table->string('name',100);
+            $table->string("name");
+            $table->integer("user_id");
+            $table->string('session_id');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateServicesMasterTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('services_master');
+        Schema::dropIfExists('virtual_room');
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class services extends Model
+class Request extends Model
 {
     use HasFactory;
     /**
@@ -13,9 +13,8 @@ class services extends Model
      *
      * @var array
      */
-    protected $table='services';
     protected $fillable = [
-        'name', 'status'
+        'role_id', 'user_id', 'support_type'
     ];
     /**
      * Insert data into services table
@@ -24,7 +23,7 @@ class services extends Model
     {
         $status = 0;
         try {
-            $data = Services::create($request);
+            $data = Request::create($request);
             return $data;
         } catch (\Exception $e) {
             return false;
@@ -34,11 +33,11 @@ class services extends Model
     /**
      * Insert data into services table
      */
-    public static function getAllServices($request)
+    public static function getAllRequests($request)
     {
         $status = 0;
         try {
-            $data = Services::select('id', 'name')
+            $data = Request::select('id', 'role_id', 'user_id', 'support_type')
                 ->get();
             return $data;
         } catch (\Exception $e) {
@@ -49,11 +48,11 @@ class services extends Model
     /**
      * Update records into service table
      */
-    public static function setServices($id, $request)
+    public static function setRequest($id, $request)
     {
         try {
-            $data = Services::where('id', $id)->update($request);
-            $data = Services::find($id);
+            $data = Request::where('id', $id)->update($request);
+            $data = Request::find($id);
             return $data;
         } catch (\Exception $e) {
             echo $e->getMessage();

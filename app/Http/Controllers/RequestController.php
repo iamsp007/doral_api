@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Services;
-use App\Models\ServiceMaster;
+use App\Models\Request as Support;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 
-class ServicesController extends Controller
+class RequestController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,15 +20,15 @@ class ServicesController extends Controller
         $data = [];
         $message = 'Something wrong';
         try {
-            $services = Services::all();
-            if (!$services) {
-                throw new Exception("No Services are found into database");
+            $support = Support::all();
+            if (!$support) {
+                throw new Exception("No support data are found into database");
             }
             $data = [
-                'services' => $services
+                'support' => $support
             ];
             $status = true;
-            $message = "services List";
+            $message = "Support List";
             return response()->json([$status, $message, $data]);
         } catch (\Exception $e) {
             $status = false;
@@ -56,13 +56,28 @@ class ServicesController extends Controller
     public function store(Request $request)
     {
         try {
-            $request = json_decode($request->getContent(), true);
-            $service = Services::insert($request);
+            $check = Support::where([
+                'role_id' => $request->role_id,
+                'user_id' => $request->user_id,
+                'support_type' => $request->support_type
+            ])->first();
+            if (isset($check) && $check->count()) {
+                $status = false;
+                $message = "Request already exist";
+                return $this->generateResponse($status, $message);
+            }
+            $user = User::findOrFail($request->user_id);
+            if (isset($user->roles->first()->id) && $user->roles->first()->id != $request->role_id) {
+                $status = false;
+                $message = "The user role mismatched";
+                return $this->generateResponse($status, $message);
+            }
+            $support = Support::insert($request->all());
             $data = [
-                'service' => $service
+                'support' => $support
             ];
             $status = true;
-            $message = "service Inserted successfully";
+            $message = "Support Inserted successfully";
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
@@ -74,10 +89,10 @@ class ServicesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Services  $services
+     * @param  \App\Models\Support  $support
      * @return \Illuminate\Http\Response
      */
-    public function show(Services $services)
+    public function show(Support $support)
     {
         //
     }
@@ -85,10 +100,10 @@ class ServicesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Services  $services
+     * @param  \App\Models\Support  $support
      * @return \Illuminate\Http\Response
      */
-    public function edit(Services $services)
+    public function edit(Support $support)
     {
         //
     }
@@ -97,25 +112,24 @@ class ServicesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Services  $services
+     * @param  \App\Models\Support  $support
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $services)
+    public function update(Request $request, $support)
     {
         $status = 0;
         $data = [];
         $message = 'Something wrong';
         try {
-            $request = json_decode($request->getContent(), true);
-            $services = Services::setServices($services, $request);
-            if (!$services) {
+            $support = Support::setRequest($support, $request->all());
+            if (!$support) {
                 throw new Exception("Error in update the services");
             }
             $data = [
-                'services' => $services
+                'support' => $support
             ];
             $status = true;
-            $message = "Services updated Succesfully";
+            $message = "Support updated Succesfully";
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
@@ -127,34 +141,11 @@ class ServicesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Services  $services
+     * @param  \App\Models\Support  $support
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Services $services)
+    public function destroy(Support $support)
     {
         //
-    }
-
-    public function serviceMaster()
-    {
-        $status = 0;
-        $data = [];
-        $message = 'Something wrong';
-        try {
-            $services = ServiceMaster::all();
-            if (!$services) {
-                throw new Exception("No Services are found into database");
-            }
-            $data = [
-                'services' => $services
-            ];
-            $status = true;
-            $message = "Services List";
-            return response()->json([$status, $message, $data]);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
-        }
     }
 }

@@ -24,6 +24,7 @@ class PatientReferralController extends Controller
         $data = array();
         try {
             $patientReferral = patientReferral::where('service_id', $id)
+            ->whereNotNull('first_name')
             ->get();
             if (!$patientReferral) {
                 throw new Exception("No Referance Patients are registered");
@@ -31,7 +32,8 @@ class PatientReferralController extends Controller
             $data = [
                 'patientReferral' => $patientReferral
             ];
-            return $this->generateResponse(true, 'Referance Patients!', $data);
+            //return $this->generateResponse(true, 'Referance Patients!', $data);
+            return $this->generateResponse(true,'Referance Patients!',$patientReferral,200);
         } catch (\Exception $e) {
             $message = $e->getMessage();
             return $this->generateResponse(false, $message, $data);
@@ -243,7 +245,7 @@ class PatientReferralController extends Controller
                     $csvData['form_id']
                 ), $filePath);
             
-            dd($data);
+            //dd($data);
             //if ($id) {
                 $status = 1;
                 $message = 'CSV Uploaded successfully';
@@ -260,6 +262,8 @@ class PatientReferralController extends Controller
 
         return response()->json($response, 201);
     }
+
+    
 
     /**
      * Display the specified resource.

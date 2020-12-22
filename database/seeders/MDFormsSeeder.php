@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\FileTypeMaster;
+use App\Models\MDForms;
 use Illuminate\Database\Seeder;
 
-class FileTypeSeeder extends Seeder
+class MDFormsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,10 +14,9 @@ class FileTypeSeeder extends Seeder
      */
     public function run()
     {
-// File type seeder
-        $filetypes = array('Demographic','Clinical','COMPLIANCE DUE DATES','PREVIOUS MD ORDER');
+        $filetypes = array('M11Q','DOH-4359','MD-485','CFEEC');
         foreach ($filetypes as $fvalue) {
-            $filetypesModel = new FileTypeMaster();
+            $filetypesModel = new MDForms();
             $filetypesModel->name = $fvalue;
             $filetypesModel->save();
         }

@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Designation extends Model
+class MDForms extends Model
 {
     use HasFactory;
-
-    protected $table='designations';
+    protected $table='md_forms';
 }
