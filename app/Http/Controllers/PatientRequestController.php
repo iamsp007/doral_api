@@ -56,7 +56,9 @@ class PatientRequestController extends Controller
             $patient->longitude = $request->longitude;
             $patient->reason = $request->reason;
             if ($patient->save()){
-                $clinicianList = User::where([['type','=','clinician'],['is_available','=','1']])->get();
+                $clinicianList = User::whereHas('roles',function ($q){
+                    $q->where('name','=','clinician');
+                })->where('is_available','=','1')->get();
                 $data=PatientRequest::with('detail')
                     ->where('id','=',$patient->id)
                     ->first();
