@@ -223,6 +223,7 @@ class PatientController extends Controller
     public function getNewPatientList(Request $request){
         // patient referral pending status patient list
         $patientList = PatientReferral::with('detail','service','filetype')
+            ->where('first_name','!=',null)
             ->where('status','=','pending')
             ->get();
         return $this->generateResponse(true,'get new patient list',$patientList,200);
