@@ -32,8 +32,9 @@ Route::group([
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::post('patient-referral/storecert', 'App\Http\Controllers\PatientReferralController@storeCertDate');
-    Route::post('patient-referral/storeoccupational', 'App\Http\Controllers\PatientReferralController@storeOccupational');
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+    Route::post('patient-occupational/storeoccupational', 'App\Http\Controllers\PatientOccupationalController@storeOccupational');
+    Route::get('patient-occupational/{id}', 'App\Http\Controllers\PatientOccupationalController@index')->name('occupational_patients');
 
     // Employee
     Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
