@@ -10,13 +10,14 @@
     "require": {
         "php": "^7.3",
         "fideloper/proxy": "^4.2",
+        "firebase/php-jwt": "^5.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/passport": "^10.0",
         "laravel/tinker": "^2.0",
-        "opentok/opentok": "^4.6",
         "maatwebsite/excel": "^3.1",
+        "opentok/opentok": "^4.6",
         "spatie/laravel-permission": "^3.17"
     },
     "require-dev": {

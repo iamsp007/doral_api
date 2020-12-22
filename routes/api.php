@@ -133,3 +133,13 @@ Route::group([
 ], function () {
 //    Route::get('/get-patient-list','');
 });
+// Get list of meetings.
+Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
+
+// Create meeting room using topic, agenda, start_time.
+Route::post('/meetings', 'App\Http\Controllers\Zoom\MeetingController@create');
+
+// Get information of the meeting room by ID.
+Route::get('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@get')->where('id', '[0-9]+');
+Route::patch('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@update')->where('id', '[0-9]+');
+Route::delete('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@delete')->where('id', '[0-9]+');
