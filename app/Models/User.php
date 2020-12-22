@@ -127,4 +127,5 @@ class User extends Authenticatable
         return $this->hasOne(VirtualRoom::class,'id','user_id');
     }
 
+
 }
