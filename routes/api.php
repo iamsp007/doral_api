@@ -118,6 +118,7 @@ Route::group([
     Route::post('create-virtual-room', 'App\Http\Controllers\SessionsController@createRoom');
     Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
+    Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
     Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
 });
 
