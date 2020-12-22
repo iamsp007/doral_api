@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class services extends Model
+class Services extends Model
 {
     use HasFactory;
     /**
@@ -60,5 +60,5 @@ class services extends Model
             return false;
             exit;
         }
-    }    
+    }
 }

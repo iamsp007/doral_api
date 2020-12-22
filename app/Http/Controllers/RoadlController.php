@@ -71,7 +71,9 @@ class RoadlController extends Controller
          * replace 6371000 with 6371 for kilometer and 3956 for miles
          */
         $clinicians = User::where('is_available', '=', '1')
-            ->where('type', '=', 'clinician')
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','clinician');
+            })
             ->get();
 
         return $clinicians;
