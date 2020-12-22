@@ -116,7 +116,7 @@ class User extends Authenticatable
 
     public static function getUserDetails($userId)
     {
-        $user = User::select('first_name', 'last_name', 'id', 'type')
+        $user = User::select('first_name', 'last_name', 'id')
                 ->Where(function ($query) use ($userId) {
                     $query->where('id', $userId);
                 })->first();
