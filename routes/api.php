@@ -134,6 +134,7 @@ Route::group([
     'middleware' => ['auth:api','role:co-ordinator'],
 ], function () {
 //    Route::get('/get-patient-list','');
+    Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
 });
 // Get list of meetings.
 Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
