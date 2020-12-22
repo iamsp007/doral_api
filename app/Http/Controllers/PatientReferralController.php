@@ -25,6 +25,7 @@ class PatientReferralController extends Controller
         $data = array();
         try {
             $patientReferral = patientReferral::where('service_id', $id)
+            ->whereNotNull('first_name')
             ->get();
             if (!$patientReferral) {
                 throw new Exception("No Referance Patients are registered");
