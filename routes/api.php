@@ -33,6 +33,8 @@ Route::group([
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::post('patient-referral/storecert', 'App\Http\Controllers\PatientReferralController@storeCertDate');
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+    Route::post('patient-occupational/storeoccupational', 'App\Http\Controllers\PatientOccupationalController@storeOccupational');
+    Route::get('patient-occupational/{id}', 'App\Http\Controllers\PatientOccupationalController@index')->name('occupational_patients');
 
     // Employee
     Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
@@ -58,6 +60,11 @@ Route::group([
         Route::get('service', 'App\Http\Controllers\ServicesController@index');
         Route::post('service/store', 'App\Http\Controllers\ServicesController@store');
         Route::put('service/{service}', 'App\Http\Controllers\ServicesController@update');
+        Route::get('service-master', 'App\Http\Controllers\ServicesController@serviceMaster');
+        //Request
+        Route::get('request', 'App\Http\Controllers\RequestController@index');
+        Route::post('request/store', 'App\Http\Controllers\RequestController@store');
+        Route::put('request/{request}', 'App\Http\Controllers\RequestController@update');
         //Appointment
         Route::get('appointment', 'App\Http\Controllers\AppointmentController@index');
         Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store');
@@ -65,6 +72,8 @@ Route::group([
         Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
         Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
         Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
+        Route::get('appointment/cancel-appointment-reasons', 'App\Http\Controllers\AppointmentController@getCancelAppointmentReasons');
+        Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' );
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
         //Company URLs
@@ -99,7 +108,7 @@ Route::group([
 
 // clincian API
 Route::group([
-    'middleware' => ['auth:api','role:clinician'],
+    'middleware' => ['auth:api','role:clinician|co-ordinator'],
 ], function () {
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
@@ -107,6 +116,9 @@ Route::group([
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
     Route::post('create-virtual-room', 'App\Http\Controllers\SessionsController@createRoom');
+    Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
+    Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
+    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
 });
 
 // Referral
@@ -114,4 +126,11 @@ Route::group([
     'middleware' => ['auth:api','role:referral'],
 ], function () {
 
+});
+
+// Co Ordinator
+Route::group([
+    'middleware' => ['auth:api','role:co-ordinator'],
+], function () {
+//    Route::get('/get-patient-list','');
 });

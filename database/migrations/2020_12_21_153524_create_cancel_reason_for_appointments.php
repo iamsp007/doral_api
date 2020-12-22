@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveFormsTable extends Migration
+class CreateCancelReasonForAppointments extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,11 @@ class RemoveFormsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('forms');
+        Schema::create('cancel_appointment_reasons', function (Blueprint $table) {
+            $table->id();
+            $table->longText('reason');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +27,6 @@ class RemoveFormsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('cancel_appointment_reasons');
     }
 }

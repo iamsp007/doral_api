@@ -63,13 +63,20 @@ class BulkCertImport implements ToModel,WithHeadingRow
                         $certDateNext = date('Y-m-d', strtotime($certDateNext. ' + 180 days'));
 
                         $date_now = date("Y-m-d"); // this format is string comparable
-                        if ($certDateNext > $date_now) {
+                        if ($certDateEnd > $date_now) {
                            $dataV = [
+                                'cert_start_date' => $certDateStart,
+                                'cert_end_date' => $certDateEnd,
+                                'cert_next_date' => $certDateEnd
+                            ];
+                            PatientReferral::where('patient_id', $data->patient_id)
+                                ->update($dataV);
+                        } else {
+                            $dataV = [
                                 'cert_start_date' => $certDateStart,
                                 'cert_end_date' => $certDateEnd,
                                 'cert_next_date' => $certDateNext
                             ];
-
                             PatientReferral::where('patient_id', $data->patient_id)
                                 ->update($dataV);
                         }
