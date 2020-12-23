@@ -73,7 +73,9 @@ Route::group([
         Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
         Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
         Route::get('appointment/cancel-appointment-reasons', 'App\Http\Controllers\AppointmentController@getCancelAppointmentReasons');
+        Route::post('appointment/bydate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
         Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' );
+        Route::get('appointment/{id}', 'App\Http\Controllers\AppointmentController@edit');
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
         //Company URLs
@@ -119,6 +121,7 @@ Route::group([
     Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
     Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
+    //Appointment    
 });
 
 // Referral
