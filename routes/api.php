@@ -35,6 +35,7 @@ Route::group([
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
     Route::post('patient-occupational/storeoccupational', 'App\Http\Controllers\PatientOccupationalController@storeOccupational');
     Route::get('patient-occupational/{id}', 'App\Http\Controllers\PatientOccupationalController@index')->name('occupational_patients');
+    Route::get('mdforms', 'App\Http\Controllers\MDFormsController@index')->name('mdforms.index');
 
     // Employee
     Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
@@ -134,6 +135,7 @@ Route::group([
     'middleware' => ['auth:api','role:co-ordinator'],
 ], function () {
 //    Route::get('/get-patient-list','');
+    Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
 });
 // Get list of meetings.
 Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
