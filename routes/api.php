@@ -35,6 +35,7 @@ Route::group([
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
     Route::post('patient-occupational/storeoccupational', 'App\Http\Controllers\PatientOccupationalController@storeOccupational');
     Route::get('patient-occupational/{id}', 'App\Http\Controllers\PatientOccupationalController@index')->name('occupational_patients');
+    Route::get('mdforms', 'App\Http\Controllers\MDFormsController@index')->name('mdforms.index');
 
     // Employee
     Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
