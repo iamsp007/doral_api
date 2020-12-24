@@ -33,7 +33,7 @@ class PatientReferral extends Model
     }
 
     public function service(){
-        return $this->hasOne(services::class,'id','service_id');
+        return $this->hasOne(Services::class,'id','service_id');
     }
 
     public function filetype(){
