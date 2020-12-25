@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Zoom\MeetingController;
 use App\Models\Appointment;
 use App\Models\CancelAppointmentReasons;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
@@ -20,6 +23,7 @@ class AppointmentController extends Controller
         $data = $services = [];
         $message = "";
         try {
+
             $respons = Appointment::getAllAppointment();
             //Get Services
             //Get PM/MA
@@ -65,7 +69,7 @@ class AppointmentController extends Controller
             'book_datetime' => 'required',
             'start_datetime' => 'required',
             'end_datetime' => 'required',
-            'booked_user_id' => 'required',
+//            'booked_user_id' => 'required',
             'patient_id' => 'required',
             'provider1' => 'required', 'provider2' => 'required',
             'service_id' => 'required'
@@ -74,17 +78,42 @@ class AppointmentController extends Controller
         $data = [];
         $message = "";
         try {
-            $request = json_decode($request->getContent(), true);
-            $respons = Appointment::insert($request);
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
+//            $request = json_decode($request->getContent(), true);
+            $request->request->add(['booked_user_id'=>Auth::user()->id]);
+
+            $patient = User::find($request->patient_id);
+
+            $appointment = new Appointment();
+            $appointment->title = $request->title;
+            $appointment->appointment_url = 'appointment_url';
+            $appointment->book_datetime = $request->book_datetime;
+            $appointment->start_datetime = $request->start_datetime;
+            $appointment->end_datetime = $request->end_datetime;
+            $appointment->patient_id = $request->patient_id;
+            $appointment->provider1 = $request->provider1;
+            $appointment->provider2 = $request->provider2;
+            $appointment->service_id = $request->service_id;
+            $appointment->booked_user_id = Auth::user()->id;
+            if ($appointment->save()){
+                $request->request->add([
+                    'appointment_id' => $appointment->id,
+                    'topic' => $appointment->title,
+                    'start_time'=>$request->start_datetime,
+                    'agenda'=>'Agenda'
+                ]);
+
+                $meetingController = new MeetingController();
+                $resp =  $meetingController->create($request);
+
+//            $appointment = Appointment::find($respons['data']);
+//            $message = $respons['message'];
+                $data = [
+                    'appointment' => $appointment,
+                    'meeting'=>$resp
+                ];
+                return $this->generateResponse($status, $message, $data);
             }
-            $appointment = Appointment::find($respons['data']);
-            $message = $respons['message'];
-            $data = [
-                'appointment' => $appointment
-            ];
-            return $this->generateResponse($status, $message, $data);
+            return $this->generateResponse(false,'Something Went Wrong!',null,200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();

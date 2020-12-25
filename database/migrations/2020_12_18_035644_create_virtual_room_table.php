@@ -15,9 +15,20 @@ class CreateVirtualRoomTable extends Migration
     {
         Schema::create('virtual_room', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->integer("user_id");
-            $table->string('session_id');
+            $table->integer("appointment_id");
+            $table->string("uuid");
+            $table->string("meeting_id");
+            $table->string("host_id");
+            $table->string("host_email");
+            $table->string("topic");
+            $table->date('start_time');
+            $table->string('agenda');
+            $table->string('duration',10)->default(30);
+            $table->integer('type')->default(2)->comment('1=instant,2=schedule,3=RECURRING,8=FIXED_RECURRING_FIXED');
+            $table->longText('start_url')->nullable();
+            $table->longText('join_url')->nullable();
+            $table->longText('zoom_response')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }
