@@ -77,6 +77,7 @@ Route::group([
         Route::post('appointment/bydate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
         Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' );
         Route::get('appointment/{id}', 'App\Http\Controllers\AppointmentController@edit');
+        Route::post('appointment/getAppointmentsByDate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
         //Company URLs

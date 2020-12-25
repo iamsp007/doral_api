@@ -16,86 +16,124 @@ class Appointment extends Model
      * @var array
      */
     protected $fillable = [
-        'title','appointment_url','book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url'
+        'title', 'appointment_url', 'book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url'
     ];
     /**
      * Get Patient details
      */
     public function patients()
     {
-        return $this->hasOne(User::class, 'id','patient_id');
+        return $this->hasOne(User::class, 'id', 'patient_id');
     }
     /**
      * Get Booked details
      */
     public function bookedDetails()
     {
-        return $this->hasOne(User::class, 'id','booked_user_id');
+        return $this->hasOne(User::class, 'id', 'booked_user_id');
     }
     /**
      * Get Provider1 details
      */
     public function provider1Details()
     {
-        return $this->hasOne(User::class, 'id','provider1');
+        return $this->hasOne(User::class, 'id', 'provider1');
     }
     /**
      * Get Provider2 details
      */
     public function provider2Details()
     {
-        return $this->hasOne(User::class, 'id','provider2');
+        return $this->hasOne(User::class, 'id', 'provider2');
     }
     /**
      * Get Cancel Appointment Reasons
      */
     public function cancelAppointmentReasons()
     {
-        return $this->hasOne(CancelAppointmentReasons::class, 'id','reason_id');
+        return $this->hasOne(CancelAppointmentReasons::class, 'id', 'reason_id');
     }
 
-    public function service(){
-        return $this->hasOne(Services::class,'id','service_id');
+    public function service()
+    {
+        return $this->hasOne(Services::class, 'id', 'service_id');
     }
 
-    public function filetype(){
-        return $this->hasOne(FileTypeMaster::class,'id','file_type');
+    public function filetype()
+    {
+        return $this->hasOne(FileTypeMaster::class, 'id', 'file_type');
     }
     /**
      * Get Meeting Reasons
      */
     public function meeting()
     {
-            return $this->hasOne(VirtualRoom::class, 'appointment_id', 'id');
+        return $this->hasOne(VirtualRoom::class, 'appointment_id', 'id');
     }
     /**
      * Get All Appointment 
      */
-    public static function getAllAppointment()
+    public static function getAllAppointment($request = array())
     {
         $status = 0;
+        $message = "All Appointments";
         try {
-            $resp = Appointment::with(['bookedDetails' => function ($q) {
+            //\DB::enableQueryLog();
+            $resp = Appointment::query();
+            $resp = $resp->with(['bookedDetails' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-                ->with(['patients','meeting','service','filetype'])
+                ->with(['patients', 'meeting', 'service', 'filetype'])
                 ->with(['provider1Details' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
                 ->with(['provider2Details' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
-                }])
-//                ->with('meeting')
-                ->orderBy('id','desc')
+                }]);
+            $type = $request['type'];
+            switch ($type) {
+                case 'byDate':
+                    # code...
+                    break;
+                case 'byWeek':
+                    # code...
+                    break;
+                case 'byMonth':
+                    # code...
+                    break;
+                case 'byDateEmployeeId':
+                    # code...
+                    break;
+                case 'byWeekEmployeeId':
+                    # code...
+                    break;
+                case 'byMonthEmployeeId':
+                    # code...
+                    break;
+                case 'byDatePatientId':                    
+                    $patientId = $request['patient_id'];
+                    $startDate = $request['start_date'];
+                    $resp = $resp->where('patient_id', $patientId);
+                    $resp= $resp->whereDate('start_datetime', $startDate);
+                    break;
+                case 'byWeekPatientId':
+                    # code...
+                    break;
+                case 'byMonthPatientId':
+                    # code...
+                    break;
+            }
+            $resp = $resp->orderBy('id', 'desc')
                 ->get()
                 ->toArray();
+            //dd(\DB::getQueryLog());
             if (!$resp) {
-                throw new Exception("Appointments are not available");
+                $message = "Appointments are not available";
             }
             $status =  true;
             $response = [
                 'status' => $status,
-                'message' => "All Appointments",
+                'message' => $message,
                 'data' => $resp
             ];
             return $response;
@@ -120,9 +158,7 @@ class Appointment extends Model
             $resp = Appointment::with(['bookedDetails' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-                ->with(['patients' => function ($q) {
-                    $q->select('first_name', 'last_name', 'id');
-                }])
+                ->with(['patients', 'meeting', 'service', 'filetype'])
                 ->with(['provider1Details' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
@@ -206,9 +242,7 @@ class Appointment extends Model
             $resp = Appointment::with(['bookedDetails' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-                ->with(['patients' => function ($q) {
-                    $q->select('first_name', 'last_name', 'id');
-                }])
+                ->with(['patients', 'meeting', 'service', 'filetype'])
                 ->with(['provider1Details' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
@@ -254,9 +288,7 @@ class Appointment extends Model
             $resp = Appointment::with(['bookedDetails' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-                ->with(['patients' => function ($q) {
-                    $q->select('first_name', 'last_name', 'id');
-                }])
+                ->with(['patients', 'meeting', 'service', 'filetype'])
                 ->with(['provider1Details' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
@@ -275,7 +307,7 @@ class Appointment extends Model
             $status =  true;
             $response = [
                 'status' => $status,
-                'message' => "Upcoming Appoinments",
+                'message' => "Cancel Appoinments",
                 'data' => $data
             ];
             return $response;
@@ -302,9 +334,7 @@ class Appointment extends Model
             $resp = Appointment::with(['bookedDetails' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-                ->with(['patients' => function ($q) {
-                    $q->select('first_name', 'last_name', 'id');
-                }])
+                ->with(['patients', 'meeting', 'service', 'filetype'])
                 ->with(['provider1Details' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
@@ -324,7 +354,7 @@ class Appointment extends Model
             $status =  true;
             $response = [
                 'status' => $status,
-                'message' => "Upcoming Appoinments",
+                'message' => "Past Appoinments",
                 'data' => $data
             ];
             return $response;

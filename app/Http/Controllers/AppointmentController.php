@@ -337,45 +337,14 @@ class AppointmentController extends Controller
             if (!$request['type']) {
                 throw new Exception("Invalid type / parameter");
             }
-            $type = $request['type'];
-            switch ($type) {
-                case 'byDate':
-                    # code...
-                    break;
-                case 'byWeek':
-                    # code...
-                    break;
-                case 'byMonth':
-                    # code...
-                    break;
-                case 'byDateEmployeeId':
-                    # code...
-                    break;
-                case 'byWeekEmployeeId':
-                    # code...
-                    break;
-                case 'byMonthEmployeeId':
-                    # code...
-                    break;
-                case 'byDatePatientId':
-                    # code...
-                    break;
-                case 'byWeekPatientId':
-                    # code...
-                    break;
-                case 'byMonthPatientId':
-                    # code...
-                    break;
-                default:
-                    # Get All appointment of current Month
-                    break;
-            }
+            $appointments = Appointment::getAllAppointment($request);
             $reasons = CancelAppointmentReasons::all();
             if (!$reasons) {
                 throw new Exception("No reasons are found into database");
             }
             $data = [
-                'reasons' => $reasons
+                'reasons' => $reasons,
+                'appointments'=>$appointments
             ];
             $status = true;
             $message = "Reasons List";
