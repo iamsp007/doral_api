@@ -82,9 +82,9 @@ class AuthController extends Controller
         //        $user->hasPermissionTo('Create', 'web');
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()){
-            if ($request->type==='clinician'){
-                $this->createRoom($user);
-            }
+//            if ($request->type==='clinician'){
+//                $this->createRoom($user);
+//            }
             return $this->generateResponse(true, 'Registration Successfully!', $user,200);
         }
         return $this->generateResponse(false, 'Something Went Wrong!', [

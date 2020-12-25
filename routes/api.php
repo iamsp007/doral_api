@@ -125,6 +125,7 @@ Route::group([
     Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
     Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
     //Appointment    
+    Route::post('send-video-meeting-notification', 'App\Http\Controllers\SessionsController@sendVideoMeetingNotification');
 });
 
 // Referral

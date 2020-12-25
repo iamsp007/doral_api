@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendVideoMeetingNotification;
+use App\Models\Appointment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\VirtualRoom;
@@ -9,6 +11,7 @@ use App\Models\VirtualRoom;
 #Import necessary classes from the Vonage API (AKA OpenTok)
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use OpenTok\OpenTok;
 use OpenTok\MediaMode;
 use OpenTok\Role;
@@ -47,5 +50,22 @@ class SessionsController extends Controller
         }catch (\Exception $exception){
             return $this->generateResponse(false,$exception->getMessage(),null,200);
         }
+    }
+
+    public function sendVideoMeetingNotification(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appointment_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->generateResponse(false,'Missign data',$validator->errors(),200);
+        }
+
+        $appointment = Appointment::with(['meeting','provider2Details','provider1Details'])->find($request->appointment_id);
+        if ($appointment){
+            event(new SendVideoMeetingNotification($appointment->patient_id,$appointment));
+            return $this->generateResponse(true,'Sending Video Calling Message Success',$appointment,200);
+        }
+        return $this->generateResponse(false,'Something Went Wrong',null,200);
     }
 }

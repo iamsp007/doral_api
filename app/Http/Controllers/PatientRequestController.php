@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendClinicianPatientRequestNotification;
+use App\Events\SendingSMS;
 use App\Events\SendPatientNotificationMap;
 use App\Http\Requests\CCMReadingRequest;
 use App\Http\Requests\ClinicianRequestAcceptRequest;
@@ -125,26 +126,80 @@ class PatientRequestController extends Controller
         $userDetails = User::getUserDetails($request->user_id);
 //        dd($request->all());
         if($request->reading_type == 1) {
+            $reading_level = 1;
             $explodeValue = explode("/",$request->reading_value);
             if($explodeValue[0] >= 130 && $explodeValue[0] <= 139) {
-                $this->sendNexmoMessage($userDetails,1);
+                $reading_level = 2;
             }else if($explodeValue[0] >= 140) {
-                $this->sendNexmoMessage($userDetails,2);
+                $reading_level = 3;
             }
+            $ccmReadingModel->reading_level = $reading_level;
         }else if($request->reading_type == 2) {
+
             if($request->reading_value > 250) {
-                $this->sendNexmoMessageForGluco($userDetails,4);
-            }else if($request->reading_value < 60) {
-                $this->sendNexmoMessageForGluco($userDetails,3);
+                $reading_level = 4;
+            }else if($request->reading_level < 60) {
+                $reading_level = 3;
             }
+            $ccmReadingModel->reading_level = 3;
         }else if($request->reading_type == 3) {
             if($request->reading_value > 110) {
-                $this->sendNexmoMessage($userDetails);
+                $reading_level = 1;
             }
+            $ccmReadingModel->reading_level = 3;
+        }
+
+        if ($request->reading_type==="1"){
+            $meesages = array();
+            $meesages[] =array(
+                'to'=>env('SMS_TO'),
+                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is slightly higher than regular. https://app.doralhealthconnect.com/caregiver/1');
+
+            if ($reading_level===3){
+                $meesages[] =array(
+                    'to'=>env('SMS_TO'),
+                    'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/2');
+
+            }
+            event(new SendingSMS($meesages));
+        }elseif ($request->reading_type==="2"){
+            if($reading_level == 3) {
+                $le = 'lower';
+            }else {
+                $le = 'higher';
+            }
+
+            $meesages = array();
+            $meesages[] =array(
+                'to'=>env('SMS_TO'),
+                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://app.doralhealthconnect.com/caregiver/'.$reading_level
+            );
+
+            if ($reading_level===3){
+                $meesages[] =array(
+                    'to'=>env('SMS_TO'),
+                    'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/2');
+
+            }
+            event(new SendingSMS($meesages));
+        }elseif ($request->reading_type==="3"){
+            if($reading_level == 3) {
+                $le = 'lower';
+            }else {
+                $le = 'higher';
+            }
+
+            $meesages = array();
+            $meesages[] =array(
+                'to'=>env('SMS_TO'),
+                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://app.doralhealthconnect.com/caregiver/'.$reading_level
+            );
+            event(new SendingSMS($meesages));
         }
 
         if ($ccmReadingModel->save()){
-            return $this->generateResponse(true,'CCM Reading Success!');
+
+            return $this->generateResponse(true,'CCM Reading Success!',$ccmReadingModel);
         }
         return $this->generateResponse(false,'Something Went Wrong!');
     }
