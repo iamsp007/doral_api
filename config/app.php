@@ -14,7 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'DoralWeb'),
-    'date_format' => 'm/d/Y H:i:s',
+    'date_format' => 'm/d/Y',
     'date_format_javascript' => 'MM/DD/YYYY',
 
     /*
