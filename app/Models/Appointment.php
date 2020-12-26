@@ -18,6 +18,11 @@ class Appointment extends Model
     protected $fillable = [
         'title', 'appointment_url', 'book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url'
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime:m/d/Y H:i:s',
+        'updated_at' => 'datetime:m/d/Y H:i:s',
+    ];
     /**
      * Get Patient details
      */

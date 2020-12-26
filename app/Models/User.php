@@ -52,8 +52,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:m/d/Y H:i:s',
+        'updated_at' => 'datetime:m/d/Y H:i:s',
         'email_verified_at' => 'datetime',
     ];
     /**
@@ -124,7 +124,11 @@ class User extends Authenticatable
     }
 
     public function myRoom(){
-        return $this->hasOne(VirtualRoom::class,'id','user_id');
+        return $this->hasOne(VirtualRoom::class,'user_id','id');
+    }
+
+    public function detail(){
+        return $this->hasOne(PatientReferral::class,'user_id','id');
     }
 
 }

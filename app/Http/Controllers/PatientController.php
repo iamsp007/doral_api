@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoadlSelectedDiesesRequest;
+use App\Models\Appointment;
 use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -231,11 +233,41 @@ class PatientController extends Controller
 
     public function scheduleAppoimentList(Request $request){
         // patient referral pending status patient list
-        $patientList = PatientReferral::with('detail','service','filetype')
-            ->where('first_name','!=',null)
-            ->where('status','=','running')
-            ->get();
-        return $this->generateResponse(true,'get schedule patient list',$patientList,200);
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['patients','meeting','service','filetype'])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->where('book_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss'))
+            ->orderBy('book_datetime','desc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+    }
+
+    public function cancelAppoimentList(Request $request){
+        // patient referral pending status patient list
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['patients','meeting','service','filetype'])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->where([
+                ['book_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss')],
+                ['status','=','cancel']
+            ])
+            ->orderBy('book_datetime','desc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }
 
     public function getNewPatientListForAppointment(Request $request){
