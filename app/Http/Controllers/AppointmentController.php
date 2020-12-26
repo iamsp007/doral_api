@@ -40,7 +40,7 @@ class AppointmentController extends Controller
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
-            $message = $e->getMessage();
+            $message = $e->getMessage()." ".$e->getLine();
             return $this->generateResponse($status, $message, $data);
         }
     }

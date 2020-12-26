@@ -90,38 +90,40 @@ class Appointment extends Model
                 ->with(['provider2Details' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }]);
-            $type = $request['type'];
-            switch ($type) {
-                case 'byDate':
-                    # code...
-                    break;
-                case 'byWeek':
-                    # code...
-                    break;
-                case 'byMonth':
-                    # code...
-                    break;
-                case 'byDateEmployeeId':
-                    # code...
-                    break;
-                case 'byWeekEmployeeId':
-                    # code...
-                    break;
-                case 'byMonthEmployeeId':
-                    # code...
-                    break;
-                case 'byDatePatientId':                    
-                    $patientId = $request['patient_id'];
-                    $startDate = $request['start_date'];
-                    $resp = $resp->where('patient_id', $patientId);
-                    $resp= $resp->whereDate('start_datetime', $startDate);
-                    break;
-                case 'byWeekPatientId':
-                    # code...
-                    break;
-                case 'byMonthPatientId':
-                    # code...
-                    break;
+            if (count($request) > 0) {
+                $type = $request['type'];
+                switch ($type) {
+                    case 'byDate':
+                        # code...
+                        break;
+                    case 'byWeek':
+                        # code...
+                        break;
+                    case 'byMonth':
+                        # code...
+                        break;
+                    case 'byDateEmployeeId':
+                        # code...
+                        break;
+                    case 'byWeekEmployeeId':
+                        # code...
+                        break;
+                    case 'byMonthEmployeeId':
+                        # code...
+                        break;
+                    case 'byDatePatientId':
+                        $patientId = $request['patient_id'];
+                        $startDate = $request['start_date'];
+                        $resp = $resp->where('patient_id', $patientId);
+                        $resp = $resp->whereDate('start_datetime', $startDate);
+                        break;
+                    case 'byWeekPatientId':
+                        # code...
+                        break;
+                    case 'byMonthPatientId':
+                        # code...
+                        break;
+                }
             }
             $resp = $resp->orderBy('id', 'desc')
                 ->get()
