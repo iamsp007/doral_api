@@ -20,23 +20,27 @@ class AppointmentController extends Controller
     public function index()
     {
         $status = false;
-        $data = [];
+        $data = $services = [];
         $message = "";
         try {
 
             $respons = Appointment::getAllAppointment();
+            //Get Services
+            //Get PM/MA
+            //Get Co-ordinator
             if (!$respons['status']) {
                 throw new Exception($respons['message']);
             }
             $message = $respons['message'];
             $data = [
-                'appointments' => $respons['data']
+                "appointments" => $respons['data'],
+                "services" => $services
             ];
             $status = true;
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
-            $message = $e->getMessage();
+            $message = $e->getMessage()." ".$e->getLine();
             return $this->generateResponse($status, $message, $data);
         }
     }
@@ -125,7 +129,28 @@ class AppointmentController extends Controller
      */
     public function show($id)
     {
-        //
+        $status = false;
+        $data = $services = [];
+        $message = "";
+        try {
+            $respons = Appointment::getAppointment($id);
+            //Get Services
+            //Get PM/MA
+            //Get Co-ordinator
+            if (!$respons['status']) {
+                throw new Exception($respons['message']);
+            }
+            $message = $respons['message'];
+            $data = [
+                "appointments" => $respons['data']
+            ];
+            $status = true;
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**
@@ -136,7 +161,28 @@ class AppointmentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $status = false;
+        $data = $services = [];
+        $message = "";
+        try {
+            $respons = Appointment::getAppointment($id);
+            //Get Services
+            //Get PM/MA
+            //Get Co-ordinator
+            if (!$respons['status']) {
+                throw new Exception($respons['message']);
+            }
+            $message = $respons['message'];
+            $data = [
+                "appointments" => $respons['data']
+            ];
+            $status = true;
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, $data);
+        }
     }
 
     /**
@@ -165,13 +211,14 @@ class AppointmentController extends Controller
     /**
      * Upcoming Appointment
      */
-    public function upcomingPatientAppointment(Request $request){
+    public function upcomingPatientAppointment(Request $request)
+    {
         $status = false;
         $data = [];
         $message = "";
         try {
             $request = $request->all();
-            if(!$request['patient_id']){
+            if (!$request['patient_id']) {
                 throw new Exception("Invalid parameter passed");
             }
             $respons = Appointment::getUpcomingPatientAppointment($request);
@@ -194,13 +241,14 @@ class AppointmentController extends Controller
     /**
      * Upcoming Appointment
      */
-    public function cancelPatientAppointment(Request $request){
+    public function cancelPatientAppointment(Request $request)
+    {
         $status = false;
         $data = [];
         $message = "";
         try {
             $request = $request->all();
-            if(!$request['patient_id']){
+            if (!$request['patient_id']) {
                 throw new Exception("Invalid parameter passed");
             }
             $respons = Appointment::getCancelPatientAppointment($request);
@@ -223,13 +271,14 @@ class AppointmentController extends Controller
     /**
      * Past Appointment
      */
-    public function pastPatientAppointment(Request $request){
+    public function pastPatientAppointment(Request $request)
+    {
         $status = false;
         $data = [];
         $message = "";
         try {
             $request = $request->all();
-            if(!$request['patient_id']){
+            if (!$request['patient_id']) {
                 throw new Exception("Invalid parameter passed");
             }
             $respons = Appointment::getPastPatientAppointment($request);
@@ -276,6 +325,38 @@ class AppointmentController extends Controller
     }
 
     /**
+     * Get Cancel Appointment Reasons
+     */
+    public function getAppointmentsByDate(Request $request)
+    {
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+            $request = $request->all();
+            if (!$request['type']) {
+                throw new Exception("Invalid type / parameter");
+            }
+            $appointments = Appointment::getAllAppointment($request);
+            $reasons = CancelAppointmentReasons::all();
+            if (!$reasons) {
+                throw new Exception("No reasons are found into database");
+            }
+            $data = [
+                'reasons' => $reasons,
+                'appointments'=>$appointments
+            ];
+            $status = true;
+            $message = "Reasons List";
+            return response()->json([$status, $message, $data]);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
+    }
+
+    /**
      * Cancel The Appointment
      */
     public function cancelAppointment(Request $request)
@@ -285,7 +366,7 @@ class AppointmentController extends Controller
         $message = 'Something wrong';
         try {
             $request = $request->all();
-            if(!$request['appointment_id'] || !$request['reason_id'] || !$request['cancel_user']){
+            if (!$request['appointment_id'] || !$request['reason_id'] || !$request['cancel_user']) {
                 throw new Exception("Invalid parameter passed");
             }
             $cancel = Appointment::cancelAppointment($request);
