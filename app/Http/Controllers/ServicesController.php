@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Services;
-use App\Models\ServiceMaster;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -141,7 +140,7 @@ class ServicesController extends Controller
         $data = [];
         $message = 'Something wrong';
         try {
-            $services = ServiceMaster::all();
+            $services = Services::all();
             if (!$services) {
                 throw new Exception("No Services are found into database");
             }
