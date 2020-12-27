@@ -90,8 +90,8 @@ class AppointmentController extends Controller
             $appointment->start_datetime = $request->start_datetime;
             $appointment->end_datetime = $request->end_datetime;
             $appointment->patient_id = $request->patient_id;
-            $appointment->provider1 = $request->provider1;
-            $appointment->provider2 = $request->provider2;
+            $appointment->provider1 = 1657;
+            $appointment->provider2 = 2;
             $appointment->service_id = $request->service_id;
             $appointment->booked_user_id = Auth::user()->id;
             if ($appointment->save()){
