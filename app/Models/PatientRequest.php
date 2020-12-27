@@ -16,12 +16,19 @@ class PatientRequest extends Model
     }
     public function patientDetail(){
 
-        return $this->hasOne(User::class,'id','user_id');
+        return $this->hasOne(User::class,'id','user_id')->with('detail');
     }
     public function ccrm(){
         return $this->hasMany(CCMReading::class,'user_id','user_id');
     }
     public function routes(){
         return $this->hasMany(RoadlInformation::class,'patient_requests_id','id')->with('user');
+    }
+    /**
+     * Get Meeting Reasons
+     */
+    public function meeting()
+    {
+        return $this->hasOne(VirtualRoom::class, 'appointment_id', 'id');
     }
 }

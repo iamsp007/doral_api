@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendVideoMeetingNotification;
+use App\Http\Controllers\Zoom\MeetingController;
+use App\Http\Requests\PatientRequest;
 use App\Models\Appointment;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\VirtualRoom;
 
@@ -64,6 +67,33 @@ class SessionsController extends Controller
         $appointment = Appointment::with(['meeting','provider2Details','provider1Details'])->find($request->appointment_id);
         if ($appointment){
             event(new SendVideoMeetingNotification($appointment->patient_id,$appointment));
+            return $this->generateResponse(true,'Sending Video Calling Message Success',$appointment,200);
+        }
+        return $this->generateResponse(false,'Something Went Wrong',null,200);
+    }
+
+    public function startVideoMeetingNotification(Request $request){
+        $validator = Validator::make($request->all(), [
+            'patient_request_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->generateResponse(false,'Missign data',$validator->errors(),200);
+        }
+
+        $request->request->add([
+            'appointment_id' => $request->patient_request_id,
+            'topic' => 'Roadl Start Call',
+            'start_time'=>Carbon::now(),
+            'agenda'=>'Start Video Agenda'
+        ]);
+
+        $meetingController = new MeetingController();
+        $resp =  $meetingController->create($request);
+
+        $appointment = \App\Models\PatientRequest::with('meeting','detail')->find($request->patient_request_id);
+        if ($appointment){
+            event(new SendVideoMeetingNotification($appointment->detail->id,$appointment));
             return $this->generateResponse(true,'Sending Video Calling Message Success',$appointment,200);
         }
         return $this->generateResponse(false,'Something Went Wrong',null,200);
