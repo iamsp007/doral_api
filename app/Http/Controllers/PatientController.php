@@ -243,8 +243,8 @@ class PatientController extends Controller
             ->with(['provider2Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-            ->where('book_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss'))
-            ->orderBy('book_datetime','desc')
+            ->where('start_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss'))
+            ->orderBy('start_datetime','desc')
             ->get()->toArray();
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }
