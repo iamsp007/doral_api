@@ -24,6 +24,9 @@ Route::group([
     Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\AuthController@reset')->name('password.reset');
     Route::post('password/reset', 'App\Http\Controllers\Auth\AuthController@resetPassword')->name('password.update');
 
+    Route::get('states', 'App\Http\Controllers\Auth\AuthController@states')->name('states');
+    Route::get('cities', 'App\Http\Controllers\Auth\AuthController@cities')->name('cities');
+
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
     Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
