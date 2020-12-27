@@ -137,13 +137,19 @@ Route::group([
 ], function () {
 //    Route::get('/get-patient-list','');
     Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
-    
+});
+
+// Supervisor
+Route::group([
+    'middleware' => ['auth:api','role:supervisor'],
+], function () {
     Route::get('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@index');
     Route::post('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@store');
     Route::post('filter-by-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@filter');
     Route::post('assign-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@assign');
     Route::post('remove-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@remove');
 });
+
 // Get list of meetings.
 Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
 
