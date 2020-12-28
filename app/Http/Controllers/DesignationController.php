@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\designation;
+use App\Models\Designation;
 use Illuminate\Http\Request;
 
 class DesignationController extends Controller
@@ -18,7 +18,7 @@ class DesignationController extends Controller
         $data = array();
         try {
             
-            $designation = designation::all()->toArray();
+            $designation = Designation::all()->toArray();
             if (!$designation) {
                 throw new Exception("No designation are registered");
             }
@@ -56,10 +56,10 @@ class DesignationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\Designation  $designation
      * @return \Illuminate\Http\Response
      */
-    public function show(designation $designation)
+    public function show(Designation $designation)
     {
         //
     }
@@ -67,10 +67,10 @@ class DesignationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\Designation  $designation
      * @return \Illuminate\Http\Response
      */
-    public function edit(designation $designation)
+    public function edit(Designation $designation)
     {
         //
     }
@@ -79,10 +79,10 @@ class DesignationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\Designation  $designation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, designation $designation)
+    public function update(Request $request, Designation $designation)
     {
         //
     }
@@ -90,10 +90,10 @@ class DesignationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\designation  $designation
+     * @param  \App\Models\Designation  $designation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(designation $designation)
+    public function destroy(Designation $designation)
     {
         //
     }

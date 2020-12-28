@@ -21,6 +21,8 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+use App\Models\State;
+use App\Models\City;
 
 class AuthController extends Controller
 {
@@ -234,5 +236,15 @@ class AuthController extends Controller
                 return $this->generateResponse(false, $message, $data);
             }
         }
+    }
+
+    public function states()
+    {
+        return State::all();
+    }
+
+    public function cities()
+    {
+        return City::all();
     }
 }

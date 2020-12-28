@@ -35,7 +35,10 @@ class DatabaseSeeder extends Seeder
             DiesesMasterSeeder::class,
             FileTypeSeeder::class,
             ServicesSeeder::class,
-            MDFormsSeeder::class
+            MDFormsSeeder::class,
+            StatesFileSeeder::class,
+            CitiesFileSeeder::class,
+            CitiesExtendedFileSeeder::class
         ]);
     }
 }
