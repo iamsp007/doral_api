@@ -19,8 +19,13 @@ use Illuminate\Support\Facades\Hash;
 use OpenTok\MediaMode;
 use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
+<<<<<<< HEAD
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+=======
+use App\Models\State;
+use App\Models\City;
+>>>>>>> a9085fb3c7847281729d77788a1493c29b009e1d
 
 class AuthController extends Controller
 {
@@ -234,5 +239,15 @@ class AuthController extends Controller
                 return $this->generateResponse(false, $message, $data);
             }
         }
+    }
+
+    public function states()
+    {
+        return State::all();
+    }
+
+    public function cities()
+    {
+        return City::all();
     }
 }
