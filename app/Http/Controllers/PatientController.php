@@ -106,12 +106,13 @@ class PatientController extends Controller
             }
             $id = $request['id'];
             unset($request['id']);
-            $patient = Patient::find($id);
+            $patient = Patient::where('user_id', $id)->first();
             if (!$patient) {
                 throw new Exception("Patient are not found into database");
             }
             switch ($step) {
                 case '1':
+                    $id = $patient->id;
                     $data = Patient::updatePatient($id, $request);
                     if ($data) {
                         $status = true;
@@ -120,6 +121,7 @@ class PatientController extends Controller
                     }
                     break;
                 case '2': // Insert services
+                    $id = $patient->id;
                     $data = Patient::updateServices($id, $request);
                     if ($data) {
                         $status = true;
@@ -128,6 +130,7 @@ class PatientController extends Controller
                     }
                     break;
                 case '3': // Insert Insurance
+                    $id = $patient->id;
                     $data = Patient::updateInsurance($id, $request);
                     if ($data) {
                         $status = true;
@@ -141,7 +144,7 @@ class PatientController extends Controller
             }
         } catch (\Exception $e) {
             $status = false;
-            $message = $e->getMessage();
+            $message = $e->getMessage(). $e->getLine();
             return $this->generateResponse($status, $message, $resp);
         }
     }

@@ -99,7 +99,8 @@ class Appointment extends Model
                 $type = $request['type'];
                 switch ($type) {
                     case 'byDate':
-                        # code...
+                        $startDate = $request['start_date'];
+                        $resp = $resp->whereDate('start_datetime', $startDate);
                         break;
                     case 'byWeek':
                         # code...
