@@ -62,36 +62,11 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request)
     {
-        //Add Validation
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'gender' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string',
-            'dob' => 'required|date',
-            'phone' => 'required|numeric'
-        ]);
-        //Post data
-        $request = json_decode($request->getContent(), true);
-        $user = $request;
-        $data = array(
-            'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],
-            'phone' => $request['phone'],
-            'gender' => $request['gender'],
-            'email' => $request['email'],
-            'dob' => $request['dob'],
-            'status' => 'inactive',
-            'type' => $request['type'],
-            'password' => Hash::make($request['password'])
-        );
-        $status = false;
-        $resp = [];
-        $message = 'Something wrong';
         try {
+            $data = $request;
+            dd($data);
             \DB::beginTransaction();
             $id = User::insert($data);
             if ($id) {
