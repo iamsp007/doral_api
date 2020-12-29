@@ -99,7 +99,7 @@ class AuthController extends Controller
             $id = $user->id;
             if ($id) {
                 $request['user_id'] = $id;
-                if ($request['type'] == 'employee' || $request['type'] == 'admin') {
+                if ($request->type == 'clinician' || $request->type == 'admin') {
                     unset($request['type']);
                     $result = $this->employeeContoller->store($request);
                 } else if ($request['type'] == 'patient') {
@@ -116,7 +116,6 @@ class AuthController extends Controller
                 ];
                 $status = true;
                 $message = "Employee Added Successfully information";
-                return $this->generateResponse($status, $message, $resp);
                 return $this->generateResponse(true, 'Registration Successfully!', $user, 200);
             } else {
                 throw new \ErrorException('Error found');
