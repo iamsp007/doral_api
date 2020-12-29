@@ -24,6 +24,9 @@ Route::group([
     Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\AuthController@reset')->name('password.reset');
     Route::post('password/reset', 'App\Http\Controllers\Auth\AuthController@resetPassword')->name('password.update');
 
+    Route::get('states', 'App\Http\Controllers\Auth\AuthController@states')->name('states');
+    Route::get('cities', 'App\Http\Controllers\Auth\AuthController@cities')->name('cities');
+
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
     Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
@@ -144,6 +147,18 @@ Route::group([
 //    Route::get('/get-patient-list','');
     Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
 });
+
+// Supervisor
+Route::group([
+    'middleware' => ['auth:api','role:supervisor'],
+], function () {
+    Route::get('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@index');
+    Route::post('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@store');
+    Route::post('filter-by-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@filter');
+    Route::post('assign-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@assign');
+    Route::post('remove-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@remove');
+});
+
 // Get list of meetings.
 Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
 
