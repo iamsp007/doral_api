@@ -12,6 +12,7 @@ use App\Models\VonageRoom;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\UserController;
 use App\Models\referral;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +20,21 @@ use Illuminate\Support\Facades\Hash;
 use OpenTok\MediaMode;
 use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PatientController;
+use App\Models\State;
+use App\Models\City;
+
 
 class AuthController extends Controller
 {
-    //
+    protected $employeeContoller, $patientController;
+    public function __construct(EmployeeController $employeeContoller, PatientController $patientController)
+    {
+        $this->employeeContoller = $employeeContoller;
+        $this->patientController = $patientController;
+    }
+
     public function login(LoginRequest $request)
     {
         try {
@@ -59,7 +71,6 @@ class AuthController extends Controller
                     $users->device_token = $request->device_token;
                     $users->device_type = $request->device_type;
                     $users->save();
-
                 }
             }
             return $this->generateResponse(true, 'Login Successfully!', $data);
@@ -80,21 +91,44 @@ class AuthController extends Controller
         $user->dob = $request->dob;
         $user->phone = $request->phone;
         $user->status = '1';
-        //        $user->hasPermissionTo('Create', 'web');
+        //$user->hasPermissionTo('Create', 'web');
         $user->assignRole($request->type)->syncPermissions(Permission::all());
-        if ($user->save()){
-            if ($request->type==='clinician'){
-                $this->createRoom($user);
+        if ($user->save()) {
+
+            $request = $request->toArray();
+            $id = $user->id;
+            if ($id) {
+                $request['user_id'] = $id;
+                if ($request['type'] == 'employee' || $request['type'] == 'admin') {
+                    unset($request['type']);
+                    $result = $this->employeeContoller->store($request);
+                } else if ($request['type'] == 'patient') {
+                    unset($request['type']);
+                    $result = $this->patientController->store($request);
+                }
+                // Check the condition if error into database
+                if (!$result) {
+                    throw new \ErrorException('Error in-Insert');
+                }
+
+                $resp = [
+                    'user' => $user,
+                ];
+                $status = true;
+                $message = "Employee Added Successfully information";
+                return $this->generateResponse($status, $message, $resp);
+                return $this->generateResponse(true, 'Registration Successfully!', $user, 200);
+            } else {
+                throw new \ErrorException('Error found');
             }
-            return $this->generateResponse(true, 'Registration Successfully!', $user,200);
         }
         return $this->generateResponse(false, 'Something Went Wrong!', [
             'message' => 'Invalid Daata'
-        ],200);
-
+        ], 200);
     }
 
-    public function createRoom($user){
+    public function createRoom($user)
+    {
         try {
             // Instantiate a new OpenTok object with our api key & secret
             $opentok = new OpenTok(env('VONAGE_API_KEY'), env('VONAGE_API_SECRET'));
@@ -105,21 +139,20 @@ class AuthController extends Controller
             // Create a new virtual class that would be stored in db
             $class = new VonageRoom();
             // Generate a name based on the name the teacher entered
-            $class->name = 'Dr. '.$user->first_name . " " . $user->last_name . " Room - ".$user->id;
+            $class->name = 'Dr. ' . $user->first_name . " " . $user->last_name . " Room - " . $user->id;
             // Store the unique ID of the session
             $class->user_id = $user->id;
             $class->session_id = $session->getSessionId();
             // Save this class as a relationship to the teacher
             $user->myRoom()->save($class);
-        }catch (\Exception $exception){
-
+        } catch (\Exception $exception) {
         }
     }
 
     public function logout(Request $request)
     {
         $users = User::find($request->user()->id);
-        if ($users){
+        if ($users) {
             $users->is_available = 0;
             $users->save();
         }
@@ -204,5 +237,15 @@ class AuthController extends Controller
                 return $this->generateResponse(false, $message, $data);
             }
         }
+    }
+
+    public function states()
+    {
+        return State::all();
+    }
+
+    public function cities()
+    {
+        return City::all();
     }
 }

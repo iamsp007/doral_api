@@ -317,7 +317,7 @@ class AppointmentController extends Controller
             ];
             $status = true;
             $message = "Reasons List";
-            return response()->json([$status, $message, $data]);
+            return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
@@ -349,7 +349,7 @@ class AppointmentController extends Controller
             ];
             $status = true;
             $message = "Reasons List";
-            return response()->json([$status, $message, $data]);
+            return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
