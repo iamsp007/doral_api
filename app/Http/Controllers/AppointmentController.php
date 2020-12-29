@@ -6,6 +6,7 @@ use App\Http\Controllers\Zoom\MeetingController;
 use App\Models\Appointment;
 use App\Models\CancelAppointmentReasons;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -86,7 +87,7 @@ class AppointmentController extends Controller
             $appointment = new Appointment();
             $appointment->title = $request->title;
             $appointment->appointment_url = 'appointment_url';
-            $appointment->book_datetime = $request->book_datetime;
+            $appointment->book_datetime = Carbon::parse($request->book_datetime)->format();
             $appointment->start_datetime = $request->start_datetime;
             $appointment->end_datetime = $request->end_datetime;
             $appointment->patient_id = $request->patient_id;

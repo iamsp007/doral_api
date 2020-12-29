@@ -8,6 +8,7 @@ use App\Http\Requests\RegistrationRequest;
 use App\Http\Requests\UpdateDeviceTokenRequest;
 use App\Models\User;
 use App\Models\VirtualRoom;
+use App\Models\VonageRoom;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -82,9 +83,9 @@ class AuthController extends Controller
         //        $user->hasPermissionTo('Create', 'web');
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()){
-//            if ($request->type==='clinician'){
-//                $this->createRoom($user);
-//            }
+            if ($request->type==='clinician'){
+                $this->createRoom($user);
+            }
             return $this->generateResponse(true, 'Registration Successfully!', $user,200);
         }
         return $this->generateResponse(false, 'Something Went Wrong!', [
@@ -102,7 +103,7 @@ class AuthController extends Controller
             $session = $opentok->createSession(array('mediaMode' => MediaMode::RELAYED));
 
             // Create a new virtual class that would be stored in db
-            $class = new VirtualRoom();
+            $class = new VonageRoom();
             // Generate a name based on the name the teacher entered
             $class->name = 'Dr. '.$user->first_name . " " . $user->last_name . " Room - ".$user->id;
             // Store the unique ID of the session
