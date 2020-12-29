@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Events/SendVideoMeetingNotification.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Events/SendVideoMeetingNotification.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Events/SendingSMS.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Events/SendingSMS.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppointmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppointmentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientReferralController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientReferralController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Imports/BulkImport.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Imports/BulkImport.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/nexmo.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/nexmo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -271,6 +265,7 @@
       <workItem from="1608954214768" duration="1593000" />
       <workItem from="1608961122332" duration="3905000" />
       <workItem from="1609176193610" duration="3309000" />
+      <workItem from="1609212109058" duration="24244000" />
     </task>
     <servers />
   </component>

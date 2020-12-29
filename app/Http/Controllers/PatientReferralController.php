@@ -86,13 +86,13 @@ class PatientReferralController extends Controller
                 $path = $request->file('file_name')->storeAs($folder, $fileNameToStore);
 
                 $filePath = storage_path('app/'.$path);
+
                 $data = Excel::import(new BulkImport(
                     $request->referral_id,
                     $request->service_id,
                     $request->file_type,
                     $request->form_id
                 ), $request->file('file_name'));
-//dd($data);
                 return $this->generateResponse(true,'CSV Uploaded successfully',null,200);
             }
 
@@ -101,7 +101,7 @@ class PatientReferralController extends Controller
 dd($exception->getMessage());
         }
 
-        return $this->generateResponse($status,$message,null,200);
+        return $this->generateResponse(false,'something Went Wrong!',null,200);
     }
 
     /**
