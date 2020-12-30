@@ -231,6 +231,7 @@ class PatientController extends Controller
             ->where('first_name','!=',null)
             ->where('status','=','pending')
             ->get();
+        //dd($patientList);    
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
 

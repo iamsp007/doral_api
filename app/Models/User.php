@@ -128,7 +128,7 @@ class User extends Authenticatable
     }
 
     public function detail(){
-        return $this->hasOne(PatientReferral::class,'user_id','id');
+        return $this->belongsTo(PatientReferral::class,'user_id','id');
     }
 
 }
