@@ -97,6 +97,14 @@ Route::group([
         Route::get('employee/search/getAppoinment', 'App\Http\Controllers\EmployeeController@getAppoinment');
         // Email Template Urls
         Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
+
+        //Applicant
+        Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
+        Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
+        Route::post('applicants/step-two', 'App\Http\Controllers\ApplicantController@stepTwo');
+        Route::post('applicants/step-three', 'App\Http\Controllers\ApplicantController@stepThree');
+        Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');
+        
     });
 });
 

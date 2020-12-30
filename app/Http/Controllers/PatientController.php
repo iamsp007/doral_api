@@ -97,7 +97,7 @@ class PatientController extends Controller
         }
 
         try {
-            $request = json_decode($request->getContent(), true);
+            $request = $request->all();
             if (!$step) {
                 throw new Exception("Invalid parameter are required");
             }
