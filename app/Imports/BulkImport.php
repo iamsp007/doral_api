@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Hash;
@@ -17,11 +18,11 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Spatie\Permission\Models\Permission;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
-ini_set('max_execution_time', '0'); // for infinite time of execution
+use Maatwebsite\Excel\Concerns\WithProgressBar;
 
 HeadingRowFormatter::default('slug');
 
-class BulkImport implements ToModel, WithHeadingRow
+class BulkImport implements ToModel, WithHeadingRow, WithValidation
 {
     /**
     * @param array $row
@@ -46,8 +47,8 @@ class BulkImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         try {
-            $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
 
+            $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
             if ($patient){
                 $user = User::find($patient->user_id);
             }else{
@@ -63,9 +64,13 @@ class BulkImport implements ToModel, WithHeadingRow
             }else{
                 $user->gender = '3';
             }
+            \Log::info($user);
             $user->dob = Carbon::createFromDate($row['date_of_birth']);
-            if (!User::where(['email'=>$row['email']])->first()){
-                $user->email = $row['email'];
+
+            if (isset($row['email']) && !empty($row['email'])){
+                if (!User::where(['email'=>$row['email']])->first()){
+                    $user->email = $row['email'];
+                }
             }
 
             $user->password = Hash::make('doral@123');
@@ -73,6 +78,7 @@ class BulkImport implements ToModel, WithHeadingRow
                 $user->phone = $row['phone2'];
             }
             $user->assignRole('patient')->syncPermissions(Permission::all());
+
             if ($user->save()){
 
                 $address = '';
@@ -103,7 +109,7 @@ class BulkImport implements ToModel, WithHeadingRow
                        'form_id'=>$this->form_id,
                        'first_name'=>$row['first_name'],
                        'last_name'=>$row['last_name'],
-                       'middle_name'=>$row['middle_name'],
+                       'middle_name'=>isset($row['middle_name'])?$row['middle_name']:null,
                        'gender'=>$row['gender'],
                        'dob'=>Carbon::createFromDate($row['date_of_birth']),
                        'phone1'=>isset($row['phone2'])?$row['phone2']:null,
@@ -113,6 +119,7 @@ class BulkImport implements ToModel, WithHeadingRow
                        'eng_name'=>$emergency1_name,
                    ]);
             }
+            \Log::info(123456);
 
         } catch(Exception $e) {
             \Log::info($e);
@@ -120,4 +127,11 @@ class BulkImport implements ToModel, WithHeadingRow
     }
 
 
+    public function rules(): array
+    {
+        return [
+            'ssn'=>'required',
+            'date_of_birth'=>'required',
+        ];
+    }
 }
