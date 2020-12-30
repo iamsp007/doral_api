@@ -35,7 +35,7 @@ Route::group([
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::post('patient-referral/storecert', 'App\Http\Controllers\PatientReferralController@storeCertDate');
-    Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+    /*Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');*/
     Route::post('patient-occupational/storeoccupational', 'App\Http\Controllers\PatientOccupationalController@storeOccupational');
     Route::get('patient-occupational/{id}', 'App\Http\Controllers\PatientOccupationalController@index')->name('occupational_patients');
     Route::get('mdforms', 'App\Http\Controllers\MDFormsController@index')->name('mdforms.index');
@@ -53,6 +53,10 @@ Route::group([
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
 
     Route::post('caregiver/actionstore', 'App\Http\Controllers\CaregiverController@actionStore')->name('caregiver.actionstore');
+
+    // supervisour api
+    Route::get('getNewPatientListAll', 'App\Http\Controllers\PatientController@getPatientList');
+    Route::get('getNewPatientList', 'App\Http\Controllers\PatientController@getNewPatientList');
 
     Route::group([
         'middleware' => ['auth:api'],
@@ -135,16 +139,16 @@ Route::group([
 
 // Referral
 Route::group([
-    'middleware' => ['auth:api','role:referral'],
+    'prefix' => 'auth'
 ], function () {
-
+    Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
 });
 
 // Co Ordinator
 Route::group([
     'middleware' => ['auth:api','role:co-ordinator'],
 ], function () {
-//    Route::get('/get-patient-list','');
+    //Route::get('/get-patient-list','');
     Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
 });
 
@@ -152,6 +156,7 @@ Route::group([
 Route::group([
     'middleware' => ['auth:api','role:supervisor'],
 ], function () {
+    /*Route::get('getNewPatientListForAppointment1', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');*/
     Route::get('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@index');
     Route::post('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@store');
     Route::post('filter-by-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@filter');
