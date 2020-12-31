@@ -111,6 +111,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                        'last_name'=>$row['last_name'],
                        'middle_name'=>isset($row['middle_name'])?$row['middle_name']:null,
                        'gender'=>$row['gender'],
+                       'ssn' => $row['ssn'],
                        'dob'=>Carbon::createFromDate($row['date_of_birth']),
                        'phone1'=>isset($row['phone2'])?$row['phone2']:null,
                        'phone2'=>isset($row['phone2'])?$row['phone2']:null,
