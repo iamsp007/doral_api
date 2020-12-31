@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Applicant;
 use App\Models\ApplicantReference;
+use App\Models\Education;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -50,6 +51,7 @@ class ApplicantController extends Controller
                 'date' => 'required'
             ]);
             $applicant = new Applicant();
+            $applicant->user_id = $request->user()->id;
             $applicant->applicant_name = $request->applicant_name;
             $applicant->other_name = $request->other_name;
             $applicant->ssn = $request->ssn;
@@ -195,267 +197,113 @@ class ApplicantController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a listing of the resource.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function addressLife()
     {
-        $status = false;
-        $data = $services = [];
-        $message = "";
-        try {
-            $respons = Appointment::getAppointment($id);
-            //Get Services
-            //Get PM/MA
-            //Get Co-ordinator
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                "appointments" => $respons['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage();
-            return $this->generateResponse($status, $message, $data);
-        }
+        $status = true;
+        $message = "Address Life";
+        $data = config('common.address_life');
+        return $this->generateResponse($status, $message, $data);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display a listing of the resource.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function relationship()
     {
-        $status = false;
-        $data = $services = [];
-        $message = "";
-        try {
-            $respons = Appointment::getAppointment($id);
-            //Get Services
-            //Get PM/MA
-            //Get Co-ordinator
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                "appointments" => $respons['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage();
-            return $this->generateResponse($status, $message, $data);
-        }
+        $status = true;
+        $message = "Relationship";
+        $data = config('common.relationship');
+        return $this->generateResponse($status, $message, $data);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Education a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function education(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'medical_institute_name' => 'required',
+                'medical_institute_address' => 'required',
+                'medical_institute_city' => 'required',
+                'medical_institute_state' => 'required',
+                'medical_institute_year_started' => 'required',
+                'medical_institute_year_completed' => 'required',
+                'residency_institute_name' => 'required',
+                'residency_institute_address' => 'required',
+                'residency_institute_city' => 'required',
+                'residency_institute_state' => 'required',
+                'residency_institute_year_started' => 'required',
+                'residency_institute_year_completed' => 'required'
+            ]);
+            $education = new Education();
+            $education->user_id = $request->user()->id;
+
+            $education->medical_institute_name = $request->medical_institute_name;
+            $education->medical_institute_address = $request->medical_institute_address;
+            $education->medical_institute_city = $request->medical_institute_city;
+            $education->medical_institute_state = $request->medical_institute_state;
+            $education->medical_institute_year_started = $request->medical_institute_year_started;
+            $education->medical_institute_year_completed = $request->medical_institute_year_completed;
+
+            $education->residency_institute_name = $request->residency_institute_name;
+            $education->residency_institute_address = $request->residency_institute_address;
+            $education->residency_institute_city = $request->residency_institute_city;
+            $education->residency_institute_state = $request->residency_institute_state;
+            $education->residency_institute_year_started = $request->residency_institute_year_started;
+            $education->residency_institute_year_completed = $request->residency_institute_year_completed;
+
+            $education->fellowship_institute_name = $request->fellowship_institute_name;
+            $education->fellowship_institute_address = $request->fellowship_institute_address;
+            $education->fellowship_institute_city = $request->fellowship_institute_city;
+            $education->fellowship_institute_state = $request->fellowship_institute_state;
+            $education->fellowship_institute_year_started = $request->fellowship_institute_year_started;
+            $education->fellowship_institute_year_completed = $request->fellowship_institute_year_completed;
+
+            if ($education->save()){
+                $status = true;
+                $message = "Successfully stored education data.";
+                return $this->generateResponse($status, $message, $education, 200);
+            }
+            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, []);
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Display a listing of the resource.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
-
-    /**
-     * Upcoming Appointment
-     */
-    public function upcomingPatientAppointment(Request $request)
+    public function getEducation()
     {
         $status = false;
         $data = [];
-        $message = "";
+        $message = "Educations are not available.";
         try {
-            $request = $request->all();
-            if (!$request['patient_id']) {
-                throw new Exception("Invalid parameter passed");
+            $response = Education::with(['user', 'medicalInstituteState', 'medicalInstituteCity', 'residencyInstituteState', 'residencyInstituteCity', 'fellowshipInstituteState', 'fellowshipInstituteCity'])->get();
+            if (!$response) {
+                throw new Exception($message);
             }
-            $respons = Appointment::getUpcomingPatientAppointment($request);
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                'appointments' => $respons['data']
-            ];
             $status = true;
-            return $this->generateResponse($status, $message, $data);
+            $message = "All Applicants.";
+            return $this->generateResponse($status, $message, $response, 200);
         } catch (\Exception $e) {
             $status = false;
-            $message = $e->getMessage();
-            return $this->generateResponse($status, $message, $data);
-        }
-    }
-
-    /**
-     * Upcoming Appointment
-     */
-    public function cancelPatientAppointment(Request $request)
-    {
-        $status = false;
-        $data = [];
-        $message = "";
-        try {
-            $request = $request->all();
-            if (!$request['patient_id']) {
-                throw new Exception("Invalid parameter passed");
-            }
-            $respons = Appointment::getCancelPatientAppointment($request);
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                'appointments' => $respons['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage();
-            return $this->generateResponse($status, $message, $data);
-        }
-    }
-
-    /**
-     * Past Appointment
-     */
-    public function pastPatientAppointment(Request $request)
-    {
-        $status = false;
-        $data = [];
-        $message = "";
-        try {
-            $request = $request->all();
-            if (!$request['patient_id']) {
-                throw new Exception("Invalid parameter passed");
-            }
-            $respons = Appointment::getPastPatientAppointment($request);
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                'appointments' => $respons['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage();
-            return $this->generateResponse($status, $message, $data);
-        }
-    }
-
-    /**
-     * Get Cancel Appointment Reasons
-     */
-    public function getCancelAppointmentReasons()
-    {
-        $status = 0;
-        $data = [];
-        $message = 'Something wrong';
-        try {
-            $reasons = CancelAppointmentReasons::all();
-            if (!$reasons) {
-                throw new Exception("No reasons are found into database");
-            }
-            $data = [
-                'reasons' => $reasons
-            ];
-            $status = true;
-            $message = "Reasons List";
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
-        }
-    }
-
-    /**
-     * Get Cancel Appointment Reasons
-     */
-    public function getAppointmentsByDate(Request $request)
-    {
-        $status = 0;
-        $data = [];
-        $message = 'Something wrong';
-        try {
-            $request = $request->all();
-            if (!$request['type']) {
-                throw new Exception("Invalid type / parameter");
-            }
-            $appointments = Appointment::getAllAppointment($request);
-            $reasons = CancelAppointmentReasons::all();
-            if (!$reasons) {
-                throw new Exception("No reasons are found into database");
-            }
-            $data = [
-                'reasons' => $reasons,
-                'appointments'=>$appointments
-            ];
-            $status = true;
-            $message = "Reasons List";
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
-        }
-    }
-
-    /**
-     * Cancel The Appointment
-     */
-    public function cancelAppointment(Request $request)
-    {
-        $status = 0;
-        $data = [];
-        $message = 'Something wrong';
-        try {
-            $request = $request->all();
-            if (!$request['appointment_id'] || !$request['reason_id'] || !$request['cancel_user']) {
-                throw new Exception("Invalid parameter passed");
-            }
-            $cancel = Appointment::cancelAppointment($request);
-            if (!$cancel['status']) {
-                throw new Exception($cancel['message']);
-            }
-            $message = $cancel['message'];
-            $data = [
-                'appointments' => $cancel['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
         }
     }
 }

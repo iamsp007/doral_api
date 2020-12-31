@@ -17,6 +17,7 @@ class Applicant extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'applicant_name',
         'other_name',
         'ssn',
@@ -62,5 +63,13 @@ class Applicant extends Model
     public function city()
     {
         return $this->belongsTo('App\Models\City', 'city', 'id');
+    }
+
+    /**
+     * Relation with city
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
 }
