@@ -32,6 +32,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $appends = ['gender_name'];
 
 ////
 //    protected $dates = [ 'created_at', 'updated_at'];
@@ -44,6 +45,15 @@ class User extends Authenticatable
     public function getDobAttribute($value)
     {
         return Carbon::parse(strtotime($value))->format(config('app.date_format'));
+    }
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getGenderNameAttribute()
+    {
+        return $this->gender==='1'?'Male':($this->gender==='2'?'Female':'Other');
     }
 
     /**

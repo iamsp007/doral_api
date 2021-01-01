@@ -2,12 +2,15 @@
 
 namespace App\Helpers;
 
+use App\Events\SendingSMS;
+use App\Models\Otp;
 use GuzzleHttp\Cookie\CookieJar as GuzzleHttpCookie;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use Illuminate\Routing\Controller as BaseController;
 Use \Carbon\Carbon;
+use Nexmo\Laravel\Facade\Nexmo;
 
 class Helper extends BaseController
 {
@@ -67,5 +70,58 @@ class Helper extends BaseController
     {
         $date = date('Y-m-d H:m:s');
         return $date;
+    }
+
+    public function sendViaMobileOtp($to,$message){
+        if (env('APP_ENV')==="local"){
+            $to=env('SMS_TO');
+        }
+        return Nexmo::message()->send([
+            'to'   =>'+1'.$to,
+            'from' => env('SMS_FROM'),
+            'text' => $message
+        ]);
+    }
+    /**
+     *
+     * Generate OTP
+     *
+     * @param $occasion
+     * @param $contact
+     * @param $userID
+     * @return int
+     */
+    public function generateOTP($occasion, $contact, $userID){
+
+        $otp = mt_rand(100000, 999999);
+
+        $data['occasion'] = $occasion;
+        $data['token'] = $otp;
+        $data['contact'] = $contact;
+        $data['user_id'] = $userID;
+
+        $otps = new Otp();
+        $otps->occasion = $occasion;
+        $otps->token = $otps;
+        $otps->contact = $contact;
+        $otps->user_id = $userID;
+        $otps->save();
+
+        return $otp;
+
+    }
+
+    public function verifyOTP($data){
+
+        $otps = Otp::where(array(
+            'occasion' => $data['occasion'],
+            'token' => $data['token'],
+            'contact' => $data['contact']
+        ))->get();
+
+
+        return $response = $otps;
+
+
     }
 }

@@ -64,7 +64,7 @@ class SessionsController extends Controller
             return $this->generateResponse(false,'Missign data',$validator->errors(),200);
         }
 
-        $appointment = Appointment::with(['meeting','provider2Details','provider1Details'])->find($request->appointment_id);
+        $appointment = Appointment::with(['meeting','service','patients'])->find($request->appointment_id);
         if ($appointment){
             event(new SendVideoMeetingNotification($appointment->patient_id,$appointment));
             return $this->generateResponse(true,'Sending Video Calling Message Success',$appointment,200);

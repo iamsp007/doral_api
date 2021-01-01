@@ -87,7 +87,7 @@ class AppointmentController extends Controller
             $appointment = new Appointment();
             $appointment->title = $request->title;
             $appointment->appointment_url = 'appointment_url';
-            $appointment->book_datetime = Carbon::parse($request->book_datetime)->format();
+            $appointment->book_datetime = Carbon::parse($request->book_datetime);
             $appointment->start_datetime = $request->start_datetime;
             $appointment->end_datetime = $request->end_datetime;
             $appointment->patient_id = $request->patient_id;

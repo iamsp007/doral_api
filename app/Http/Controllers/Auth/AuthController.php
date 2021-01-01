@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 
+use App\Http\Controllers\OTPController;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Http\Requests\UpdateDeviceTokenRequest;
+use App\Models\Otp;
 use App\Models\User;
 use App\Models\VirtualRoom;
 use App\Models\VonageRoom;
@@ -28,11 +30,12 @@ use App\Models\City;
 
 class AuthController extends Controller
 {
-    protected $employeeContoller, $patientController;
-    public function __construct(EmployeeController $employeeContoller, PatientController $patientController)
+    protected $employeeContoller, $patientController, $otps;
+    public function __construct(EmployeeController $employeeContoller, PatientController $patientController,OTPController $otps)
     {
         $this->employeeContoller = $employeeContoller;
         $this->patientController = $patientController;
+        $this->otps = $otps;
     }
 
     public function login(LoginRequest $request)
@@ -83,6 +86,7 @@ class AuthController extends Controller
 
     public function register(RegistrationRequest $request)
     {
+
         $user = new User;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
@@ -94,7 +98,8 @@ class AuthController extends Controller
         //$user->hasPermissionTo('Create', 'web');
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()) {
-
+// sending Otp
+            $this->otps->sendOTP('CUSTOMER_REGISTRATION','mobile',$user->phone,$user->id);
             $request = $request->toArray();
             $id = $user->id;
             if ($id) {
@@ -110,6 +115,8 @@ class AuthController extends Controller
                 if (!$result) {
                     throw new \ErrorException('Error in-Insert');
                 }
+
+
 
                 $resp = [
                     'user' => $user,
@@ -174,24 +181,25 @@ class AuthController extends Controller
         );
         $validator = \Validator::make($input, $rules);
         if ($validator->fails()) {
-            $arr = array("status" => 400, "message" => $validator->errors()->first(), "data" => array());
+            return $this->generateResponse(false,$validator->errors()->first(),array(),200);
         } else {
             try {
                 $response = \Password::sendResetLink($request->only('email'));
+
                 switch ($response) {
                     case \Password::RESET_LINK_SENT:
                         $message = trans($response);
-                        return $this->generateResponse(true, $message, $data);
+                        return $this->generateResponse(true, $message, $data,200);
                     case \Password::INVALID_USER:
                         $message = trans($response);
-                        return $this->generateResponse(true, $message, $data);
+                        return $this->generateResponse(true, $message, $data,200);
                 }
             } catch (\Swift_TransportException $ex) {
                 $message = $ex->getMessage();
-                return $this->generateResponse(false, $message, $data);
+                return $this->generateResponse(false,$message, $data,200);
             } catch (Exception $ex) {
                 $message = $ex->getMessage();
-                return $this->generateResponse(false, $message, $data);
+                return $this->generateResponse(false, $message, $data,200);
             }
         }
     }
