@@ -23,7 +23,8 @@ class PatientReferralController extends Controller
     {
         $data = array();
         try {
-            $patientReferral = patientReferral::where('service_id', $id)
+            $patientReferral = patientReferral::with('detail', 'service', 'filetype', 'mdforms', 'plans')
+            ->where('service_id', $id)
             ->whereNotNull('first_name')
             ->get();
             if (!$patientReferral) {
