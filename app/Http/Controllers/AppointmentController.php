@@ -75,7 +75,7 @@ class AppointmentController extends Controller
             'service_id' => 'required'
         ]);
         $status = true;
-        $data = [];
+        $data = null;
         $message = "Appointment booked successfully";
         try {
 //            $request = json_decode($request->getContent(), true);
@@ -111,7 +111,7 @@ class AppointmentController extends Controller
                     'appointment' => $appointment,
                     'meeting'=>$resp
                 ];
-                return $this->generateResponse($status, $message, $data);
+                return $this->generateResponse($status, $message, $data, 200);
             }
             return $this->generateResponse(false,'Something Went Wrong!',null,200);
         } catch (\Exception $e) {
