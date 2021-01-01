@@ -113,11 +113,8 @@ class AuthController extends Controller
                 }
                 // Check the condition if error into database
                 if (!$result) {
-                    throw new \ErrorException('Error in-Insert');
+                    throw new \ErrorException('Error in insert');
                 }
-
-
-
                 $resp = [
                     'user' => $user,
                 ];
