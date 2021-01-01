@@ -74,9 +74,9 @@ class AppointmentController extends Controller
             'provider1' => 'required', 'provider2' => 'required',
             'service_id' => 'required'
         ]);
-        $status = false;
+        $status = true;
         $data = [];
-        $message = "";
+        $message = "Appointment booked successfully";
         try {
 //            $request = json_decode($request->getContent(), true);
             $request->request->add(['booked_user_id'=>Auth::user()->id]);
