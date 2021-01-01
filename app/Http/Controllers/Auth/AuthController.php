@@ -104,7 +104,7 @@ class AuthController extends Controller
             $id = $user->id;
             if ($id) {
                 $request['user_id'] = $id;
-                if ($request->type == 'clinician' || $request->type == 'admin') {
+                if ($request['type'] == 'clinician' || $request['type'] == 'admin') {
                     unset($request['type']);
                     $result = $this->employeeContoller->store($request);
                 } else if ($request['type'] == 'patient') {
