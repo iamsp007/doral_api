@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PatientReferralNotSsn extends Model
 {
     use HasFactory;
+    protected $table =  'patient_referral_not_ssn';
     protected $fillable = array('referral_id', 'patient_id', 'caregiver_code');
 
     protected $guarded = [];
