@@ -38,7 +38,8 @@ class DatabaseSeeder extends Seeder
             MDFormsSeeder::class,
             StatesFileSeeder::class,
             CitiesFileSeeder::class,
-            CitiesExtendedFileSeeder::class
+            CitiesExtendedFileSeeder::class,
+            PlanSeeder::class,
         ]);
     }
 }
