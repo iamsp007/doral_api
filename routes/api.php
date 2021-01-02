@@ -143,7 +143,7 @@ Route::group([
     Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
     Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
     Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
-    //Appointment    
+    //Appointment
     Route::post('send-video-meeting-notification', 'App\Http\Controllers\SessionsController@sendVideoMeetingNotification');
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
 });
@@ -160,6 +160,7 @@ Route::group([
     'middleware' => ['auth:api','role:co-ordinator'],
 ], function () {
     //Route::get('/get-patient-list','');
+    Route::post('get-clinician-time-slots', 'App\Http\Controllers\AppointmentController@getClinicianTimeSlots');
     Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
 });
 

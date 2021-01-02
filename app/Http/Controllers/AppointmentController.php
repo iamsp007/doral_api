@@ -6,9 +6,11 @@ use App\Http\Controllers\Zoom\MeetingController;
 use App\Models\Appointment;
 use App\Models\CancelAppointmentReasons;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
@@ -384,5 +386,25 @@ class AppointmentController extends Controller
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);
         }
+    }
+
+    public function getClinicianTimeSlots(Request $request){
+
+        $time = Carbon::createFromDate($request->date)->format('H:i:s');
+        $weekDays = Carbon::createFromDate($request->date)->dayOfWeek;
+
+        $usersList = User::with('roles','leave')
+            ->whereHas('roles',function($q){
+                $q->where('name','=','clinician');
+            })
+            ->whereRaw('NOT FIND_IN_SET("'.$weekDays.'",week_off)')
+            ->where(function ($q) use ($time){
+                $q->whereTime('work_start_time','<=',$time)
+                    ->whereTime('work_end_time','>=',$time);
+            })
+            ->get();
+
+        return $this->generateResponse(true,'get clinician list',$usersList,200);
+
     }
 }
