@@ -421,17 +421,20 @@ class AppointmentController extends Controller
                     $q->whereTime('work_start_time','<=',$item)
                         ->whereTime('work_end_time','>=',$item);
                 })
-                ->count();
-            if ($usersList>0){
+                ->get();
+            if (count($usersList)>0){
+                $ids = collect($usersList)->pluck('id');
                 if ($count===0){
                     $data[]=array(
-                        'count'=>$usersList,
+                        'id'=>implode(', ', $ids->toArray()),
+                        'count'=>count($usersList),
                         'time'=>date('H:i',strtotime('-30 minutes',strtotime($item)))
                     );
                 }
                 $count++;
                 $data[]=array(
-                    'count'=>$usersList,
+                    'id'=>implode(', ', $ids->toArray()),
+                    'count'=>count($usersList),
                     'time'=>$item
                 );
             }
