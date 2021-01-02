@@ -389,6 +389,7 @@ class Appointment extends Model
             $appointment->reason_id = $request['reason_id'];
             $appointment->reason_notes = isset($request['reason_notes']) ? $request['reason_notes'] : null;
             $appointment->cancel_user = $request['cancel_user'];
+            $appointment->status = 'cancel';
 
             $appointment->save();
             $response = [

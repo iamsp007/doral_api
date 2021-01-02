@@ -11,5 +11,11 @@ return [
 		'Son' => 'Son',
 		'Doughter' => 'Doughter',
 		'Cousin' => 'Cousin'
+	],
+	'ccm_reading' => [
+		'Blood Pressure' => 'Blood Pressure',
+	    'Glucometer' => 'Glucometer',
+	    'Digital Weight Machine' => 'Digital Weight Machine',
+	    'Pulse Oximetry' => 'Pulse Oximetry'
 	]
 ];
