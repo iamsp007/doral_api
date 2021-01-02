@@ -259,7 +259,8 @@ class Appointment extends Model
                 }])
                 ->where([
                     ['start_datetime', '>=', $currentDate],
-                    ['patient_id', '=', $request['patient_id']]
+                    ['patient_id', '=', $request['patient_id']],
+                    ['status', 'open']
                 ])
                 ->get()
                 ->toArray();
