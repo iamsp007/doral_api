@@ -6,9 +6,12 @@ use App\Http\Controllers\Zoom\MeetingController;
 use App\Models\Appointment;
 use App\Models\CancelAppointmentReasons;
 use App\Models\User;
+use Carbon\Carbon;
+use Dotenv\Validator;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
@@ -384,5 +387,79 @@ class AppointmentController extends Controller
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);
         }
+    }
+
+    public function getClinicianTimeSlots(Request $request){
+        $validator = \Illuminate\Support\Facades\Validator::make(
+            $request->all(),
+            ['date' => 'required|date']
+        );
+        if ($validator->fails())
+        {
+           return $this->generateResponse(false,'Invalid date',null,200);
+        }
+        $weekDays = Carbon::createFromDate($request->date)->dayOfWeek;
+
+        $usersList = User::with('roles','leave')
+            ->whereHas('roles',function($q){
+                $q->where('name','=','clinician');
+            })
+            ->whereRaw('NOT FIND_IN_SET("'.$weekDays.'",week_off)')
+            ->get();
+        $minTime = collect($usersList)->min('work_start_time');
+        $maxTime = collect($usersList)->max('work_end_time');
+        $timeStamp = $this->getTimeStamp($minTime,$maxTime,30);
+        $data=array();
+        $count=0;
+        foreach ($timeStamp as $key=>$item) {
+            $usersList = User::with('roles','leave')
+                ->whereHas('roles',function($q){
+                    $q->where('name','=','clinician');
+                })
+                ->whereRaw('NOT FIND_IN_SET("'.$weekDays.'",week_off)')
+                ->where(function ($q) use ($item){
+                    $q->whereTime('work_start_time','<=',$item)
+                        ->whereTime('work_end_time','>=',$item);
+                })
+                ->get();
+            if (count($usersList)>0){
+                $ids = collect($usersList)->pluck('id');
+                if ($count===0){
+                    $data[]=array(
+                        'id'=>implode(', ', $ids->toArray()),
+                        'count'=>count($usersList),
+                        'time'=>date('H:i',strtotime('-30 minutes',strtotime($item)))
+                    );
+                }
+                $count++;
+                $data[]=array(
+                    'id'=>implode(', ', $ids->toArray()),
+                    'count'=>count($usersList),
+                    'time'=>$item
+                );
+            }
+        }
+        return $this->generateResponse(true,'get clinician list',collect($data),200);
+
+    }
+
+    public function getTimeStamp($start,$end,$duration){
+        $start = Carbon::parse($start);
+        $end = Carbon::parse($end);
+        $start_time = $start->format('H:i');
+        $end_time = $end->format('H:i');
+        $i=0;
+        $time[$i] = $start_time;
+        while(strtotime($start_time) <= strtotime($end_time)){
+            $start = $start_time;
+            $end = date('H:i',strtotime('+'.$duration.' minutes',strtotime($start_time)));
+            $start_time = date('H:i',strtotime('+'.$duration.' minutes',strtotime($start_time)));
+            $i++;
+            if(strtotime($start_time) <= strtotime($end_time)){
+                $time[$i] = $start;
+                $time[$i] = $end;
+            }
+        }
+        return $time;
     }
 }

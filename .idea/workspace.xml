@@ -2,11 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/resources/views/emails/layouts/app.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/emails/welcome.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/EmployeeLeaveManagementController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/EmployeeLeaveManagement.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/factories/EmployeeLeaveManagementFactory.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2021_01_01_124136_add_column_appointment_to_user_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2021_01_01_125406_create_employee_leave_management_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/seeders/EmployeeLeaveManagementSeeder.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Helpers/Helper.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Helpers/Helper.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ApplicantController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ApplicantController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppointmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppointmentController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Applicant.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Applicant.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/ApplicantReference.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/ApplicantReference.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Education.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Education.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/common.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/common.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_29_160006_create_applicants_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_12_29_160006_create_applicants_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_29_160019_create_applicant_references_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_12_29_160019_create_applicant_references_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_31_141253_add_caregiver_code_to_patient_referral_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_12_31_141253_add_caregiver_code_to_patient_referral_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_31_165411_create_education_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_12_31_165411_create_education_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/framework/laravel-excel/laravel-excel-90ecIXEiRBHNIPMKUjRwZbljGsX7BYK5" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/laravel-excel/laravel-excel-90ecIXEiRBHNIPMKUjRwZbljGsX7BYK5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/framework/laravel-excel/laravel-excel-TPhtNCF5WZJji4Y0gI4yT8rkQepsaeN6" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/laravel-excel/laravel-excel-TPhtNCF5WZJji4Y0gI4yT8rkQepsaeN6" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,7 +204,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -269,6 +285,10 @@
       <workItem from="1608961122332" duration="3905000" />
       <workItem from="1609176193610" duration="3309000" />
       <workItem from="1609212109058" duration="24244000" />
+      <workItem from="1609498431168" duration="4976000" />
+      <workItem from="1609513814331" duration="12947000" />
+      <workItem from="1609556152095" duration="3414000" />
+      <workItem from="1609561027230" duration="137000" />
     </task>
     <servers />
   </component>
