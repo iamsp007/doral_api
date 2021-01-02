@@ -145,4 +145,8 @@ class User extends Authenticatable
         return $this->hasOne(EmployeeLeaveManagement::class,'user_id','id');
     }
 
+    public function ccm(){
+        return $this->hasMany(CCMReading::class,'user_id','id');
+    }
+
 }

@@ -64,6 +64,7 @@ Route::group([
         'middleware' => ['auth:api'],
     ], function () {
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
+        Route::get('ccm-readings', 'App\Http\Controllers\UserController@ccmReadings');
         //Patient
         Route::get('patient/search/{keyword}', 'App\Http\Controllers\PatientController@searchByEmailNamePhone');
         //Services
