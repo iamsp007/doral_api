@@ -21,7 +21,7 @@ class CreateCertificatesTable extends Migration
             $table->boolean('medicaid_enrolled')->default(0);
             $table->foreignId('medicaid_state')->index('medicaid_state')->nullable();
             $table->string('medicaid_number')->nullable();
-            $table->string('federal_dea_id ')->nullable();
+            $table->string('federal_dea_id')->nullable();
             $table->timestamps();
         });
     }

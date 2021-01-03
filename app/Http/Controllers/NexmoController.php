@@ -62,6 +62,8 @@ class NexmoController extends Controller
                 $request->code
             );
 	        $data = User::where('phone', $request->phone)->first();
+            $data->phone_verified_at = date('Y-m-d H:i:s');
+            $data->save();
 	        $status = 200;
 	        $success = true;
 	        $message = "verified";

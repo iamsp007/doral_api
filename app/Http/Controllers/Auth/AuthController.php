@@ -94,11 +94,8 @@ class AuthController extends Controller
         $user->dob = $request->dob;
         $user->phone = $request->phone;
         $user->status = '1';
-        //$user->hasPermissionTo('Create', 'web');
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()) {
-// sending Otp
-            // $this->otps->sendOTP('CUSTOMER_REGISTRATION','mobile',$user->phone,$user->id);
             $request = $request->toArray();
             $id = $user->id;
             if ($id) {
@@ -114,12 +111,9 @@ class AuthController extends Controller
                 if (!$result) {
                     throw new \ErrorException('Error in insert');
                 }
-                $resp = [
-                    'user' => $user,
-                ];
                 $status = true;
-                $message = "Employee Added Successfully information";
-                return $this->generateResponse(true, 'Registration Successfully!', $user, 200);
+                $message = "Registration successful.";
+                return $this->generateResponse(true, $message, $user, 200);
             } else {
                 throw new \ErrorException('Error found');
             }
