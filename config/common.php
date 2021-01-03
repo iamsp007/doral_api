@@ -24,5 +24,10 @@ return [
 		2 => '14-21',
 		3 => '22-64',
 		4 => '65+'
+	],
+	'certifying_board' => [
+		0 => 'board 1',
+		1 => 'board 2',
+		2 => 'board 3'
 	]
 ];

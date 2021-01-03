@@ -117,6 +117,8 @@ Route::group([
         Route::get('ccm', 'App\Http\Controllers\ApplicantController@ccm');
         Route::post('education', 'App\Http\Controllers\ApplicantController@education');
         Route::get('education', 'App\Http\Controllers\ApplicantController@getEducation');
+        Route::get('certificates', 'App\Http\Controllers\CertificateController@index');
+        Route::post('certificates', 'App\Http\Controllers\CertificateController@store');
     });
 });
 

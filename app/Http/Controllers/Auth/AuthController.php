@@ -86,7 +86,6 @@ class AuthController extends Controller
 
     public function register(RegistrationRequest $request)
     {
-
         $user = new User;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
@@ -99,7 +98,7 @@ class AuthController extends Controller
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()) {
 // sending Otp
-            $this->otps->sendOTP('CUSTOMER_REGISTRATION','mobile',$user->phone,$user->id);
+            // $this->otps->sendOTP('CUSTOMER_REGISTRATION','mobile',$user->phone,$user->id);
             $request = $request->toArray();
             $id = $user->id;
             if ($id) {
