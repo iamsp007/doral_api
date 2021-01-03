@@ -2,15 +2,15 @@
 
 return [
 	'address_life' => [
-		'Within six months' => 'Within six months',
-		'More than six months' => 'More than six months',
+		0 => 'Within six months',
+		1 => 'More than six months',
 	],
 	'relationship' => [
-		'Father' => 'Father',
-		'Mother' => 'Mother',
-		'Son' => 'Son',
-		'Doughter' => 'Doughter',
-		'Cousin' => 'Cousin'
+		0 => 'Father',
+		1 => 'Mother',
+		2 => 'Son',
+		3 => 'Doughter',
+		4 => 'Cousin'
 	],
 	'ccm_reading' => [
 		0 => 'Blood Pressure',
