@@ -13,9 +13,9 @@ return [
 		'Cousin' => 'Cousin'
 	],
 	'ccm_reading' => [
-		'Blood Pressure' => 'Blood Pressure',
-	    'Glucometer' => 'Glucometer',
-	    'Digital Weight Machine' => 'Digital Weight Machine',
-	    'Pulse Oximetry' => 'Pulse Oximetry'
+		0 => 'Blood Pressure',
+	    1 => 'Glucometer',
+	    2 => 'Digital Weight Machine',
+	    3 => 'Pulse Oximetry'
 	]
 ];
