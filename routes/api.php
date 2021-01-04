@@ -75,7 +75,7 @@ Route::group([
         Route::put('request/{request}', 'App\Http\Controllers\RequestController@update');
         //Appointment
         Route::get('appointment', 'App\Http\Controllers\AppointmentController@index');
-        Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store');
+
         Route::put('appointment/{appointment}', 'App\Http\Controllers\AppointmentController@update');
         Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
         Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
@@ -160,7 +160,6 @@ Route::group([
     'middleware' => ['auth:api','role:co-ordinator'],
 ], function () {
     //Route::get('/get-patient-list','');
-    Route::post('get-clinician-time-slots', 'App\Http\Controllers\AppointmentController@getClinicianTimeSlots');
     Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
 });
 
@@ -174,6 +173,15 @@ Route::group([
     Route::post('filter-by-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@filter');
     Route::post('assign-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@assign');
     Route::post('remove-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@remove');
+});
+
+
+// Co Ordinator
+Route::group([
+    'middleware' => ['auth:api'],
+], function () {
+    Route::post('get-clinician-time-slots', 'App\Http\Controllers\AppointmentController@getClinicianTimeSlots');
+    Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store')->middleware('role:co-ordinator|patient');
 });
 
 // Get list of meetings.

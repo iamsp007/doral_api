@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,15 @@ class PatientReferral extends Model
 
     protected $guarded = [];
 
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getDobAttribute($value)
+    {
+        return Carbon::parse(strtotime($value))->format(config('app.date_format'));
+    }
     /**
      * Insert the User data from the Employee / Patient
      *

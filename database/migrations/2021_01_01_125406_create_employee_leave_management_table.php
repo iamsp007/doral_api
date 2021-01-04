@@ -16,6 +16,9 @@ class CreateEmployeeLeaveManagementTable extends Migration
         Schema::create('employee_leave_management', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
+            $table->integer('appointment_id')->nullable();
+            $table->time('work_start_time')->nullable();
+            $table->time('work_end_time')->nullable();
             $table->date('leave_date');
             $table->time('leave_start_time')->nullable();
             $table->time('leave_end_time')->nullable();

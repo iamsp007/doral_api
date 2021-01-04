@@ -231,7 +231,7 @@ class PatientController extends Controller
             ->where('first_name','!=',null)
             ->where('status','=','pending')
             ->get();
-        //dd($patientList);    
+        //dd($patientList);
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
 
@@ -247,7 +247,7 @@ class PatientController extends Controller
             ->with(['provider2Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-            ->where('start_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss'))
+            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d H:i:s'))
             ->orderBy('start_datetime','desc')
             ->get()->toArray();
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
