@@ -133,6 +133,9 @@ class PatientController extends Controller
                     $id = $patient->id;
                     $data = Patient::updateInsurance($id, $request);
                     if ($data) {
+                        $user = request()->user();
+                        $user->profile_verified_at = date('Y-m-d H:i:s');
+                        $user->save();
                         $status = true;
                         $message = "Patient Insurance saved Successfully";
                         return $this->generateResponse($status, $message, $resp);
