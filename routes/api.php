@@ -26,6 +26,8 @@ Route::group([
 
     Route::get('states', 'App\Http\Controllers\Auth\AuthController@states')->name('states');
     Route::get('cities', 'App\Http\Controllers\Auth\AuthController@cities')->name('cities');
+    Route::post('nexmo-send', 'App\Http\Controllers\NexmoController@index')->name('index');
+    Route::post('nexmo-verify', 'App\Http\Controllers\NexmoController@verify')->name('verify');
 
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
@@ -62,6 +64,7 @@ Route::group([
         'middleware' => ['auth:api'],
     ], function () {
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
+        Route::get('ccm-readings', 'App\Http\Controllers\UserController@ccmReadings');
         //Patient
         Route::get('patient/search/{keyword}', 'App\Http\Controllers\PatientController@searchByEmailNamePhone');
         //Services
@@ -110,8 +113,12 @@ Route::group([
         Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');
         Route::get('address-life', 'App\Http\Controllers\ApplicantController@addressLife');
         Route::get('relationship', 'App\Http\Controllers\ApplicantController@relationship');
+        Route::get('age-range-treated', 'App\Http\Controllers\ApplicantController@ageRangeTreated');
+        Route::get('ccm', 'App\Http\Controllers\ApplicantController@ccm');
         Route::post('education', 'App\Http\Controllers\ApplicantController@education');
         Route::get('education', 'App\Http\Controllers\ApplicantController@getEducation');
+        Route::get('certificates', 'App\Http\Controllers\CertificateController@index');
+        Route::post('certificates', 'App\Http\Controllers\CertificateController@store');
     });
 });
 

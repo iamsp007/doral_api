@@ -223,6 +223,32 @@ class ApplicantController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function ageRangeTreated()
+    {
+        $status = true;
+        $message = "Age Range Treated";
+        $data = config('common.age_range_treated');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function ccm()
+    {
+        $status = true;
+        $message = "CCM";
+        $data = config('common.ccm_reading');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
      * Education a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

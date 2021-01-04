@@ -54,6 +54,10 @@ class AuthController extends Controller
                 return $this->generateResponse(false, $field . ' or Password are Incorrect!');
             }
             $user = $request->user();
+            $user->isEmailVerified = $user->email_verified_at ? true : false;
+            $user->isMobileVerified = $user->phone_verified_at ? true : false;
+            $user->isProfileVerified = $user->profile_verified_at ? true : false;
+            $user->roles = $user->roles ? $user->roles->first() : null;
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             if ($request->remember_me)
@@ -86,7 +90,6 @@ class AuthController extends Controller
 
     public function register(RegistrationRequest $request)
     {
-
         $user = new User;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
@@ -95,11 +98,8 @@ class AuthController extends Controller
         $user->dob = $request->dob;
         $user->phone = $request->phone;
         $user->status = '1';
-        //$user->hasPermissionTo('Create', 'web');
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()) {
-// sending Otp
-            $this->otps->sendOTP('CUSTOMER_REGISTRATION','mobile',$user->phone,$user->id);
             $request = $request->toArray();
             $id = $user->id;
             if ($id) {
@@ -115,12 +115,9 @@ class AuthController extends Controller
                 if (!$result) {
                     throw new \ErrorException('Error in insert');
                 }
-                $resp = [
-                    'user' => $user,
-                ];
                 $status = true;
-                $message = "Employee Added Successfully information";
-                return $this->generateResponse(true, 'Registration Successfully!', $user, 200);
+                $message = "Registration successful.";
+                return $this->generateResponse(true, $message, $user, 200);
             } else {
                 throw new \ErrorException('Error found');
             }
