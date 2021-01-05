@@ -55,6 +55,10 @@ class AppointmentRequest extends FormRequest
                 $this->merge([
                     'patient_id' => $this->patient_id,
                 ]);
+            }else{
+                $this->merge([
+                    'patient_id' => Auth::user()->id,
+                ]);
             }
             $clinician_ids = explode(',',$this->clinician_ids);
 
