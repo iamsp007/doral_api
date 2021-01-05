@@ -15,6 +15,8 @@ class FileTypeSeeder extends Seeder
     public function run()
     {
 // File type seeder
+        sleep(1);
+        $this->command->getOutput()->progressAdvance();
         $filetypes = array('Demographic','Clinical','COMPLIANCE DUE DATES','PREVIOUS MD ORDER');
         foreach ($filetypes as $fvalue) {
             $filetypesModel = new FileTypeMaster();

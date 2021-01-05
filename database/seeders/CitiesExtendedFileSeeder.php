@@ -13,6 +13,8 @@ class CitiesExtendedFileSeeder extends Seeder
      */
     public function run()
     {
+        sleep(1);
+        $this->command->getOutput()->progressAdvance();
         $path = public_path('sql/cities_extended.sql');
         $sql = file_get_contents($path);
         \DB::unprepared($sql);

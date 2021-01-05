@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CitiesFileSeeder extends Seeder
 {
@@ -13,8 +14,12 @@ class CitiesFileSeeder extends Seeder
      */
     public function run()
     {
+//        sleep(1);
+//        $this->command->getOutput()->progressAdvance();
+        $this->command->info('City table seeding Start!');
         $path = public_path('sql/cities.sql');
-        $sql = file_get_contents($path);
-        \DB::unprepared($sql);
+        DB::unprepared(file_get_contents($path));
+        $this->command->info('City table seeded!');
+
     }
 }
