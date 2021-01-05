@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppointmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppointmentController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Zoom/MeetingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Zoom/MeetingController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,6 +192,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/application/android" />
       <recent name="$PROJECT_DIR$/resources/views" />
       <recent name="$PROJECT_DIR$/app/Http/Controllers" />
       <recent name="$PROJECT_DIR$/app" />
@@ -304,7 +307,17 @@
       <workItem from="1609825739568" duration="1229000" />
       <workItem from="1609833286828" duration="1780000" />
       <workItem from="1609835088387" duration="1812000" />
-      <workItem from="1609836921761" duration="697000" />
+      <workItem from="1609836921761" duration="1363000" />
+      <workItem from="1609839093234" duration="612000" />
+      <workItem from="1609840903892" duration="768000" />
+      <workItem from="1609842714303" duration="599000" />
+      <workItem from="1609844528709" duration="603000" />
+      <workItem from="1609846336968" duration="776000" />
+      <workItem from="1609848149228" duration="1836000" />
+      <workItem from="1609850021655" duration="818000" />
+      <workItem from="1609851878689" duration="986000" />
+      <workItem from="1609854193499" duration="164000" />
+      <workItem from="1609858905571" duration="1471000" />
     </task>
     <servers />
   </component>
