@@ -13,8 +13,11 @@ class StatesFileSeeder extends Seeder
      */
     public function run()
     {
+        $this->command->getOutput()->progressStart();
         $path = public_path('sql/states.sql');
         $sql = file_get_contents($path);
+        sleep(1);
+        $this->command->getOutput()->progressAdvance();
         \DB::unprepared($sql);
     }
 }

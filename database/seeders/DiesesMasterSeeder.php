@@ -15,6 +15,8 @@ class DiesesMasterSeeder extends Seeder
      */
     public function run()
     {
+        sleep(1);
+        $this->command->getOutput()->progressAdvance();
         $dieses=['pain','fever'.'flue','behavioural'];
         foreach ($dieses as $diese) {
             $dieses = new DiesesMaster();

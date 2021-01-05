@@ -14,7 +14,8 @@ class ServicesSeeder extends Seeder
      */
     public function run()
     {
-        
+        sleep(1);
+        $this->command->getOutput()->progressAdvance();
         $data = array('VBC','MD Order','Occupational Health','Telehealth','roadL');
         foreach ($data as $datum) {
             $designation = new Services();

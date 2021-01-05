@@ -139,7 +139,7 @@ class User extends Authenticatable
     }
 
     public function detail(){
-        return $this->belongsTo(PatientReferral::class,'user_id','id');
+        return $this->belongsTo(PatientReferral::class,'user_id','id')->with('service');
     }
 
     public function leave(){
@@ -148,6 +148,20 @@ class User extends Authenticatable
 
     public function ccm(){
         return $this->hasMany(CCMReading::class,'user_id','id');
+    }
+
+    public function appointment(){
+        return $this->hasMany(Appointment::class,'provider1','id');
+    }
+
+    public function appointmentOrLeave(){
+        return $this->hasManyThrough(
+            Appointment::class,
+            EmployeeLeaveManagement::class,
+            'user_id',
+            'provider1',
+            'id',
+            'id');
     }
 
 }

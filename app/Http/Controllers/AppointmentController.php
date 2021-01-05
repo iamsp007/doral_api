@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Zoom\MeetingController;
+use App\Http\Requests\AppointmentRequest;
 use App\Models\Appointment;
 use App\Models\CancelAppointmentReasons;
+use App\Models\EmployeeLeaveManagement;
 use App\Models\User;
 use Carbon\Carbon;
-use Dotenv\Validator;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
 {
@@ -64,64 +66,26 @@ class AppointmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AppointmentRequest $request)
     {
-        //
-        $request->validate([
-            'title' => 'required',
-            'book_datetime' => 'required',
-            'start_datetime' => 'required',
-            'end_datetime' => 'required',
-//            'booked_user_id' => 'required',
-            'patient_id' => 'required',
-            'provider1' => 'required', 'provider2' => 'required',
-            'service_id' => 'required'
-        ]);
-        $status = true;
-        $data = null;
-        $message = "Appointment booked successfully";
-        try {
-//            $request = json_decode($request->getContent(), true);
-            $request->request->add(['booked_user_id'=>Auth::user()->id]);
+        $start_time = Carbon::createFromDate($request->book_datetime)->format('Y-m-d H:i:s');
+        $end_time = Carbon::createFromDate($request->book_datetime)->addMinute(30)->format('Y-m-d H:i:s');
+        $patient = User::with('detail')->find($request->patient_id);
 
-            $patient = User::find($request->patient_id);
-
-            $appointment = new Appointment();
-            $appointment->title = $request->title;
-            $appointment->appointment_url = 'appointment_url';
-            $appointment->book_datetime = date('Y-m-d H:i:s', strtotime($request->book_datetime));
-            $appointment->start_datetime = $request->start_datetime;
-            $appointment->end_datetime = $request->end_datetime;
-            $appointment->patient_id = $request->patient_id;
-            $appointment->provider1 = 1657;
-            $appointment->provider2 = 2;
-            $appointment->service_id = $request->service_id;
-            $appointment->booked_user_id = Auth::user()->id;
-            if ($appointment->save()){
-                $request->request->add([
-                    'appointment_id' => $appointment->id,
-                    'topic' => $appointment->title,
-                    'start_time'=>$request->start_datetime,
-                    'agenda'=>'Agenda'
-                ]);
-
-                $meetingController = new MeetingController();
-                $resp =  $meetingController->create($request);
-
-//            $appointment = Appointment::find($respons['data']);
-//            $message = $respons['message'];
-                $data = [
-                    'appointment' => $appointment,
-                    'meeting'=>$resp
-                ];
-                return $this->generateResponse($status, $message, $data, 200);
-            }
-            return $this->generateResponse(false,'Something Went Wrong!',null,200);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage();
-            return $this->generateResponse($status, $message, $data);
+        $appointment = new Appointment();
+        $appointment->title = 'Your Book Appointment Is '.$patient->first_name.' '.$patient->last_name;
+        $appointment->book_datetime = $request->book_datetime;
+        $appointment->start_datetime = $start_time;
+        $appointment->end_datetime = $end_time;
+        $appointment->booked_user_id = $request->user_id;
+        $appointment->patient_id = $request->patient_id;
+        $appointment->provider1 = $request->provider1;
+        $appointment->provider2 = $request->provider2;
+        $appointment->service_id = isset($patient->detail)?$patient->detail->service_id:1;
+        if ($appointment->save()){
+            return $this->generateResponse(true,'Your Appointment book Successfully!',null,200);
         }
+        return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 
     /**
@@ -390,7 +354,7 @@ class AppointmentController extends Controller
     }
 
     public function getClinicianTimeSlots(Request $request){
-        $validator = \Illuminate\Support\Facades\Validator::make(
+        $validator = Validator::make(
             $request->all(),
             ['date' => 'required|date']
         );
@@ -404,38 +368,65 @@ class AppointmentController extends Controller
             ->whereHas('roles',function($q){
                 $q->where('name','=','clinician');
             })
+            ->leftJoin('appointments','appointments.provider1','!=','users.id')
             ->whereRaw('NOT FIND_IN_SET("'.$weekDays.'",week_off)')
             ->get();
         $minTime = collect($usersList)->min('work_start_time');
         $maxTime = collect($usersList)->max('work_end_time');
         $timeStamp = $this->getTimeStamp($minTime,$maxTime,30);
+
+        $aminTime = Carbon::createFromDate(collect($usersList)->min('start_datetime'))->format('H:i');
+        $amaxTime = Carbon::createFromDate(collect($usersList)->min('end_datetime'))->format('H:i');
+        $result = array_diff(array($aminTime,$amaxTime),$timeStamp);
+        dd($result);
+
+
+
+
         $data=array();
         $count=0;
         foreach ($timeStamp as $key=>$item) {
-            $usersList = User::with('roles','leave')
+
+            $time = Carbon::createFromDate($request->date.' '.$item)->format('H:i:s');
+            $usersList = User::with('roles','appointment')
+                ->leftJoin('appointments','appointments.provider1','!=','users.id')
                 ->whereHas('roles',function($q){
                     $q->where('name','=','clinician');
                 })
                 ->whereRaw('NOT FIND_IN_SET("'.$weekDays.'",week_off)')
-                ->where(function ($q) use ($item){
-                    $q->whereTime('work_start_time','<=',$item)
-                        ->whereTime('work_end_time','>=',$item);
+                ->where(function ($q) use ($time){
+                    $q->whereTime('work_start_time','<=',$time)
+                        ->whereTime('work_end_time','>=',$time);
                 })
                 ->get();
+
             if (count($usersList)>0){
+                $appointmentTimeStamps=array();
+                foreach ($usersList as $value) {
+                    $start = Carbon::createFromDate($value->start_datetime)->format('H:i:s');
+                    $end = Carbon::createFromDate($value->end_datetime)->format('H:i:s');
+                    $timeStamps = $this->getTimeStamp($start,$end,30);
+                    $appointmentTimeStamps[]=$timeStamps;
+                }
+                dd($appointmentTimeStamps);
+
                 $ids = collect($usersList)->pluck('id');
+
                 if ($count===0){
+                    $prev_time = Carbon::createFromDate($request->date.' '.$item)->subMinute('30')->format('Y-m-d H:i');
                     $data[]=array(
                         'id'=>implode(', ', $ids->toArray()),
                         'count'=>count($usersList),
-                        'time'=>date('H:i',strtotime('-30 minutes',strtotime($item)))
+                        'time'=>$prev_time
                     );
                 }
                 $count++;
+
+
                 $data[]=array(
                     'id'=>implode(', ', $ids->toArray()),
                     'count'=>count($usersList),
-                    'time'=>$item
+                    'time'=>Carbon::createFromDate($request->date.' '.$item)->format('Y-m-d H:i')
                 );
             }
         }
@@ -444,10 +435,9 @@ class AppointmentController extends Controller
     }
 
     public function getTimeStamp($start,$end,$duration){
-        $start = Carbon::parse($start);
-        $end = Carbon::parse($end);
-        $start_time = $start->format('H:i');
-        $end_time = $end->format('H:i');
+        $start_time = Carbon::parse($start)->format('H:i');
+        $end_time = Carbon::parse($end)->format('H:i');
+
         $i=0;
         $time[$i] = $start_time;
         while(strtotime($start_time) <= strtotime($end_time)){

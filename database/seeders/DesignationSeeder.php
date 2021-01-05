@@ -14,6 +14,8 @@ class DesignationSeeder extends Seeder
      */
     public function run()
     {
+        sleep(1);
+        $this->command->getOutput()->progressAdvance();
         $data = array('Nurse Practioner','Special Assistant','Medical Assistant','Physician','Physiotherapist');
         foreach ($data as $datum) {
             $designation = new Designation();

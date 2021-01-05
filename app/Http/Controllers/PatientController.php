@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendingSMS;
 use App\Http\Requests\RoadlSelectedDiesesRequest;
 use App\Models\Appointment;
 use App\Models\Patient;
@@ -234,7 +235,7 @@ class PatientController extends Controller
             ->where('first_name','!=',null)
             ->where('status','=','pending')
             ->get();
-        //dd($patientList);    
+        //dd($patientList);
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
 
@@ -250,7 +251,7 @@ class PatientController extends Controller
             ->with(['provider2Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-            ->where('start_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss'))
+            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d H:i:s'))
             ->orderBy('start_datetime','desc')
             ->get()->toArray();
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
@@ -302,6 +303,7 @@ class PatientController extends Controller
 
         if (count($ids)>0){
             $message='';
+            $smsData=array();
             foreach ($ids as $id) {
                 $patient = PatientReferral::find($id);
                 if ($patient){
@@ -311,12 +313,21 @@ class PatientController extends Controller
                         if ($users){
                             $users->status = '1';
                             $users->save();
+
+                            $smsData[]=array(
+                                'to'=>$users->phone,
+                                'message'=>'Welcome To Doral Health Connect.
+Please click below application link and download.
+'.url("application/android/patientDoral.apk").'
+Default Password : doral@123',
+                            );
                         }
                     }
                     $patient->save();
                     $message='Change Patient Status Successfully';
                 }
             }
+            event(new SendingSMS($smsData));
             return $this->generateResponse(true,$message,null,200);
         }
         return $this->generateResponse(false,'No Patient Referral Ids Found',null,422);
