@@ -2,37 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/database/seeders/ReferralSeeder.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CertificateController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CertificateController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/NexmoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/NexmoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/AgeRange.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/AgeRange.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/BoardCertificate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/BoardCertificate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Certificate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Certificate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/StateLicense.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/StateLicense.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_10_12_071955_create_referrals_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_10_12_071955_create_referrals_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_03_125521_create_certificates_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_03_125521_create_certificates_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_03_130148_create_age_ranges_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_03_130148_create_age_ranges_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_03_132208_create_state_licenses_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_03_132208_create_state_licenses_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_03_132456_create_board_certificates_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_03_132456_create_board_certificates_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_03_175431_add_phone_verified_at_in_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_03_175431_add_phone_verified_at_in_users_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_03_181627_remove_column_to_patient_referral_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_03_181627_remove_column_to_patient_referral_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_04_160716_add_profile_verified_at_in_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_04_160716_add_profile_verified_at_in_users_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/AdminSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/AdminSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/CitiesExtendedFileSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/CitiesExtendedFileSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/CitiesFileSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/CitiesFileSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/ClinicianSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/ClinicianSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/CoordinatorSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/CoordinatorSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/DesignationSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/DesignationSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/DiesesMasterSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/DiesesMasterSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/FileTypeSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/FileTypeSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/MDFormsSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/MDFormsSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/PatientSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/PatientSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/PlanSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/PlanSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/ServicesSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/ServicesSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/StatesFileSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/StatesFileSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/SupervisorSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/SupervisorSeeder.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -334,6 +304,7 @@
       <workItem from="1609825739568" duration="1229000" />
       <workItem from="1609833286828" duration="1780000" />
       <workItem from="1609835088387" duration="1812000" />
+      <workItem from="1609836921761" duration="697000" />
     </task>
     <servers />
   </component>
