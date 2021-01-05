@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendingSMS;
 use App\Http\Requests\RoadlSelectedDiesesRequest;
 use App\Models\Appointment;
 use App\Models\Patient;
@@ -310,6 +311,7 @@ class PatientController extends Controller
 
         if (count($ids)>0){
             $message='';
+            $smsData=array();
             foreach ($ids as $id) {
                 $patient = PatientReferral::find($id);
                 if ($patient){
@@ -319,12 +321,21 @@ class PatientController extends Controller
                         if ($users){
                             $users->status = '1';
                             $users->save();
+
+                            $smsData[]=array(
+                                'to'=>$users->phone,
+                                'message'=>'Welcome To Doral Health Connect.
+Please click below application link and download.
+'.url("application/android/patientDoral.apk").'
+Default Password : doral@123',
+                            );
                         }
                     }
                     $patient->save();
                     $message='Change Patient Status Successfully';
                 }
             }
+            event(new SendingSMS($smsData));
             return $this->generateResponse(true,$message,null,200);
         }
         return $this->generateResponse(false,'No Patient Referral Ids Found',null,422);
