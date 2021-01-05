@@ -15,6 +15,7 @@ class CreateCertificatesTable extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->index('user_id');
             $table->boolean('medicare_enrolled')->default(0);
             $table->foreignId('medicare_state')->index('medicare_state')->nullable();
             $table->string('medicare_number')->nullable();
