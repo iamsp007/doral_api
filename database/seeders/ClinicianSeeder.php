@@ -17,6 +17,9 @@ class ClinicianSeeder extends Seeder
      */
     public function run()
     {
+        sleep(1);
+        $this->command->getOutput()->progressAdvance();
+
         $admin = new User();
         $admin->first_name = 'Doral';
         $admin->last_name = 'Clinician';

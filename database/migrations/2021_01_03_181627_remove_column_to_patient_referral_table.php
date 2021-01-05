@@ -25,8 +25,8 @@ class RemoveColumnToPatientReferralTable extends Migration
      */
     public function down()
     {
-        Schema::table('appointments', function (Blueprint $table) {
-            $table->dropColumn('appointment_url');
-        });
+//        Schema::table('appointments', function (Blueprint $table) {
+//            $table->dropColumn('appointment_url');
+//        });
     }
 }
