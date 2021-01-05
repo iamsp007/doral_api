@@ -239,13 +239,13 @@ class PatientController extends Controller
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
     
-    public function getNewPatientListForAppointment(Request $request){
-        // patient referral accept status patient list
-        $patientList = PatientReferral::with('detail','service','filetype')
-            ->where('status','=','accept')
-            ->get();
-        return $this->generateResponse(true,'get new patient list',$patientList,200);
-    }
+//    public function getNewPatientListForAppointment(Request $request){
+//        // patient referral accept status patient list
+//        $patientList = PatientReferral::with('detail','service','filetype')
+//            ->where('status','=','accept')
+//            ->get();
+//        return $this->generateResponse(true,'get new patient list',$patientList,200);
+//    }
 
     public function scheduleAppoimentList(Request $request){
         // patient referral pending status patient list
