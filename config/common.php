@@ -18,6 +18,10 @@ return [
 	    2 => 'Digital Weight Machine',
 	    3 => 'Pulse Oximetry'
 	],
+	'clinician_services' => [
+		0 => 'Telehealth',
+		1 => 'RoadL'
+	],
 	'age_range_treated' => [
 		0 => '0-9',
 		1 => '10-13',

@@ -249,6 +249,19 @@ class ApplicantController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function clinicianServices()
+    {
+        $status = true;
+        $message = "Services";
+        $data = config('common.clinician_services');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
      * Education a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

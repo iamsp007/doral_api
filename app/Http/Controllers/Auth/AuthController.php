@@ -9,6 +9,7 @@ use App\Http\Requests\RegistrationRequest;
 use App\Http\Requests\UpdateDeviceTokenRequest;
 use App\Models\Otp;
 use App\Models\User;
+use App\Models\Patient;
 use App\Models\VirtualRoom;
 use App\Models\VonageRoom;
 use Carbon\Carbon;
@@ -237,6 +238,167 @@ class AuthController extends Controller
                 }
                 return $this->generateResponse(false, $message, $data);
             }
+        }
+    }
+
+    public function patientLogin(Request $request)
+    {
+        $input = $request->all();
+        $data = array();
+        $rules = array(
+            'ssn' => 'required|min:4|max:4',
+            'dob' => 'required|date',
+        );
+        $validator = \Validator::make($input, $rules);
+        if ($validator->fails()) {
+            $message =  $validator->errors()->first();
+            return $this->generateResponse(false, $message, $data);
+        } else {
+            try {
+                $patient = Patient::getPatientUsingSsnAndDob($input);
+                if (!$patient) {
+                    throw new Exception("SSN or DOB not match with database");
+                }
+                $count = Patient::where('id', '!=', $patient->id)->where('phone', $patient->phone)->where('status', 'active')->count();
+                if ($count) {
+                    $message = "Found ".$count." account with your registered mobile number";
+                    $data = [
+                        'isMultiplePatientExist' => true
+                    ];
+                    return $this->generateResponse(true, $message, $data);
+                } else {
+                    if (!Auth::loginUsingId($patient->user->id)) {
+                        return $this->generateResponse(false, 'Something went wrong!');
+                    }
+                    $user = $request->user();
+                    $user->isEmailVerified = $user->email_verified_at ? true : false;
+                    $user->isMobileVerified = $user->phone_verified_at ? true : false;
+                    $user->isProfileVerified = $user->profile_verified_at ? true : false;
+                    $user->isMultiplePatientExist = false;
+                    $user->roles = $user->roles ? $user->roles->first() : null;
+                    $tokenResult = $user->createToken('Personal Access Token');
+                    $token = $tokenResult->token;
+                    if ($request->remember_me)
+                        $token->expires_at = Carbon::now()->addMinute(1);
+                    $token->save();
+                    $data = [
+                        'access_token' => $tokenResult->accessToken,
+                        'token_type' => 'Bearer',
+                        'user' => $user,
+                        'expires_at' => Carbon::parse(
+                            $tokenResult->token->expires_at
+                        )->toDateTimeString()
+                    ];
+                    // update device token and type
+                    if ($request->has('device_token')) {
+                        $users = User::find($user->id);
+                        if ($users) {
+                            $users->device_token = $request->device_token;
+                            $users->device_type = $request->device_type;
+                            $users->save();
+                        }
+                    }
+                    return $this->generateResponse(true, 'Login Successfully!', $data);
+                }
+            } catch (\Exception $ex) {
+                $message = $ex->getMessage();
+                return $this->generateResponse(false, $message, $data);
+            }
+        }
+    }
+
+    public function updatePhone(Request $request)
+    {
+        $data = null;
+        try {
+            $validator = \Validator::make($request->all(),[
+                'phone' => 'required|numeric|unique:users,phone',
+            ]);
+            if ($validator->fails()) {
+                $status = 200;
+                $success = false;
+                $message = $validator->errors()->first();
+                return $this->generateResponse($success, $message, $data, $status);
+            }
+            $verificationStart = \Nexmo::verify()->start([
+                'number' => '+91'.$request->phone,
+                'brand'  => config('nexmo.app.name'),
+                'code_length' => 4,
+                'lg' => 'en-us',
+                'pin_expiry' => 60,
+                'next_event_wait' => 60
+            ]);
+            $data = $verificationStart->getRequestId();
+            $status = 200;
+            $success = true;
+            $message = "otp sent";
+            return $this->generateResponse($success, $message, $data, $status);
+        } catch (Nexmo\Client\Exception\Request $ex) {
+            Log::error($ex);
+            $status = 403;
+            $success = false;
+            $message = $ex->getMessage();
+            return $this->generateResponse($success, $message, $data, $status);
+        }
+    }
+
+    public function verifyPhone(Request $request)
+    {
+        $data = null;
+        try {
+            \Nexmo::verify()->check(
+                $request->request_id,
+                $request->code
+            );
+
+            $input = $request->all();
+            $patient = Patient::getPatientUsingSsnAndDob($input);
+            $patient->phone = $request->phone;
+            $patient->save();
+
+            $user = $patient->user;
+            $user->phone = $request->phone;
+            $user->phone_verified_at = date('Y-m-d H:i:s');
+            $user->save();
+
+            if (!Auth::loginUsingId($user->id)) {
+                return $this->generateResponse(false, 'Something went wrong!');
+            }
+            $user = $request->user();
+            $user->isEmailVerified = $user->email_verified_at ? true : false;
+            $user->isMobileVerified = $user->phone_verified_at ? true : false;
+            $user->isProfileVerified = $user->profile_verified_at ? true : false;
+            $user->isMultiplePatientExist = false;
+            $user->roles = $user->roles ? $user->roles->first() : null;
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->token;
+            if ($request->remember_me)
+                $token->expires_at = Carbon::now()->addMinute(1);
+            $token->save();
+            $data = [
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'user' => $user,
+                'expires_at' => Carbon::parse(
+                    $tokenResult->token->expires_at
+                )->toDateTimeString()
+            ];
+            // update device token and type
+            if ($request->has('device_token')) {
+                $users = User::find($user->id);
+                if ($users) {
+                    $users->device_token = $request->device_token;
+                    $users->device_type = $request->device_type;
+                    $users->save();
+                }
+            }
+            return $this->generateResponse(true, 'Login Successfully!', $data);
+        } catch (Nexmo\Client\Exception\Request $ex) {
+            Log::error($ex);
+            $status = 403;
+            $success = false;
+            $message = $ex->getMessage();
+            return $this->generateResponse($success, $message, $data, $status);
         }
     }
 
