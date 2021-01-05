@@ -83,6 +83,16 @@ class AppointmentController extends Controller
         $appointment->provider2 = $request->provider2;
         $appointment->service_id = isset($patient->detail)?$patient->detail->service_id:1;
         if ($appointment->save()){
+            $request->request->add([
+                'appointment_id' => $appointment->id,
+                'topic' => $appointment->title,
+                'start_time'=>$appointment->start_datetime,
+                'agenda'=>'Agenda'
+            ]);
+
+            $meetingController = new MeetingController();
+            $resp =  $meetingController->create($request);
+
             return $this->generateResponse(true,'Your Appointment book Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
