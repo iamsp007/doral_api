@@ -50,7 +50,7 @@ class EmployeeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request)
     {
         $status = 0;
         $data = array();
@@ -64,10 +64,10 @@ class EmployeeController extends Controller
             $user->first_name = $employee['first_name'];
             $user->last_name = $employee['last_name'];
             $user->email = $employee['email'];
-            $user->password = Hash::make('test123');
+            $user->password = Hash::make($employee['password']);
             $user->dob = $employee['dob'];
             $user->phone = $employee['phone'];
-            $user->type = 'admin';
+            $user->type = $employee['type'];
             $user->save();
 
             $userId = $user->id;

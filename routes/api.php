@@ -24,6 +24,11 @@ Route::group([
     Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\AuthController@reset')->name('password.reset');
     Route::post('password/reset', 'App\Http\Controllers\Auth\AuthController@resetPassword')->name('password.update');
 
+    Route::get('states', 'App\Http\Controllers\Auth\AuthController@states')->name('states');
+    Route::get('cities', 'App\Http\Controllers\Auth\AuthController@cities')->name('cities');
+    Route::post('nexmo-send', 'App\Http\Controllers\NexmoController@index')->name('index');
+    Route::post('nexmo-verify', 'App\Http\Controllers\NexmoController@verify')->name('verify');
+
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
     Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
@@ -32,9 +37,10 @@ Route::group([
     // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::post('patient-referral/storecert', 'App\Http\Controllers\PatientReferralController@storeCertDate');
-    Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+    /*Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');*/
     Route::post('patient-occupational/storeoccupational', 'App\Http\Controllers\PatientOccupationalController@storeOccupational');
     Route::get('patient-occupational/{id}', 'App\Http\Controllers\PatientOccupationalController@index')->name('occupational_patients');
+    Route::get('mdforms', 'App\Http\Controllers\MDFormsController@index')->name('mdforms.index');
 
     // Employee
     Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
@@ -50,10 +56,15 @@ Route::group([
 
     Route::post('caregiver/actionstore', 'App\Http\Controllers\CaregiverController@actionStore')->name('caregiver.actionstore');
 
+    // supervisour api
+    Route::get('getNewPatientListAll', 'App\Http\Controllers\PatientController@getPatientList');
+    Route::get('getNewPatientList', 'App\Http\Controllers\PatientController@getNewPatientList');
+
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
+        Route::get('ccm-readings', 'App\Http\Controllers\UserController@ccmReadings');
         //Patient
         Route::get('patient/search/{keyword}', 'App\Http\Controllers\PatientController@searchByEmailNamePhone');
         //Services
@@ -67,13 +78,16 @@ Route::group([
         Route::put('request/{request}', 'App\Http\Controllers\RequestController@update');
         //Appointment
         Route::get('appointment', 'App\Http\Controllers\AppointmentController@index');
-        Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store');
+
         Route::put('appointment/{appointment}', 'App\Http\Controllers\AppointmentController@update');
         Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
         Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
         Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
         Route::get('appointment/cancel-appointment-reasons', 'App\Http\Controllers\AppointmentController@getCancelAppointmentReasons');
+        Route::post('appointment/bydate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
         Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' );
+        Route::get('appointment/{id}', 'App\Http\Controllers\AppointmentController@edit');
+        Route::post('appointment/getAppointmentsByDate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
         //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
         //Company URLs
@@ -90,6 +104,21 @@ Route::group([
         Route::get('employee/search/getAppoinment', 'App\Http\Controllers\EmployeeController@getAppoinment');
         // Email Template Urls
         Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
+
+        //Applicant
+        Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
+        Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
+        Route::post('applicants/step-two', 'App\Http\Controllers\ApplicantController@stepTwo');
+        Route::post('applicants/step-three', 'App\Http\Controllers\ApplicantController@stepThree');
+        Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');
+        Route::get('address-life', 'App\Http\Controllers\ApplicantController@addressLife');
+        Route::get('relationship', 'App\Http\Controllers\ApplicantController@relationship');
+        Route::get('age-range-treated', 'App\Http\Controllers\ApplicantController@ageRangeTreated');
+        Route::get('ccm', 'App\Http\Controllers\ApplicantController@ccm');
+        Route::post('education', 'App\Http\Controllers\ApplicantController@education');
+        Route::get('education', 'App\Http\Controllers\ApplicantController@getEducation');
+        Route::get('certificates', 'App\Http\Controllers\CertificateController@index');
+        Route::post('certificates', 'App\Http\Controllers\CertificateController@store');
     });
 });
 
@@ -119,26 +148,51 @@ Route::group([
     Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
     Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
-    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
-    
+    Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
+    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');    
     //new patient list for appointment
     Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
+    //Appointment
+    Route::post('send-video-meeting-notification', 'App\Http\Controllers\SessionsController@sendVideoMeetingNotification');
+    Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
 });
 
 // Referral
 Route::group([
-    'middleware' => ['auth:api','role:referral'],
+    'prefix' => 'auth'
 ], function () {
-
+    Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
 });
 
 // Co Ordinator
 Route::group([
     'middleware' => ['auth:api','role:co-ordinator'],
 ], function () {
-//    Route::get('/get-patient-list','');
+    //Route::get('/get-patient-list','');
     Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
 });
+
+// Supervisor
+Route::group([
+    'middleware' => ['auth:api','role:supervisor'],
+], function () {
+    /*Route::get('getNewPatientListForAppointment1', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');*/
+    Route::get('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@index');
+    Route::post('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@store');
+    Route::post('filter-by-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@filter');
+    Route::post('assign-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@assign');
+    Route::post('remove-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@remove');
+});
+
+
+// Co Ordinator
+Route::group([
+    'middleware' => ['auth:api'],
+], function () {
+    Route::post('get-clinician-time-slots', 'App\Http\Controllers\AppointmentController@getClinicianTimeSlots');
+    Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store')->middleware('role:co-ordinator|patient');
+});
+
 // Get list of meetings.
 Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
 

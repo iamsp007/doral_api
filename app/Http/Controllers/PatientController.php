@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoadlSelectedDiesesRequest;
+use App\Models\Appointment;
 use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -95,7 +97,7 @@ class PatientController extends Controller
         }
 
         try {
-            $request = json_decode($request->getContent(), true);
+            $request = $request->all();
             if (!$step) {
                 throw new Exception("Invalid parameter are required");
             }
@@ -104,12 +106,13 @@ class PatientController extends Controller
             }
             $id = $request['id'];
             unset($request['id']);
-            $patient = Patient::find($id);
+            $patient = Patient::where('user_id', $id)->first();
             if (!$patient) {
                 throw new Exception("Patient are not found into database");
             }
             switch ($step) {
                 case '1':
+                    $id = $patient->id;
                     $data = Patient::updatePatient($id, $request);
                     if ($data) {
                         $status = true;
@@ -118,6 +121,7 @@ class PatientController extends Controller
                     }
                     break;
                 case '2': // Insert services
+                    $id = $patient->id;
                     $data = Patient::updateServices($id, $request);
                     if ($data) {
                         $status = true;
@@ -126,8 +130,12 @@ class PatientController extends Controller
                     }
                     break;
                 case '3': // Insert Insurance
+                    $id = $patient->id;
                     $data = Patient::updateInsurance($id, $request);
                     if ($data) {
+                        $user = request()->user();
+                        $user->profile_verified_at = date('Y-m-d H:i:s');
+                        $user->save();
                         $status = true;
                         $message = "Patient Insurance saved Successfully";
                         return $this->generateResponse($status, $message, $resp);
@@ -139,7 +147,7 @@ class PatientController extends Controller
             }
         } catch (\Exception $e) {
             $status = false;
-            $message = $e->getMessage();
+            $message = $e->getMessage(). $e->getLine();
             return $this->generateResponse($status, $message, $resp);
         }
     }
@@ -226,6 +234,7 @@ class PatientController extends Controller
             ->where('first_name','!=',null)
             ->where('status','=','pending')
             ->get();
+        //dd($patientList);
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
     
@@ -239,11 +248,41 @@ class PatientController extends Controller
 
     public function scheduleAppoimentList(Request $request){
         // patient referral pending status patient list
-        $patientList = PatientReferral::with('detail','service','filetype')
-            ->where('first_name','!=',null)
-            ->where('status','=','running')
-            ->get();
-        return $this->generateResponse(true,'get schedule patient list',$patientList,200);
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['patients','meeting','service','filetype'])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d H:i:s'))
+            ->orderBy('start_datetime','desc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+    }
+
+    public function cancelAppoimentList(Request $request){
+        // patient referral pending status patient list
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['patients','meeting','service','filetype'])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->where([
+                ['book_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss')],
+                ['status','=','cancel']
+            ])
+            ->orderBy('book_datetime','desc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }
 
     public function getNewPatientListForAppointment(Request $request){

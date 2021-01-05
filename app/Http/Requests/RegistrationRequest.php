@@ -29,10 +29,10 @@ class RegistrationRequest extends FormRequest
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'gender' => 'required|string',
-            'email' => 'string|email|unique:users',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|string',
             'dob' => 'required|date',
-            'phone' => 'numeric'
+            'phone' => 'required|numeric|unique:users,phone',
         ];
     }
 

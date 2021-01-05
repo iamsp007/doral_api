@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Services;
-use App\Models\ServiceMaster;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -24,12 +23,9 @@ class ServicesController extends Controller
             if (!$services) {
                 throw new Exception("No Services are found into database");
             }
-            $data = [
-                'services' => $services
-            ];
             $status = true;
             $message = "services List";
-            return response()->json([$status, $message, $data]);
+            return $this->generateResponse($status, $message, $services, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
@@ -141,20 +137,17 @@ class ServicesController extends Controller
         $data = [];
         $message = 'Something wrong';
         try {
-            $services = ServiceMaster::all();
+            $services = Services::all();
             if (!$services) {
                 throw new Exception("No Services are found into database");
             }
-            $data = [
-                'services' => $services
-            ];
             $status = true;
             $message = "Services List";
-            return response()->json([$status, $message, $data]);
+            return $this->generateResponse($status, $message, $services, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
+            return $this->generateResponse($status, $message, $data, 200);
         }
     }
 }

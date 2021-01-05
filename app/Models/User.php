@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'dob', 'phone', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token'
+        'first_name', 'last_name', 'dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token'
     ];
 
     /**
@@ -32,6 +32,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $appends = ['gender_name'];
 
 ////
 //    protected $dates = [ 'created_at', 'updated_at'];
@@ -45,6 +46,15 @@ class User extends Authenticatable
     {
         return Carbon::parse(strtotime($value))->format(config('app.date_format'));
     }
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getGenderNameAttribute()
+    {
+        return $this->gender==='1'?'Male':($this->gender==='2'?'Female':'Other');
+    }
 
     /**
      * The attributes that should be cast to native types.
@@ -52,9 +62,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:m/d/Y H:i:s',
+        'updated_at' => 'datetime:m/d/Y H:i:s',
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
     ];
     /**
      *
@@ -124,7 +135,33 @@ class User extends Authenticatable
     }
 
     public function myRoom(){
-        return $this->hasOne(VirtualRoom::class,'id','user_id');
+        return $this->hasOne(VirtualRoom::class,'user_id','id');
+    }
+
+    public function detail(){
+        return $this->belongsTo(PatientReferral::class,'user_id','id')->with('service');
+    }
+
+    public function leave(){
+        return $this->hasOne(EmployeeLeaveManagement::class,'user_id','id');
+    }
+
+    public function ccm(){
+        return $this->hasMany(CCMReading::class,'user_id','id');
+    }
+
+    public function appointment(){
+        return $this->hasMany(Appointment::class,'provider1','id');
+    }
+
+    public function appointmentOrLeave(){
+        return $this->hasManyThrough(
+            Appointment::class,
+            EmployeeLeaveManagement::class,
+            'user_id',
+            'provider1',
+            'id',
+            'id');
     }
 
 }

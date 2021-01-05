@@ -14,7 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'DoralWeb'),
-    'date_format' => 'm/d/Y H:i:s',
+    'date_format' => 'm/d/Y',
     'date_format_javascript' => 'MM/DD/YYYY',
 
     /*
@@ -178,7 +178,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-
+        Nexmo\Laravel\NexmoServiceProvider::class,
 
     ],
 
@@ -232,6 +232,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Nexmo' => Nexmo\Laravel\Facade\Nexmo::class,
 
     ],
 
