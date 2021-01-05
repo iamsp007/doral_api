@@ -85,7 +85,7 @@ class CertificateController extends Controller
         $records = [];
         collect($request->age_ranges)->each(function ($item, $key) use (&$records, &$request, &$certificate) {
             $record = [
-                'certificate_id' => $certificate->certificate_id,
+                'certificate_id' => $certificate->id,
                 'age_range_treated' => $item['age_range_treated']
             ];
             $records[] = $record;
@@ -104,7 +104,7 @@ class CertificateController extends Controller
         $records = [];
         collect($request->state_licenses)->each(function ($item, $key) use (&$records, &$request, &$certificate) {
             $record = [
-                'certificate_id' => $certificate->certificate_id,
+                'certificate_id' => $certificate->id,
                 'license_state' => $item['license_state'],
                 'license_number' => $item['license_number']
             ];
@@ -124,7 +124,7 @@ class CertificateController extends Controller
         $records = [];
         collect($request->board_certificates)->each(function ($item, $key) use (&$records, &$request, &$certificate) {
             $record = [
-                'certificate_id' => $certificate->certificate_id,
+                'certificate_id' => $certificate->id,
                 'certifying_board' => $item['certifying_board'],
                 'status' => $item['status']
             ];

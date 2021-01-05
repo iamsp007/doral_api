@@ -29,5 +29,10 @@ return [
 		0 => 'board 1',
 		1 => 'board 2',
 		2 => 'board 3'
+	],
+	'certifying_board_status' => [
+		0 => 'Active',
+		1 => 'In Active',
+		2 => 'On Hold'
 	]
 ];
