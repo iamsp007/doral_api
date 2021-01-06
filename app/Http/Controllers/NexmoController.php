@@ -17,10 +17,16 @@ class NexmoController extends Controller
     {
     	$data = null;
     	try {
-            $validator = \Validator::make($request->all(),[ 
-                'email' => 'required|email|unique:users,email',
-                'phone' => 'required|numeric|unique:users,phone',
-            ]);
+            if ($request->isPatientVerify) {
+                $validator = \Validator::make($request->all(),[
+                    'phone' => 'required|numeric|unique:users,phone',
+                ]);
+            } else {
+                $validator = \Validator::make($request->all(),[ 
+                    'email' => 'required|email|unique:users,email',
+                    'phone' => 'required|numeric|unique:users,phone',
+                ]);
+            }
             if ($validator->fails()) {
                 $status = 200;
                 $success = false;
@@ -61,13 +67,58 @@ class NexmoController extends Controller
                 $request->request_id,
                 $request->code
             );
-	        $data = User::where('phone', $request->phone)->first();
-            $data->phone_verified_at = date('Y-m-d H:i:s');
-            $data->save();
-	        $status = 200;
-	        $success = true;
-	        $message = "verified";
-	        return $this->generateResponse($success, $message, $data, $status);
+            if ($request->isPatientVerify) {
+                $input = $request->all();
+                $patient = Patient::getPatientUsingSsnAndDob($input);
+                $patient->phone = $request->phone;
+                $patient->save();
+
+                $user = $patient->user;
+                $user->phone = $request->phone;
+                $user->phone_verified_at = date('Y-m-d H:i:s');
+                $user->save();
+
+                if (!Auth::loginUsingId($user->id)) {
+                    return $this->generateResponse(false, 'Something went wrong!');
+                }
+                $user = $request->user();
+                $user->isEmailVerified = $user->email_verified_at ? true : false;
+                $user->isMobileVerified = $user->phone_verified_at ? true : false;
+                $user->isProfileVerified = $user->profile_verified_at ? true : false;
+                $user->isMultiplePatientExist = false;
+                $user->roles = $user->roles ? $user->roles->first() : null;
+                $tokenResult = $user->createToken('Personal Access Token');
+                $token = $tokenResult->token;
+                if ($request->remember_me)
+                    $token->expires_at = Carbon::now()->addMinute(1);
+                $token->save();
+                $data = [
+                    'access_token' => $tokenResult->accessToken,
+                    'token_type' => 'Bearer',
+                    'user' => $user,
+                    'expires_at' => Carbon::parse(
+                        $tokenResult->token->expires_at
+                    )->toDateTimeString()
+                ];
+                // update device token and type
+                if ($request->has('device_token')) {
+                    $users = User::find($user->id);
+                    if ($users) {
+                        $users->device_token = $request->device_token;
+                        $users->device_type = $request->device_type;
+                        $users->save();
+                    }
+                }
+                return $this->generateResponse(true, 'Login Successfully!', $data);
+            } else {
+                $data = User::where('phone', $request->phone)->first();
+                $data->phone_verified_at = date('Y-m-d H:i:s');
+                $data->save();
+                $status = 200;
+                $success = true;
+                $message = "verified";
+                return $this->generateResponse($success, $message, $data, $status);
+            }
         } catch (Nexmo\Client\Exception\Request $ex) {
         	Log::error($ex);
 	        $status = 403;
