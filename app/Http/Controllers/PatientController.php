@@ -72,12 +72,13 @@ class PatientController extends Controller
     {
         try {
             $data = Patient::insert($request);
+            dd($data);
             return $data;
         } catch (\Exception $e) {
             \Log::error($e);
             $status = false;
             $message = $e->getMessage(). $e->getLine();
-            return $this->generateResponse($status, $message, $resp);
+            return $this->generateResponse($status, $message, null);
         }
     }
 
