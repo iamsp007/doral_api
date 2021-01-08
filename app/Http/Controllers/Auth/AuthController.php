@@ -128,9 +128,9 @@ class AuthController extends Controller
                 // if (!Auth::attempt($credentials)) {
                 //     return $this->generateResponse(false, $field . ' or Password are Incorrect!');
                 // }
-                // $user->isEmailVerified = $user->email_verified_at ? true : false;
-                // $user->isMobileVerified = $user->phone_verified_at ? true : false;
-                // $user->isProfileVerified = $user->profile_verified_at ? true : false;
+                $user->isEmailVerified = $user->email_verified_at ? true : false;
+                $user->isMobileVerified = $user->phone_verified_at ? true : false;
+                $user->isProfileVerified = $user->profile_verified_at ? true : false;
                 // $user->roles = $user->roles ? $user->roles->first() : null;
                 // $tokenResult = $user->createToken('Personal Access Token');
                 // $token = $tokenResult->token;
