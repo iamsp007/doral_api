@@ -88,7 +88,7 @@ class Patient extends Model
     public static function updatePatient($id, $request)
     {
         try {
-            $data = patient::where('id', $id)->update($request);
+            $data = Patient::where('id', $id)->update($request);
             return $data;
         } catch (\Exception $e) {
             echo $e->getMessage();
