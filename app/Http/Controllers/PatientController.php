@@ -71,8 +71,10 @@ class PatientController extends Controller
     public function store($request)
     {
         try {
+            unset($request['type']);
+            unset($request['password']);
+            $request['dob'] = date('Y-m-d', strtotime($request['dob']));
             $data = Patient::insert($request);
-            dd($request, $data);
             return $data;
         } catch (\Exception $e) {
             \Log::error($e);
