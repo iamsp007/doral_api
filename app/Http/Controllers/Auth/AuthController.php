@@ -52,7 +52,7 @@ class AuthController extends Controller
             $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
             // print_r($credentials);die;
             if (!Auth::attempt($credentials)) {
-                return $this->generateResponse(false, $field . ' or Password are Incorrect!');
+                return $this->generateResponse(false, $field . ' or password are incorrect!', null);
             }
             $user = $request->user();
             $user->isEmailVerified = $user->email_verified_at ? true : false;
