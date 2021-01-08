@@ -85,7 +85,7 @@ class Patient extends Model
     /**
      * Update patient information based on id
      */
-    public static function updatePatient($id, $request)
+    public static function updatePatient($request)
     {
         try {
             $data = Patient::firstOrCreate($request);
