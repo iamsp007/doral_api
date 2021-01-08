@@ -17,16 +17,9 @@ class NexmoController extends Controller
     {
     	$data = null;
     	try {
-            if ($request->isPatientVerify) {
-                $validator = \Validator::make($request->all(),[
-                    'phone' => 'required|numeric|unique:users,phone',
-                ]);
-            } else {
-                $validator = \Validator::make($request->all(),[ 
-                    'email' => 'required|email|unique:users,email',
-                    'phone' => 'required|numeric|unique:users,phone',
-                ]);
-            }
+            $validator = \Validator::make($request->all(),[
+                'phone' => 'required|numeric',
+            ]);
             if ($validator->fails()) {
                 $status = 200;
                 $success = false;
@@ -63,15 +56,19 @@ class NexmoController extends Controller
     {
     	$data = null;
     	try {
-	    	\Nexmo::verify()->check(
-                $request->request_id,
-                $request->code
-            );
             if ($request->isPatientVerify) {
                 $input = $request->all();
                 $patient = Patient::getPatientUsingSsnAndDob($input);
-                $patient->phone = $request->phone;
-                $patient->save();
+                if ($patient) {
+                    \Nexmo::verify()->check(
+                        $request->request_id,
+                        $request->code
+                    );
+                    $patient->phone = $request->phone;
+                    $patient->save();
+                } else {
+                    return $this->generateResponse(false, 'Patient not found');
+                }
 
                 $user = $patient->user;
                 $user->phone = $request->phone;
@@ -111,6 +108,10 @@ class NexmoController extends Controller
                 }
                 return $this->generateResponse(true, 'Login Successfully!', $data);
             } else {
+                \Nexmo::verify()->check(
+                    $request->request_id,
+                    $request->code
+                );
                 $data = User::where('phone', $request->phone)->first();
                 $data->phone_verified_at = date('Y-m-d H:i:s');
                 $data->save();

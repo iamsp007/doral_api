@@ -101,21 +101,59 @@ class AuthController extends Controller
         $user->status = '1';
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()) {
-            $request = $request->toArray();
-            $id = $user->id;
-            if ($id) {
-                $request['user_id'] = $id;
+            // $request = $request->toArray();
+            // $id = $user->id;
+            if ($user->id) {
+                // PREVIOUS UNNECESSARY CODE
+                /*$request['user_id'] = $id;
                 if ($request['type'] == 'clinician' || $request['type'] == 'admin') {
                     unset($request['type']);
                     $result = $this->employeeContoller->store($request);
                 } else if ($request['type'] == 'patient') {
                     unset($request['type']);
                     $result = $this->patientController->store($request);
-                }
+                }*/
                 // Check the condition if error into database
-                if (!$result) {
-                    throw new \ErrorException('Error in insert');
-                }
+                // if (!$result) {
+                //     throw new \ErrorException('Error in insert');
+                // }
+                // BELOW FOR LOGIN
+                // $username = $request->username;
+                // $password = $request->password;
+                // $field = 'email';
+                // if (is_numeric($request->username)) {
+                //     $field = 'phone';
+                // }
+                // $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
+                // if (!Auth::attempt($credentials)) {
+                //     return $this->generateResponse(false, $field . ' or Password are Incorrect!');
+                // }
+                // $user->isEmailVerified = $user->email_verified_at ? true : false;
+                // $user->isMobileVerified = $user->phone_verified_at ? true : false;
+                // $user->isProfileVerified = $user->profile_verified_at ? true : false;
+                // $user->roles = $user->roles ? $user->roles->first() : null;
+                // $tokenResult = $user->createToken('Personal Access Token');
+                // $token = $tokenResult->token;
+                // if ($request->remember_me)
+                //     $token->expires_at = Carbon::now()->addMinute(1);
+                // $token->save();
+                // $data = [
+                //     'access_token' => $tokenResult->accessToken,
+                //     'token_type' => 'Bearer',
+                //     'user' => $user,
+                //     'expires_at' => Carbon::parse(
+                //         $tokenResult->token->expires_at
+                //     )->toDateTimeString()
+                // ];
+                // // update device token and type
+                // if ($request->has('device_token')) {
+                //     $users = User::find($user->id);
+                //     if ($users) {
+                //         $users->device_token = $request->device_token;
+                //         $users->device_type = $request->device_type;
+                //         $users->save();
+                //     }
+                // }
                 $status = true;
                 $message = "Registration successful.";
                 return $this->generateResponse(true, $message, $user, 200);
