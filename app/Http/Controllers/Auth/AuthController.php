@@ -101,22 +101,22 @@ class AuthController extends Controller
         $user->status = '1';
         $user->assignRole($request->type)->syncPermissions(Permission::all());
         if ($user->save()) {
-            // $request = $request->toArray();
-            // $id = $user->id;
+            $request = $request->toArray();
+            $id = $user->id;
             if ($user->id) {
                 // PREVIOUS UNNECESSARY CODE
-                /*$request['user_id'] = $id;
+                $request['user_id'] = $id;
                 if ($request['type'] == 'clinician' || $request['type'] == 'admin') {
                     unset($request['type']);
                     $result = $this->employeeContoller->store($request);
                 } else if ($request['type'] == 'patient') {
                     unset($request['type']);
                     $result = $this->patientController->store($request);
-                }*/
+                }
                 // Check the condition if error into database
-                // if (!$result) {
-                //     throw new \ErrorException('Error in insert');
-                // }
+                if (!$result) {
+                    throw new \ErrorException('Error in insert');
+                }
                 // BELOW FOR LOGIN
                 // $username = $request->username;
                 // $password = $request->password;

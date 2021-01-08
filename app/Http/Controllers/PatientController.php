@@ -108,13 +108,13 @@ class PatientController extends Controller
             $id = $request['id'];
             unset($request['id']);
             $patient = Patient::where('user_id', $id)->first();
-            if ($step != 1 && !$patient) {
+            if (!$patient) {
                 throw new Exception("Patient are not found into database");
             }
             switch ($step) {
                 case '1':
-                    $request['user_id'] = $id;
-                    $data = Patient::updatePatient($request);
+                    $id = $patient->id;
+                    $data = Patient::updatePatient($id, $request);
                     if ($data) {
                         $status = true;
                         $message = "Patient information saved Successfully";

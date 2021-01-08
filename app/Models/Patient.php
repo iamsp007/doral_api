@@ -85,10 +85,10 @@ class Patient extends Model
     /**
      * Update patient information based on id
      */
-    public static function updatePatient($request)
+    public static function updatePatient($id, $request)
     {
         try {
-            $data = Patient::firstOrCreate($request);
+            $data = patient::where('id', $id)->update($request);
             return $data;
         } catch (\Exception $e) {
             echo $e->getMessage();
