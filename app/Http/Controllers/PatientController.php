@@ -70,8 +70,15 @@ class PatientController extends Controller
      */
     public function store($request)
     {
-        $data = Patient::insert($request);
-        return $data;
+        try {
+            $data = Patient::insert($request);
+            return $data;
+        } catch (\Exception $e) {
+            \Log::error($ex);
+            $status = false;
+            $message = $e->getMessage(). $e->getLine();
+            return $this->generateResponse($status, $message, $resp);
+        }
     }
 
     /**
