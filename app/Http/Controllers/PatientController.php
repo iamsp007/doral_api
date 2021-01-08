@@ -71,11 +71,16 @@ class PatientController extends Controller
     public function store($request)
     {
         try {
-            unset($request['type']);
-            unset($request['password']);
-            $request['dob'] = date('Y-m-d', strtotime($request['dob']));
             $data = Patient::insert($request);
             return $data;
+            // $patient->user_id = $request['user_id'];
+            // $patient->first_name = $request['first_name'];
+            // $patient->last_name = $request['last_name'];
+            // $patient->gender = $request['gender'];
+            // $patient->email = $request['email'];
+            // $patient->phone = $request['phone'];
+            // $patient->dob = $request['dob'];
+            // $patient->status = 'active';
         } catch (\Exception $e) {
             \Log::error($e);
             $status = false;
