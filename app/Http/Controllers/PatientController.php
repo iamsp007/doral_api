@@ -72,7 +72,7 @@ class PatientController extends Controller
     {
         try {
             $data = Patient::insert($request);
-            dd($data);
+            dd($request, $data);
             return $data;
         } catch (\Exception $e) {
             \Log::error($e);
