@@ -74,7 +74,7 @@ class PatientController extends Controller
             $data = Patient::insert($request);
             return $data;
         } catch (\Exception $e) {
-            \Log::error($ex);
+            \Log::error($e);
             $status = false;
             $message = $e->getMessage(). $e->getLine();
             return $this->generateResponse($status, $message, $resp);

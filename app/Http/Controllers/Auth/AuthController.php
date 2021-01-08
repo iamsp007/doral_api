@@ -166,7 +166,7 @@ class AuthController extends Controller
                 'message' => 'Invalid Daata'
             ], 200);
         } catch (\Exception $e) {
-            \Log::error($ex);
+            \Log::error($e);
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, null);
