@@ -99,7 +99,7 @@ class PatientController extends Controller
     public function storeInfomation($step, Request $request)
     {
         $status = false;
-        $resp = [];
+        $resp = null;
         if ($step == 1) {
             $request->validate([
                 'ssn' => 'required',
@@ -122,7 +122,7 @@ class PatientController extends Controller
             }
             $id = $request['id'];
             unset($request['id']);
-            $patient = Patient::where('user_id', $id)->first();
+            $patient = Patient::with('user')->where('user_id', $id)->first();
             if (!$patient) {
                 throw new Exception("Patient are not found into database");
             }
@@ -149,7 +149,7 @@ class PatientController extends Controller
                     $id = $patient->id;
                     $data = Patient::updateInsurance($id, $request);
                     if ($data) {
-                        $user = $patient->user();
+                        $user = $patient->user;
                         $user->profile_verified_at = date('Y-m-d H:i:s');
                         $user->save();
                         $status = true;
