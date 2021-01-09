@@ -110,10 +110,11 @@ Route::group([
 
         //Applicant
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
-        Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
+        /*Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
         Route::post('applicants/step-two', 'App\Http\Controllers\ApplicantController@stepTwo');
         Route::post('applicants/step-three', 'App\Http\Controllers\ApplicantController@stepThree');
-        Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');
+        Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');*/
+        Route::post('applicants/steps', 'App\Http\Controllers\ApplicantController@allStepTogether');
         Route::get('address-life', 'App\Http\Controllers\ApplicantController@addressLife');
         Route::get('relationship', 'App\Http\Controllers\ApplicantController@relationship');
         Route::get('age-range-treated', 'App\Http\Controllers\ApplicantController@ageRangeTreated');
