@@ -25,6 +25,7 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
 
@@ -445,6 +446,11 @@ class AuthController extends Controller
             $message = $ex->getMessage();
             return $this->generateResponse($success, $message, $data, $status);
         }
+    }
+
+    public function countries()
+    {
+        return Country::find(226); // US only
     }
 
     public function states()
