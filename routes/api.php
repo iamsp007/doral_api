@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'auth'
 ], function () {
+    Route::post('patient-login', 'App\Http\Controllers\Auth\AuthController@patientLogin');
+    Route::post('update-phone', 'App\Http\Controllers\Auth\AuthController@updatePhone');
+    Route::post('verify-phone', 'App\Http\Controllers\Auth\AuthController@verifyPhone');
     Route::post('login', 'App\Http\Controllers\Auth\AuthController@login')->name('login');
     Route::post('forgot', 'App\Http\Controllers\Auth\AuthController@forgotPassword')->name('forgot');
     Route::post('reset', 'App\Http\Controllers\Auth\AuthController@reset')->name('reset');
@@ -106,14 +109,16 @@ Route::group([
 
         //Applicant
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
-        Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
+        /*Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
         Route::post('applicants/step-two', 'App\Http\Controllers\ApplicantController@stepTwo');
         Route::post('applicants/step-three', 'App\Http\Controllers\ApplicantController@stepThree');
-        Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');
+        Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');*/
+        Route::post('applicants/steps', 'App\Http\Controllers\ApplicantController@allStepTogether');
         Route::get('address-life', 'App\Http\Controllers\ApplicantController@addressLife');
         Route::get('relationship', 'App\Http\Controllers\ApplicantController@relationship');
         Route::get('age-range-treated', 'App\Http\Controllers\ApplicantController@ageRangeTreated');
         Route::get('ccm', 'App\Http\Controllers\ApplicantController@ccm');
+        Route::get('clinician-services', 'App\Http\Controllers\ApplicantController@clinicianServices');
         Route::post('education', 'App\Http\Controllers\ApplicantController@education');
         Route::get('education', 'App\Http\Controllers\ApplicantController@getEducation');
         Route::get('certificates', 'App\Http\Controllers\CertificateController@index');

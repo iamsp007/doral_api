@@ -197,6 +197,93 @@ class ApplicantController extends Controller
     }
 
     /**
+     * All step a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function allStepTogether(Request $request)
+    {
+        try {
+            $request->validate([
+                'applicant_name' => 'required',
+                'ssn' => 'required',
+                'phone' => 'required',
+                'date' => 'required',
+                'address_line_1' => 'required',
+                'city' => 'required',
+                'state' => 'required',
+                'zip' => 'required',
+                'address_life' => 'required',
+                'referance.*.referance_name' => 'required',
+                'referance.*.reference_address' => 'required',
+                'referance.*.reference_phone' => 'required',
+                'referance.*.reference_relationship' => 'required',
+                'bonded' => 'required',
+                'refused_bond' => 'required',
+                'convicted_crime' => 'required',
+                'emergency_name' => 'required',
+                'emergency_address' => 'required',
+                'emergency_phone' => 'required',
+                'emergency_relationship' => 'required'
+            ]);
+            $applicant = new Applicant();
+
+            $applicant->user_id = $request->user()->id;
+            $applicant->applicant_name = $request->applicant_name;
+            $applicant->other_name = $request->other_name;
+            $applicant->ssn = $request->ssn;
+            $applicant->phone = $request->phone;
+            $applicant->home_phone = $request->home_phone;
+            $applicant->date = $request->date;
+            $applicant->us_citizen = $request->us_citizen;
+            $applicant->immigration_id = $request->immigration_id;
+
+            $applicant->address_line_1 = $request->address_line_1;
+            $applicant->address_line_2 = $request->address_line_2;
+            $applicant->city = $request->city;
+            $applicant->state = $request->state;
+            $applicant->zip = $request->zip;
+            $applicant->address_life = $request->address_life;
+
+            $applicant->bonded = $request->bonded;
+            $applicant->refused_bond = $request->refused_bond;
+            $applicant->convicted_crime = $request->convicted_crime;
+
+            $applicant->emergency_name = $request->emergency_name;
+            $applicant->emergency_address = $request->emergency_address;
+            $applicant->emergency_phone = $request->emergency_phone;
+            $applicant->emergency_relationship = $request->emergency_relationship;
+
+            if ($applicant->save()){
+
+                $records = [];
+                collect($request->referance)->each(function ($item, $key) use (&$records, &$applicant) {
+                    $record = [
+                        'applicant_id' => $applicant->id,
+                        'referance_name' => $item['referance_name'],
+                        'reference_address' => $item['reference_address'],
+                        'reference_phone' => $item['reference_phone'],
+                        'reference_relationship' => $item['reference_relationship'],
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+                    $records[] = $record;
+                });
+                ApplicantReference::insert($records);
+                $status = true;
+                $message = "Success! Please complete step two.";
+                return $this->generateResponse($status, $message, $applicant, 200);
+            }
+            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, []);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -245,6 +332,19 @@ class ApplicantController extends Controller
         $status = true;
         $message = "CCM";
         $data = config('common.ccm_reading');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function clinicianServices()
+    {
+        $status = true;
+        $message = "Services";
+        $data = config('common.clinician_services');
         return $this->generateResponse($status, $message, $data);
     }
 

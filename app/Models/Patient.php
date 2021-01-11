@@ -33,6 +33,10 @@ class Patient extends Model
         return $this->hasMany('App\Models\PatientInsurance');
     }
 
+    public function user(){
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+
     /**
      * 
      */
@@ -84,7 +88,7 @@ class Patient extends Model
     public static function updatePatient($id, $request)
     {
         try {
-            $data = patient::where('id', $id)->update($request);
+            $data = Patient::where('id', $id)->update($request);
             return $data;
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -122,6 +126,19 @@ class Patient extends Model
             echo $e->getMessage();
             return false;
             exit;
+        }
+    }
+
+    public static function getPatientUsingSsnAndDob($input)
+    {
+        try {
+            $data = Patient::with('user')->where('ssn', 'LIKE', '%'.$input['ssn'])
+                ->where('dob', $input['dob'])
+                ->first();
+            return $data;
+        } catch (\Exception $e) {
+            report($e);
+            return false;
         }
     }
 }

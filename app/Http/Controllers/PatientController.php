@@ -70,8 +70,23 @@ class PatientController extends Controller
      */
     public function store($request)
     {
-        $data = Patient::insert($request);
-        return $data;
+        try {
+            $data = Patient::insert($request);
+            return $data;
+            // $patient->user_id = $request['user_id'];
+            // $patient->first_name = $request['first_name'];
+            // $patient->last_name = $request['last_name'];
+            // $patient->gender = $request['gender'];
+            // $patient->email = $request['email'];
+            // $patient->phone = $request['phone'];
+            // $patient->dob = $request['dob'];
+            // $patient->status = 'active';
+        } catch (\Exception $e) {
+            \Log::error($e);
+            $status = false;
+            $message = $e->getMessage(). $e->getLine();
+            return $this->generateResponse($status, $message, null);
+        }
     }
 
     /**
@@ -84,7 +99,7 @@ class PatientController extends Controller
     public function storeInfomation($step, Request $request)
     {
         $status = false;
-        $resp = [];
+        $resp = null;
         if ($step == 1) {
             $request->validate([
                 'ssn' => 'required',
@@ -107,7 +122,7 @@ class PatientController extends Controller
             }
             $id = $request['id'];
             unset($request['id']);
-            $patient = Patient::where('user_id', $id)->first();
+            $patient = Patient::with('user')->where('user_id', $id)->first();
             if (!$patient) {
                 throw new Exception("Patient are not found into database");
             }
@@ -134,7 +149,7 @@ class PatientController extends Controller
                     $id = $patient->id;
                     $data = Patient::updateInsurance($id, $request);
                     if ($data) {
-                        $user = request()->user();
+                        $user = $patient->user;
                         $user->profile_verified_at = date('Y-m-d H:i:s');
                         $user->save();
                         $status = true;
