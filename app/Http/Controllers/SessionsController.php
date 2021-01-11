@@ -66,6 +66,8 @@ class SessionsController extends Controller
 
         $appointment = Appointment::with(['meeting','service','patients'])->find($request->appointment_id);
         if ($appointment){
+            $appointment->status = 'running';
+            $appointment->save();
             event(new SendVideoMeetingNotification($appointment->patient_id,$appointment));
             return $this->generateResponse(true,'Sending Video Calling Message Success',$appointment,200);
         }

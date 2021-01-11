@@ -83,22 +83,6 @@ class AppointmentController extends Controller
         $appointment->provider2 = $request->provider2;
         $appointment->service_id = isset($patient->detail)?$patient->detail->service_id:1;
         if ($appointment->save()){
-//            $request->request->add([
-//                'appointment_id' => $appointment->id,
-//                'topic' => $appointment->title,
-//                'start_time'=>$appointment->start_datetime,
-//                'agenda'=>'Agenda'
-//            ]);
-
-//            $request->request->add(
-//                [
-//                    'appointment_id' => $appointment->id,
-//                    'topic' => $appointment->title,
-//                    'start_time'=>$appointment->start_datetime,
-//                    'agenda'=>'Agenda'
-//                ]
-//            );
-
             $meetingController = new MeetingController();
             $resp =  $meetingController->createMeeting([
                 'appointment_id' => $appointment->id,
@@ -186,7 +170,7 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($id);
     }
 
     /**
@@ -353,28 +337,26 @@ class AppointmentController extends Controller
      */
     public function cancelAppointment(Request $request)
     {
-        $status = 0;
-        $data = [];
-        $message = 'Something wrong';
+        $validator = Validator::make($request->all(),[
+            'appointment_id'=>'required|exists:appointments,id',
+            'reason_notes'=>'required'
+        ]);
+        if ($validator->fails()){
+            return $this->generateResponse(false,'Invalid Data',$validator->errors(),200);
+        }
+
         try {
-            $request = $request->all();
-            if (!$request['appointment_id'] || !$request['reason_id'] || !$request['cancel_user']) {
-                throw new Exception("Invalid parameter passed");
+            $appointment = Appointment::find($request->appointment_id);
+            $appointment->status = 'cancel';
+            $appointment->reason_id = $request->has('reason_id')?$request->reason_id:5;
+            $appointment->reason_notes = $request->has('reason_notes')?$request->reason_notes:null;
+            $appointment->cancel_user = Auth::user()->id;
+            if ($appointment->save()){
+                return $this->generateResponse(true,'Appointment Cancel Successfully!',null,200);
             }
-            $cancel = Appointment::cancelAppointment($request);
-            if (!$cancel['status']) {
-                throw new Exception($cancel['message']);
-            }
-            $message = $cancel['message'];
-            $data = [
-                'appointments' => $cancel['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
+            return $this->generateResponse(false,'Something Went Wrong!',null,422);
+        }catch (\Exception $exception){
+            return $this->generateResponse(false,$exception->getMessage(),null,422);
         }
     }
 
