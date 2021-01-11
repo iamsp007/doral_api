@@ -16,7 +16,7 @@ class Appointment extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'appointment_url', 'book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url'
+        'title', 'appointment_url', 'book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url','cancel_user','reason_notes'
     ];
 
     protected $casts = [
@@ -76,7 +76,14 @@ class Appointment extends Model
         return $this->hasOne(VirtualRoom::class, 'appointment_id', 'id');
     }
     /**
-     * Get All Appointment 
+     * Get Meeting Reasons
+     */
+    public function cancelByUser()
+    {
+        return $this->hasOne(User::class, 'id', 'cancel_user');
+    }
+    /**
+     * Get All Appointment
      */
     public static function getAllAppointment($request = array())
     {
@@ -157,7 +164,7 @@ class Appointment extends Model
         }
     }
     /**
-     * Get All Appointment 
+     * Get All Appointment
      */
     public static function getAppointment($id)
     {

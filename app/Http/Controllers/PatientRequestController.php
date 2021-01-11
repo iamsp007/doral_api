@@ -248,6 +248,9 @@ class PatientRequestController extends Controller
 
     public function clinicianPatientRequestList(Request $request){
         $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail')
+            ->where(function ($q){
+                $q->where('clincial_id','=',null)->orWhere('clincial_id','=',Auth::user()->id);
+            })
             ->where('is_active','=','1')
             ->orderBy('id','desc')
             ->get();

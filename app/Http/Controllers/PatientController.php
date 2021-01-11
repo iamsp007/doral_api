@@ -266,8 +266,8 @@ class PatientController extends Controller
             ->with(['provider2Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d H:i:s'))
-            ->orderBy('start_datetime','desc')
+            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
+            ->orderBy('start_datetime','asc')
             ->get()->toArray();
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }
@@ -277,18 +277,15 @@ class PatientController extends Controller
         $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
-            ->with(['patients','meeting','service','filetype'])
+            ->with(['patients','cancelAppointmentReasons','service','filetype','cancelByUser'])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
             ->with(['provider2Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-            ->where([
-                ['book_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss')],
-                ['status','=','cancel']
-            ])
-            ->orderBy('book_datetime','desc')
+            ->where('status','=','cancel')
+            ->orderBy('start_datetime','desc')
             ->get()->toArray();
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }

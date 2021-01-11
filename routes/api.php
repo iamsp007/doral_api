@@ -88,7 +88,6 @@ Route::group([
         Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
         Route::get('appointment/cancel-appointment-reasons', 'App\Http\Controllers\AppointmentController@getCancelAppointmentReasons');
         Route::post('appointment/bydate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
-        Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' );
         Route::get('appointment/{id}', 'App\Http\Controllers\AppointmentController@edit');
         Route::post('appointment/getAppointmentsByDate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
         //Users URLs
@@ -199,6 +198,9 @@ Route::group([
 ], function () {
     Route::post('get-clinician-time-slots', 'App\Http\Controllers\AppointmentController@getClinicianTimeSlots');
     Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store')->middleware('role:co-ordinator|patient');
+    Route::put('appointment/{id}/update', 'App\Http\Controllers\AppointmentController@store')->middleware('role:co-ordinator|patient');
+    Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' )->middleware('role:co-ordinator|patient|clinician');
+    Route::post('appointment/patient-md-form', 'App\Http\Controllers\PatientMdFormController@store' )->middleware('role:co-ordinator|patient|clinician');
 });
 
 // Get list of meetings.
