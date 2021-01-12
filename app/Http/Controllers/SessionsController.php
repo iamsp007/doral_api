@@ -64,12 +64,30 @@ class SessionsController extends Controller
             return $this->generateResponse(false,'Missign data',$validator->errors(),200);
         }
 
-        $appointment = Appointment::with(['meeting','service','patients'])->find($request->appointment_id);
+        $appointment = Appointment::with(['meeting','service','patients','provider1Details','provider2Details'])->find($request->appointment_id);
         if ($appointment){
             $appointment->status = 'running';
             $appointment->save();
             event(new SendVideoMeetingNotification($appointment->patient_id,$appointment));
             return $this->generateResponse(true,'Sending Video Calling Message Success',$appointment,200);
+        }
+        return $this->generateResponse(false,'Something Went Wrong',null,200);
+    }
+
+    public function leaveVideoMeeting(Request $request){
+        $validator = Validator::make($request->all(), [
+            'appointment_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->generateResponse(false,'Missign data',$validator->errors(),200);
+        }
+
+        $appointment = Appointment::find($request->appointment_id);
+        if ($appointment){
+            $appointment->status = 'completed';
+            $appointment->save();
+            return $this->generateResponse(true,'Your Video Meeting Is Completed!',$appointment,200);
         }
         return $this->generateResponse(false,'Something Went Wrong',null,200);
     }

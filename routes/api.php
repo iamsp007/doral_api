@@ -166,6 +166,7 @@ Route::group([
     //Appointment
     Route::post('send-video-meeting-notification', 'App\Http\Controllers\SessionsController@sendVideoMeetingNotification');
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
+    Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
 });
 
 // Referral
