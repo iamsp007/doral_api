@@ -100,7 +100,7 @@ class PatientController extends Controller
                 'address_1' => 'required',
                 'address_2' => 'required',
                 'Zip' => 'required',
-                'service_id' => 'required'
+                'service_id' => 'required|numeric'
             ]);
         }
 
