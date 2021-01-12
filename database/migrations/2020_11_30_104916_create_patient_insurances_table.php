@@ -15,7 +15,7 @@ class CreatePatientInsurancesTable extends Migration
     {
         Schema::create('patient_insurances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->index('patient_id');
+            $table->foreignId('patient_referral_id')->index('patient_referral_id');
             $table->string('name', 50);
             $table->string('key', 50);
             $table->enum('status', ['active', 'inactive'])->default('active');

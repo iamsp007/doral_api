@@ -77,4 +77,17 @@ class PatientReferral extends Model
     public function user(){
         return $this->belongsTo(User::class,'user_id','id');
     }
+
+    public static function getPatientUsingSsnAndDob($input)
+    {
+        try {
+            $data = PatientReferral::with('user')->where('ssn', 'LIKE', '%'.$input['ssn'])
+                ->where('dob', $input['dob'])
+                ->first();
+            return $data;
+        } catch (\Exception $e) {
+            report($e);
+            return false;
+        }
+    }
 }

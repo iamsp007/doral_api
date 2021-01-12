@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\PatientReferral;
 use Exception;
 
 class NexmoController extends Controller
@@ -58,7 +59,7 @@ class NexmoController extends Controller
     	try {
             if ($request->isPatientVerify) {
                 $input = $request->all();
-                $patient = Patient::getPatientUsingSsnAndDob($input);
+                $patient = PatientReferral::getPatientUsingSsnAndDob($input);
                 if ($patient) {
                     \Nexmo::verify()->check(
                         $request->request_id,
