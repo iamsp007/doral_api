@@ -97,8 +97,8 @@ class PatientController extends Controller
                 'ssn' => 'required',
                 'medicaid_number' => 'numeric',
                 'medicare_number' => 'numeric',
-                'address1' => 'required',
-                'address2' => 'required',
+                'address_1' => 'required',
+                'address_2' => 'required',
                 'Zip' => 'required',
                 'service_id' => 'required'
             ]);
