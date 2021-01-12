@@ -71,16 +71,8 @@ class PatientController extends Controller
     public function store($request)
     {
         try {
-            $data = Patient::insert($request);
+            $data = PatientReferral::insert($request);
             return $data;
-            // $patient->user_id = $request['user_id'];
-            // $patient->first_name = $request['first_name'];
-            // $patient->last_name = $request['last_name'];
-            // $patient->gender = $request['gender'];
-            // $patient->email = $request['email'];
-            // $patient->phone = $request['phone'];
-            // $patient->dob = $request['dob'];
-            // $patient->status = 'active';
         } catch (\Exception $e) {
             \Log::error($e);
             $status = false;
@@ -107,8 +99,8 @@ class PatientController extends Controller
                 'medicare_number' => 'numeric',
                 'address1' => 'required',
                 'address2' => 'required',
-                'zip' => 'required',
-                'service_key' => 'required'
+                'Zip' => 'required',
+                'service_id' => 'required'
             ]);
         }
 
@@ -122,7 +114,7 @@ class PatientController extends Controller
             }
             $id = $request['id'];
             unset($request['id']);
-            $patient = Patient::with('user')->where('user_id', $id)->first();
+            $patient = PatientReferral::with('user')->where('user_id', $id)->first();
             if (!$patient) {
                 throw new Exception("Patient are not found into database");
             }

@@ -57,4 +57,24 @@ class PatientReferral extends Model
     public function plans(){
         return $this->hasOne(Plans::class,'id','benefit_plan');
     }
+
+    /**
+     * Get the comments for the blog post.
+     */
+    public function patientService()
+    {
+        return $this->hasMany('App\Models\PatientService');
+    }
+
+    /**
+     * Get the PatientInsurance details
+     */
+    public function patientInsurance()
+    {
+        return $this->hasMany('App\Models\PatientInsurance');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class,'user_id','id');
+    }
 }

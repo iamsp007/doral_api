@@ -75,7 +75,7 @@ class Patient extends Model
     {
         $status = 0;
         try {
-            $data = patient::create($request);
+            $data = PatientReferral::create($request);
             return $data;
         } catch (\Exception $e) {
             return false;
@@ -88,7 +88,7 @@ class Patient extends Model
     public static function updatePatient($id, $request)
     {
         try {
-            $data = Patient::where('id', $id)->update($request);
+            $data = PatientReferral::where('id', $id)->update($request);
             return $data;
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -103,7 +103,7 @@ class Patient extends Model
     public static function updateServices($id, $request)
     {
         try {
-            $patient = Patient::find($id);
+            $patient = PatientReferral::find($id);
             $response = $patient->patientService()->createMany($request['PatientServices']);
             return $response;
         } catch (\Exception $e) {
@@ -119,7 +119,7 @@ class Patient extends Model
     public static function updateInsurance($id, $request)
     {
         try {
-            $patient = Patient::find($id);
+            $patient = PatientReferral::find($id);
             $response = $patient->patientInsurance()->createMany($request['PatientInsurance']);
             return $response;
         } catch (\Exception $e) {
