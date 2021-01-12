@@ -26,7 +26,7 @@ Route::group([
     Route::post('reset', 'App\Http\Controllers\Auth\AuthController@reset')->name('reset');
     Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\AuthController@reset')->name('password.reset');
     Route::post('password/reset', 'App\Http\Controllers\Auth\AuthController@resetPassword')->name('password.update');
-
+    Route::get('countries', 'App\Http\Controllers\Auth\AuthController@countries')->name('countries');
     Route::get('states', 'App\Http\Controllers\Auth\AuthController@states')->name('states');
     Route::get('cities', 'App\Http\Controllers\Auth\AuthController@cities')->name('cities');
     Route::post('nexmo-send', 'App\Http\Controllers\NexmoController@index')->name('index');
@@ -119,10 +119,15 @@ Route::group([
         Route::get('age-range-treated', 'App\Http\Controllers\ApplicantController@ageRangeTreated');
         Route::get('ccm', 'App\Http\Controllers\ApplicantController@ccm');
         Route::get('clinician-services', 'App\Http\Controllers\ApplicantController@clinicianServices');
+        Route::get('work-gap-reasons', 'App\Http\Controllers\ApplicantController@workGapReasons');
         Route::post('education', 'App\Http\Controllers\ApplicantController@education');
         Route::get('education', 'App\Http\Controllers\ApplicantController@getEducation');
         Route::get('certificates', 'App\Http\Controllers\CertificateController@index');
         Route::post('certificates', 'App\Http\Controllers\CertificateController@store');
+        Route::get('work-history', 'App\Http\Controllers\ApplicantController@getWorkHistories');
+        Route::post('work-history', 'App\Http\Controllers\ApplicantController@workHistory');
+        Route::get('attestation', 'App\Http\Controllers\ApplicantController@getAttestations');
+        Route::post('attestation', 'App\Http\Controllers\ApplicantController@attestation');
     });
 });
 

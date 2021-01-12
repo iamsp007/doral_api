@@ -38,5 +38,10 @@ return [
 		0 => 'Active',
 		1 => 'In Active',
 		2 => 'On Hold'
+	],
+	'work_gap_reasons' => [
+		0 => 'Reason 1',
+		1 => 'Reason 2',
+		2 => 'Reason 3'
 	]
 ];

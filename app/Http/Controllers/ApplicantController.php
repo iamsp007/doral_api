@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Applicant;
 use App\Models\ApplicantReference;
 use App\Models\Education;
+use App\Models\WorkHistory;
+use App\Models\Attestation;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -21,7 +23,7 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicants are not available.";
         try {
-            $response = Applicant::with(['referances', 'state', 'city'])->get();
+            $response = Applicant::with(['referances', 'state', 'city'])->where('user_id', auth()->user()->id)->get();
             if (!$response) {
                 throw new Exception($message);
             }
@@ -66,11 +68,11 @@ class ApplicantController extends Controller
                 $message = "Success! Please complete step two.";
                 return $this->generateResponse($status, $message, $applicant, 200);
             }
-            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
-            return $this->generateResponse($status, $message, []);
+            return $this->generateResponse($status, $message, null);
         }
     }
 
@@ -104,11 +106,11 @@ class ApplicantController extends Controller
                 $message = "Success! Please complete step three.";
                 return $this->generateResponse($status, $message, $applicant, 200);
             }
-            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
-            return $this->generateResponse($status, $message, []);
+            return $this->generateResponse($status, $message, null);
         }
     }
 
@@ -153,11 +155,11 @@ class ApplicantController extends Controller
                 $message = "Success! Please complete step four.";
                 return $this->generateResponse($status, $message, $applicant, 200);
             }
-            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
-            return $this->generateResponse($status, $message, []);
+            return $this->generateResponse($status, $message, null);
         }
     }
 
@@ -188,11 +190,11 @@ class ApplicantController extends Controller
                 $message = "Successfully completed all steps.";
                 return $this->generateResponse($status, $message, $applicant, 200);
             }
-            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
-            return $this->generateResponse($status, $message, []);
+            return $this->generateResponse($status, $message, null);
         }
     }
 
@@ -275,11 +277,11 @@ class ApplicantController extends Controller
                 $message = "Success! Please complete step two.";
                 return $this->generateResponse($status, $message, $applicant, 200);
             }
-            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
-            return $this->generateResponse($status, $message, []);
+            return $this->generateResponse($status, $message, null);
         }
     }
 
@@ -349,6 +351,19 @@ class ApplicantController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function workGapReasons()
+    {
+        $status = true;
+        $message = "Work Gap Reasons";
+        $data = config('common.work_gap_reasons');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
      * Education a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -400,11 +415,11 @@ class ApplicantController extends Controller
                 $message = "Successfully stored education data.";
                 return $this->generateResponse($status, $message, $education, 200);
             }
-            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
-            return $this->generateResponse($status, $message, []);
+            return $this->generateResponse($status, $message, null);
         }
     }
 
@@ -419,7 +434,7 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Educations are not available.";
         try {
-            $response = Education::with(['user', 'medicalInstituteState', 'medicalInstituteCity', 'residencyInstituteState', 'residencyInstituteCity', 'fellowshipInstituteState', 'fellowshipInstituteCity'])->get();
+            $response = Education::with(['user', 'medicalInstituteState', 'medicalInstituteCity', 'residencyInstituteState', 'residencyInstituteCity', 'fellowshipInstituteState', 'fellowshipInstituteCity'])->where('user_id', auth()->user()->id)->get();
             if (!$response) {
                 throw new Exception($message);
             }
@@ -430,6 +445,144 @@ class ApplicantController extends Controller
             $status = false;
             $message = $e->getMessage()." ".$e->getLine();
             return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getWorkHistories()
+    {
+        $status = false;
+        $data = null;
+        $message = "Work histories are not available.";
+        try {
+            $data = WorkHistory::with(['user', 'country', 'state', 'city'])->where('user_id', auth()->user()->id)->get();
+            if (!$data) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "All Work Histories.";
+            return $this->generateResponse($status, $message, $data, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    /**
+     * Education a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function workHistory(Request $request)
+    {
+        try {
+            $request->validate([
+                'work_history.*.company_name' => 'required',
+                'work_history.*.position' => 'required',
+                'work_history.*.country' => 'required',
+                'work_history.*.state' => 'required',
+                'work_history.*.city' => 'required',
+                'work_history.*.start_date' => 'required',
+                'work_history.*.end_date' => 'required',
+            ]);
+            $records = [];
+            collect($request->work_history)->each(function ($item, $key) use (&$records, &$request) {
+                $diff = null;
+                if ($key > 0) {
+                    $x = $key - 1;
+                    $earlier = new \DateTime(date('Y-m-d H:i:s', strtotime($request->work_history[$x]['end_date'])));
+                    $later = new \DateTime(date('Y-m-d H:i:s', strtotime($request->work_history[$key]['start_date'])));
+                    $diff = $later->diff($earlier)->format("%a");
+                }
+                $record = [
+                    'user_id' => $request->user()->id,
+                    'company_name' => $item['company_name'],
+                    'position' => $item['position'],
+                    'country' => $item['country'],
+                    'state' => $item['state'],
+                    'city' => $item['city'],
+                    'start_date' => date('Y-m-d H:i:s', strtotime($item['start_date'])),
+                    'end_date' => date('Y-m-d H:i:s', strtotime($item['end_date'])),
+                    'work_gap_days' => $diff,
+                    'work_gap_reason' => isset($item['work_gap_reason']) ? $item['work_gap_reason'] : null,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+                $records[] = $record;
+            });
+            WorkHistory::insert($records);
+            $status = true;
+            $message = "Success! Work history saved.";
+            return $this->generateResponse($status, $message, null, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAttestations()
+    {
+        $status = false;
+        $data = null;
+        $message = "Attestations are not available.";
+        try {
+            $data = Attestations::with('user')->where('user_id', auth()->user()->id)->get();
+            if (!$data) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "All Work Histories.";
+            return $this->generateResponse($status, $message, $data, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    /**
+     * Education a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function attestation(Request $request)
+    {
+        try {
+            $request->validate([
+                'attestation.*.statement' => 'required',
+            ]);
+            $records = [];
+            collect($request->attestation)->each(function ($item, $key) use (&$records, &$request) {
+                $record = [
+                    'user_id' => $request->user()->id,
+                    'answer' => isset($item['answer']) ? $item['answer'] : null,
+                    'statement' => $item['statement'],
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+                $records[] = $record;
+            });
+            Attestation::insert($records);
+            $status = true;
+            $message = "Success! Attestation saved.";
+            return $this->generateResponse($status, $message, null, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
         }
     }
 }

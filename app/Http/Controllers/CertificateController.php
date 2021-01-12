@@ -22,7 +22,7 @@ class CertificateController extends Controller
         $data = [];
         $message = "Certificates are not available.";
         try {
-            $response = Certificate::with(['user', 'ageRanges', 'stateLicenses', 'boardCertificates'])->get();
+            $response = Certificate::with(['user', 'ageRanges', 'stateLicenses', 'boardCertificates'])->where('user_id', auth()->user()->id)->get();
             if (!$response) {
                 throw new Exception($message);
             }
