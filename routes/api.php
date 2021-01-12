@@ -120,6 +120,8 @@ Route::group([
         Route::get('ccm', 'App\Http\Controllers\ApplicantController@ccm');
         Route::get('clinician-services', 'App\Http\Controllers\ApplicantController@clinicianServices');
         Route::get('work-gap-reasons', 'App\Http\Controllers\ApplicantController@workGapReasons');
+        Route::get('bank-account-types', 'App\Http\Controllers\ApplicantController@bankAccountTypes');
+        Route::get('send-tax-documents-to', 'App\Http\Controllers\ApplicantController@sendTaxDocumentsTo');
         Route::post('education', 'App\Http\Controllers\ApplicantController@education');
         Route::get('education', 'App\Http\Controllers\ApplicantController@getEducation');
         Route::get('certificates', 'App\Http\Controllers\CertificateController@index');
@@ -128,6 +130,8 @@ Route::group([
         Route::post('work-history', 'App\Http\Controllers\ApplicantController@workHistory');
         Route::get('attestation', 'App\Http\Controllers\ApplicantController@getAttestations');
         Route::post('attestation', 'App\Http\Controllers\ApplicantController@attestation');
+        Route::get('bank-account', 'App\Http\Controllers\ApplicantController@getBankAccount');
+        Route::post('bank-account', 'App\Http\Controllers\ApplicantController@bankAccount');
     });
 });
 

@@ -43,5 +43,14 @@ return [
 		0 => 'Reason 1',
 		1 => 'Reason 2',
 		2 => 'Reason 3'
+	],
+	'bank_account_types' => [
+		0 => 'Saving',
+		1 => 'Credit'
+	],
+	'send_tax_documents_to' => [
+		0 => 'Bank Account Address',
+		1 => 'Home Address',
+		2 => 'Office Address'
 	]
 ];

@@ -7,6 +7,7 @@ use App\Models\ApplicantReference;
 use App\Models\Education;
 use App\Models\WorkHistory;
 use App\Models\Attestation;
+use App\Models\BankAccount;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -364,6 +365,32 @@ class ApplicantController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function bankAccountTypes()
+    {
+        $status = true;
+        $message = "Bank Account Types";
+        $data = config('common.bank_account_types');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendTaxDocumentsTo()
+    {
+        $status = true;
+        $message = "Send Tax Documents To";
+        $data = config('common.send_tax_documents_to');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
      * Education a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -579,6 +606,83 @@ class ApplicantController extends Controller
             $status = true;
             $message = "Success! Attestation saved.";
             return $this->generateResponse($status, $message, null, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getBankAccount()
+    {
+        $status = false;
+        $data = null;
+        $message = "Bank account is not available.";
+        try {
+            $data = BankAccount::with(['user', 'state', 'city'])->where('user_id', auth()->user()->id)->get();
+            if (!$data) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "Bank Account.";
+            return $this->generateResponse($status, $message, $data, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    /**
+     * Bank account a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function bankAccount(Request $request)
+    {
+        try {
+            $request->validate([
+                'account_name' => 'required',
+                'account_type' => 'required',
+                'routing_number' => 'required',
+                'account_number' => 'required',
+                'address_line_1' => 'required',
+                'address_line_2' => 'required',
+                'state' => 'required',
+                'city' => 'required',
+                'zip' => 'required',
+                'send_tax_documents_to' => 'required',
+                'legal_entity' => 'required',
+                'tax_payer_id_number' => 'required'
+            ]);
+            $bank = new BankAccount();
+            $bank->user_id = $request->user()->id;
+
+            $bank->account_name = $request->account_name;
+            $bank->account_type = $request->account_type;
+            $bank->routing_number = $request->routing_number;
+            $bank->account_number = $request->account_number;
+            $bank->address_line_1 = $request->address_line_1;
+            $bank->address_line_2 = $request->address_line_2;
+            $bank->state = $request->state;
+            $bank->city = $request->city;
+            $bank->zip = $request->zip;
+            $bank->send_tax_documents_to = $request->send_tax_documents_to;
+            $bank->legal_entity = $request->legal_entity;
+            $bank->tax_payer_id_number = $request->tax_payer_id_number;
+
+            if ($bank->save()){
+                $status = true;
+                $message = "Successfully stored bank account data.";
+                return $this->generateResponse($status, $message, $bank, 200);
+            }
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
