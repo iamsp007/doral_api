@@ -33,7 +33,8 @@ class DatabaseSeeder extends Seeder
             ServicesSeeder::class,
             MDFormsSeeder::class,
             PlanSeeder::class,
-            ReferralSeeder::class
+            ReferralSeeder::class,
+            CancelAppointmentReasonSeeder::class
         ]);
     }
 }

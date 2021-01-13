@@ -9,6 +9,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -210,5 +211,12 @@ class UserController extends Controller
             $message = $e->getMessage()." ".$e->getLine();
             return $this->generateResponse($status, $message, $data, 200);
         }
+    }
+
+    public function documentVerification(Request $request){
+        $validator = Validator::make($request->all(),[
+           'id_card'=>'required'
+        ]);
+        dd($validator->errors());
     }
 }
