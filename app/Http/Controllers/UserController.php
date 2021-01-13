@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UploadDocuments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -215,8 +217,74 @@ class UserController extends Controller
 
     public function documentVerification(Request $request){
         $validator = Validator::make($request->all(),[
-           'id_card'=>'required'
+           'id_proof'=>'required|max:10000|mimes:pdf,xls,png,jpg,jpeg',
+           'degree_proof'=>'required|max:10000|mimes:pdf,xls,png,jpg,jpeg',
+           'medical_report'=>'required|max:10000|mimes:pdf,xls,png,jpg,jpeg',
+           'insurance_report'=>'required|max:10000|mimes:pdf,xls,png,jpg,jpeg',
         ]);
-        dd($validator->errors());
+
+
+        if ($validator->fails()){
+            return $this->generateResponse(false,'Invalid Parameter!',$validator->errors(),200);
+        }
+
+        try {
+            if($files=$request->file('id_proof')){
+                $name='id_proof_'.time().'.'.$files->getClientOriginalExtension();
+                 $files->move('document',$name);
+                $documents = UploadDocuments::where(['user_id'=>Auth::user()->id,'type'=>'1'])->first();
+                if ($documents===null){
+                    $documents = new UploadDocuments();
+                }
+                $documents->user_id = Auth::user()->id;
+                $documents->file_name = $name;
+                $documents->type = '1';
+                $documents->save();
+            }
+
+            if($files=$request->file('degree_proof')){
+                $name='degree_proof_'.time().'.'.$files->getClientOriginalExtension();
+                 $files->move('document',$name);
+                $documents = UploadDocuments::where(['user_id'=>Auth::user()->id,'type'=>'2'])->first();
+                if ($documents===null){
+                    $documents = new UploadDocuments();
+                }
+                $documents->user_id = Auth::user()->id;
+                $documents->file_name = $name;
+                $documents->type = '2';
+                $documents->save();
+            }
+
+            if($files=$request->file('medical_report')){
+                $name='medical_report_'.time().'.'.$files->getClientOriginalExtension();
+                 $files->move('document',$name);
+                $documents = UploadDocuments::where(['user_id'=>Auth::user()->id,'type'=>'3'])->first();
+                if ($documents===null){
+                    $documents = new UploadDocuments();
+                }
+                $documents->user_id = Auth::user()->id;
+                $documents->file_name = $name;
+                $documents->type = '3';
+                $documents->save();
+            }
+
+            if($files=$request->file('insurance_report')){
+                $name='insurance_report_'.time().'.'.$files->getClientOriginalExtension();
+                 $files->move('document',$name);
+                $documents = UploadDocuments::where(['user_id'=>Auth::user()->id,'type'=>'4'])->first();
+                if ($documents===null){
+                    $documents = new UploadDocuments();
+                }
+                $documents->user_id = Auth::user()->id;
+                $documents->file_name = $name;
+                $documents->type = '4';
+                $documents->save();
+            }
+
+            return $this->generateResponse(true,'Document Upload Successfully!',null,200);
+        }catch (\Exception $exception){
+
+            return $this->generateResponse(false,$exception->getMessage(),null,200);
+        }
     }
 }

@@ -3,8 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Console/Commands/ImportCountryFile.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Commands/ImportCountryFile.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Attestation.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Attestation.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/BankAccount.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/BankAccount.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Country.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Country.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/WorkHistory.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/WorkHistory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_09_175910_create_work_histories_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_09_175910_create_work_histories_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_11_172734_create_attestations_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_11_172734_create_attestations_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_12_151426_create_bank_accounts_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_12_151426_create_bank_accounts_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seeders/CancelAppointmentReasonSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/CancelAppointmentReasonSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/sql/countries.sql" beforeDir="false" afterPath="$PROJECT_DIR$/public/sql/countries.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -375,6 +384,8 @@
       <workItem from="1610444228871" duration="837000" />
       <workItem from="1610446047550" duration="837000" />
       <workItem from="1610471318780" duration="1283000" />
+      <workItem from="1610553304744" duration="1199000" />
+      <workItem from="1610554524230" duration="1805000" />
     </task>
     <servers />
   </component>
