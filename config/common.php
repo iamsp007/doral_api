@@ -52,5 +52,11 @@ return [
 		0 => 'Bank Account Address',
 		1 => 'Home Address',
 		2 => 'Office Address'
+	],
+	'security_question' => [
+		0 => 'What was the house number and street name you lived in as a child?',
+		1 => 'What were the last four digits of your childhood telephone number?',
+		2 => 'What primary school did you attend?',
+		3 => 'In what town or city was your first full time job?'
 	]
 ];

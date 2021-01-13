@@ -122,6 +122,7 @@ Route::group([
         Route::get('work-gap-reasons', 'App\Http\Controllers\ApplicantController@workGapReasons');
         Route::get('bank-account-types', 'App\Http\Controllers\ApplicantController@bankAccountTypes');
         Route::get('send-tax-documents-to', 'App\Http\Controllers\ApplicantController@sendTaxDocumentsTo');
+        Route::get('security-questions', 'App\Http\Controllers\ApplicantController@securityQuestions');
         Route::post('education', 'App\Http\Controllers\ApplicantController@education');
         Route::get('education', 'App\Http\Controllers\ApplicantController@getEducation');
         Route::get('certificates', 'App\Http\Controllers\CertificateController@index');
@@ -132,6 +133,8 @@ Route::group([
         Route::post('attestation', 'App\Http\Controllers\ApplicantController@attestation');
         Route::get('bank-account', 'App\Http\Controllers\ApplicantController@getBankAccount');
         Route::post('bank-account', 'App\Http\Controllers\ApplicantController@bankAccount');
+        Route::get('security', 'App\Http\Controllers\ApplicantController@getSecurities');
+        Route::post('security', 'App\Http\Controllers\ApplicantController@security');
     });
 });
 

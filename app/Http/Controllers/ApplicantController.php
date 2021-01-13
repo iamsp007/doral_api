@@ -8,6 +8,7 @@ use App\Models\Education;
 use App\Models\WorkHistory;
 use App\Models\Attestation;
 use App\Models\BankAccount;
+use App\Models\Security;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -391,6 +392,19 @@ class ApplicantController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function securityQuestions()
+    {
+        $status = true;
+        $message = "Security Questions";
+        $data = config('common.security_question');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
      * Education a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -681,6 +695,88 @@ class ApplicantController extends Controller
                 $status = true;
                 $message = "Successfully stored bank account data.";
                 return $this->generateResponse($status, $message, $bank, 200);
+            }
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getSecurities()
+    {
+        $status = false;
+        $data = null;
+        $message = "Security data is not available.";
+        try {
+            $data = Security::with('user')->where('user_id', auth()->user()->id)->get();
+            if (!$data) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "Security question and answer.";
+            return $this->generateResponse($status, $message, $data, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    /**
+     * Bank account a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function security(Request $request)
+    {
+        try {
+            $validator = \Validator::make($request->all(),[
+                'avatar' => 'required|mimes:jpg,png|max:20000',
+                'welcome_message' => 'required',
+                'security_question' => 'required',
+                'security_answer' => 'required',
+                'background_check' => 'required',
+                'diclosure_agreement' => 'required',
+                'ocg_agreement' => 'required',
+                'authorization' => 'required'
+            ]);
+            if ($validator->fails()){
+                return $this->generateResponse(false, $validator->errors()->first(), null, 200);
+            }
+            $security = new Security();
+            $security->user_id = $request->user()->id;
+
+            $security->security_question = $request->security_question;
+            $security->security_answer = $request->security_answer;
+            $security->background_check = $request->background_check;
+            $security->diclosure_agreement = $request->diclosure_agreement;
+            $security->ocg_agreement = $request->ocg_agreement;
+            $security->authorization = $request->authorization;
+
+            if ($security->save()){
+                $uploadFolder = 'users';
+                $image = $request->file('avatar');
+                $image_uploaded_path = $image->store($uploadFolder, 'public');
+                $uploadedImageResponse = [
+                    "image_name" => basename($image_uploaded_path),
+                    "image_url" => \Storage::disk('public')->url($image_uploaded_path),
+                    "mime" => $image->getClientMimeType()
+                ];
+                $user = $request->user();
+                $user->avatar = $uploadedImageResponse['image_name'];
+                $user->welcome_message = $request->welcome_message;
+                $user->save();
+                $status = true;
+                $message = "Successfully stored security data.";
+                return $this->generateResponse($status, $message, $security, 200);
             }
             return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
         } catch (\Exception $e) {
