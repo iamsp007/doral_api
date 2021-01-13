@@ -15,7 +15,7 @@ class CreatePatientServicesTable extends Migration
     {
         Schema::create('patient_services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->index('patient_id');
+            $table->foreignId('patient_referral_id')->index('patient_referral_id');
             $table->foreignId('service_id')->index('service_id');
             $table->foreignId('company_id')->nullable();;
             $table->foreignId('employee_id')->nullable();;
