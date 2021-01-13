@@ -20,7 +20,7 @@ class CancelAppointmentReasonSeeder extends Seeder
         $appointmentReasons = array('Reason 1','Reason 2','Reason 3','Reason 4','Other');
         foreach ($appointmentReasons as $fvalue) {
             $appointmentReason = new CancelAppointmentReasons();
-            $appointmentReason->name = $fvalue;
+            $appointmentReason->reason = $fvalue;
             $appointmentReason->save();
         }
         $this->command->getOutput()->progressFinish();
