@@ -135,6 +135,8 @@ Route::group([
         Route::post('bank-account', 'App\Http\Controllers\ApplicantController@bankAccount');
         Route::get('security', 'App\Http\Controllers\ApplicantController@getSecurities');
         Route::post('security', 'App\Http\Controllers\ApplicantController@security');
+
+        Route::get('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
     });
 });
 
