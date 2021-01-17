@@ -173,6 +173,8 @@ Route::group([
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
     Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
     Route::post('document-verification', 'App\Http\Controllers\UserController@documentVerification');
+    Route::get('get-documents', 'App\Http\Controllers\UserController@getDocuments');
+    Route::post('remove-documents', 'App\Http\Controllers\UserController@removeDocument');
 });
 
 // Referral
