@@ -154,6 +154,22 @@ class UserController extends Controller
         return response()->json(null, 204);
     }
 
+    public function changeAvailability()
+    {
+        try {
+            $user = auth()->user();
+            $user->is_available = ($user->is_available == 1) ? 0 : 1;
+            $user->save();
+            $status = true;
+            $message = "Availability changed";
+            return $this->generateResponse($status, $message, $user, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $user);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
