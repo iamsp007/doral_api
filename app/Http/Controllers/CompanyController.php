@@ -16,30 +16,23 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index($type)
     {
-        $data = array();
-        try {
-            if($id == 1)
-            $companies = Company::where('status', '0')->get();
-            else if($id == 2)
-            $companies = Company::where('status', '1')->get();
-            else if($id == 3)
-            $companies = Company::where('status', '3')->get();
-            else
-            $companies = Company::all()->toArray();
-
-            if (!$companies) {
-                throw new Exception("No Companies are registered");
-            }
-            $data = [
-                'companies' => $companies
-            ];
-            return $this->generateResponse(true, 'Companies listing!', $data);
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            return $this->generateResponse(false, $message, $data);
+        $status='0';
+        if ($type===2){
+            $status='1';
+        }elseif ($type===3){
+            $status='3';
         }
+        $companies = Company::where('status','=',$status)
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','referral');
+            })
+            ->get();
+        $data = [
+            'companies' => $companies
+        ];
+        return $this->generateResponse(true, 'Companies listing!', $data);
     }
 
     /**
@@ -188,31 +181,15 @@ class CompanyController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Models\Company  $Company
      * @return \Illuminate\Http\Response
      */
-    public function show(Company $Company)
+    public function show(Request $request,$id)
     {
-        $status = 0;
-        $data = [];
-        $message = 'Something wrong';
-        try {
-            $Company = Company::find($Company);
-            if (!$Company) {
-                throw new Exception("Company information is not found");
-            }
-            $data = [
-                'Company' => $Company
-            ];
-            $status = true;
-            $message = "Compnay information";
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
+        $company = Company::with('referral')->find($id);
+        if ($company){
+            return $this->generateResponse(true,'Company Information',$company,200);
         }
+        return $this->generateResponse(false,'No Company Found',null,200);
     }
 
     /**

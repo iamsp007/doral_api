@@ -48,7 +48,6 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
     {
         $record = [];
         try {
-
             if( (isset($row['ssn']) && !empty($row['ssn'])) && (isset($row['date_of_birth']) && !empty($row['date_of_birth']))) {
                 $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
                 if ($patient){
@@ -58,6 +57,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                         $address = $row['street1'];
                     }elseif (isset($row['address1'])){
                         $address = $row['address1'];
+                    }elseif (isset($row['address'])){
+                        $address = $row['address'];
                     }
 
                     $address2 = $patient->address2;
@@ -79,17 +80,17 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                         if($working_hour >=1 && $working_hour <=20) {
                           $benefit_plan = 1;
                         } else if($working_hour >=21 && $working_hour <=25) {
-                          $benefit_plan = 2;  
+                          $benefit_plan = 2;
                         } else if($working_hour >=26 && $working_hour <=30) {
-                          $benefit_plan = 3;  
+                          $benefit_plan = 3;
                         } else if($working_hour >=31 && $working_hour <=35) {
-                          $benefit_plan = 4;  
+                          $benefit_plan = 4;
                         } else if($working_hour >=36 && $working_hour <=40) {
-                          $benefit_plan = 5;  
+                          $benefit_plan = 5;
                         } else {
                           $benefit_plan = 1;
                         }
-                    } 
+                    }
                     $dataV = [];
                     if(isset($row['cert_period'])) {
                         $certPeriod = str_replace('(', '', $row['cert_period']);
@@ -153,9 +154,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                              'working_hour' => $working_hour,
                              'benefit_plan' => $benefit_plan
                          ];
-                    if(count($dataV) > 0) {     
-                      $record = array_merge($record, $dataV); 
-                    }    
+                    if(count($dataV) > 0) {
+                      $record = array_merge($record, $dataV);
+                    }
                     PatientReferral::where('id', $patient->id)
                             ->update($record);
                 }else{
@@ -180,9 +181,13 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                     }
 
                     $user->password = Hash::make('doral@123');
-                    if (isset($row['phone2']) && is_numeric($row['phone2'])){
-                        $user->phone = $row['phone2'];
+                    $phone=null;
+                    if (isset($row['phone_number'])){
+                        $phone=$row['phone_number'];
+                    }elseif (isset($row['phone'])){
+                        $phone=$row['phone'];
                     }
+                    $user->phone = $phone;
                     $user->assignRole('patient')->syncPermissions(Permission::all());
 
                     if ($user->save()){
@@ -192,6 +197,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             $address = $row['street1'];
                         }elseif (isset($row['address1'])){
                             $address = $row['address1'];
+                        }elseif (isset($row['address'])){
+                            $address = $row['address'];
                         }
 
                         $address2 = '';
@@ -213,13 +220,13 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             if($working_hour >=1 && $working_hour <=20) {
                               $benefit_plan = 1;
                             } else if($working_hour >=21 && $working_hour <=25) {
-                              $benefit_plan = 2;  
+                              $benefit_plan = 2;
                             } else if($working_hour >=26 && $working_hour <=30) {
-                              $benefit_plan = 3;  
+                              $benefit_plan = 3;
                             } else if($working_hour >=31 && $working_hour <=35) {
-                              $benefit_plan = 4;  
+                              $benefit_plan = 4;
                             } else if($working_hour >=36 && $working_hour <=40) {
-                              $benefit_plan = 5;  
+                              $benefit_plan = 5;
                             } else {
                               $benefit_plan = 1;
                             }
@@ -266,7 +273,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
           //PatientReferral::insert($record);
         } catch(Exception $e) {
             \Log::info($e);
-            //dd($e->getMessage());
+            dd($e->getMessage(),$e->getLine());
         }
     }
 

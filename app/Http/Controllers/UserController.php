@@ -287,4 +287,12 @@ class UserController extends Controller
             return $this->generateResponse(false,$exception->getMessage(),null,200);
         }
     }
+
+    public function getPatientDetail(Request $request,$patient_id){
+        $details = User::with('detail','leave','ccm')->find($patient_id);
+        if ($details){
+            return $this->generateResponse(true,'Show Patient Detail Successfully!',$details,200);
+        }
+        return $this->generateResponse(false,'Patient Id Does not Exists',null,200);
+    }
 }

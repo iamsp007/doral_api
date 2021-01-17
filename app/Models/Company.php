@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class Company extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
     protected $guard = 'company';
     /**
      * The attributes that are mass assignable.
@@ -40,11 +41,16 @@ class Company extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     /**
-     * 
+     *
      */
     public static function getCompanyDetails($company = 0)
     {
         $company = Company::where('id1', '=', $company)->first();
         return $company;
+    }
+
+    public function referral(){
+        return $this->hasOne(referral::class,'id','referal_id')
+            ->where('guard_name','=','referral');
     }
 }
