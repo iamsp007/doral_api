@@ -51,6 +51,30 @@ class User extends Authenticatable
      *
      * @return string
      */
+    public function getPhoneAttribute($value)
+    {
+        if ($value){
+            $cleaned = preg_replace('/[^[:digit:]]/', '', $value);
+            preg_match('/(\d{3})(\d{3})(\d{4})/', $cleaned, $matches);
+            return "({$matches[1]}) {$matches[2]}-{$matches[3]}";
+        }
+    }
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function setPhoneAttribute($value)
+    {
+        if ($value){
+            $this->attributes['phone'] = (int)str_replace("-", "", $value);
+        }
+    }
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
     public function getGenderNameAttribute()
     {
         return $this->gender==='1'?'Male':($this->gender==='2'?'Female':'Other');
@@ -139,7 +163,7 @@ class User extends Authenticatable
     }
 
     public function detail(){
-        return $this->belongsTo(PatientReferral::class,'user_id','id')->with('service');
+        return $this->hasOne(PatientReferral::class,'user_id','id')->with('service');
     }
 
     public function leave(){
