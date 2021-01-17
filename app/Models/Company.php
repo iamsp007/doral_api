@@ -50,7 +50,7 @@ class Company extends Authenticatable
     }
 
     public function referral(){
-        return $this->hasOne(referral::class,'id','referal_id')
+        return $this->hasOne(Referral::class,'id','referal_id')
             ->where('guard_name','=','referral');
     }
 }

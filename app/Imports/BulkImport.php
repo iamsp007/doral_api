@@ -73,6 +73,21 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                         $emergency1_name = $row['emergency1_name'];
                     }
 
+                    $emergency1_relationship = $patient->emg_relationship;
+                    if (isset($row['emergency1_relationship'])){
+                        $emergency1_relationship = $row['emergency1_relationship'];
+                    }
+
+                    $emergency1_address = $patient->eng_addres;
+                    if (isset($row['emergency1_address'])){
+                        $emergency1_address = $row['emergency1_address'];
+                    }
+
+                    $emergency1_phone = $patient->emg_phone;
+                    if (isset($row['emergency1_phone'])){
+                        $emergency1_phone = $row['emergency1_phone'];
+                    }
+
                     $working_hour = $patient->working_hour;
                     $benefit_plan = $patient->benefit_plan;
                     if(isset($row['working_hour']) && !empty($row['working_hour'])) {
@@ -145,6 +160,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                              'address_1'=>$address,
                              'address_2'=>$address2,
                              'eng_name'=>$emergency1_name,
+                             'emg_relationship'=>$emergency1_relationship,
+                             'eng_addres'=>$emergency1_address,
+                             'emg_phone'=>$emergency1_phone,
                              'patient_id'=>isset($row['admission_id'])?$row['admission_id']:$patient->patient_id,
                              'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:$patient->caregiver_code,
                              'city' => isset($row['city'])?$row['city']:$patient->city,
@@ -213,6 +231,21 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             $emergency1_name = $row['emergency1_name'];
                         }
 
+                        $emergency1_relationship = null;
+                        if (isset($row['emergency1_relationship'])){
+                            $emergency1_name = $row['emergency1_relationship'];
+                        }
+
+                        $emergency1_address = null;
+                        if (isset($row['emergency1_address'])){
+                            $emergency1_address = $row['emergency1_address'];
+                        }
+
+                        $emergency1_phone = null;
+                        if (isset($row['emergency1_phone'])){
+                            $emergency1_phone = $row['emergency1_phone'];
+                        }
+
                         $working_hour = NULL;
                         $benefit_plan = NULL;
                         if(isset($row['working_hour']) && !empty($row['working_hour'])) {
@@ -250,6 +283,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                                'address_1'=>$address,
                                'address_2'=>$address2,
                                'eng_name'=>$emergency1_name,
+                               'emg_relationship'=>$emergency1_relationship,
+                               'eng_addres'=>$emergency1_address,
+                               'emg_phone'=>$emergency1_phone,
                                'patient_id'=>isset($row['admission_id'])?$row['admission_id']:null,
                                'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:null,
                                'city' => isset($row['city'])?$row['city']:null,
