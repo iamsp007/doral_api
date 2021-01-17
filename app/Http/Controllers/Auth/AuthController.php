@@ -59,6 +59,7 @@ class AuthController extends Controller
             $user->isEmailVerified = $user->email_verified_at ? true : false;
             $user->isMobileVerified = $user->phone_verified_at ? true : false;
             $user->isProfileVerified = $user->profile_verified_at ? true : false;
+            $user->isMobileExist = $user->phone ? true : false;
             $user->roles = $user->roles ? $user->roles->first() : null;
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;

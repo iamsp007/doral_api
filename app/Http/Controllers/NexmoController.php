@@ -18,9 +18,15 @@ class NexmoController extends Controller
     {
     	$data = null;
     	try {
-            $validator = \Validator::make($request->all(),[
-                'phone' => 'required|numeric',
-            ]);
+            if ($request->isMobileExist == false) {
+                $validator = \Validator::make($request->all(),[
+                    'phone' => 'required|numeric|unique:users,phone'
+                ]);
+            } else {
+                $validator = \Validator::make($request->all(),[
+                    'phone' => 'required|numeric'
+                ]);
+            }
             if ($validator->fails()) {
                 $status = 200;
                 $success = false;
