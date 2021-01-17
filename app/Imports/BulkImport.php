@@ -143,6 +143,12 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             'cert_next_date' => $patient->cert_next_date
                         ];
                     }
+                    if (isset($row['medicaid'])){
+                        $medicaid = $row['medicaid'];
+                    }
+                    if (isset($row['medicare'])){
+                        $medicare = $row['medicare'];
+                    }
                     $record = [
                              'user_id'=>$user->id,
                              'referral_id'=>$this->referral_id,
@@ -170,7 +176,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                              'Zip' => isset($row['zip_code'])?$row['zip_code']:$patient->Zip,
                              'county' => isset($row['county'])?$row['county']:$patient->county,
                              'working_hour' => $working_hour,
-                             'benefit_plan' => $benefit_plan
+                             'benefit_plan' => $benefit_plan,
+                             'medicaid_number' => $medicaid,
+                             'medicare_number' => $medicare,
                          ];
                     if(count($dataV) > 0) {
                       $record = array_merge($record, $dataV);
@@ -264,6 +272,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                               $benefit_plan = 1;
                             }
                         }
+                        if (isset($row['medicaid'])){
+                            $medicaid = $row['medicaid'];
+                        }
                         PatientReferral::updateorcreate(
                            [
                                'user_id'=>$user->id,
@@ -293,7 +304,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                                'Zip' => isset($row['zip_code'])?$row['zip_code']:null,
                                'county' => isset($row['county'])?$row['county']:null,
                                'working_hour' => $working_hour,
-                               'benefit_plan' => $benefit_plan
+                               'benefit_plan' => $benefit_plan,
+                               'medicaid_number' => $medicaid
                            ]);
                     }
                     \Log::info(123456);
