@@ -64,7 +64,9 @@ class User extends Authenticatable
      */
     public function setPhoneAttribute($value)
     {
-        $this->attributes['phone'] = str_replace("-", "", $value);
+        if ($value){
+            $this->attributes['phone'] = (int)str_replace("-", "", $value);
+        }
     }
     /**
      * Get the user's Date Of Birth.
