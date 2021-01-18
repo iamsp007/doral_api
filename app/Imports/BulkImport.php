@@ -143,11 +143,13 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             'cert_next_date' => $patient->cert_next_date
                         ];
                     }
-                    if (isset($row['medicaid'])){
-                        $medicaid = $row['medicaid'];
+                    $medicaid = '';
+                    $medicare = '';
+                    if (isset($row['medicaid_number'])){
+                        $medicaid = $row['medicaid_number'];
                     }
-                    if (isset($row['medicare'])){
-                        $medicare = $row['medicare'];
+                    if (isset($row['medicare_number'])){
+                        $medicare = $row['medicare_number'];
                     }
                     $record = [
                              'user_id'=>$user->id,
@@ -212,6 +214,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                         $phone=$row['phone_number'];
                     }elseif (isset($row['phone'])){
                         $phone=$row['phone'];
+                    }elseif (isset($row['home_phone'])){
+                        $phone=$row['home_phone'];
                     }
                     $user->phone = $phone;
                     $user->assignRole('patient')->syncPermissions(Permission::all());
@@ -272,8 +276,13 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                               $benefit_plan = 1;
                             }
                         }
-                        if (isset($row['medicaid'])){
-                            $medicaid = $row['medicaid'];
+                        $medicaid = '';
+                        $medicare = '';
+                        if (isset($row['medicaid_number'])){
+                            $medicaid = $row['medicaid_number'];
+                        }
+                        if (isset($row['medicare_number'])){
+                            $medicare = $row['medicare_number'];
                         }
                         PatientReferral::updateorcreate(
                            [
@@ -305,7 +314,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                                'county' => isset($row['county'])?$row['county']:null,
                                'working_hour' => $working_hour,
                                'benefit_plan' => $benefit_plan,
-                               'medicaid_number' => $medicaid
+                               'medicaid_number' => $medicaid,
+                               'medicare_number' => $medicare
                            ]);
                     }
                     \Log::info(123456);

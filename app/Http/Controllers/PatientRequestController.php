@@ -299,8 +299,8 @@ class PatientRequestController extends Controller
             $le = 'higher';
         }
         $from = "12089104598";
-//        $to = "5166000122";
-        $to = "9173646218";
+        $to = "5166000122";
+//        $to = "9173646218";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
