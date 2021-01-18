@@ -69,12 +69,11 @@ class MeetingController extends Controller
     }
 
     public function createMeeting($data) {
-
-
+        $type=self::MEETING_TYPE_SCHEDULE;
         $path = 'users/me/meetings';
         $response = $this->zoomPost($path, [
             'topic' => $data['topic'],
-            'type' => self::MEETING_TYPE_SCHEDULE,
+            'type' => $type,
             'start_time' => $this->toZoomTimeFormat($data['start_time']),
             'duration' => 30,
             'agenda' => $data['agenda'],

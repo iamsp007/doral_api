@@ -27,7 +27,9 @@ class SendVideoMeetingNotification
             $message="Start Your Video Meeting";
             $title="Start Your Video Meeting";
             $token=$user->device_token;
-            $this->sendPushNotification($token,$title,$message,$data);
+            if ($token){
+                $this->sendPushNotification($token,$title,$message,$data);
+            }
         }
     }
 
@@ -47,8 +49,8 @@ class SendVideoMeetingNotification
             'notification'=>array(
                 'title'=>$title,
                 'body'=>$message,
-            ),
-            'data'=>$data
+                'data'=>$data
+            )
         );
 
         $payload=json_encode($fields);
