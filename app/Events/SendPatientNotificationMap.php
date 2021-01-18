@@ -53,8 +53,8 @@ class SendPatientNotificationMap
             'notification'=>array(
                 'title'=>$title,
                 'body'=>$message,
+                'data'=>$data
             ),
-            'data'=>$data
         );
 
         $payload=json_encode($fields);

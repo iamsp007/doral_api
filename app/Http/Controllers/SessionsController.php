@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendingSMS;
 use App\Events\SendVideoMeetingNotification;
 use App\Http\Controllers\Zoom\MeetingController;
 use App\Http\Requests\PatientRequest;
+use App\Http\Requests\SendVideoMeetingNotificationRequest;
 use App\Models\Appointment;
 use App\Models\User;
 use Carbon\Carbon;
@@ -55,21 +57,72 @@ class SessionsController extends Controller
         }
     }
 
-    public function sendVideoMeetingNotification(Request $request){
-        $validator = Validator::make($request->all(), [
-            'appointment_id' => 'required'
-        ]);
+    public function sendVideoMeetingNotification(SendVideoMeetingNotificationRequest $request){
 
-        if ($validator->fails()) {
-            return $this->generateResponse(false,'Missign data',$validator->errors(),200);
-        }
-
-        $appointment = Appointment::with(['meeting','service','patients','provider1Details','provider2Details'])->find($request->appointment_id);
+        $appointment = Appointment::with('patients','provider1Details','provider2Details','meeting','service')
+            ->where('id','=',$request->appointment_id)->first()->toArray();
         if ($appointment){
-            $appointment->status = 'running';
-            $appointment->save();
-            event(new SendVideoMeetingNotification($appointment->patient_id,$appointment));
-            return $this->generateResponse(true,'Sending Video Calling Message Success',$appointment,200);
+
+            $appointmentStatusUpdate = Appointment::find($request->appointment_id);
+            $appointmentStatusUpdate->status = 'running';
+            $appointmentStatusUpdate->save();
+
+            $appointment['role']=$request->role;
+            $meeting_data=array(
+                'apiKey'=>env('ZOOM_API_KEY'),
+                'meetingNumber'=>$appointment['meeting']['meeting_id'],
+                'leaveUrl'=>env('WEB_URL').'clinician/end-meeting/'.$request->appointment_id,
+                'userName'=>Auth::user()->first_name.' '.Auth::user()->last_name,
+                'userEmail'=>Auth::user()->email,
+                'passWord'=>$appointment['meeting']['meeting_detail']?$appointment['meeting']['meeting_detail']->password:null,
+                'lang'=> 'en-US',
+                'china'=> true,
+                'role'=> $request->role
+            );
+
+            $smsData=array();
+            // send notification to provider1
+            if ($appointment['provider1_details']){
+                if (Auth::user()->id!==$appointment['provider1_details']['id']){
+                    if ($appointment['provider1_details']['phone']!==null){
+                        $smsData[]=array(
+                            'to'=>$appointment['provider1_details']['phone'],
+                            'message'=>'Start Your Video Meeting'
+                        );
+                    }
+                    event(new SendVideoMeetingNotification($appointment['provider1_details']['id'],$meeting_data));
+                }
+            }
+            // send notification to provider2
+            if ($appointment['provider2_details']){
+                if (Auth::user()->id!==$appointment['provider2_details']['id']){
+                    if ($appointment['provider2_details']['phone']!==null){
+                        $smsData[]=array(
+                            'to'=>$appointment['provider2_details']['phone'],
+                            'message'=>'Start Your Video Meeting'
+                        );
+                    }
+                    event(new SendVideoMeetingNotification($appointment['provider2_details']['id'],$meeting_data));
+                }
+            }
+            // send notification to provider2
+            if ($appointment['patient_id']){
+                if (Auth::user()->id!==$appointment['patient_id']){
+                    if ($appointment['patients']['phone']!==null){
+                        $smsData[]=array(
+                            'to'=>$appointment['patients']['phone'],
+                            'message'=>'Start Your Video Meeting'
+                        );
+                    }
+                    event(new SendVideoMeetingNotification($appointment['patient_id'],$meeting_data));
+                }
+            }
+            event(new SendingSMS($smsData));
+            $data=array(
+                'meeting'=>$meeting_data,
+                'appointment'=>$appointment
+            );
+            return $this->generateResponse(true,'Sending Video Calling Message Success',$data,200);
         }
         return $this->generateResponse(false,'Something Went Wrong',null,200);
     }

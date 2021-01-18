@@ -32,7 +32,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $appends = ['gender_name'];
+    protected $appends = ['gender_name','avatar_image','phone_format'];
 
 ////
 //    protected $dates = [ 'created_at', 'updated_at'];
@@ -51,8 +51,9 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function getPhoneAttribute($value)
+    public function getPhoneFormatAttribute()
     {
+        $value=$this->phone;
         if ($value){
             $cleaned = preg_replace('/[^[:digit:]]/', '', $value);
             preg_match('/(\d{3})(\d{3})(\d{4})/', $cleaned, $matches);
@@ -78,6 +79,19 @@ class User extends Authenticatable
     public function getGenderNameAttribute()
     {
         return $this->gender==='1'?'Male':($this->gender==='2'?'Female':'Other');
+    }
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getAvatarImageAttribute()
+    {
+        if (isset($this->image) && !empty($this->image)) {
+            return env('WEB_URL').'assets/img/user/'. $this->image;
+        } else {
+            return env('WEB_URL').'assets/img/user/01.png';
+        }
     }
 
     /**
