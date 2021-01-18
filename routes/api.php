@@ -29,6 +29,7 @@ Route::group([
     Route::get('countries', 'App\Http\Controllers\Auth\AuthController@countries')->name('countries');
     Route::get('states', 'App\Http\Controllers\Auth\AuthController@states')->name('states');
     Route::get('cities', 'App\Http\Controllers\Auth\AuthController@cities')->name('cities');
+    Route::post('filter-cities', 'App\Http\Controllers\Auth\AuthController@filterCities')->name('filter-cities');
     Route::post('nexmo-send', 'App\Http\Controllers\NexmoController@index')->name('index');
     Route::post('nexmo-verify', 'App\Http\Controllers\NexmoController@verify')->name('verify');
 
@@ -173,6 +174,8 @@ Route::group([
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
     Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
     Route::post('document-verification', 'App\Http\Controllers\UserController@documentVerification');
+    Route::get('get-documents', 'App\Http\Controllers\UserController@getDocuments');
+    Route::post('remove-documents', 'App\Http\Controllers\UserController@removeDocument');
 });
 
 // Referral

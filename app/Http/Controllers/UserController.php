@@ -231,7 +231,8 @@ class UserController extends Controller
         }
     }
 
-    public function documentVerification(Request $request){
+    public function documentVerification(Request $request)
+    {
         $validator = Validator::make($request->all(),[
            'id_proof'=>'required|max:10000|mimes:pdf,xls,png,jpg,jpeg',
            'degree_proof'=>'required|max:10000|mimes:pdf,xls,png,jpg,jpeg',
@@ -239,60 +240,83 @@ class UserController extends Controller
            'insurance_report'=>'required|max:10000|mimes:pdf,xls,png,jpg,jpeg',
         ]);
 
-
         if ($validator->fails()){
             return $this->generateResponse(false,'Invalid Parameter!',$validator->errors(),200);
         }
 
         try {
-            if($files=$request->file('id_proof')){
-                $name='id_proof_'.time().'.'.$files->getClientOriginalExtension();
-                 $files->move('document',$name);
+            if($request->file('id_proof')){
+                $uploadFolder = 'documents/'.auth()->user()->id.'/id_proof';
+                $file = $request->file('id_proof');
+                $file_uploaded_path = $file->store($uploadFolder, 'public');
+                $uploadedFileResponse = [
+                    "file_name" => basename($file_uploaded_path),
+                    "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+                    "mime" => $file->getClientMimeType()
+                ];
                 $documents = UploadDocuments::where(['user_id'=>Auth::user()->id,'type'=>'1'])->first();
                 if ($documents===null){
                     $documents = new UploadDocuments();
                 }
                 $documents->user_id = Auth::user()->id;
-                $documents->file_name = $name;
+                $documents->file_name = $uploadedFileResponse['file_name'];
                 $documents->type = '1';
                 $documents->save();
             }
 
-            if($files=$request->file('degree_proof')){
-                $name='degree_proof_'.time().'.'.$files->getClientOriginalExtension();
-                 $files->move('document',$name);
+            if($request->file('degree_proof')){
+                $uploadFolder = 'documents/'.auth()->user()->id.'/degree_proof';
+                $file = $request->file('degree_proof');
+                $file_uploaded_path = $file->store($uploadFolder, 'public');
+                $uploadedFileResponse = [
+                    "file_name" => basename($file_uploaded_path),
+                    "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+                    "mime" => $file->getClientMimeType()
+                ];
                 $documents = UploadDocuments::where(['user_id'=>Auth::user()->id,'type'=>'2'])->first();
                 if ($documents===null){
                     $documents = new UploadDocuments();
                 }
                 $documents->user_id = Auth::user()->id;
-                $documents->file_name = $name;
+                $documents->file_name = $uploadedFileResponse['file_name'];
                 $documents->type = '2';
                 $documents->save();
             }
 
-            if($files=$request->file('medical_report')){
-                $name='medical_report_'.time().'.'.$files->getClientOriginalExtension();
-                 $files->move('document',$name);
+            if($request->file('medical_report')){
+                $uploadFolder = 'documents/'.auth()->user()->id.'/medical_report';
+                $file = $request->file('medical_report');
+                $file_uploaded_path = $file->store($uploadFolder, 'public');
+                $uploadedFileResponse = [
+                    "file_name" => basename($file_uploaded_path),
+                    "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+                    "mime" => $file->getClientMimeType()
+                ];
                 $documents = UploadDocuments::where(['user_id'=>Auth::user()->id,'type'=>'3'])->first();
                 if ($documents===null){
                     $documents = new UploadDocuments();
                 }
                 $documents->user_id = Auth::user()->id;
-                $documents->file_name = $name;
+                $documents->file_name = $uploadedFileResponse['file_name'];
                 $documents->type = '3';
                 $documents->save();
             }
 
             if($files=$request->file('insurance_report')){
-                $name='insurance_report_'.time().'.'.$files->getClientOriginalExtension();
-                 $files->move('document',$name);
+                $uploadFolder = 'documents/'.auth()->user()->id.'/insurance_report';
+                $file = $request->file('insurance_report');
+                $file_uploaded_path = $file->store($uploadFolder, 'public');
+                $uploadedFileResponse = [
+                    "file_name" => basename($file_uploaded_path),
+                    "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+                    "mime" => $file->getClientMimeType()
+                ];
                 $documents = UploadDocuments::where(['user_id'=>Auth::user()->id,'type'=>'4'])->first();
                 if ($documents===null){
                     $documents = new UploadDocuments();
                 }
                 $documents->user_id = Auth::user()->id;
-                $documents->file_name = $name;
+                $documents->file_name = $uploadedFileResponse['file_name'];
                 $documents->type = '4';
                 $documents->save();
             }
@@ -304,7 +328,35 @@ class UserController extends Controller
         }
     }
 
-    public function getPatientDetail(Request $request,$patient_id){
+    public function getDocuments()
+    {
+        try {
+            $documents = UploadDocuments::where('user_id', Auth::user()->id)->get();
+            return $this->generateResponse(true, 'All Documents', $documents, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    public function removeDocument(Request $request)
+    {
+        try {
+            $documents = UploadDocuments::where([
+                'id' => $request->id,
+                'user_id' => Auth::user()->id
+            ])->delete();
+            return $this->generateResponse(true, 'Document removed', $documents, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    public function getPatientDetail(Request $request,$patient_id)
+    {
         $details = User::with('detail','leave','ccm')->find($patient_id);
         if ($details){
             return $this->generateResponse(true,'Show Patient Detail Successfully!',$details,200);

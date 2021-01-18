@@ -59,6 +59,7 @@ class AuthController extends Controller
             $user->isEmailVerified = $user->email_verified_at ? true : false;
             $user->isMobileVerified = $user->phone_verified_at ? true : false;
             $user->isProfileVerified = $user->profile_verified_at ? true : false;
+            $user->isMobileExist = $user->phone ? true : false;
             $user->roles = $user->roles ? $user->roles->first() : null;
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
@@ -368,7 +369,7 @@ class AuthController extends Controller
                 return $this->generateResponse($success, $message, $data, $status);
             }
             $verificationStart = \Nexmo::verify()->start([
-                'number' => '+91'.$request->phone,
+                'number' => '+1'.$request->phone,
                 'brand'  => config('nexmo.app.name'),
                 'code_length' => 4,
                 'lg' => 'en-us',
@@ -462,5 +463,10 @@ class AuthController extends Controller
     public function cities()
     {
         return City::all();
+    }
+
+    public function filterCities(Request $request)
+    {
+        return City::where('state_code', $request->state_code)->get();
     }
 }
