@@ -15,9 +15,7 @@ DROP TABLE IF EXISTS `states`;
 CREATE TABLE `states` (
   `state` varchar(22) NOT NULL,
   `state_code` char(2) NOT NULL,
-  `country_id` int(11) NOT NULL,
-  PRIMARY KEY (`state_code`)
-  -- KEY `idx_country_id` (`country_id`)
+  `country_id` int(11) NOT NULL
 );
 
 -- ----------------------------
@@ -74,3 +72,5 @@ INSERT INTO `states` VALUES ('Washington', 'WA', 226);
 INSERT INTO `states` VALUES ('Wisconsin', 'WI', 226);
 INSERT INTO `states` VALUES ('West Virginia', 'WV', 226);
 INSERT INTO `states` VALUES ('Wyoming', 'WY', 226);
+
+ALTER TABLE `states` ADD `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
