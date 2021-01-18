@@ -357,6 +357,32 @@ class ApplicantController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function certifyingBoard()
+    {
+        $status = true;
+        $message = "Certifying Board";
+        $data = config('common.certifying_board');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function certifyingBoardStatus()
+    {
+        $status = true;
+        $message = "Certifying Board Status";
+        $data = config('common.certifying_board_status');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function workGapReasons()
     {
         $status = true;
@@ -388,6 +414,19 @@ class ApplicantController extends Controller
         $status = true;
         $message = "Send Tax Documents To";
         $data = config('common.send_tax_documents_to');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function legalEntities()
+    {
+        $status = true;
+        $message = "Legal Entities";
+        $data = config('common.legal_entities');
         return $this->generateResponse($status, $message, $data);
     }
 

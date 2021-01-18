@@ -120,9 +120,12 @@ Route::group([
         Route::get('age-range-treated', 'App\Http\Controllers\ApplicantController@ageRangeTreated');
         Route::get('ccm', 'App\Http\Controllers\ApplicantController@ccm');
         Route::get('clinician-services', 'App\Http\Controllers\ApplicantController@clinicianServices');
+        Route::get('certifying-board', 'App\Http\Controllers\ApplicantController@certifyingBoard');
+        Route::get('certifying-board-status', 'App\Http\Controllers\ApplicantController@certifyingBoardStatus');
         Route::get('work-gap-reasons', 'App\Http\Controllers\ApplicantController@workGapReasons');
         Route::get('bank-account-types', 'App\Http\Controllers\ApplicantController@bankAccountTypes');
         Route::get('send-tax-documents-to', 'App\Http\Controllers\ApplicantController@sendTaxDocumentsTo');
+        Route::get('legal-entities', 'App\Http\Controllers\ApplicantController@legalEntities');
         Route::get('security-questions', 'App\Http\Controllers\ApplicantController@securityQuestions');
         Route::post('education', 'App\Http\Controllers\ApplicantController@education');
         Route::get('education', 'App\Http\Controllers\ApplicantController@getEducation');
