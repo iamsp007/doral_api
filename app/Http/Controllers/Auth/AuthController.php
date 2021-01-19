@@ -56,8 +56,6 @@ class AuthController extends Controller
                 return $this->generateResponse(false, $field . ' or password are incorrect!', null);
             }
             $user = $request->user();
-            $phone = preg_replace("/[^0-9]+/", "", $user->phone);
-            $user->phone = (string)$phone;
             $user->isEmailVerified = $user->email_verified_at ? true : false;
             $user->isMobileVerified = $user->phone_verified_at ? true : false;
             $user->isProfileVerified = $user->profile_verified_at ? true : false;
@@ -134,8 +132,6 @@ class AuthController extends Controller
                     // if (!Auth::attempt($credentials)) {
                     //     return $this->generateResponse(false, $field . ' or Password are Incorrect!');
                     // }
-                    $phone = preg_replace("/[^0-9]+/", "", $user->phone);
-                    $user->phone = (string)$phone;
                     $user->isEmailVerified = $user->email_verified_at ? true : false;
                     $user->isMobileVerified = $user->phone_verified_at ? true : false;
                     $user->isProfileVerified = $user->profile_verified_at ? true : false;
