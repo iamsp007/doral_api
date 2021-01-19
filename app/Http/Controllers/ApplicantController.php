@@ -824,4 +824,44 @@ class ApplicantController extends Controller
             return $this->generateResponse($status, $message, null);
         }
     }
+
+    public function getClinicianList()
+    {
+        $status = false;
+        $data = [];
+        $message = "Applicants are not available.";
+        try {
+            $response = Applicant::with(['state', 'city'])->get();
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "All Applicants.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    public function getClinicianDetail($id)
+    {
+        $status = false;
+        $data = [];
+        $message = "Applicant detail not available.";
+        try {
+            $response = Applicant::with(['state', 'city'])->findOrFail($id);
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "All Applicants.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
 }
