@@ -124,4 +124,12 @@ class Helper extends BaseController
 
 
     }
+
+    public function removePhoneFormat($phone)
+    {
+        if ($phone){
+            return preg_replace("/[^0-9]+/", "", $phone);
+        }
+        return null;
+    }
 }
