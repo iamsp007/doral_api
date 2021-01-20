@@ -68,7 +68,7 @@ class User extends Authenticatable
     public function setPhoneAttribute($value)
     {
         if ($value){
-            $this->attributes['phone'] = (int)str_replace("-", "", $value);
+            $this->attributes['phone'] = preg_replace("/[^0-9]+/", "", $value);
         }
     }
     /**

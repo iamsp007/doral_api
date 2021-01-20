@@ -357,6 +357,32 @@ class ApplicantController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function certifyingBoard()
+    {
+        $status = true;
+        $message = "Certifying Board";
+        $data = config('common.certifying_board');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function certifyingBoardStatus()
+    {
+        $status = true;
+        $message = "Certifying Board Status";
+        $data = config('common.certifying_board_status');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function workGapReasons()
     {
         $status = true;
@@ -388,6 +414,19 @@ class ApplicantController extends Controller
         $status = true;
         $message = "Send Tax Documents To";
         $data = config('common.send_tax_documents_to');
+        return $this->generateResponse($status, $message, $data);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function legalEntities()
+    {
+        $status = true;
+        $message = "Legal Entities";
+        $data = config('common.legal_entities');
         return $this->generateResponse($status, $message, $data);
     }
 
@@ -783,6 +822,46 @@ class ApplicantController extends Controller
             $status = false;
             $message = $e->getMessage();
             return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    public function getClinicianList()
+    {
+        $status = false;
+        $data = [];
+        $message = "Applicants are not available.";
+        try {
+            $response = Applicant::with(['state', 'city'])->get();
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "All Applicants.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    public function getClinicianDetail($id)
+    {
+        $status = false;
+        $data = [];
+        $message = "Applicant detail not available.";
+        try {
+            $response = Applicant::with(['state', 'city'])->findOrFail($id);
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "All Applicants.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
         }
     }
 }

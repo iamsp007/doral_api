@@ -126,6 +126,14 @@ class Helper extends BaseController
 
     }
 
+    public function removePhoneFormat($phone)
+    {
+        if ($phone){
+            return preg_replace("/[^0-9]+/", "", $phone);
+        }
+        return null;
+    }
+
     public function getLatLngFromAddress($address){
         $client = new Client(); //GuzzleHttp\Client
         $result =(string) $client->post("https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=".env('MAP_API_KEY'))->getBody();

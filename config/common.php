@@ -48,6 +48,12 @@ return [
 		0 => 'Saving',
 		1 => 'Credit'
 	],
+	'legal_entities' => [
+		0 => 'Sole proprietorship',
+		1 => 'Partnership',
+		2 => 'C corporation',
+		3 => 'Limited liability company'
+	],
 	'send_tax_documents_to' => [
 		0 => 'Bank Account Address',
 		1 => 'Home Address',
