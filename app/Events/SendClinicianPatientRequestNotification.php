@@ -52,8 +52,7 @@ class SendClinicianPatientRequestNotification
             'to'=>$key,
             'notification'=>array(
                 'title'=>$title,
-                'body'=>$message,
-                'data'=>$data
+                'body'=>$data
             ),
 
         );

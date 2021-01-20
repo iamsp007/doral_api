@@ -224,12 +224,8 @@ class PatientRequestController extends Controller
                 $roadlInformation->status = "start";
                 $roadlInformation->save();
 
-                $clinician=User::where(['id'=>$patient->user_id])
-                    ->whereHas('roles',function ($q){
-                        $q->where('name','=','clinician');
-                    })
+                $clinician=User::where(['id'=>$request->user_id])
                     ->first();
-
                 $data=array(
                     'latitude'=>$request->latitude,
                     'longitude'=>$request->longitude,
