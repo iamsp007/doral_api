@@ -20,6 +20,7 @@ use App\Models\referral;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use OpenTok\MediaMode;
 use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
@@ -173,28 +174,6 @@ class AuthController extends Controller
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, null);
-        }
-    }
-
-    public function createRoom($user)
-    {
-        try {
-            // Instantiate a new OpenTok object with our api key & secret
-            $opentok = new OpenTok(env('VONAGE_API_KEY'), env('VONAGE_API_SECRET'));
-
-            // Creates a new session (Stored in the Vonage API cloud)
-            $session = $opentok->createSession(array('mediaMode' => MediaMode::RELAYED));
-
-            // Create a new virtual class that would be stored in db
-            $class = new VonageRoom();
-            // Generate a name based on the name the teacher entered
-            $class->name = 'Dr. ' . $user->first_name . " " . $user->last_name . " Room - " . $user->id;
-            // Store the unique ID of the session
-            $class->user_id = $user->id;
-            $class->session_id = $session->getSessionId();
-            // Save this class as a relationship to the teacher
-            $user->myRoom()->save($class);
-        } catch (\Exception $exception) {
         }
     }
 
@@ -468,5 +447,21 @@ class AuthController extends Controller
     public function filterCities(Request $request)
     {
         return City::where('state_code', $request->state_code)->get();
+    }
+
+    public function saveToken(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'device_token'=>'required',
+            'device_type'=>'required'
+        ]);
+        if ($validator->fails()){
+            return $this->generateResponse(false,$validator->errors()->first(),null,200);
+        }
+        $user = User::find(Auth::user()->id);
+        $user->device_token=$request->device_token;
+        $user->device_type=$request->device_type;
+        $user->save();
+        return $this->generateResponse(true,'Device Token Update Successfully!',null,200);
     }
 }
