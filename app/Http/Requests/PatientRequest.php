@@ -19,31 +19,37 @@ class PatientRequest extends FormRequest
     {
         if ($this->patient_id){
             $details = User::with('detail')->find($this->patient_id);
-            $address='';
-            if ($details->detail->address_1){
-                $address.=$details->detail->address_1;
-            }
-            if ($details->detail->city){
-                $address.=','.$details->detail->city;
-            }
-            if ($details->detail->state){
-                $address.=','.$details->detail->state;
-            }
-            if ($details->detail->country){
-                $address.=','.$details->detail->country;
-            }
-            if ($details->detail->Zip){
-                $address.=','.$details->detail->Zip;
-            }
-            $helper = new Helper();
-            $response = $helper->getLatLngFromAddress($address);
-            if ($response->status==='REQUEST_DENIED'){
+            if (isset($details->detail->address_1) && $details->detail->address_1){
+                $address='';
+                if ($details->detail->address_1){
+                    $address.=$details->detail->address_1;
+                }
+                if ($details->detail->city){
+                    $address.=','.$details->detail->city;
+                }
+                if ($details->detail->state){
+                    $address.=','.$details->detail->state;
+                }
+                if ($details->detail->country){
+                    $address.=','.$details->detail->country;
+                }
+                if ($details->detail->Zip){
+                    $address.=','.$details->detail->Zip;
+                }
+                $helper = new Helper();
+                $response = $helper->getLatLngFromAddress($address);
+                if ($response->status==='REQUEST_DENIED'){
+                    $latitude=$details->latitude;
+                    $longitude=$details->longitude;
+                }else{
+                    $latitude=$response->results[0]->geometry->location->lat;
+                    $longitude=$response->results[0]->geometry->location->lng;
+                }
+            }else{
                 $latitude=$details->latitude;
                 $longitude=$details->longitude;
-            }else{
-                $latitude=$response->results[0]->geometry->location->lat;
-                $longitude=$response->results[0]->geometry->location->lng;
             }
+
             $this->merge([
                 'latitude' => $latitude,
                 'longitude'=>$longitude,
