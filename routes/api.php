@@ -144,7 +144,7 @@ Route::group([
         Route::get('security', 'App\Http\Controllers\ApplicantController@getSecurities');
         Route::post('security', 'App\Http\Controllers\ApplicantController@security');
 
-        Route::get('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
+        Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
     });
 });
 

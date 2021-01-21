@@ -81,6 +81,7 @@ class AuthController extends Controller
                 if ($users) {
                     $users->device_token = $request->device_token;
                     $users->device_type = $request->device_type;
+                    $users->is_available = 1;
                     $users->save();
                 }
             }
