@@ -229,6 +229,7 @@ class PatientRequestController extends Controller
                 $data=array(
                     'latitude'=>$request->latitude,
                     'longitude'=>$request->longitude,
+                    'patient_request_id'=>$request->request_id,
                     'clinician'=>$clinician
                 );
                 event(new SendPatientNotificationMap($data,$patient->user_id));
