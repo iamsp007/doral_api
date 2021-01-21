@@ -29,7 +29,7 @@ class RoadlController extends Controller
                 })
                     ->find($request->user_id);
                 if ($user){
-                    $user->is_available = 2;
+                    $user->is_available = 1;
                     $user->save();
                 }
             }
