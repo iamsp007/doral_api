@@ -28,7 +28,7 @@ class Appointment extends Model
      */
     public function patients()
     {
-        return $this->hasOne(User::class, 'id', 'patient_id');
+        return $this->hasOne(User::class, 'id', 'patient_id')->with('detail');
     }
     /**
      * Get Booked details

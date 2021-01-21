@@ -69,6 +69,7 @@ Route::group([
     ], function () {
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
         Route::get('ccm-readings', 'App\Http\Controllers\UserController@ccmReadings');
+        Route::post('save-token', 'App\Http\Controllers\Auth\AuthController@saveToken');
         //Patient
         Route::get('patient/search/{keyword}', 'App\Http\Controllers\PatientController@searchByEmailNamePhone');
         //Services
@@ -148,7 +149,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['auth:api','role:patient'],
+    'middleware' => ['auth:api','role:patient|clinician'],
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
@@ -162,7 +163,7 @@ Route::group([
 
 // clincian API
 Route::group([
-    'middleware' => ['auth:api','role:clinician|co-ordinator'],
+    'middleware' => ['auth:api','role:clinician|co-ordinator|patient'],
 ], function () {
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');

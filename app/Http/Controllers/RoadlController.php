@@ -23,6 +23,16 @@ class RoadlController extends Controller
         $roadlInformation->longitude = $request->longitude;
         $roadlInformation->status = $request->has('status')?$request->input('status'):"start";
         if ($roadlInformation->save()){
+            if ($roadlInformation->status==="complete"){
+                $user = User::whereHas('roles',function ($q){
+                    $q->where('name','=','clinician');
+                })
+                    ->find($request->user_id);
+                if ($user){
+                    $user->is_available = 1;
+                    $user->save();
+                }
+            }
             return $this->generateResponse(true,'Adding RoadlInformation Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
@@ -47,6 +57,7 @@ class RoadlController extends Controller
             }
 
             $clinicianIds = $this->findNearestClinician($patient_requests->latitude,$patient_requests->longitude);
+
             $markers = collect($clinicianIds)->map(function($item) use ($patient_requests){
                 $item['distance'] = $this->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $patient_requests->latitude,$patient_requests->longitude);
                 return $item;
@@ -70,7 +81,7 @@ class RoadlController extends Controller
          * using eloquent approach, make sure to replace the "Restaurant" with your actual model name
          * replace 6371000 with 6371 for kilometer and 3956 for miles
          */
-        $clinicians = User::where('is_available', '=', '1')
+        $clinicians = User::where('is_available', '=', 1)
             ->whereHas('roles',function ($q){
                 $q->where('name','=','clinician');
             })

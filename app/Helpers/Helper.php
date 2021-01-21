@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Events\SendingSMS;
 use App\Models\Otp;
+use Faker\Provider\Address;
 use GuzzleHttp\Cookie\CookieJar as GuzzleHttpCookie;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
@@ -131,5 +132,12 @@ class Helper extends BaseController
             return preg_replace("/[^0-9]+/", "", $phone);
         }
         return null;
+    }
+
+    public function getLatLngFromAddress($address){
+        $client = new Client(); //GuzzleHttp\Client
+        $result =(string) $client->post("https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=".env('MAP_API_KEY'))->getBody();
+        $json =json_decode($result);
+        return $json;
     }
 }

@@ -13,7 +13,6 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
-use App\Notifications\BroadCastNotification;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -225,13 +224,12 @@ class PatientRequestController extends Controller
                 $roadlInformation->status = "start";
                 $roadlInformation->save();
 
-                $clinician=User::where(['id'=>$patient->user_id])->whereHas('roles',function ($q){
-                    $q->where('name','=','clinician');
-                })->first();
-
+                $clinician=User::where(['id'=>$request->user_id])
+                    ->first();
                 $data=array(
                     'latitude'=>$request->latitude,
                     'longitude'=>$request->longitude,
+                    'patient_request_id'=>$request->request_id,
                     'clinician'=>$clinician
                 );
                 event(new SendPatientNotificationMap($data,$patient->user_id));
