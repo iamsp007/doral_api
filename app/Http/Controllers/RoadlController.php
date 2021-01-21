@@ -23,6 +23,16 @@ class RoadlController extends Controller
         $roadlInformation->longitude = $request->longitude;
         $roadlInformation->status = $request->has('status')?$request->input('status'):"start";
         if ($roadlInformation->save()){
+            if ($roadlInformation->status==="complete"){
+                $user = User::whereHas('roles',function ($q){
+                    $q->where('name','=','clinician');
+                })
+                    ->find($request->user_id);
+                if ($user){
+                    $user->is_available = 2;
+                    $user->save();
+                }
+            }
             return $this->generateResponse(true,'Adding RoadlInformation Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
