@@ -55,6 +55,16 @@ class PatientRequestController extends Controller
             $patient->latitude = $request->latitude;
             $patient->longitude = $request->longitude;
             $patient->reason = $request->reason;
+            if($request->has('dieses')){
+                $patient->dieses=$request->dieses;
+            }
+            if($request->has('symptoms')){
+                $patient->symptoms=$request->symptoms;
+            }
+            if($request->has('is_parking')){
+                $patient->is_parking=$request->is_parking;
+            }
+            $patient->status='active';
             if ($patient->save()){
                 $clinicianList = User::whereHas('roles',function ($q){
                     $q->where('name','=','clinician');
