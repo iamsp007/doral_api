@@ -24,30 +24,21 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $status = false;
-        $data = $services = [];
-        $message = "";
-        try {
-
-            $respons = Appointment::getAllAppointment();
-            //Get Services
-            //Get PM/MA
-            //Get Co-ordinator
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                "appointments" => $respons['data'],
-                "services" => $services
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage()." ".$e->getLine();
-            return $this->generateResponse($status, $message, $data);
+        $response = Appointment::with(['bookedDetails' => function ($q) {
+            $q->select('first_name', 'last_name', 'id');
+        }])
+            ->with(['patients', 'meeting', 'service', 'filetype'])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->get();
+        if (count($response)>0){
+            return $this->generateResponse(true,'All Appointment List',$response,200);
         }
+        return $this->generateResponse(false,'No Appointment Exists',null,200);
     }
 
     /**
@@ -105,28 +96,22 @@ class AppointmentController extends Controller
      */
     public function show($id)
     {
-        $status = false;
-        $data = $services = [];
-        $message = "";
-        try {
-            $respons = Appointment::getAppointment($id);
-            //Get Services
-            //Get PM/MA
-            //Get Co-ordinator
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                "appointments" => $respons['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage();
-            return $this->generateResponse($status, $message, $data);
+        $resp = Appointment::with(['bookedDetails' => function ($q) {
+            $q->select('first_name', 'last_name', 'id');
+        }])
+            ->with(['patients', 'meeting', 'service', 'filetype'])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->where('id', $id)
+            ->first();
+        if ($resp){
+            return $this->generateResponse(true,'Appointment Detail',$resp,200);
         }
+        return $this->generateResponse(false,'Appointment Not Available',null,200);
     }
 
     /**

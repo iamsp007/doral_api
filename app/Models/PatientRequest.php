@@ -31,4 +31,26 @@ class PatientRequest extends Model
     {
         return $this->hasOne(VirtualRoom::class, 'appointment_id', 'id');
     }
+
+    public function getSymptomsAttribute($value){
+        if ($value){
+            $symtoms = SymptomsMaster::whereIn('id',explode(',',$value))->pluck('name');
+            if ($symtoms){
+                return implode(',',$symtoms->toArray());
+            }
+            return '-';
+        }
+        return '-';
+    }
+
+    public function getDiesesAttribute($value){
+        if ($value){
+            $data = DiesesMaster::whereIn('id',explode(',',$value))->pluck('name');
+            if ($data){
+                return implode(',',$data->toArray());
+            }
+            return '-';
+        }
+        return '-';
+    }
 }

@@ -184,17 +184,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/images" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/images" />
       <recent name="$PROJECT_DIR$/public/application/android" />
       <recent name="$PROJECT_DIR$/resources/views" />
       <recent name="$PROJECT_DIR$/app/Http/Controllers" />
       <recent name="$PROJECT_DIR$/app" />
-      <recent name="$PROJECT_DIR$/app/Support" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/database/seeders" />
@@ -431,7 +431,28 @@
       <workItem from="1611168586525" duration="2004000" />
       <workItem from="1611170609968" duration="1789000" />
       <workItem from="1611197758266" duration="1807000" />
-      <workItem from="1611206584747" duration="1129000" />
+      <workItem from="1611206584747" duration="1774000" />
+      <workItem from="1611218702590" duration="498000" />
+      <workItem from="1611219430785" duration="1725000" />
+      <workItem from="1611223518242" duration="648000" />
+      <workItem from="1611225480107" duration="599000" />
+      <workItem from="1611227301040" duration="599000" />
+      <workItem from="1611229264506" duration="407000" />
+      <workItem from="1611229769191" duration="747000" />
+      <workItem from="1611231324170" duration="619000" />
+      <workItem from="1611287434510" duration="599000" />
+      <workItem from="1611292779742" duration="869000" />
+      <workItem from="1611294115644" duration="598000" />
+      <workItem from="1611295931591" duration="598000" />
+      <workItem from="1611297781011" duration="1198000" />
+      <workItem from="1611299892900" duration="599000" />
+      <workItem from="1611302596834" duration="1014000" />
+      <workItem from="1611304511867" duration="656000" />
+      <workItem from="1611310828422" duration="1510000" />
+      <workItem from="1611312356337" duration="1796000" />
+      <workItem from="1611314173332" duration="1004000" />
+      <workItem from="1611316037029" duration="1785000" />
+      <workItem from="1611317844256" duration="1418000" />
     </task>
     <servers />
   </component>
