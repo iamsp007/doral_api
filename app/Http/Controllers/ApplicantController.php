@@ -9,6 +9,7 @@ use App\Models\WorkHistory;
 use App\Models\Attestation;
 use App\Models\BankAccount;
 use App\Models\Security;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -845,13 +846,13 @@ class ApplicantController extends Controller
         }
     }
 
-    public function getClinicianDetail($id)
+    public function getClinicianDetail($userId)
     {
         $status = false;
         $data = [];
         $message = "Applicant detail not available.";
         try {
-            $response = Applicant::with(['state', 'city'])->findOrFail($id);
+            $response = User::with(['applicant.referances', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.ageRanges', 'professional.stateLicenses', 'professional.boardCertificates', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->findOrFail($userId);
             if (!$response) {
                 throw new Exception($message);
             }
