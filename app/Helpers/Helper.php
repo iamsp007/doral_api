@@ -155,6 +155,7 @@ class Helper extends BaseController
                 'title'=>$title,
                 'body'=>$data
             ),
+            'data'=>$data
         );
 
         $payload=json_encode($fields);

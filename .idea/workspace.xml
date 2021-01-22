@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Events/SendPatientNotificationMap.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Events/SendPatientNotificationMap.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Events/SendVideoMeetingNotification.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Events/SendVideoMeetingNotification.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Helpers/Helper.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Helpers/Helper.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -455,7 +452,7 @@
       <workItem from="1611312356337" duration="1796000" />
       <workItem from="1611314173332" duration="1004000" />
       <workItem from="1611316037029" duration="1785000" />
-      <workItem from="1611317844256" duration="323000" />
+      <workItem from="1611317844256" duration="1418000" />
     </task>
     <servers />
   </component>
