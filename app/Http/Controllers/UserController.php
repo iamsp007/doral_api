@@ -154,11 +154,11 @@ class UserController extends Controller
         return response()->json(null, 204);
     }
 
-    public function changeAvailability()
+    public function changeAvailability(Request $request)
     {
         try {
             $user = auth()->user();
-            $user->is_available = ($user->is_available == 1) ? 0 : 1;
+            $user->is_available = $request->is_available;
             $user->save();
             $status = true;
             $message = "Availability changed";

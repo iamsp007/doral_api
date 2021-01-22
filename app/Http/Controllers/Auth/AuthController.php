@@ -81,6 +81,7 @@ class AuthController extends Controller
                 if ($users) {
                     $users->device_token = $request->device_token;
                     $users->device_type = $request->device_type;
+                    $users->is_available = 1;
                     $users->save();
                 }
             }
@@ -191,7 +192,18 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return $this->generateResponse(true, 'user detail', $request->user());
+        $user = $request->user();
+        if ($user->roles->first()->name == 'clinician') {
+            $user->isApplicant = isset($user->applicant) && !empty($user->applicant) ? true : false;
+            $user->isEducation = isset($user->education) && !empty($user->education) ? true : false;
+            $user->isProfessional = isset($user->professional) && !empty($user->professional) ? true : false;
+            $user->isBackground = isset($user->background) && $user->background->isNotEmpty() ? true : false;
+            $user->isDeposit = isset($user->deposit) && !empty($user->deposit) ? true : false;
+            $user->isVerifyIdentity = false;
+            $user->isDocuments = isset($user->documents) && $user->documents->isNotEmpty() ? true : false;
+        }
+
+        return $this->generateResponse(true, 'user detail', $user);
     }
 
     public function forgotPassword(Request $request)

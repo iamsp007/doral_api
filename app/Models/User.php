@@ -202,4 +202,51 @@ class User extends Authenticatable
             'id');
     }
 
+    /**
+     * applicant
+     */
+    public function applicant()
+    {
+        return $this->hasOne(Applicant::class, 'user_id', 'id');
+    }
+
+    /**
+     * education
+     */
+    public function education()
+    {
+        return $this->hasOne(Education::class, 'user_id', 'id');
+    }
+
+    /**
+     * professional
+     */
+    public function professional()
+    {
+        return $this->hasOne(Certificate::class, 'user_id', 'id');
+    }
+
+    /**
+     * background
+     */
+    public function background()
+    {
+        return $this->hasMany(WorkHistory::class, 'user_id', 'id');
+    }
+
+    /**
+     * deposit
+     */
+    public function deposit()
+    {
+        return $this->hasOne(BankAccount::class, 'user_id', 'id');
+    }
+
+    /**
+     * documents
+     */
+    public function documents()
+    {
+        return $this->hasMany(UploadDocuments::class, 'user_id', 'id');
+    }
 }

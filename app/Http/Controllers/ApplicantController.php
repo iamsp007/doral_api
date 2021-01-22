@@ -276,7 +276,7 @@ class ApplicantController extends Controller
                 });
                 ApplicantReference::insert($records);
                 $status = true;
-                $message = "Success! Please complete step two.";
+                $message = "Success! details has been saved";
                 return $this->generateResponse($status, $message, $applicant, 200);
             }
             return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
