@@ -87,7 +87,6 @@ class AuthController extends Controller
             }
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
-            dd($e);
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, null);
