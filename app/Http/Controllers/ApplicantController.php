@@ -850,10 +850,7 @@ class ApplicantController extends Controller
                         "file_url" => \Storage::disk('public')->url($file_uploaded_path),
                         "mime" => $file->getClientMimeType()
                     ];
-                    $documents = UploadDocuments::where(['user_id'=>auth()->user()->id,'type'=>'1'])->first();
-                    if ($documents===null){
-                        $documents = new UploadDocuments();
-                    }
+                    $documents = new UploadDocuments();
                     $documents->user_id = auth()->user()->id;
                     $documents->file_name = $uploadedFileResponse['file_name'];
                     $documents->type = '1';
@@ -870,10 +867,7 @@ class ApplicantController extends Controller
                         "file_url" => \Storage::disk('public')->url($file_uploaded_path),
                         "mime" => $file->getClientMimeType()
                     ];
-                    $documents = UploadDocuments::where(['user_id'=>auth()->user()->id,'type'=>'2'])->first();
-                    if ($documents===null){
-                        $documents = new UploadDocuments();
-                    }
+                    $documents = new UploadDocuments();
                     $documents->user_id = auth()->user()->id;
                     $documents->file_name = $uploadedFileResponse['file_name'];
                     $documents->type = '2';
@@ -890,10 +884,7 @@ class ApplicantController extends Controller
                         "file_url" => \Storage::disk('public')->url($file_uploaded_path),
                         "mime" => $file->getClientMimeType()
                     ];
-                    $documents = UploadDocuments::where(['user_id'=>auth()->user()->id,'type'=>'3'])->first();
-                    if ($documents===null){
-                        $documents = new UploadDocuments();
-                    }
+                    $documents = new UploadDocuments();
                     $documents->user_id = auth()->user()->id;
                     $documents->file_name = $uploadedFileResponse['file_name'];
                     $documents->type = '3';
@@ -910,10 +901,7 @@ class ApplicantController extends Controller
                         "file_url" => \Storage::disk('public')->url($file_uploaded_path),
                         "mime" => $file->getClientMimeType()
                     ];
-                    $documents = UploadDocuments::where(['user_id'=>auth()->user()->id,'type'=>'4'])->first();
-                    if ($documents===null){
-                        $documents = new UploadDocuments();
-                    }
+                    $documents = new UploadDocuments();
                     $documents->user_id = auth()->user()->id;
                     $documents->file_name = $uploadedFileResponse['file_name'];
                     $documents->type = '4';
@@ -921,7 +909,9 @@ class ApplicantController extends Controller
                 }
             }
 
-            return $this->generateResponse(true,'Document Upload Successfully!',null,200);
+            $documents = UploadDocuments::where('user_id', auth()->user()->id)->get();
+
+            return $this->generateResponse(true,'Documents uploaded',$documents,200);
         }catch (\Exception $exception){
 
             return $this->generateResponse(false,$exception->getMessage(),null,200);
@@ -931,7 +921,7 @@ class ApplicantController extends Controller
     public function getDocuments()
     {
         try {
-            $documents = UploadDocuments::where('user_id', Auth::user()->id)->get();
+            $documents = UploadDocuments::where('user_id', auth()->user()->id)->get();
             return $this->generateResponse(true, 'All Documents', $documents, 200);
         } catch (\Exception $e) {
             $status = false;
@@ -945,8 +935,9 @@ class ApplicantController extends Controller
         try {
             $documents = UploadDocuments::where([
                 'id' => $request->id,
-                'user_id' => Auth::user()->id
+                'user_id' => auth()->user()->id
             ])->delete();
+            $documents = UploadDocuments::where('user_id', auth()->user()->id)->get();
             return $this->generateResponse(true, 'Document removed', $documents, 200);
         } catch (\Exception $e) {
             $status = false;
