@@ -52,7 +52,8 @@ class PatientRequestAcceptRequest extends FormRequest
         $validator->after(function ($validator) {
             if ($this->checkRequestAccept()) {
                 $helper = new Helper();
-                return $helper->generateResponse(false,'Request Already Accepted!');
+                $response = $helper->generateResponse(false,'Request Already Accepted!');
+                throw new \Illuminate\Validation\ValidationException($validator, $response);
             }
         });
     }

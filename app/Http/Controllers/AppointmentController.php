@@ -24,30 +24,21 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $status = false;
-        $data = $services = [];
-        $message = "";
-        try {
-
-            $respons = Appointment::getAllAppointment();
-            //Get Services
-            //Get PM/MA
-            //Get Co-ordinator
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                "appointments" => $respons['data'],
-                "services" => $services
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage()." ".$e->getLine();
-            return $this->generateResponse($status, $message, $data);
+        $response = Appointment::with(['bookedDetails' => function ($q) {
+            $q->select('first_name', 'last_name', 'id');
+        }])
+            ->with(['patients', 'meeting', 'service', 'filetype'])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->get();
+        if (count($response)>0){
+            return $this->generateResponse(true,'All Appointment List',$response,200);
         }
+        return $this->generateResponse(false,'No Appointment Exists',null,200);
     }
 
     /**
@@ -83,10 +74,19 @@ class AppointmentController extends Controller
         $appointment->provider2 = $request->provider2;
         $appointment->service_id = isset($patient->detail)?$patient->detail->service_id:1;
         if ($appointment->save()){
+            $meetingController = new MeetingController();
+            $resp =  $meetingController->createMeeting([
+                'appointment_id' => $appointment->id,
+                'topic' => $appointment->title,
+                'start_time'=>$appointment->start_datetime,
+                'agenda'=>'Agenda'
+            ]);
             return $this->generateResponse(true,'Your Appointment book Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
+
+
 
     /**
      * Display the specified resource.
@@ -96,28 +96,22 @@ class AppointmentController extends Controller
      */
     public function show($id)
     {
-        $status = false;
-        $data = $services = [];
-        $message = "";
-        try {
-            $respons = Appointment::getAppointment($id);
-            //Get Services
-            //Get PM/MA
-            //Get Co-ordinator
-            if (!$respons['status']) {
-                throw new Exception($respons['message']);
-            }
-            $message = $respons['message'];
-            $data = [
-                "appointments" => $respons['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage();
-            return $this->generateResponse($status, $message, $data);
+        $resp = Appointment::with(['bookedDetails' => function ($q) {
+            $q->select('first_name', 'last_name', 'id');
+        }])
+            ->with(['patients', 'meeting', 'service', 'filetype'])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->where('id', $id)
+            ->first();
+        if ($resp){
+            return $this->generateResponse(true,'Appointment Detail',$resp,200);
         }
+        return $this->generateResponse(false,'Appointment Not Available',null,200);
     }
 
     /**
@@ -161,7 +155,7 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($id);
     }
 
     /**
@@ -328,28 +322,26 @@ class AppointmentController extends Controller
      */
     public function cancelAppointment(Request $request)
     {
-        $status = 0;
-        $data = [];
-        $message = 'Something wrong';
+        $validator = Validator::make($request->all(),[
+            'appointment_id'=>'required|exists:appointments,id',
+            'reason_notes'=>'required'
+        ]);
+        if ($validator->fails()){
+            return $this->generateResponse(false,'Invalid Data',$validator->errors(),200);
+        }
+
         try {
-            $request = $request->all();
-            if (!$request['appointment_id'] || !$request['reason_id'] || !$request['cancel_user']) {
-                throw new Exception("Invalid parameter passed");
+            $appointment = Appointment::find($request->appointment_id);
+            $appointment->status = 'cancel';
+            $appointment->reason_id = $request->has('reason_id')?$request->reason_id:5;
+            $appointment->reason_notes = $request->has('reason_notes')?$request->reason_notes:null;
+            $appointment->cancel_user = Auth::user()->id;
+            if ($appointment->save()){
+                return $this->generateResponse(true,'Appointment Cancel Successfully!',null,200);
             }
-            $cancel = Appointment::cancelAppointment($request);
-            if (!$cancel['status']) {
-                throw new Exception($cancel['message']);
-            }
-            $message = $cancel['message'];
-            $data = [
-                'appointments' => $cancel['data']
-            ];
-            $status = true;
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage() . " " . $e->getLine();
-            return $this->generateResponse($status, $message, $data);
+            return $this->generateResponse(false,'Something Went Wrong!',null,422);
+        }catch (\Exception $exception){
+            return $this->generateResponse(false,$exception->getMessage(),null,422);
         }
     }
 

@@ -16,7 +16,7 @@ class Appointment extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'appointment_url', 'book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url'
+        'title', 'appointment_url', 'book_datetime', 'start_datetime', 'end_datetime', 'booked_user_id', 'patient_id', 'provider1', 'provider2', 'service_id', 'appointment_url','cancel_user','reason_notes'
     ];
 
     protected $casts = [
@@ -28,7 +28,7 @@ class Appointment extends Model
      */
     public function patients()
     {
-        return $this->hasOne(User::class, 'id', 'patient_id');
+        return $this->hasOne(User::class, 'id', 'patient_id')->with('detail');
     }
     /**
      * Get Booked details
@@ -76,88 +76,14 @@ class Appointment extends Model
         return $this->hasOne(VirtualRoom::class, 'appointment_id', 'id');
     }
     /**
-     * Get All Appointment 
+     * Get Meeting Reasons
      */
-    public static function getAllAppointment($request = array())
+    public function cancelByUser()
     {
-        $status = 0;
-        $message = "All Appointments";
-        try {
-            //\DB::enableQueryLog();
-            $resp = Appointment::query();
-            $resp = $resp->with(['bookedDetails' => function ($q) {
-                $q->select('first_name', 'last_name', 'id');
-            }])
-                ->with(['patients', 'meeting', 'service', 'filetype'])
-                ->with(['provider1Details' => function ($q) {
-                    $q->select('first_name', 'last_name', 'id');
-                }])
-                ->with(['provider2Details' => function ($q) {
-                    $q->select('first_name', 'last_name', 'id');
-                }]);
-            if (count($request) > 0) {
-                $type = $request['type'];
-                switch ($type) {
-                    case 'byDate':
-                        $startDate = $request['start_date'];
-                        $resp = $resp->whereDate('start_datetime', $startDate);
-                        break;
-                    case 'byWeek':
-                        # code...
-                        break;
-                    case 'byMonth':
-                        # code...
-                        break;
-                    case 'byDateEmployeeId':
-                        # code...
-                        break;
-                    case 'byWeekEmployeeId':
-                        # code...
-                        break;
-                    case 'byMonthEmployeeId':
-                        # code...
-                        break;
-                    case 'byDatePatientId':
-                        $patientId = $request['patient_id'];
-                        $startDate = $request['start_date'];
-                        $resp = $resp->where('patient_id', $patientId);
-                        $resp = $resp->whereDate('start_datetime', $startDate);
-                        break;
-                    case 'byWeekPatientId':
-                        # code...
-                        break;
-                    case 'byMonthPatientId':
-                        # code...
-                        break;
-                }
-            }
-            $resp = $resp->orderBy('id', 'desc')
-                ->get()
-                ->toArray();
-            //dd(\DB::getQueryLog());
-            if (!$resp) {
-                $message = "Appointments are not available";
-            }
-            $status =  true;
-            $response = [
-                'status' => $status,
-                'message' => $message,
-                'data' => $resp
-            ];
-            return $response;
-        } catch (\Exception $e) {
-            report($e);
-            $status =  false;
-            $response = [
-                'status' => $status,
-                'message' => $e->getMessage()
-            ];
-            return $response;
-            exit;
-        }
+        return $this->hasOne(User::class, 'id', 'cancel_user');
     }
     /**
-     * Get All Appointment 
+     * Get All Appointment
      */
     public static function getAppointment($id)
     {

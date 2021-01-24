@@ -13,7 +13,6 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
-use App\Notifications\BroadCastNotification;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +55,16 @@ class PatientRequestController extends Controller
             $patient->latitude = $request->latitude;
             $patient->longitude = $request->longitude;
             $patient->reason = $request->reason;
+            if($request->has('dieses')){
+                $patient->dieses=$request->dieses;
+            }
+            if($request->has('symptoms')){
+                $patient->symptoms=$request->symptoms;
+            }
+            if($request->has('is_parking')){
+                $patient->is_parking=$request->is_parking;
+            }
+            $patient->status='active';
             if ($patient->save()){
                 $clinicianList = User::whereHas('roles',function ($q){
                     $q->where('name','=','clinician');
@@ -225,13 +234,12 @@ class PatientRequestController extends Controller
                 $roadlInformation->status = "start";
                 $roadlInformation->save();
 
-                $clinician=User::where(['id'=>$patient->user_id])->whereHas('roles',function ($q){
-                    $q->where('name','=','clinician');
-                })->first();
-
+                $clinician=User::where(['id'=>$request->user_id])
+                    ->first();
                 $data=array(
                     'latitude'=>$request->latitude,
                     'longitude'=>$request->longitude,
+                    'patient_request_id'=>$request->request_id,
                     'clinician'=>$clinician
                 );
                 event(new SendPatientNotificationMap($data,$patient->user_id));
@@ -248,6 +256,9 @@ class PatientRequestController extends Controller
 
     public function clinicianPatientRequestList(Request $request){
         $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail')
+            ->where(function ($q){
+                $q->where('clincial_id','=',null)->orWhere('clincial_id','=',Auth::user()->id);
+            })
             ->where('is_active','=','1')
             ->orderBy('id','desc')
             ->get();
@@ -296,8 +307,8 @@ class PatientRequestController extends Controller
             $le = 'higher';
         }
         $from = "12089104598";
-//        $to = "5166000122";
-        $to = "9173646218";
+        $to = "5166000122";
+//        $to = "9173646218";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UploadDocuments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -151,6 +154,22 @@ class UserController extends Controller
         return response()->json(null, 204);
     }
 
+    public function changeAvailability(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $user->is_available = $request->is_available;
+            $user->save();
+            $status = true;
+            $message = "Availability changed";
+            return $this->generateResponse($status, $message, $user, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $user);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -210,5 +229,14 @@ class UserController extends Controller
             $message = $e->getMessage()." ".$e->getLine();
             return $this->generateResponse($status, $message, $data, 200);
         }
+    }
+
+    public function getPatientDetail(Request $request,$patient_id)
+    {
+        $details = User::with('detail','leave','ccm')->find($patient_id);
+        if ($details){
+            return $this->generateResponse(true,'Show Patient Detail Successfully!',$details,200);
+        }
+        return $this->generateResponse(false,'Patient Id Does not Exists',null,200);
     }
 }

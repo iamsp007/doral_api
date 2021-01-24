@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Events\SendingSMS;
 use App\Models\Otp;
+use Faker\Provider\Address;
 use GuzzleHttp\Cookie\CookieJar as GuzzleHttpCookie;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
@@ -123,5 +124,55 @@ class Helper extends BaseController
         return $response = $otps;
 
 
+    }
+
+    public function removePhoneFormat($phone)
+    {
+        if ($phone){
+            return preg_replace("/[^0-9]+/", "", $phone);
+        }
+        return null;
+    }
+
+    public function getLatLngFromAddress($address){
+        $client = new Client(); //GuzzleHttp\Client
+        $result =(string) $client->post("https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=".env('MAP_API_KEY'))->getBody();
+        $json =json_decode($result);
+        return $json;
+    }
+
+    public function sendNotification($token,$title,$data){
+        $path_to_fcm='https://fcm.googleapis.com/fcm/send';
+        $server_key=env('FIREBASE_CREDENTIALS');
+        $key= $token;
+        $headers=array(
+            'Authorization:key='.$server_key,
+            'Content-Type:application/json'
+        );
+        $fields=array(
+            'to'=>$key,
+            'notification'=>array(
+                'title'=>$title,
+                'body'=> [
+                    'title' => $title,
+                    'message' => $title,
+                    'data' => $data
+                ]
+            )
+        );
+
+        $payload=json_encode($fields);
+        $curl_session=curl_init();
+        curl_setopt($curl_session,CURLOPT_URL,$path_to_fcm);
+        curl_setopt($curl_session,CURLOPT_POST,true);
+        curl_setopt($curl_session,CURLOPT_HTTPHEADER,$headers);
+        curl_setopt($curl_session,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl_session,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($curl_session,CURLOPT_IPRESOLVE,CURL_IPRESOLVE_V4);
+        curl_setopt($curl_session,CURLOPT_POSTFIELDS,$payload);
+
+        $result=curl_exec($curl_session);
+        \Log::info($result);
+        curl_close($curl_session);
     }
 }

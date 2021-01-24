@@ -29759,3 +29759,5 @@ INSERT INTO `cities` VALUES ('Zuni', 'VA');
 INSERT INTO `cities` VALUES ('Zurich', 'MT');
 INSERT INTO `cities` VALUES ('Zwingle', 'IA');
 INSERT INTO `cities` VALUES ('Zwolle', 'LA');
+
+ALTER TABLE `cities` ADD `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);

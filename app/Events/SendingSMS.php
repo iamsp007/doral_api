@@ -24,6 +24,7 @@ class SendingSMS
     public function __construct($message)
     {
         foreach ($message as $item) {
+            \Log::info($item['to']);
             $this->smsSend($item['to'],$item['message']);
         }
 //        $user = User::find($userid);

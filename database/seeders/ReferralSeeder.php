@@ -24,6 +24,8 @@ class ReferralSeeder extends Seeder
             $referralModel->name = $fvalue;
             $referralModel->save();
         }
+        sleep(1);
+        $this->command->getOutput()->progressAdvance();
         $referralTypes = array('LAB','X-RAY','CHHA','Home Oxygen','Home Influsion','Wound Care','DME');
         foreach ($referralTypes as $rvalue) {
             $referralModel = new Referral();
@@ -31,6 +33,6 @@ class ReferralSeeder extends Seeder
             $referralModel->name = $rvalue;
             $referralModel->save();
         }
-        $this->command->getOutput()->progressFinish();
+
     }
 }
