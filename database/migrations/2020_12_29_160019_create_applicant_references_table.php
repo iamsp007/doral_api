@@ -16,7 +16,7 @@ class CreateApplicantReferencesTable extends Migration
         Schema::create('applicant_references', function (Blueprint $table) {
             $table->id();
             $table->foreignId('applicant_id')->index('applicant_id');
-            $table->string('referance_name');
+            $table->string('reference_name');
             $table->longText('reference_address')->nullable();
             $table->string('reference_phone')->nullable();
             $table->text('reference_relationship')->nullable();
