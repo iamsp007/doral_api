@@ -227,6 +227,14 @@ class User extends Authenticatable
     }
 
     /**
+     * attestation
+     */
+    public function attestation()
+    {
+        return $this->hasMany(Attestation::class, 'user_id', 'id');
+    }
+
+    /**
      * background
      */
     public function background()

@@ -220,4 +220,9 @@ class PatientReferralController extends Controller
     {
         //
     }
+
+    public function storePatient(Request $request)
+    {
+        dd($request->all());
+    }
 }

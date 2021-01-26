@@ -30,8 +30,8 @@ Route::group([
     Route::get('states', 'App\Http\Controllers\Auth\AuthController@states')->name('states');
     Route::get('cities', 'App\Http\Controllers\Auth\AuthController@cities')->name('cities');
     Route::post('filter-cities', 'App\Http\Controllers\Auth\AuthController@filterCities')->name('filter-cities');
-    Route::post('nexmo-send', 'App\Http\Controllers\NexmoController@index')->name('index');
-    Route::post('nexmo-verify', 'App\Http\Controllers\NexmoController@verify')->name('verify');
+    Route::post('nexmo-send', 'App\Http\Controllers\NexmoController@index')->name('index')->middleware('auth:api');
+    Route::post('nexmo-verify', 'App\Http\Controllers\NexmoController@verify')->name('verify')->middleware('auth:api');
 
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
@@ -143,7 +143,9 @@ Route::group([
         Route::post('bank-account', 'App\Http\Controllers\ApplicantController@bankAccount');
         Route::get('security', 'App\Http\Controllers\ApplicantController@getSecurities');
         Route::post('security', 'App\Http\Controllers\ApplicantController@security');
-
+        Route::post('document-verification', 'App\Http\Controllers\ApplicantController@documentVerification');
+        Route::get('get-documents', 'App\Http\Controllers\ApplicantController@getDocuments');
+        Route::post('remove-documents', 'App\Http\Controllers\ApplicantController@removeDocument');
         Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
     });
 });
@@ -180,9 +182,6 @@ Route::group([
     Route::post('send-video-meeting-notification', 'App\Http\Controllers\SessionsController@sendVideoMeetingNotification');
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
     Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
-    Route::post('document-verification', 'App\Http\Controllers\UserController@documentVerification');
-    Route::get('get-documents', 'App\Http\Controllers\UserController@getDocuments');
-    Route::post('remove-documents', 'App\Http\Controllers\UserController@removeDocument');
 });
 
 // Referral
@@ -191,6 +190,7 @@ Route::group([
 ], function () {
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
+    Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
 });
 
 // Co Ordinator
