@@ -249,4 +249,37 @@ class User extends Authenticatable
     {
         return $this->hasMany(UploadDocuments::class, 'user_id', 'id');
     }
+
+    /**
+     * documents
+     */
+    public function insurance()
+    {
+        return $this->hasMany(PatientInsurance::class, 'patient_id', 'id');
+    }
+
+    public function caseManager()
+    {
+        return $this->hasOne(AssignClinicianToPatient::class, 'patient_id', 'id')->where('type','=','1')->with('clinician');
+    }
+
+    public function primaryPhysician()
+    {
+        return $this->hasOne(AssignClinicianToPatient::class, 'patient_id', 'id')->where('type','=','2')->with('clinician');
+    }
+
+    public function specialistPhysician()
+    {
+        return $this->hasOne(AssignClinicianToPatient::class, 'patient_id', 'id')->where('type','=','3')->with('clinician');
+    }
+
+    public function caregiverHistory()
+    {
+        return $this->hasMany(Caregivers::class, 'patient_id', 'id');
+    }
+
+    public function caregivers()
+    {
+        return $this->hasOne(Caregivers::class, 'patient_id', 'id')->orderBy('id','desc');
+    }
 }

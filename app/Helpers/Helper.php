@@ -135,10 +135,15 @@ class Helper extends BaseController
     }
 
     public function getLatLngFromAddress($address){
-        $client = new Client(); //GuzzleHttp\Client
-        $result =(string) $client->post("https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=".env('MAP_API_KEY'))->getBody();
-        $json =json_decode($result);
-        return $json;
+        try {
+            $client = new Client(); //GuzzleHttp\Client
+            $result =(string) $client->post("https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=".env('MAP_API_KEY'))->getBody();
+            $json =json_decode($result);
+            return $json;
+        }catch (\Exception $exception){
+
+        }
+
     }
 
     public function sendNotification($token,$title,$data){
