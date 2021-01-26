@@ -190,6 +190,7 @@ Route::group([
 ], function () {
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
+    Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
 });
 
 // Co Ordinator
