@@ -73,7 +73,7 @@ class AppointmentController extends Controller
         $appointment->provider1 = $request->provider1;
         $appointment->provider2 = $request->provider2;
         $appointment->service_id = $patient->detail?(!empty($patient->detail->service_id)?$patient->detail->service_id:1):1;
-        $appointment->Note = $request->has('Note')?$request->note:null;
+        $appointment->Note = $request->has('note')?$request->note:null;
         if ($appointment->save()){
             $meetingController = new MeetingController();
             $resp =  $meetingController->createMeeting([
