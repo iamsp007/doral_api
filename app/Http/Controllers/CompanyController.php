@@ -19,9 +19,9 @@ class CompanyController extends Controller
     public function index($type)
     {
         $status="0";
-        if ($type===2){
+        if ($type==="2"){
             $status="1";
-        }elseif ($type===3){
+        }elseif ($type==="3"){
             $status="3";
         }
         $companies = Company::where('status','=',$status)
