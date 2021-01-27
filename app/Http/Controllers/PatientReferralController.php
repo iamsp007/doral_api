@@ -223,6 +223,49 @@ class PatientReferralController extends Controller
 
     public function storePatient(Request $request)
     {
-        dd($request->all());
+        $this->validate($request,[
+            'first_name'=>'required',
+            'middle_name'=>'required',
+            'last_name'=>'required',
+            'gender'=>'required',
+            'dob'=>'required',
+            'ssn'=>'required',
+            'medicare_number'=>'required',
+            'medicaid_number'=>'required',
+            'address_1'=>'required',
+            'state'=>'required',
+            'city'=>'required',
+            'Zip'=>'required'
+        ]);
+        try {
+            $user = new User();
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->gender = $request->gender;
+            $user->dob = date('Y-m-d', strtotime($request->dob));
+            $user->password = \Hash::make('patient@doral');
+            $user->save();
+
+            $patient = new PatientReferral();
+            $patient->user_id = $user->id;
+            $patient->first_name = $request->first_name;
+            $patient->middle_name = $request->middle_name;
+            $patient->last_name = $request->last_name;
+            $patient->gender = $request->gender;
+            $patient->dob = date('Y-m-d', strtotime($request->dob));
+            $patient->ssn = $request->ssn;
+            $patient->medicare_number = $request->medicare_number;
+            $patient->medicaid_number = $request->medicaid_number;
+            $patient->address_1 = $request->address_1;
+            $patient->state = $request->state;
+            $patient->city = $request->city;
+            $patient->Zip = $request->Zip;
+            $patient->save();
+
+            return $this->generateResponse(true,'Patient added',$patient,200);
+        }catch (\Exception $exception){
+            \Log::info($exception->getMessage());
+            return $this->generateResponse(false,$exception->getMessage(),null,200);
+        }
     }
 }
