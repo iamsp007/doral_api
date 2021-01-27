@@ -163,7 +163,8 @@ class Helper extends BaseController
                     'message' => $title,
                     'data' => $data
                 ]
-            )
+            ),
+            'data' => $data
         );
 
         $payload=json_encode($fields);
