@@ -36,6 +36,22 @@ class Certificate extends Model
     }
 
     /**
+     * Relation with state
+     */
+    public function medicareState()
+    {
+        return $this->belongsTo('App\Models\State', 'medicare_state', 'id');
+    }
+
+    /**
+     * Relation with city
+     */
+    public function medicaidState()
+    {
+        return $this->belongsTo('App\Models\State', 'medicaid_state', 'id');
+    }
+
+    /**
      * Relation with age ranges
      */
     public function ageRanges()

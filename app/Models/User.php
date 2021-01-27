@@ -32,7 +32,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $appends = ['gender_name'];
+    protected $appends = ['gender_name','avatar_image','phone_format'];
 
 ////
 //    protected $dates = [ 'created_at', 'updated_at'];
@@ -51,9 +51,47 @@ class User extends Authenticatable
      *
      * @return string
      */
+    public function getPhoneFormatAttribute()
+    {
+        $value=$this->phone;
+        if ($value){
+            $cleaned = preg_replace('/[^[:digit:]]/', '', $value);
+            preg_match('/(\d{3})(\d{3})(\d{4})/', $cleaned, $matches);
+            return "({$matches[1]}) {$matches[2]}-{$matches[3]}";
+        }
+    }
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function setPhoneAttribute($value)
+    {
+        if ($value){
+            $this->attributes['phone'] = preg_replace("/[^0-9]+/", "", $value);
+        }
+    }
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
     public function getGenderNameAttribute()
     {
         return $this->gender==='1'?'Male':($this->gender==='2'?'Female':'Other');
+    }
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getAvatarImageAttribute()
+    {
+        if (isset($this->image) && !empty($this->image)) {
+            return env('WEB_URL').'assets/img/user/'. $this->image;
+        } else {
+            return env('WEB_URL').'assets/img/user/01.png';
+        }
     }
 
     /**
@@ -139,7 +177,7 @@ class User extends Authenticatable
     }
 
     public function detail(){
-        return $this->belongsTo(PatientReferral::class,'user_id','id')->with('service');
+        return $this->hasOne(PatientReferral::class,'user_id','id')->with('service');
     }
 
     public function leave(){
@@ -164,4 +202,92 @@ class User extends Authenticatable
             'id');
     }
 
+    /**
+     * applicant
+     */
+    public function applicant()
+    {
+        return $this->hasOne(Applicant::class, 'user_id', 'id');
+    }
+
+    /**
+     * education
+     */
+    public function education()
+    {
+        return $this->hasOne(Education::class, 'user_id', 'id');
+    }
+
+    /**
+     * professional
+     */
+    public function professional()
+    {
+        return $this->hasOne(Certificate::class, 'user_id', 'id');
+    }
+
+    /**
+     * attestation
+     */
+    public function attestation()
+    {
+        return $this->hasMany(Attestation::class, 'user_id', 'id');
+    }
+
+    /**
+     * background
+     */
+    public function background()
+    {
+        return $this->hasMany(WorkHistory::class, 'user_id', 'id');
+    }
+
+    /**
+     * deposit
+     */
+    public function deposit()
+    {
+        return $this->hasOne(BankAccount::class, 'user_id', 'id');
+    }
+
+    /**
+     * documents
+     */
+    public function documents()
+    {
+        return $this->hasMany(UploadDocuments::class, 'user_id', 'id');
+    }
+
+    /**
+     * documents
+     */
+    public function insurance()
+    {
+        return $this->hasMany(PatientInsurance::class, 'patient_id', 'id');
+    }
+
+    public function caseManager()
+    {
+        return $this->hasOne(AssignClinicianToPatient::class, 'patient_id', 'id')->where('type','=','1')->with('clinician');
+    }
+
+    public function primaryPhysician()
+    {
+        return $this->hasOne(AssignClinicianToPatient::class, 'patient_id', 'id')->where('type','=','2')->with('clinician');
+    }
+
+    public function specialistPhysician()
+    {
+        return $this->hasOne(AssignClinicianToPatient::class, 'patient_id', 'id')->where('type','=','3')->with('clinician');
+    }
+
+    public function caregiverHistory()
+    {
+        return $this->hasMany(Caregivers::class, 'patient_id', 'id');
+    }
+
+    public function caregivers()
+    {
+        return $this->hasOne(Caregivers::class, 'patient_id', 'id')->orderBy('id','desc');
+    }
 }

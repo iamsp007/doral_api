@@ -67,6 +67,28 @@ class MeetingController extends Controller
         return $this->store($resp,$request->appointment_id);
 
     }
+
+    public function createMeeting($data) {
+        $type=self::MEETING_TYPE_SCHEDULE;
+        $path = 'users/me/meetings';
+        $response = $this->zoomPost($path, [
+            'topic' => $data['topic'],
+            'type' => $type,
+            'start_time' => $this->toZoomTimeFormat($data['start_time']),
+            'duration' => 30,
+            'agenda' => $data['agenda'],
+            'settings' => [
+                'host_video' => false,
+                'participant_video' => false,
+                'waiting_room' => true,
+            ]
+        ]);
+        $resp = json_decode($response);
+        $resp->start_time = $data['start_time'];
+        return $this->store($resp,$data['appointment_id']);
+
+    }
+
     public function get(Request $request, string $id) {
         $path = 'meetings/' . $id;
         $response = $this->zoomGet($path);

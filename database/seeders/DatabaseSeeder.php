@@ -33,7 +33,13 @@ class DatabaseSeeder extends Seeder
             ServicesSeeder::class,
             MDFormsSeeder::class,
             PlanSeeder::class,
-            ReferralSeeder::class
+            ReferralSeeder::class,
+            CancelAppointmentReasonSeeder::class,
+            DoseMasterSeeder::class,
+            FrequencyMasterSeeder::class,
+            MedicineFromMasterSeeder::class,
+            MedicineMasterSeeder::class,
+            PreferredPharmacyMasterSeeder::class
         ]);
     }
 }

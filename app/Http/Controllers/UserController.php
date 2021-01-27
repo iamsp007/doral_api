@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Caregivers;
+use App\Models\PatientInsurance;
+use App\Models\PatientReferral;
+use App\Models\UploadDocuments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -151,6 +157,22 @@ class UserController extends Controller
         return response()->json(null, 204);
     }
 
+    public function changeAvailability(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $user->is_available = $request->is_available;
+            $user->save();
+            $status = true;
+            $message = "Availability changed";
+            return $this->generateResponse($status, $message, $user, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $user);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -210,5 +232,91 @@ class UserController extends Controller
             $message = $e->getMessage()." ".$e->getLine();
             return $this->generateResponse($status, $message, $data, 200);
         }
+    }
+
+    public function getPatientDetail(Request $request,$patient_id)
+    {
+        $details = User::with('detail','leave','ccm','insurance','caseManager','primaryPhysician','specialistPhysician','caregiverHistory','caregivers')
+            ->find($patient_id);
+        if ($details){
+            return $this->generateResponse(true,'Show Patient Detail Successfully!',$details,200);
+        }
+        return $this->generateResponse(false,'Patient Id Does not Exists',null,200);
+    }
+
+    public function demographyDataUpdate(Request $request)
+    {
+        if ($request->type==="1"){
+            $demographyDetails = PatientReferral::where(['user_id'=>$request->patient_id])->first();
+            if ($demographyDetails===null){
+                $demographyDetails = new PatientReferral();
+                $demographyDetails->user_id = $request->patient_id;
+            }
+            $demographyDetails->phone1 = $request->phoneno;
+            $demographyDetails->email = $request->emailId;
+            $demographyDetails->start_date = $request->start_date;
+//            $demographyDetails->ethnicity = $request->ethnicity;
+            $demographyDetails->ssn = $request->SSN;
+            $demographyDetails->patient_id = $request->admissionId;
+            $demographyDetails->address_1 = $request->address;
+            $demographyDetails->eng_name = $request->eng_name;
+            $demographyDetails->eng_addres = $request->eng_address;
+            $demographyDetails->emg_phone = $request->emg_phone;
+            $demographyDetails->emg_relationship = $request->emg_relationship;
+            $demographyDetails->work_name = $request->work_name;
+            $demographyDetails->home_phone1 = $request->home_phone1;
+            $demographyDetails->cell_phone1 = $request->cell_phone1;
+            $demographyDetails->work_phone3 = $request->work_phone3;
+//            $demographyDetails->nurse = $request->nurse;
+            $demographyDetails->save();
+            return $this->generateResponse(true,'Update Details Success',$demographyDetails,200);
+        }elseif ($request->type==="2"){
+            $demographyDetails = PatientReferral::where(['user_id'=>$request->patient_id])->first();
+            if ($demographyDetails===null){
+                $demographyDetails = new PatientReferral();
+                $demographyDetails->user_id = $request->patient_id;
+            }
+            $demographyDetails->medicaid_number = $request->medicaid_number;
+            $demographyDetails->medicare_number = $request->medicare_number;
+            $demographyDetails->save();
+            if (is_array($request->insurance_id)){
+                foreach ($request->insurance_id as $key=>$value) {
+                    $patientInsurance = PatientInsurance::find($value);
+                    if ($patientInsurance){
+                        if ($request->has('name_'.$key)){
+                            $patientInsurance->name = $request->input('name_'.$key);
+                        }
+                        if ($request->has('payerId_'.$key)){
+                            $patientInsurance->payer_id = $request->input('payerId_'.$key);
+                        }
+                        if ($request->has('policy_no_'.$key)){
+                            $patientInsurance->policy_no = $request->input('policy_no_'.$key);
+                        }
+                        if ($request->has('Phone_'.$key)){
+                            $patientInsurance->phone = $request->input('Phone_'.$key);
+                        }
+                        $patientInsurance->save();
+                    }
+                }
+            }
+            return $this->generateResponse(true,'Insurance Update Details Success',$request->input('payerId_'.$key),200);
+        }elseif ($request->type==="3"){
+            if ($request->has('caregiver_id')){
+                $caregivers = Caregivers::where('id','=',$request->caregiver_id)
+                    ->where('patient_id','=',$request->patient_id)
+                    ->first();
+                if ($caregivers){
+                    $caregivers->name = $request->c_name;
+                    $caregivers->phone = $request->c_phone;
+                    $caregivers->start_time = $request->start_time;
+                    $caregivers->end_time = $request->end_time;
+                    $caregivers->save();
+                }
+            }
+
+            return $this->generateResponse(true,'Caregiver Detail Update Successfully!',$caregivers,200);
+        }
+
+        return $this->generateResponse(false,'Something Went Wrong',null,200);
     }
 }
