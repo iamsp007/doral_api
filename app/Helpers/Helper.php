@@ -155,7 +155,7 @@ class Helper extends BaseController
             'Content-Type:application/json'
         );
         $fields=array(
-            'registration_ids'=>$key,
+            'to'=>$key,
             'notification'=>array(
                 'title'=>$title,
                 'body'=> [
