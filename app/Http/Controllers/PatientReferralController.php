@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Validators\ValidationException;
 use Spatie\Permission\Models\Permission;
 use Excel;
 use App\Imports\BulkImport;
@@ -155,7 +156,6 @@ class PatientReferralController extends Controller
                     $csvData['file_type'],
                     $csvData['form_id']
                 ), $filePath);
-
             //dd($data);
             //if ($id) {
                 $status = 1;
