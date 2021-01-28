@@ -156,14 +156,15 @@ class Helper extends BaseController
         );
         $fields=array(
             'to'=>$key,
-            'notification'=>array(
-                'title'=>$title,
-                'body'=> [
-                    'title' => $title,
-                    'message' => $title,
-                    'data' => $data
-                ]
-            )
+//            'notification'=>array(
+//                'title'=>$title,
+//                'body'=> [
+//                    'title' => $title,
+//                    'message' => $title,
+//                    'data' => $data
+//                ]
+//            ),
+            'data' => $data
         );
 
         $payload=json_encode($fields);

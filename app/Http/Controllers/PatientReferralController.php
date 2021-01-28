@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Validators\ValidationException;
 use Spatie\Permission\Models\Permission;
 use Excel;
 use App\Imports\BulkImport;
 use App\Imports\BulkCertImport;
+use App\Models\PatientAssistant;
 
 class PatientReferralController extends Controller
 {
@@ -155,7 +157,6 @@ class PatientReferralController extends Controller
                     $csvData['file_type'],
                     $csvData['form_id']
                 ), $filePath);
-
             //dd($data);
             //if ($id) {
                 $status = 1;
@@ -260,7 +261,38 @@ class PatientReferralController extends Controller
             $patient->state = $request->state;
             $patient->city = $request->city;
             $patient->Zip = $request->Zip;
+
+            $patient->enrollment = $request->enrollment;
+            $patient->creation_date = (isset($request->enrollment) && isset($request->creation_date) && $request->enrollment == 'existing_patient') ? date('Y-m-d', strtotime($request->creation_date)) : null;
+            $patient->services = $request->services;
+            $patient->insurance = $request->insurance;
+            $patient->hmo_to_mlts = (isset($request->insurance) && $request->insurance == 'hmo') ? $request->hmo_to_mlts : null;
             $patient->save();
+
+            if ($request->services == 'cdpap') {
+                if ($request->first_names) {
+                    $pa1 = new PatientAssistant();
+                    $pa1->patient_referral_id = $patient->id;
+                    $pa1->first_name = $request->first_names;
+                    $pa1->middle_name = $request->middle_names;
+                    $pa1->last_name = $request->last_names;
+                    $pa1->gender = $request->gender1;
+                    $pa1->phone = $request->phones;
+                    $pa1->email = $request->emails;
+                    $pa1->save();
+                }
+                if ($request->first_names) {
+                    $pa2 = new PatientAssistant();
+                    $pa2->patient_referral_id = $patient->id;
+                    $pa2->first_name = $request->first_namess;
+                    $pa2->middle_name = $request->middle_namess;
+                    $pa2->last_name = $request->last_namess;
+                    $pa2->gender = $request->gender2;
+                    $pa2->phone = $request->phoness;
+                    $pa2->email = $request->emailss;
+                    $pa2->save();
+                }
+            }
 
             return $this->generateResponse(true,'Patient added',$patient,200);
         }catch (\Exception $exception){
