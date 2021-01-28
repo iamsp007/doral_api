@@ -9,7 +9,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -34,7 +33,6 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
     public $service_id = null;
     public $file_type = null;
     public $form_id = null;
-    public $errors=[];
 
     public function __construct($rid, $sid, $ftype, $fid) {
 //        \Log::info($sid);
@@ -48,44 +46,269 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
 
     public function model(array $row)
     {
+        $record = [];
         try {
-            $data = $this->setData($row);
+            if( (isset($row['ssn']) && !empty($row['ssn'])) && (isset($row['date_of_birth']) && !empty($row['date_of_birth']))) {
+                $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
+                if ($patient){
+                    $user = User::find($patient->user_id);
+                    $address = $patient->address1;
+                    if (isset($row['street1'])){
+                        $address = $row['street1'];
+                    }elseif (isset($row['address1'])){
+                        $address = $row['address1'];
+                    }elseif (isset($row['address'])){
+                        $address = $row['address'];
+                    }
 
-            $data['referral_id']=$this->referral_id;
-            $data['service_id']=$this->service_id;
-            $data['file_type']=$this->file_type;
-            $data['form_id']=$this->form_id;
+                    $address2 = $patient->address2;
+                    if (isset($row['street2'])){
+                        $address2 = $row['street2'];
+                    }elseif (isset($row['address2'])){
+                        $address2 = $row['address2'];
+                    }
 
-            $patient = PatientReferral::where(function ($q) use ($data){
-                $q->where('ssn','=',$data['ssn'])
-                    ->orWhere('patient_id','=',$data['patient_id']);
-            })
-                ->first();
-            if ($patient){
-                $data = array_filter($data, function($v) { return !is_null($v) && !empty($v); });
-                return PatientReferral::updateOrCreate($data);
-            }else{
-                $user = new User();
-                $user->first_name = $data['first_name'];
-                $user->last_name = $data['last_name'];
-                $user->gender = $this->setGenderAttributes($data['gender']);
-                $user->dob = $data['dob'];
-                $user->phone = $data['phone1'];
-                if (!$this->checkEmailAddressExistsOrNot($data['email'])){
-                    $user->email = $data['email'];
-                }
-                $user->password = Hash::make('doral@123');
-                $user->status = '1';
-                $user->assignRole('patient')->syncPermissions(Permission::all());
-                if ($user->save()){
-                    $data['user_id']=$user->id;
-                    return PatientReferral::updateOrCreate($data);
-                }
-            }
-        }catch (\Maatwebsite\Excel\Validators\ValidationException $failures){
-            $this->errors[]=$row;
-        }catch (\Exception $exception){
-            $this->errors[]=$row;
+                    $emergency1_name = $patient->eng_name;
+                    if (isset($row['emergency1_name'])){
+                        $emergency1_name = $row['emergency1_name'];
+                    }
+
+                    $emergency1_relationship = $patient->emg_relationship;
+                    if (isset($row['emergency1_relationship'])){
+                        $emergency1_relationship = $row['emergency1_relationship'];
+                    }
+
+                    $emergency1_address = $patient->eng_addres;
+                    if (isset($row['emergency1_address'])){
+                        $emergency1_address = $row['emergency1_address'];
+                    }
+
+                    $emergency1_phone = $patient->emg_phone;
+                    if (isset($row['emergency1_phone'])){
+                        $emergency1_phone = $row['emergency1_phone'];
+                    }
+
+                    $working_hour = $patient->working_hour;
+                    $benefit_plan = $patient->benefit_plan;
+                    if(isset($row['working_hour']) && !empty($row['working_hour'])) {
+                        $working_hour = $row['working_hour'];
+                        if($working_hour >=1 && $working_hour <=20) {
+                          $benefit_plan = 1;
+                        } else if($working_hour >=21 && $working_hour <=25) {
+                          $benefit_plan = 2;
+                        } else if($working_hour >=26 && $working_hour <=30) {
+                          $benefit_plan = 3;
+                        } else if($working_hour >=31 && $working_hour <=35) {
+                          $benefit_plan = 4;
+                        } else if($working_hour >=36 && $working_hour <=40) {
+                          $benefit_plan = 5;
+                        } else {
+                          $benefit_plan = 1;
+                        }
+                    }
+                    $dataV = [];
+                    if(isset($row['cert_period'])) {
+                        $certPeriod = str_replace('(', '', $row['cert_period']);
+                        $certPeriod = str_replace(')', '', $certPeriod);
+                        $certPeriod = str_replace(' ', '', $certPeriod);
+                        $certDate = explode('-', $certPeriod);
+
+                        $certDateStart = strtotime($certDate[0]);
+                        $certDateStart = date('Y-m-d', $certDateStart);
+
+                        $certDateEnd = strtotime($certDate[1]);
+                        $certDateEnd = date('Y-m-d', $certDateEnd);
+                        // Next date
+                        $certDateNext = $certDate[1];
+                        $certDateNext = date('Y-m-d', strtotime($certDateNext. ' + 180 days'));
+
+                        $date_now = date("Y-m-d"); // this format is string comparable
+                        if ($certDateEnd > $date_now) {
+                           $dataV = [
+                                'cert_start_date' => $certDateStart,
+                                'cert_end_date' => $certDateEnd,
+                                'cert_next_date' => $certDateEnd
+                            ];
+                        } else {
+                            $dataV = [
+                                'cert_start_date' => $certDateStart,
+                                'cert_end_date' => $certDateEnd,
+                                'cert_next_date' => $certDateNext
+                            ];
+                        }
+                    } else {
+                        $dataV = [
+                            'cert_start_date' => $patient->cert_start_date,
+                            'cert_end_date' => $patient->cert_end_date,
+                            'cert_next_date' => $patient->cert_next_date
+                        ];
+                    }
+                    $record = [
+                             'user_id'=>$user->id,
+                             'referral_id'=>$this->referral_id,
+                             'service_id'=>$this->service_id,
+                             'file_type'=>$this->file_type,
+                             'form_id'=>isset($this->form_id)?$this->form_id:$patient->form_id,
+                             'first_name'=>isset($row['first_name']) ? $row['first_name'] : $patient->first_name,
+                             'last_name'=>isset($row['last_name']) ? $row['last_name'] : $patient->last_name,
+                             'middle_name'=>isset($row['middle_name'])?$row['middle_name']:$patient->middle_name,
+                             'gender'=>isset($row['gender'])?$row['gender']:$patient->gender,
+                             'email' => isset($row['email'])?$row['email']:$patient->email,
+                             'dob'=>Carbon::createFromDate($row['date_of_birth']),
+                             'phone1'=>isset($row['phone2'])?$row['phone2']:$patient->phone1,
+                             'phone2'=>isset($row['phone2'])?$row['phone2']:$patient->phone2,
+                             'address_1'=>$address,
+                             'address_2'=>$address2,
+                             'eng_name'=>$emergency1_name,
+                             'emg_relationship'=>$emergency1_relationship,
+                             'eng_addres'=>$emergency1_address,
+                             'emg_phone'=>$emergency1_phone,
+                             'patient_id'=>isset($row['admission_id'])?$row['admission_id']:$patient->patient_id,
+                             'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:$patient->caregiver_code,
+                             'city' => isset($row['city'])?$row['city']:$patient->city,
+                             'state' => isset($row['state'])?$row['state']:$patient->state,
+                             'Zip' => isset($row['zip_code'])?$row['zip_code']:$patient->Zip,
+                             'county' => isset($row['county'])?$row['county']:$patient->county,
+                             'working_hour' => $working_hour,
+                             'benefit_plan' => $benefit_plan
+                         ];
+                    if(count($dataV) > 0) {
+                      $record = array_merge($record, $dataV);
+                    }
+                    PatientReferral::where('id', $patient->id)
+                            ->update($record);
+                }else{
+                    $user = new User();
+                    $patient = new PatientReferral();
+                    $user->first_name = $row['first_name'];
+                    $user->last_name = $row['last_name'];
+                    if (strtolower($row['gender'])==='male'){
+                        $user->gender = '1';
+                    }elseif (strtolower($row['gender'])==='female'){
+                        $user->gender = '2';
+                    }else{
+                        $user->gender = '3';
+                    }
+                    \Log::info($user);
+                    $user->dob = Carbon::createFromDate($row['date_of_birth']);
+
+                    if (isset($row['email']) && !empty($row['email'])){
+                        if (!User::where(['email'=>$row['email']])->first()){
+                            $user->email = $row['email'];
+                        }
+                    }
+
+                    $user->password = Hash::make('doral@123');
+                    $phone=null;
+                    if (isset($row['phone_number'])){
+                        $phone=$row['phone_number'];
+                    }elseif (isset($row['phone'])){
+                        $phone=$row['phone'];
+                    }
+                    $user->phone = $phone;
+                    $user->assignRole('patient')->syncPermissions(Permission::all());
+
+                    if ($user->save()){
+
+                        $address = '';
+                        if (isset($row['street1'])){
+                            $address = $row['street1'];
+                        }elseif (isset($row['address1'])){
+                            $address = $row['address1'];
+                        }elseif (isset($row['address'])){
+                            $address = $row['address'];
+                        }
+
+                        $address2 = '';
+                        if (isset($row['street2'])){
+                            $address2 = $row['street2'];
+                        }elseif (isset($row['address2'])){
+                            $address2 = $row['address2'];
+                        }
+
+                        $emergency1_name = '';
+                        if (isset($row['emergency1_name'])){
+                            $emergency1_name = $row['emergency1_name'];
+                        }
+
+                        $emergency1_relationship = null;
+                        if (isset($row['emergency1_relationship'])){
+                            $emergency1_name = $row['emergency1_relationship'];
+                        }
+
+                        $emergency1_address = null;
+                        if (isset($row['emergency1_address'])){
+                            $emergency1_address = $row['emergency1_address'];
+                        }
+
+                        $emergency1_phone = null;
+                        if (isset($row['emergency1_phone'])){
+                            $emergency1_phone = $row['emergency1_phone'];
+                        }
+
+                        $working_hour = NULL;
+                        $benefit_plan = NULL;
+                        if(isset($row['working_hour']) && !empty($row['working_hour'])) {
+                            $working_hour = $row['working_hour'];
+                            if($working_hour >=1 && $working_hour <=20) {
+                              $benefit_plan = 1;
+                            } else if($working_hour >=21 && $working_hour <=25) {
+                              $benefit_plan = 2;
+                            } else if($working_hour >=26 && $working_hour <=30) {
+                              $benefit_plan = 3;
+                            } else if($working_hour >=31 && $working_hour <=35) {
+                              $benefit_plan = 4;
+                            } else if($working_hour >=36 && $working_hour <=40) {
+                              $benefit_plan = 5;
+                            } else {
+                              $benefit_plan = 1;
+                            }
+                        }
+                        PatientReferral::updateorcreate(
+                           [
+                               'user_id'=>$user->id,
+                               'referral_id'=>$this->referral_id,
+                               'service_id'=>$this->service_id,
+                               'file_type'=>$this->file_type,
+                               'form_id'=>isset($this->form_id)?$this->form_id:NULL,
+                               'first_name'=>$row['first_name'],
+                               'last_name'=>$row['last_name'],
+                               'middle_name'=>isset($row['middle_name'])?$row['middle_name']:null,
+                               'gender'=>isset($row['gender'])?$row['gender']:null,
+                               'email' => isset($row['email'])?$row['email']:null,
+                               'ssn' => $row['ssn'],
+                               'dob'=>Carbon::createFromDate($row['date_of_birth']),
+                               'phone1'=>isset($row['phone2'])?$row['phone2']:null,
+                               'phone2'=>isset($row['phone2'])?$row['phone2']:null,
+                               'address_1'=>$address,
+                               'address_2'=>$address2,
+                               'eng_name'=>$emergency1_name,
+                               'emg_relationship'=>$emergency1_relationship,
+                               'eng_addres'=>$emergency1_address,
+                               'emg_phone'=>$emergency1_phone,
+                               'patient_id'=>isset($row['admission_id'])?$row['admission_id']:null,
+                               'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:null,
+                               'city' => isset($row['city'])?$row['city']:null,
+                               'state' => isset($row['state'])?$row['state']:null,
+                               'Zip' => isset($row['zip_code'])?$row['zip_code']:null,
+                               'county' => isset($row['county'])?$row['county']:null,
+                               'working_hour' => $working_hour,
+                               'benefit_plan' => $benefit_plan
+                           ]);
+                    }
+                    \Log::info(123456);
+                  }
+          } else {
+              $patientRefNotSsn = new PatientReferralNotSsn();
+              $patientRefNotSsn->referral_id = $this->referral_id;
+              $patientRefNotSsn->patient_id = isset($row['admission_id'])?$row['admission_id']:null;
+              $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
+              $patientRefNotSsn->save();
+          }
+          //dd($record);
+          //PatientReferral::insert($record);
+        } catch(Exception $e) {
+            \Log::info($e);
         }
     }
 
@@ -97,221 +320,5 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
             'date_of_birth'=>'required',
         ];*/
         return [];
-    }
-
-    public function getErrors(){
-
-        return $this->errors;
-    }
-
-    public function setData($row){
-        $data=array();
-        $data['patient_id']=isset($row['admission_id'])?$row['admission_id']:null;
-        $data['ssn']=isset($row['ssn'])?$row['ssn']:null;
-        $data['first_name']=isset($row['first_name'])?$row['first_name']:null;
-        $data['last_name']=isset($row['last_name'])?$row['last_name']:null;
-        $data['middle_name']=isset($row['middle_name'])?$row['middle_name']:null;
-        $data['gender']=isset($row['gender'])?$row['gender']:null;
-        $data['email']=isset($row['email'])?$row['email']:null;
-        $data['dob']=$this->setDob($row);
-        $data['medicaid_number']=$this->setMedicaidNumber($row);
-        $data['medicare_number']=$this->setMedicareNumber($row);
-        $data['working_hour']=$this->setWorkingHourAndPlan($row)[0];
-        $data['benefit_plan']=$this->setWorkingHourAndPlan($row)[1];
-        $data['caregiver_code']=isset($row['caregiver_code'])?$row['caregiver_code']:null;
-//        $data['race']=isset($row['race'])?$row['race']:null;
-        $data['ssn']=isset($row['ssn'])?$row['ssn']:null;
-        $data['address_1']=$this->setAddress1($row);
-        $data['address_2']=$this->setAddress2($row);
-        $data['city']=isset($row['city'])?$row['city']:null;
-        $data['state']=isset($row['state'])?$row['state']:null;
-        $data['county']=isset($row['county'])?$row['county']:null;
-        $data['Zip']=isset($row['zip_code'])?$row['zip_code']:null;
-        $data['phone1']=$this->setPhone1($row);
-        $data['phone2']=$this->setPhone2($row);
-        $data['eng_name']=$this->setEmegencyName1($row);
-        $data['emg_phone']=$this->setEmegency1Phone($row);
-        $data['eng_addres']=$this->setEmegency1Address($row);
-        $data['emg_relationship']=$this->setEmegency1RelationShip($row);
-        if ($this->setCrtData($row)){
-           $data = array_merge($data,$this->setCrtData($row));
-        }
-
-        return $data;
-    }
-
-    public function setDob($row){
-        if (isset($row['date_of_birth'])){
-            return Carbon::createFromDate($row['date_of_birth']);
-        }
-        return null;
-    }
-
-    public function setGenderAttributes($value){
-        $gender='3';
-        if ($value==='Male' || $value==='male'){
-            $gender='1';
-        }elseif ($value==='Female' || $value==='female'){
-            $gender='2';
-        }
-        return $gender;
-    }
-
-    public function checkEmailAddressExistsOrNot($value){
-        if ($value){
-            $status = User::where('email','=',$value)->first();
-            if ($status){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function setAddress2($row){
-        $address2 = '';
-        if (isset($row['street2'])){
-            $address2 = $row['street2'];
-        }elseif (isset($row['address2'])){
-            $address2 = $row['address2'];
-        }
-        return $address2;
-    }
-
-    public function setAddress1($row){
-        $address = '';
-        if (isset($row['street1'])){
-            $address = $row['street1'];
-        }elseif (isset($row['address1'])){
-            $address = $row['address1'];
-        }elseif (isset($row['address'])){
-            $address = $row['address'];
-        }
-        return $address;
-    }
-
-    public function setEmegencyName1($row){
-        $emergency1_name = '';
-        if (isset($row['emergency1_name'])){
-            $emergency1_name = $row['emergency1_name'];
-        }
-        return $emergency1_name;
-    }
-
-    public function setEmegency1RelationShip($row){
-        $emergency1_relationship = null;
-        if (isset($row['emergency1_relationship'])){
-            $emergency1_name = $row['emergency1_relationship'];
-        }
-        return $emergency1_relationship;
-    }
-
-    public function setEmegency1Address($row){
-        $emergency1_address = null;
-        if (isset($row['emergency1_address'])){
-            $emergency1_address = $row['emergency1_address'];
-        }
-        return $emergency1_address;
-    }
-
-    public function setEmegency1Phone($row){
-        $emergency1_phone = null;
-        if (isset($row['emergency1_phone'])){
-            $emergency1_phone = $row['emergency1_phone'];
-        }
-        return $emergency1_phone;
-    }
-
-    public function setWorkingHourAndPlan($row){
-        $working_hour = NULL;
-        $benefit_plan = NULL;
-        if(isset($row['working_hour']) && !empty($row['working_hour'])) {
-            $working_hour = $row['working_hour'];
-            if($working_hour >=1 && $working_hour <=20) {
-                $benefit_plan = 1;
-            } else if($working_hour >=21 && $working_hour <=25) {
-                $benefit_plan = 2;
-            } else if($working_hour >=26 && $working_hour <=30) {
-                $benefit_plan = 3;
-            } else if($working_hour >=31 && $working_hour <=35) {
-                $benefit_plan = 4;
-            } else if($working_hour >=36 && $working_hour <=40) {
-                $benefit_plan = 5;
-            } else {
-                $benefit_plan = 1;
-            }
-        }
-        return [$working_hour,$benefit_plan];
-    }
-
-    public function setMedicaidNumber($row){
-        $medicaid=null;
-        if (isset($row['medicaid_number'])){
-            $medicaid = $row['medicaid_number'];
-        }
-        return $medicaid;
-    }
-
-    public function setMedicareNumber($row){
-        $medicare = '';
-        if (isset($row['medicare_number'])){
-            $medicare = $row['medicare_number'];
-        }
-        return $medicare;
-    }
-
-    public function setPhone1($row){
-        $phone=null;
-        if (isset($row['phone'])){
-            $phone=$row['phone'];
-        }elseif (isset($row['home_phone'])){
-            $phone=$row['home_phone'];
-        }
-        return $phone;
-    }
-
-    public function setPhone2($row){
-        $phone=null;
-        if (isset($row['phone2'])){
-            $phone=$row['phone2'];
-        }elseif (isset($row['home_phone2'])){
-            $phone=$row['home_phone2'];
-        }
-        return $phone;
-    }
-
-    public function setCrtData($row){
-        $dataV = [];
-        $value = null;
-        if (isset($row['cert_period'])){
-            $value = $row['cert_period'];
-        }elseif (isset($row['certification_period'])){
-            $value = $row['certification_period'];
-        }
-        if ($value){
-            $value = str_replace('(','',$value);
-            $value = str_replace(')','',$value);
-            $value = str_replace(' ','',$value);
-            $certPeriod = explode('-',$value);
-            if (count($certPeriod)>0){
-                $certDateStart = Carbon::parse($certPeriod[0])->format('Y-m-d');
-                $certDateEnd = Carbon::parse($certPeriod[1])->format('Y-m-d');
-                $certDateNext = Carbon::parse($certPeriod[1])->addDays(100)->format('Y-m-d');
-                if ($certDateEnd > Carbon::now()->format('Y-m-d')) {
-                    $dataV = [
-                        'cert_start_date' => $certDateStart,
-                        'cert_end_date' => $certDateEnd,
-                        'cert_next_date' => $certDateEnd
-                    ];
-                    return $dataV;
-                }
-                $dataV = [
-                    'cert_start_date' => $certDateStart,
-                    'cert_end_date' => $certDateEnd,
-                    'cert_next_date' => $certDateNext
-                ];
-                return $dataV;
-            }
-        }
-        return null;
     }
 }
