@@ -190,6 +190,7 @@ Route::group([
 ], function () {
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
+    Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
 });
 
 // Co Ordinator
@@ -222,6 +223,10 @@ Route::group([
     Route::put('appointment/{id}/update', 'App\Http\Controllers\AppointmentController@store')->middleware('role:co-ordinator|patient');
     Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' )->middleware('role:co-ordinator|patient|clinician');
     Route::post('appointment/patient-md-form', 'App\Http\Controllers\PatientMdFormController@store' )->middleware('role:co-ordinator|patient|clinician');
+    Route::post('add-insurance', 'App\Http\Controllers\PatientInsuranceController@updateOrCreateInsurance');
+    Route::post('demographyData-update', 'App\Http\Controllers\UserController@demographyDataUpdate');
+    Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
+    Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
 });
 
 // Get list of meetings.

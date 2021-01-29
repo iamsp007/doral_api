@@ -27,7 +27,7 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicants are not available.";
         try {
-            $response = Applicant::with(['referances', 'state', 'city'])->where('user_id', auth()->user()->id)->get();
+            $response = Applicant::with(['references', 'state', 'city'])->where('user_id', auth()->user()->id)->get();
             if (!$response) {
                 throw new Exception($message);
             }
@@ -129,10 +129,10 @@ class ApplicantController extends Controller
         try {
             $request->validate([
                 'applicant_id' => 'required',
-                'referance.*.referance_name' => 'required',
-                'referance.*.reference_address' => 'required',
-                'referance.*.reference_phone' => 'required',
-                'referance.*.reference_relationship' => 'required',
+                'reference.*.reference_name' => 'required',
+                'reference.*.reference_address' => 'required',
+                'reference.*.reference_phone' => 'required',
+                'reference.*.reference_relationship' => 'required',
                 'bonded' => 'required',
                 'refused_bond' => 'required',
                 'convicted_crime' => 'required'
@@ -144,10 +144,10 @@ class ApplicantController extends Controller
 
             if ($applicant->save()){
                 $records = [];
-                collect($request->referance)->each(function ($item, $key) use (&$records, &$request) {
+                collect($request->reference)->each(function ($item, $key) use (&$records, &$request) {
                     $record = [
                         'applicant_id' => $request->applicant_id,
-                        'referance_name' => $item['referance_name'],
+                        'reference_name' => $item['reference_name'],
                         'reference_address' => $item['reference_address'],
                         'reference_phone' => $item['reference_phone'],
                         'reference_relationship' => $item['reference_relationship']
@@ -221,10 +221,10 @@ class ApplicantController extends Controller
                 'state' => 'required',
                 'zip' => 'required',
                 'address_life' => 'required',
-                'referance.*.referance_name' => 'required',
-                'referance.*.reference_address' => 'required',
-                'referance.*.reference_phone' => 'required',
-                'referance.*.reference_relationship' => 'required',
+                'reference.*.reference_name' => 'required',
+                'reference.*.reference_address' => 'required',
+                'reference.*.reference_phone' => 'required',
+                'reference.*.reference_relationship' => 'required',
                 'bonded' => 'required',
                 'refused_bond' => 'required',
                 'convicted_crime' => 'required',
@@ -264,10 +264,10 @@ class ApplicantController extends Controller
             if ($applicant->save()){
 
                 $records = [];
-                collect($request->referance)->each(function ($item, $key) use (&$records, &$applicant) {
+                collect($request->reference)->each(function ($item, $key) use (&$records, &$applicant) {
                     $record = [
                         'applicant_id' => $applicant->id,
-                        'referance_name' => $item['referance_name'],
+                        'reference_name' => $item['reference_name'],
                         'reference_address' => $item['reference_address'],
                         'reference_phone' => $item['reference_phone'],
                         'reference_relationship' => $item['reference_relationship'],
@@ -972,7 +972,7 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicant detail not available.";
         try {
-            $response = User::with(['applicant.referances', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->findOrFail($userId);
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->findOrFail($userId);
             if (!$response) {
                 throw new Exception($message);
             }

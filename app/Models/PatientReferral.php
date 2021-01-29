@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Helper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,9 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 class PatientReferral extends Model
 {
     use HasFactory;
-    protected $fillable = array('referral_id', 'service_id', 'file_type', 'user_id','first_name', 'last_name', 'dob', 'middle_name', 'gender', 'patient_id', 'medicaid_number', 'medicare_number', 'ssn', 'start_date', 'from_date', 'to_date', 'address_1', 'address_2', 'city', 'state', 'county', 'Zip', 'phone1', 'phone2', 'email', 'eng_name', 'eng_addres', 'emg_phone', 'emg_relationship', 'form_id', 'caregiver_code', 'working_hour', 'benefit_plan');
+    protected $fillable = array('referral_id', 'service_id', 'file_type', 'user_id','first_name', 'last_name', 'dob', 'middle_name', 'gender', 'patient_id', 'medicaid_number', 'medicare_number', 'ssn', 'start_date', 'from_date', 'to_date', 'address_1', 'address_2', 'city', 'state', 'county', 'Zip', 'phone1', 'phone2', 'email', 'eng_name', 'eng_addres', 'emg_phone', 'emg_relationship', 'form_id', 'caregiver_code', 'working_hour', 'benefit_plan', 'enrollment', 'creation_date', 'services', 'insurance', 'hmo_to_mlts');
 
     protected $guarded = [];
+
+    protected $appends = ['address_full','address_latlng'];
 
     /**
      * Get the user's Date Of Birth.
@@ -89,5 +92,68 @@ class PatientReferral extends Model
             report($e);
             return false;
         }
+    }
+
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getAddressFullAttribute()
+    {
+        $address='';
+        if ($this->address_1){
+            $address.=$this->address_1;
+        }
+        if ($this->city){
+            $address.=', '.$this->city;
+        }
+        if ($this->state){
+            $address.=', '.$this->state;
+        }
+        if ($this->county){
+            $address.=', '.$this->county;
+        }
+        if ($this->Zip){
+            $address.=', '.$this->Zip;
+        }
+        return $address;
+    }
+
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getAddressLatlngAttribute()
+    {
+        $address='';
+        if ($this->address_1){
+            $address.=$this->address_1;
+        }
+        if ($this->city){
+            $address.=', '.$this->city;
+        }
+        if ($this->state){
+            $address.=', '.$this->state;
+        }
+        if ($this->county){
+            $address.=', '.$this->county;
+        }
+        if ($this->Zip){
+            $address.=', '.$this->Zip;
+        }
+        if ($address){
+            try {
+                $helper = new Helper();
+                $response = $helper->getLatLngFromAddress($address);
+                if ($response->status==="OK"){
+                    return $response->results[0]->geometry->location;
+                }
+            }catch (\Exception $exception){
+
+            }
+        }
+        return null;
     }
 }
