@@ -251,7 +251,7 @@ class PatientController extends Controller
         $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
-            ->with(['patients','meeting','service','filetype'])
+            ->with(['patients','meeting','service','filetype','roadl'])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])

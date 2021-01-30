@@ -31,6 +31,13 @@ class PatientRequest extends Model
     {
         return $this->hasOne(VirtualRoom::class, 'appointment_id', 'id');
     }
+    /**
+     * Get Meeting Reasons
+     */
+    public function appointmentType()
+    {
+        return $this->hasOne(AssignAppointmentRoadl::class, 'patient_request_id', 'id');
+    }
 
     public function getSymptomsAttribute($value){
         if ($value){
