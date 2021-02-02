@@ -56,6 +56,7 @@ Route::group([
 
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
+    Route::post('company_referral/update', 'App\Http\Controllers\CompanyController@update');
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
 
     Route::post('caregiver/actionstore', 'App\Http\Controllers\CaregiverController@actionStore')->name('caregiver.actionstore');
@@ -177,7 +178,9 @@ Route::group([
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
     Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
     Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
-    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
+    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');    
+    //new patient list for appointment
+    Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
     //Appointment
     Route::post('send-video-meeting-notification', 'App\Http\Controllers\SessionsController@sendVideoMeetingNotification');
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
