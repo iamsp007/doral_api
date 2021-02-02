@@ -182,7 +182,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../doral_web" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -471,6 +471,8 @@
       <workItem from="1611638437501" duration="664000" />
       <workItem from="1611640537534" duration="9291000" />
       <workItem from="1611664328663" duration="4823000" />
+      <workItem from="1611822581678" duration="6672000" />
+      <workItem from="1612240989265" duration="196000" />
     </task>
     <servers />
   </component>

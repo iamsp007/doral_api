@@ -228,16 +228,21 @@ class CompanyController extends Controller
      * @param  \App\Models\Company  $Company
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Company $Company)
+    public function update(Request $request)
     {
+        $request = json_decode($request->getContent(), true);
+       
+        
         $status = 0;
         $data = [];
         $message = 'Something wrong';
         try {
-            $Company = Company::findOrFail($Company);
-            $Company = $Company->update($request->all());
+            //$Company = Company::findOrFail($request['id']);
+           // $Company = Company::update($request->all());
+            $Company = Company::where('id', $request['id'])
+                ->update($request);
             $data = [
-                'Company' => $Company
+                'Company' => $request
             ];
             $status = true;
             $message = "Compnay updated Succesfully";

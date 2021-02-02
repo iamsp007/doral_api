@@ -83,6 +83,13 @@ class Appointment extends Model
         return $this->hasOne(User::class, 'id', 'cancel_user');
     }
     /**
+     * Get Roadl Request
+     */
+    public function roadl()
+    {
+        return $this->hasMany(AssignAppointmentRoadl::class, 'appointment_id', 'id');
+    }
+    /**
      * Get All Appointment
      */
     public static function getAppointment($id)

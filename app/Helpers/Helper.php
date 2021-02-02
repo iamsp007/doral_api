@@ -146,7 +146,7 @@ class Helper extends BaseController
 
     }
 
-    public function sendNotification($token,$title,$data){
+    public function sendNotification($token,$title,$data,$notification_type='1'){
         $path_to_fcm='https://fcm.googleapis.com/fcm/send';
         $server_key=env('FIREBASE_CREDENTIALS');
         $key= $token;
@@ -155,7 +155,9 @@ class Helper extends BaseController
             'Content-Type:application/json'
         );
         $fields=array(
-            'to'=>$key,
+            "registration_ids" => [$token],
+            'title'=>$title,
+            'notification_type'=>$notification_type,
 //            'notification'=>array(
 //                'title'=>$title,
 //                'body'=> [
@@ -180,5 +182,38 @@ class Helper extends BaseController
         $result=curl_exec($curl_session);
         \Log::info($result);
         curl_close($curl_session);
+    }
+
+    public function sendWebNotification($token,$title,$data,$notification_type='1'){
+        $SERVER_API_KEY = env('FIREBASE_CREDENTIALS');
+
+        $data = [
+            "registration_ids" => [$token],
+            "notification" => [
+                "title" => $title,
+                "body" => $title,
+                "icon" => asset('images/no-image.jpeg'),
+                "notification_type" => $notification_type,
+            ],
+            'data'=>$data
+        ];
+        $dataString = json_encode($data);
+
+        $headers = [
+            'Authorization: key=' . $SERVER_API_KEY,
+            'Content-Type: application/json',
+        ];
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+        $response = curl_exec($ch);
+        \Log::info($response);
     }
 }

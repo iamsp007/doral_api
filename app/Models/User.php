@@ -177,7 +177,7 @@ class User extends Authenticatable
     }
 
     public function detail(){
-        return $this->hasOne(PatientReferral::class,'user_id','id')->with('service');
+        return $this->hasOne(PatientReferral::class,'user_id','id')->with('service','referral');
     }
 
     public function leave(){
