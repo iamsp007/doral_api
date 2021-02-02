@@ -8,6 +8,7 @@ use App\Events\SendPatientNotificationMap;
 use App\Http\Requests\CCMReadingRequest;
 use App\Http\Requests\ClinicianRequestAcceptRequest;
 use App\Http\Requests\PatientRequestAcceptRequest;
+use App\Models\AssignAppointmentRoadl;
 use App\Models\CCMReading;
 use App\Models\RoadlInformation;
 use App\Models\User;
@@ -66,13 +67,41 @@ class PatientRequestController extends Controller
             }
             $patient->status='active';
             if ($patient->save()){
-                $clinicianList = User::whereHas('roles',function ($q){
-                    $q->where('name','=','clinician');
-                })->where('is_available','=','1')->get();
-                $data=PatientRequest::with('detail')
-                    ->where('id','=',$patient->id)
-                    ->first();
-                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+
+                if ($request->has('type')){
+                    $assignAppointemntRoadl = AssignAppointmentRoadl::where([
+                        'appointment_id'=>$request->appointemnt_id,
+                        'patient_request_id'=>$patient->id,
+                        'referral_type'=>$request->type
+                    ])->first();
+                    if ($assignAppointemntRoadl===null){
+                        $assignAppointemntRoadl = new AssignAppointmentRoadl();
+                    }
+                    $assignAppointemntRoadl->appointment_id = $request->appointemnt_id;
+                    $assignAppointemntRoadl->patient_request_id = $patient->id;
+                    $assignAppointemntRoadl->referral_type = $request->type;
+                    $assignAppointemntRoadl->save();
+
+                    $clinicianList = User::whereHas('roles',function ($q) use ($request){
+                        $q->where('name','=',$request->type)
+                            ->where('guard_name','=','partner');
+                    })->where('is_available','=','1')->get();
+
+                    $data=PatientRequest::with('detail')
+                        ->where('id','=',$patient->id)
+                        ->first();
+                    event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+                }else{
+                    $clinicianList = User::whereHas('roles',function ($q){
+                        $q->where('name','=','clinician');
+                    })->where('is_available','=','1')->get();
+                    $data=PatientRequest::with('detail')
+                        ->where('id','=',$patient->id)
+                        ->first();
+                    event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+                }
+
+
                 return $this->generateResponse(true,'Add Request Successfully!');
             }
             return $this->generateResponse(false,'Something Went Wrong!');
@@ -255,7 +284,7 @@ class PatientRequestController extends Controller
     }
 
     public function clinicianPatientRequestList(Request $request){
-        $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail')
+        $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail','appointmentType')
             ->where(function ($q){
                 $q->where('clincial_id','=',null)->orWhere('clincial_id','=',Auth::user()->id);
             })

@@ -61,6 +61,10 @@ class PatientReferral extends Model
         return $this->hasOne(Plans::class,'id','benefit_plan');
     }
 
+    public function referral(){
+        return $this->hasOne(Referral::class,'id','referral_id');
+    }
+
     /**
      * Get the comments for the blog post.
      */

@@ -26,7 +26,7 @@ class RoleSeeder extends Seeder
         }
 
 
-        $partner_roles = ['admin','coordinator','supervisor','filedvisitor'];
+        $partner_roles = ['admin','coordinator','supervisor','LAB','X-RAY','CHHA','Home Oxygen','Home Influsion','Wound Care','DME'];
         foreach ($partner_roles as $partner_role) {
             $role = Role::create(['guard_name' => 'partner', 'name' => $partner_role]);
         }
