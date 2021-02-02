@@ -27,8 +27,14 @@ class SendClinicianPatientRequestNotification
             $message="Patient RoadL Request ";
             $title="Patient RoadL Request ";
             $token=$item->device_token;
+            $web_token=$item->web_token;
             $helper = new Helper();
-            $helper->sendNotification($token,$title,$data);
+            if ($token){
+                $helper->sendNotification($token,$title,$data,1);
+            }
+            if ($web_token){
+                $helper->sendWebNotification($web_token,$title,$data,1);
+            }
         }
     }
 }
