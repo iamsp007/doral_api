@@ -56,6 +56,7 @@ Route::group([
 
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
+    Route::post('company_referral/update', 'App\Http\Controllers\CompanyController@update');
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
 
     Route::post('caregiver/actionstore', 'App\Http\Controllers\CaregiverController@actionStore')->name('caregiver.actionstore');
