@@ -26,7 +26,7 @@ class CreateAppointmentsTable extends Migration
             $table->foreignId('service_id')->index('service_id');
             $table->string('Note', 500)->nullable();
             $table->string('appointment_url', 500);
-            $table->enum('status', ['open', 'completed', 'cancel', 'reject'])->default('open');
+            $table->enum('status', ['open','running', 'completed', 'cancel', 'reject'])->default('open');
             $table->timestamps();
         });
     }

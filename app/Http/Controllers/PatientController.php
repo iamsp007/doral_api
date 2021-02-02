@@ -70,8 +70,15 @@ class PatientController extends Controller
      */
     public function store($request)
     {
-        $data = Patient::insert($request);
-        return $data;
+        try {
+            $data = PatientReferral::insert($request);
+            return $data;
+        } catch (\Exception $e) {
+            \Log::error($e);
+            $status = false;
+            $message = $e->getMessage(). $e->getLine();
+            return $this->generateResponse($status, $message, null);
+        }
     }
 
     /**
@@ -84,16 +91,16 @@ class PatientController extends Controller
     public function storeInfomation($step, Request $request)
     {
         $status = false;
-        $resp = [];
+        $resp = null;
         if ($step == 1) {
             $request->validate([
                 'ssn' => 'required',
                 'medicaid_number' => 'numeric',
                 'medicare_number' => 'numeric',
-                'address1' => 'required',
-                'address2' => 'required',
-                'zip' => 'required',
-                'service_key' => 'required'
+                'address_1' => 'required',
+                'address_2' => 'required',
+                'Zip' => 'required',
+                'service_id' => 'required|numeric'
             ]);
         }
 
@@ -107,7 +114,7 @@ class PatientController extends Controller
             }
             $id = $request['id'];
             unset($request['id']);
-            $patient = Patient::where('user_id', $id)->first();
+            $patient = PatientReferral::with('user')->where('user_id', $id)->first();
             if (!$patient) {
                 throw new Exception("Patient are not found into database");
             }
@@ -134,7 +141,7 @@ class PatientController extends Controller
                     $id = $patient->id;
                     $data = Patient::updateInsurance($id, $request);
                     if ($data) {
-                        $user = request()->user();
+                        $user = $patient->user;
                         $user->profile_verified_at = date('Y-m-d H:i:s');
                         $user->save();
                         $status = true;
@@ -252,15 +259,15 @@ class PatientController extends Controller
         $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
-            ->with(['patients','meeting','service','filetype'])
+            ->with(['patients','meeting','service','filetype','roadl'])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
             ->with(['provider2Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d H:i:s'))
-            ->orderBy('start_datetime','desc')
+            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
+            ->orderBy('start_datetime','asc')
             ->get()->toArray();
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }
@@ -270,18 +277,15 @@ class PatientController extends Controller
         $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
-            ->with(['patients','meeting','service','filetype'])
+            ->with(['patients','cancelAppointmentReasons','service','filetype','cancelByUser'])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
             ->with(['provider2Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
-            ->where([
-                ['book_datetime','>=',Carbon::now()->format('Y-m-d HH:mm:ss')],
-                ['status','=','cancel']
-            ])
-            ->orderBy('book_datetime','desc')
+            ->where('status','=','cancel')
+            ->orderBy('start_datetime','desc')
             ->get()->toArray();
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }

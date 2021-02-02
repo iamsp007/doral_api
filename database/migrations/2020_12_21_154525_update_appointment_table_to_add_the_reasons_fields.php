@@ -16,7 +16,7 @@ class UpdateAppointmentTableToAddTheReasonsFields extends Migration
         Schema::table('appointments', function (Blueprint $table) {
             $table->foreignId('reason_id')->index('reason_id')->after('appointment_url')->nullable();
             $table->longText('reason_notes')->after('reason_id')->nullable();
-            $table->enum('cancel_user', [1, 2, 3])->comment('1 => patient_id, 2 => provider1, 3 => provider2')->after('reason_notes')->nullable();
+            $table->integer('cancel_user')->after('reason_notes')->nullable();
         });
     }
 

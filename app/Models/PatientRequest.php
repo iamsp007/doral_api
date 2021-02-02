@@ -12,7 +12,7 @@ class PatientRequest extends Model
 
     public function detail(){
 
-        return $this->hasOne(User::class,'id','user_id');
+        return $this->hasOne(User::class,'id','clincial_id');
     }
     public function patientDetail(){
 
@@ -30,5 +30,34 @@ class PatientRequest extends Model
     public function meeting()
     {
         return $this->hasOne(VirtualRoom::class, 'appointment_id', 'id');
+    }
+    /**
+     * Get Meeting Reasons
+     */
+    public function appointmentType()
+    {
+        return $this->hasOne(AssignAppointmentRoadl::class, 'patient_request_id', 'id');
+    }
+
+    public function getSymptomsAttribute($value){
+        if ($value){
+            $symtoms = SymptomsMaster::whereIn('id',explode(',',$value))->pluck('name');
+            if ($symtoms){
+                return implode(',',$symtoms->toArray());
+            }
+            return '-';
+        }
+        return '-';
+    }
+
+    public function getDiesesAttribute($value){
+        if ($value){
+            $data = DiesesMaster::whereIn('id',explode(',',$value))->pluck('name');
+            if ($data){
+                return implode(',',$data->toArray());
+            }
+            return '-';
+        }
+        return '-';
     }
 }

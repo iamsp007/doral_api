@@ -48,7 +48,6 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
     {
         $record = [];
         try {
-
             if( (isset($row['ssn']) && !empty($row['ssn'])) && (isset($row['date_of_birth']) && !empty($row['date_of_birth']))) {
                 $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
                 if ($patient){
@@ -58,6 +57,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                         $address = $row['street1'];
                     }elseif (isset($row['address1'])){
                         $address = $row['address1'];
+                    }elseif (isset($row['address'])){
+                        $address = $row['address'];
                     }
 
                     $address2 = $patient->address2;
@@ -72,6 +73,21 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                         $emergency1_name = $row['emergency1_name'];
                     }
 
+                    $emergency1_relationship = $patient->emg_relationship;
+                    if (isset($row['emergency1_relationship'])){
+                        $emergency1_relationship = $row['emergency1_relationship'];
+                    }
+
+                    $emergency1_address = $patient->eng_addres;
+                    if (isset($row['emergency1_address'])){
+                        $emergency1_address = $row['emergency1_address'];
+                    }
+
+                    $emergency1_phone = $patient->emg_phone;
+                    if (isset($row['emergency1_phone'])){
+                        $emergency1_phone = $row['emergency1_phone'];
+                    }
+
                     $working_hour = $patient->working_hour;
                     $benefit_plan = $patient->benefit_plan;
                     if(isset($row['working_hour']) && !empty($row['working_hour'])) {
@@ -79,17 +95,17 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                         if($working_hour >=1 && $working_hour <=20) {
                           $benefit_plan = 1;
                         } else if($working_hour >=21 && $working_hour <=25) {
-                          $benefit_plan = 2;  
+                          $benefit_plan = 2;
                         } else if($working_hour >=26 && $working_hour <=30) {
-                          $benefit_plan = 3;  
+                          $benefit_plan = 3;
                         } else if($working_hour >=31 && $working_hour <=35) {
-                          $benefit_plan = 4;  
+                          $benefit_plan = 4;
                         } else if($working_hour >=36 && $working_hour <=40) {
-                          $benefit_plan = 5;  
+                          $benefit_plan = 5;
                         } else {
                           $benefit_plan = 1;
                         }
-                    } 
+                    }
                     $dataV = [];
                     if(isset($row['cert_period'])) {
                         $certPeriod = str_replace('(', '', $row['cert_period']);
@@ -144,6 +160,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                              'address_1'=>$address,
                              'address_2'=>$address2,
                              'eng_name'=>$emergency1_name,
+                             'emg_relationship'=>$emergency1_relationship,
+                             'eng_addres'=>$emergency1_address,
+                             'emg_phone'=>$emergency1_phone,
                              'patient_id'=>isset($row['admission_id'])?$row['admission_id']:$patient->patient_id,
                              'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:$patient->caregiver_code,
                              'city' => isset($row['city'])?$row['city']:$patient->city,
@@ -153,9 +172,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                              'working_hour' => $working_hour,
                              'benefit_plan' => $benefit_plan
                          ];
-                    if(count($dataV) > 0) {     
-                      $record = array_merge($record, $dataV); 
-                    }    
+                    if(count($dataV) > 0) {
+                      $record = array_merge($record, $dataV);
+                    }
                     PatientReferral::where('id', $patient->id)
                             ->update($record);
                 }else{
@@ -180,9 +199,13 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                     }
 
                     $user->password = Hash::make('doral@123');
-                    if (isset($row['phone2']) && is_numeric($row['phone2'])){
-                        $user->phone = $row['phone2'];
+                    $phone=null;
+                    if (isset($row['phone_number'])){
+                        $phone=$row['phone_number'];
+                    }elseif (isset($row['phone'])){
+                        $phone=$row['phone'];
                     }
+                    $user->phone = $phone;
                     $user->assignRole('patient')->syncPermissions(Permission::all());
 
                     if ($user->save()){
@@ -192,6 +215,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             $address = $row['street1'];
                         }elseif (isset($row['address1'])){
                             $address = $row['address1'];
+                        }elseif (isset($row['address'])){
+                            $address = $row['address'];
                         }
 
                         $address2 = '';
@@ -206,6 +231,21 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             $emergency1_name = $row['emergency1_name'];
                         }
 
+                        $emergency1_relationship = null;
+                        if (isset($row['emergency1_relationship'])){
+                            $emergency1_name = $row['emergency1_relationship'];
+                        }
+
+                        $emergency1_address = null;
+                        if (isset($row['emergency1_address'])){
+                            $emergency1_address = $row['emergency1_address'];
+                        }
+
+                        $emergency1_phone = null;
+                        if (isset($row['emergency1_phone'])){
+                            $emergency1_phone = $row['emergency1_phone'];
+                        }
+
                         $working_hour = NULL;
                         $benefit_plan = NULL;
                         if(isset($row['working_hour']) && !empty($row['working_hour'])) {
@@ -213,13 +253,13 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             if($working_hour >=1 && $working_hour <=20) {
                               $benefit_plan = 1;
                             } else if($working_hour >=21 && $working_hour <=25) {
-                              $benefit_plan = 2;  
+                              $benefit_plan = 2;
                             } else if($working_hour >=26 && $working_hour <=30) {
-                              $benefit_plan = 3;  
+                              $benefit_plan = 3;
                             } else if($working_hour >=31 && $working_hour <=35) {
-                              $benefit_plan = 4;  
+                              $benefit_plan = 4;
                             } else if($working_hour >=36 && $working_hour <=40) {
-                              $benefit_plan = 5;  
+                              $benefit_plan = 5;
                             } else {
                               $benefit_plan = 1;
                             }
@@ -243,6 +283,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                                'address_1'=>$address,
                                'address_2'=>$address2,
                                'eng_name'=>$emergency1_name,
+                               'emg_relationship'=>$emergency1_relationship,
+                               'eng_addres'=>$emergency1_address,
+                               'emg_phone'=>$emergency1_phone,
                                'patient_id'=>isset($row['admission_id'])?$row['admission_id']:null,
                                'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:null,
                                'city' => isset($row['city'])?$row['city']:null,
@@ -266,7 +309,6 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
           //PatientReferral::insert($record);
         } catch(Exception $e) {
             \Log::info($e);
-            //dd($e->getMessage());
         }
     }
 

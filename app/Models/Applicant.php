@@ -44,7 +44,7 @@ class Applicant extends Model
     /**
      * Relation with referances
      */
-    public function referances()
+    public function references()
     {
         return $this->hasMany('App\Models\ApplicantReference', 'applicant_id', 'id');
     }
