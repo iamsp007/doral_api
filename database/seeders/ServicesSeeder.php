@@ -16,10 +16,11 @@ class ServicesSeeder extends Seeder
     {
         sleep(1);
         $this->command->getOutput()->progressAdvance();
-        $data = array('VBC','MD Order','Occupational Health','Telehealth','roadL');
-        foreach ($data as $datum) {
+        $data = array('VBC'=>'1','MD Order'=>'1','Occupational Health'=>'1','Telehealth'=>'1','roadL'=>'0');
+        foreach ($data as $name=>$value) {
             $designation = new Services();
-            $designation->name = $datum;
+            $designation->name = $name;
+            $designation->display_type = $value;
             $designation->save();
         }
     }
