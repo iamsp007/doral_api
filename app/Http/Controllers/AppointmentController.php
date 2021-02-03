@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendAppointNotification;
 use App\Http\Controllers\Zoom\MeetingController;
 use App\Http\Requests\AppointmentRequest;
 use App\Models\Appointment;
@@ -82,6 +83,8 @@ class AppointmentController extends Controller
                 'start_time'=>$appointment->start_datetime,
                 'agenda'=>'Agenda'
             ]);
+            $clinicianDetail = User::whereIn('id',[$request->provider1,$request->provider2])->get();
+            event(new SendAppointNotification($appointment,$clinicianDetail));
             return $this->generateResponse(true,'Your Appointment book Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
