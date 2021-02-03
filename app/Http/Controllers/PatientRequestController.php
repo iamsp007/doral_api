@@ -157,89 +157,103 @@ class PatientRequestController extends Controller
 
     public function ccmReading(CCMReadingRequest $request)
     {
-        $ccmReadingModel = new CCMReading();
-        $ccmReadingModel->user_id = $request->user_id;
-        $ccmReadingModel->reading_type = $request->reading_type;
-        $ccmReadingModel->reading_value = $request->reading_value;
-        $userDetails = User::getUserDetails($request->user_id);
-//        dd($request->all());
-        if($request->reading_type == 1) {
-            $reading_level = 1;
-            $explodeValue = explode("/",$request->reading_value);
-            if($explodeValue[0] >= 130 && $explodeValue[0] <= 139) {
-                $reading_level = 2;
-            }else if($explodeValue[0] >= 140) {
-                $reading_level = 3;
-            }
-            $ccmReadingModel->reading_level = $reading_level;
-        }else if($request->reading_type == 2) {
+        try {
+            $ccmReadingModel = new CCMReading();
+            $ccmReadingModel->user_id = $request->user_id;
+            $ccmReadingModel->reading_type = $request->reading_type;
+            $ccmReadingModel->reading_value = $request->reading_value;
+            $userDetails = User::getUserDetails($request->user_id);
 
-            if($request->reading_value > 250) {
-                $reading_level = 4;
-            }else if($request->reading_level < 60) {
-                $reading_level = 3;
+            if ($request->reading_type == 0) {
+
+                $readingLevel = 1;
+                $explodeValue = explode("/",$request->reading_value);
+                if($explodeValue[0] >= 130 && $explodeValue[0] <= 139) {
+                    $readingLevel = 2;
+                } else if($explodeValue[0] >= 140) {
+                    $readingLevel = 3;
+                }
+                $ccmReadingModel->reading_level = $readingLevel;
+
+            } else if ($request->reading_type == 1) {
+
+                if($request->reading_value > 250) {
+                    $readingLevel = 4;
+                } else if($request->readingLevel < 60) {
+                    $readingLevel = 3;
+                }
+                $ccmReadingModel->reading_level = $readingLevel;
+
+            } else if ($request->reading_type == 2) {
+
+                if ($request->reading_value > 110) {
+                    $readingLevel = 1;
+                }
+                $ccmReadingModel->reading_level = $readingLevel;
             }
-            $ccmReadingModel->reading_level = 3;
-        }else if($request->reading_type == 3) {
-            if($request->reading_value > 110) {
-                $reading_level = 1;
+
+            if ($request->reading_type == 0) {
+
+                $messages = array();
+
+                if ($readingLevel == 3){
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+
+                } else {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is slightly higher than regular. https://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+                }
+                // event(new SendingSMS($messages));
+
+            } elseif ($request->reading_type == 1) {
+
+                $messages = array();
+
+                if ($readingLevel == 3) {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood sugar is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+                } else {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood sugar is slightly higher than regular. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+                }
+                event(new SendingSMS($messages));
+
+            } elseif ($request->reading_type == 2) {
+
+                $messages = array();
+
+                if ($readingLevel == 3) {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' pulse oximetry is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel);
+
+                } else {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' pulse oximetry is slightly higher than regular. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+                }
+                event(new SendingSMS($messages));
+
             }
-            $ccmReadingModel->reading_level = 3;
+
+            if ($ccmReadingModel->save()) {
+
+                return $this->generateResponse(true,'CCM Reading Success!',$ccmReadingModel);
+            }
+            return $this->generateResponse(false,'Something Went Wrong!');
+        } catch (\Exception $ex) {
+            return $this->generateResponse(false,$ex->getMessage());
         }
-
-        if ($request->reading_type==="1"){
-            $meesages = array();
-            $meesages[] =array(
-                'to'=>env('SMS_TO'),
-                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is slightly higher than regular. https://app.doralhealthconnect.com/caregiver/1');
-
-            if ($reading_level===3){
-                $meesages[] =array(
-                    'to'=>env('SMS_TO'),
-                    'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/2');
-
-            }
-            event(new SendingSMS($meesages));
-        }elseif ($request->reading_type==="2"){
-            if($reading_level == 3) {
-                $le = 'lower';
-            }else {
-                $le = 'higher';
-            }
-
-            $meesages = array();
-            $meesages[] =array(
-                'to'=>env('SMS_TO'),
-                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://app.doralhealthconnect.com/caregiver/'.$reading_level
-            );
-
-            if ($reading_level===3){
-                $meesages[] =array(
-                    'to'=>env('SMS_TO'),
-                    'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/2');
-
-            }
-            event(new SendingSMS($meesages));
-        }elseif ($request->reading_type==="3"){
-            if($reading_level == 3) {
-                $le = 'lower';
-            }else {
-                $le = 'higher';
-            }
-
-            $meesages = array();
-            $meesages[] =array(
-                'to'=>env('SMS_TO'),
-                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://app.doralhealthconnect.com/caregiver/'.$reading_level
-            );
-            event(new SendingSMS($meesages));
-        }
-
-        if ($ccmReadingModel->save()){
-
-            return $this->generateResponse(true,'CCM Reading Success!',$ccmReadingModel);
-        }
-        return $this->generateResponse(false,'Something Went Wrong!');
     }
 
     public function clinicianRequestAccept(ClinicianRequestAcceptRequest $request){

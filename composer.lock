@@ -555,6 +555,13 @@
                 "validation",
                 "validator"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/egulias/EmailValidator/issues",
+                "source": "https://github.com/egulias/EmailValidator/tree/2.1.25"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://github.com/egulias",
@@ -611,6 +618,13 @@
             "keywords": [
                 "html"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/ezyang/htmlpurifier/issues",
+                "source": "https://github.com/ezyang/htmlpurifier/tree/master"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "time": "2020-06-29T00:56:53+00:00"
         },
         {
@@ -1267,6 +1281,7 @@
         },
         {
             "name": "laravel/framework",
+<<<<<<< HEAD
             "version": "v8.23.1",
             "source": {
                 "type": "git",
@@ -1277,6 +1292,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/a813df1b248ca305e5f5ce23ea981ed6c6905504",
                 "reference": "a813df1b248ca305e5f5ce23ea981ed6c6905504",
+=======
+            "version": "v8.22.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/framework.git",
+                "reference": "5c70991b96c5722afed541a996479b5112654c8b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/5c70991b96c5722afed541a996479b5112654c8b",
+                "reference": "5c70991b96c5722afed541a996479b5112654c8b",
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
                 "shasum": ""
             },
             "require": {
@@ -1426,7 +1453,15 @@
                 "framework",
                 "laravel"
             ],
+<<<<<<< HEAD
             "time": "2021-01-19T14:10:48+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2021-01-13T13:37:56+00:00"
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
         },
         {
             "name": "laravel/passport",
@@ -1626,6 +1661,13 @@
                 "JWS",
                 "jwt"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/lcobucci/jwt/issues",
+                "source": "https://github.com/lcobucci/jwt/tree/3.4.2"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://github.com/lcobucci",
@@ -3059,6 +3101,13 @@
                 "xls",
                 "xlsx"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.16.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "time": "2020-12-31T18:03:49+00:00"
         },
         {
@@ -3973,6 +4022,13 @@
                 "mail",
                 "mailer"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/swiftmailer/swiftmailer/issues",
+                "source": "https://github.com/swiftmailer/swiftmailer/tree/v6.2.5"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://github.com/fabpot",
@@ -4879,6 +4935,12 @@
                 "polyfill",
                 "portable"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -4956,6 +5018,12 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-iconv/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5034,6 +5102,12 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5118,6 +5192,12 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-idn/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5199,6 +5279,12 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5276,6 +5362,12 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5349,6 +5441,12 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php72/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5425,6 +5523,12 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php73/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5505,6 +5609,12 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.22.0"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -6747,6 +6857,15 @@
                 "laravel",
                 "page"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "docs": "https://flareapp.io/docs/ignition-for-laravel/introduction",
+                "forum": "https://twitter.com/flareappio",
+                "issues": "https://github.com/facade/ignition/issues",
+                "source": "https://github.com/facade/ignition"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "time": "2020-12-29T09:12:55+00:00"
         },
         {
@@ -7860,6 +7979,13 @@
                 "testing",
                 "xunit"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/phpunit/issues",
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.1"
+            },
+>>>>>>> 21a340eca558eabe3c5b625209dc830135a3730e
             "funding": [
                 {
                     "url": "https://phpunit.de/donate.html",

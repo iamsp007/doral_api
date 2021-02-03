@@ -14,9 +14,10 @@ return [
 	],
 	'ccm_reading' => [
 		0 => 'Blood Pressure',
-	    1 => 'Glucometer',
-	    2 => 'Digital Weight Machine',
-	    3 => 'Pulse Oximetry'
+	    1 => 'Blood Sugar',
+	    2 => 'Pulse Oximetry',
+	    3 => 'Weight',
+	    4 => 'EKG'
 	],
 	'clinician_services' => [
 		0 => 'Telehealth',

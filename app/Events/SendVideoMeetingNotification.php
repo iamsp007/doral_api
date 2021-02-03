@@ -24,13 +24,18 @@ class SendVideoMeetingNotification
     public function __construct($userId,$data)
     {
         $user = User::find($userId);
+        \Log::info($user);
         if ($user){
             $message="Start Your Video Meeting";
             $title="Start Your Video Meeting";
             $token=$user->device_token;
+            $web_token=$user->web_token;
+            $helper = new Helper();
             if ($token){
-                $helper = new Helper();
-                $helper->sendNotification($token,$title,$data);
+                $helper->sendNotification($token,$title,$data,2);
+            }
+            if ($web_token){
+                $helper->sendWebNotification($web_token,$title,$data,2);
             }
         }
     }
