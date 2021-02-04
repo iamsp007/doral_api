@@ -327,8 +327,7 @@ class AppointmentController extends Controller
     public function cancelAppointment(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'appointment_id'=>'required|exists:appointments,id',
-            'reason_notes'=>'required'
+            'appointment_id'=>'required|exists:appointments,id'
         ]);
         if ($validator->fails()){
             return $this->generateResponse(false,'Invalid Data',$validator->errors(),200);
