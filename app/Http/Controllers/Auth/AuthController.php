@@ -123,45 +123,46 @@ class AuthController extends Controller
                         throw new \ErrorException('Error in insert');
                     }
                     // BELOW FOR LOGIN
-                    // $username = $request->username;
-                    // $password = $request->password;
-                    // $field = 'email';
-                    // if (is_numeric($request->username)) {
-                    //     $field = 'phone';
-                    // }
-                    // $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
-                    // if (!Auth::attempt($credentials)) {
-                    //     return $this->generateResponse(false, $field . ' or Password are Incorrect!');
-                    // }
+                    $username = $request->username;
+                    $password = $request->password;
+                    $field = 'email';
+                    if (is_numeric($request->username)) {
+                        $field = 'phone';
+                    }
+                    $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
+                    if (!Auth::attempt($credentials)) {
+                        return $this->generateResponse(false, $field . ' or Password are Incorrect!');
+                    }
                     $user->isEmailVerified = $user->email_verified_at ? true : false;
                     $user->isMobileVerified = $user->phone_verified_at ? true : false;
                     $user->isProfileVerified = $user->profile_verified_at ? true : false;
-                    // $user->roles = $user->roles ? $user->roles->first() : null;
-                    // $tokenResult = $user->createToken('Personal Access Token');
-                    // $token = $tokenResult->token;
-                    // if ($request->remember_me)
-                    //     $token->expires_at = Carbon::now()->addMinute(1);
-                    // $token->save();
-                    // $data = [
-                    //     'access_token' => $tokenResult->accessToken,
-                    //     'token_type' => 'Bearer',
-                    //     'user' => $user,
-                    //     'expires_at' => Carbon::parse(
-                    //         $tokenResult->token->expires_at
-                    //     )->toDateTimeString()
-                    // ];
-                    // // update device token and type
-                    // if ($request->has('device_token')) {
-                    //     $users = User::find($user->id);
-                    //     if ($users) {
-                    //         $users->device_token = $request->device_token;
-                    //         $users->device_type = $request->device_type;
-                    //         $users->save();
-                    //     }
-                    // }
+                    $user->isMobileExist = $user->phone ? true : false;
+                    $user->roles = $user->roles ? $user->roles->first() : null;
+                    $tokenResult = $user->createToken('Personal Access Token');
+                    $token = $tokenResult->token;
+                    if ($request->remember_me)
+                        $token->expires_at = Carbon::now()->addMinute(1);
+                    $token->save();
+                    $data = [
+                        'access_token' => $tokenResult->accessToken,
+                        'token_type' => 'Bearer',
+                        'user' => $user,
+                        'expires_at' => Carbon::parse(
+                            $tokenResult->token->expires_at
+                        )->toDateTimeString()
+                    ];
+                    // update device token and type
+                    if ($request->has('device_token')) {
+                        $users = User::find($user->id);
+                        if ($users) {
+                            $users->device_token = $request->device_token;
+                            $users->device_type = $request->device_type;
+                            $users->save();
+                        }
+                    }
                     $status = true;
                     $message = "Registration successful.";
-                    return $this->generateResponse(true, $message, $user, 200);
+                    return $this->generateResponse(true, $message, $data, 200);
                 } else {
                     throw new \ErrorException('Error found');
                 }
