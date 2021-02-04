@@ -134,8 +134,6 @@ class AuthController extends Controller
                     $user->roles = $user->roles ? $user->roles->first() : null;
                     $tokenResult = $user->createToken('Personal Access Token');
                     $token = $tokenResult->token;
-                    if ($request->remember_me)
-                        $token->expires_at = Carbon::now()->addMinute(1);
                     $token->save();
                     $data = [
                         'access_token' => $tokenResult->accessToken,
@@ -149,8 +147,8 @@ class AuthController extends Controller
                     if ($request->has('device_token')) {
                         $users = User::find($user->id);
                         if ($users) {
-                            $users->device_token = $request->device_token;
-                            $users->device_type = $request->device_type;
+                            $users->device_token = $request['device_token'];
+                            $users->device_type = $request['device_type'];
                             $users->save();
                         }
                     }
