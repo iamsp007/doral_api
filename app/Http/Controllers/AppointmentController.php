@@ -280,7 +280,7 @@ class AppointmentController extends Controller
                 'reasons' => $reasons
             ];
             $status = true;
-            $message = "Reasons List";
+            $message = "Please select reason";
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
