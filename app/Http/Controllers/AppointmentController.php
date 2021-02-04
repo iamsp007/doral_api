@@ -280,7 +280,7 @@ class AppointmentController extends Controller
                 'reasons' => $reasons
             ];
             $status = true;
-            $message = "Reasons List";
+            $message = "Please select reason";
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
@@ -446,5 +446,23 @@ class AppointmentController extends Controller
             }
         }
         return $time;
+    }
+
+    /**
+     * Appointments
+     */
+    public function appointments(Request $request)
+    {
+        try {
+            if (!$request->date) {
+                throw new Exception("Invalid parameter passed");
+            }
+            $response = Appointment::getAppointments($request);
+            return $this->generateResponse($response['status'], $response['message'], $response['data']);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
     }
 }

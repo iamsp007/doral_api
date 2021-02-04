@@ -952,7 +952,9 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicants are not available.";
         try {
-            $response = Applicant::with(['state', 'city'])->get();
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->whereHas('roles', function($q) {
+                    $q->where('name', 'clinician');
+                })->get();
             if (!$response) {
                 throw new Exception($message);
             }

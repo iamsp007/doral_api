@@ -327,19 +327,14 @@ class UserController extends Controller
     public function ccmReadingLevelHigh()
     {
         try {
-            $data = [];
+            $list = [];
             $ccm = CCMReading::with('user')->get();
-            $data['all'] = $ccm;
-            $data['high'] = $ccm->filter(function ($item) {
-                return $item->reading_level == 3;
-            })->values();
-            $data['medium'] = $ccm->filter(function ($item) {
-                return $item->reading_level == 2;
-            })->values();
-            $data['low'] = $ccm->filter(function ($item) {
-                return $item->reading_level == 1;
-            })->values();
-            return $this->generateResponse(true, 'CCM Readings!', $data, 200);
+            if ($ccm) {
+                foreach ($ccm as $key => $value) {
+                    $list[$value->reading_type][$value->reading_level][] = $value;
+                }
+            }
+            return $this->generateResponse(true, 'CCM Readings!', $list, 200);
         } catch (\Exception $ex) {
             return $this->generateResponse(false, $ex->getMessage(), null, 200);
         }
