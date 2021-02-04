@@ -230,6 +230,7 @@ Route::group([
     Route::post('demographyData-update', 'App\Http\Controllers\UserController@demographyDataUpdate');
     Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
+    Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
 });
 
 // Get list of meetings.
