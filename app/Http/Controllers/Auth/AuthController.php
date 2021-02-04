@@ -144,7 +144,7 @@ class AuthController extends Controller
                         )->toDateTimeString()
                     ];
                     // update device token and type
-                    if ($request->has('device_token')) {
+                    if (isset($request['device_token']) && isset($request['device_type'])) {
                         $users = User::find($user->id);
                         if ($users) {
                             $users->device_token = $request['device_token'];
