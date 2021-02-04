@@ -123,7 +123,7 @@ class AuthController extends Controller
                         throw new \ErrorException('Error in insert');
                     }
                     // BELOW FOR LOGIN
-                    $credentials = ['email' => $request->email, 'password' => $request->password, 'status' => '1'];
+                    $credentials = ['email' => $request['email'], 'password' => $request['password'], 'status' => '1'];
                     if (!Auth::attempt($credentials)) {
                         return $this->generateResponse(false, 'Email or password are incorrect!');
                     }
