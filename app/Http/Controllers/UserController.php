@@ -331,7 +331,7 @@ class UserController extends Controller
             $ccm = CCMReading::with('user')->get();
             if ($ccm) {
                 foreach ($ccm as $key => $value) {
-                    $list[$value->reading_type][$value->reading_level] = $value;
+                    $list[$value->reading_type][$value->reading_level][] = $value;
                 }
             }
             return $this->generateResponse(true, 'CCM Readings!', $list, 200);
