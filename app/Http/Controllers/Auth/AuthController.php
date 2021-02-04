@@ -123,15 +123,9 @@ class AuthController extends Controller
                         throw new \ErrorException('Error in insert');
                     }
                     // BELOW FOR LOGIN
-                    $username = $request->username;
-                    $password = $request->password;
-                    $field = 'email';
-                    if (is_numeric($request->username)) {
-                        $field = 'phone';
-                    }
-                    $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
+                    $credentials = ['email' => $request->email, 'password' => $request->password, 'status' => '1'];
                     if (!Auth::attempt($credentials)) {
-                        return $this->generateResponse(false, $field . ' or Password are Incorrect!');
+                        return $this->generateResponse(false, 'Email or password are incorrect!');
                     }
                     $user->isEmailVerified = $user->email_verified_at ? true : false;
                     $user->isMobileVerified = $user->phone_verified_at ? true : false;
