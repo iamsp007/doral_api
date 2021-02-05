@@ -24,10 +24,7 @@ class RoadlController extends Controller
         $roadlInformation->status = $request->has('status')?$request->input('status'):"start";
         if ($roadlInformation->save()){
             if ($roadlInformation->status==="complete"){
-                $user = User::whereHas('roles',function ($q){
-                    $q->where('name','=','clinician');
-                })
-                    ->find($request->user_id);
+                $user = User::find($request->user_id);
                 if ($user){
                     $user->is_available = 1;
                     $user->save();
@@ -68,7 +65,6 @@ class RoadlController extends Controller
             $data=PatientRequest::with('detail')
                 ->where('id','=',$patient_request_id)
                 ->first();
-            event(new SendClinicianPatientRequestNotification($data,$clinicianList));
             return $this->generateResponse(true,'Get Near Me Patient Request List',array('clinicianList'=>$clinicianList,'patientDetail'=>$data),200);
         }catch (\Exception $exception){
             return $this->generateResponse(false,$exception->getMessage(),null,200);
