@@ -340,6 +340,13 @@ class AppointmentController extends Controller
             $appointment->reason_notes = $request->has('reason_notes')?$request->reason_notes:null;
             $appointment->cancel_user = Auth::user()->id;
             if ($appointment->save()){
+                $clinicianDetail = User::whereIn('id',[$appointment->provider1,$appointment->provider2])->get();
+                $title='Your Appointment is cancelled by '.Auth::user()->first_name.' '.Auth::user()->last_name;
+                $message=$request->has('reason_notes')?$request->input('reason_notes'):null;
+                if ($message===null){
+                    $message=CancelAppointmentReasons::where(['id'=>$request->reason_id])->first()->reason;
+                }
+                event(new SendAppointNotification($appointment,$clinicianDetail,$title,$message));
                 return $this->generateResponse(true,'Appointment Cancel Successfully!',null,200);
             }
             return $this->generateResponse(false,'Something Went Wrong!',null,422);

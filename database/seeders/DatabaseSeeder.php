@@ -2,12 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Designation;
-use App\Models\FileTypeMaster;
-use App\Models\ServiceMaster;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -40,7 +35,8 @@ class DatabaseSeeder extends Seeder
              MedicineFromMasterSeeder::class,
              MedicineMasterSeeder::class,
              PreferredPharmacyMasterSeeder::class,
-            LabReportTypeSeeder::class
+            LabReportTypeSeeder::class,
+            PartnerUser::class
         ]);
     }
 }

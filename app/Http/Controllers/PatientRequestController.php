@@ -83,8 +83,7 @@ class PatientRequestController extends Controller
                     $assignAppointemntRoadl->save();
 
                     $clinicianList = User::whereHas('roles',function ($q) use ($request){
-                        $q->where('name','=',$request->type)
-                            ->where('guard_name','=','partner');
+                        $q->where('name','=',$request->type);
                     })->where('is_available','=','1')->get();
 
                     $data=PatientRequest::with('detail')
@@ -266,6 +265,8 @@ class PatientRequestController extends Controller
             if ($patient->save()){
                 $users = User::find($request->user_id);
                 $users->is_available = 2;
+                $users->latitude = $request->latitude;
+                $users->longitude = $request->longitude;
                 $users->save();
 
                 $roadlInformation = new RoadlInformation();
@@ -277,15 +278,33 @@ class PatientRequestController extends Controller
                 $roadlInformation->status = "start";
                 $roadlInformation->save();
 
+                $assignAppointemntRoadl = AssignAppointmentRoadl::where([
+                    'patient_request_id'=>$patient->id
+                ])->first();
+                if ($assignAppointemntRoadl){
+                    $patient->clinician = AssignAppointmentRoadl::where([
+                        'appointment_id'=>$assignAppointemntRoadl->appointment_id
+                    ])->with('requests',function ($q){
+                          $q->select('id','clincial_id','latitude','longitude','reason','is_active','dieses','symptoms','is_parking','status');
+                        })
+                        ->select('appointment_id','patient_request_id','referral_type')
+                        ->get()->toArray();
+                    $patient->type = 1;
+                }else{
+                    $patient->clinician = $users;
+                    $patient->type = 0;
+                }
+
                 $clinician=User::where(['id'=>$request->user_id])
                     ->first();
-                $data=array(
-                    'latitude'=>$request->latitude,
-                    'longitude'=>$request->longitude,
-                    'patient_request_id'=>$request->request_id,
-                    'clinician'=>$clinician
-                );
-                event(new SendPatientNotificationMap($data,$patient->user_id));
+//                $data=array(
+//                    'latitude'=>$request->latitude,
+//                    'longitude'=>$request->longitude,
+//                    'patient_request_id'=>$request->request_id,
+//                    'clinician'=>$clinician
+//                );
+                event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id));
+                event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id));
 
                 $data=PatientRequest::with('detail')
                     ->where('id','=',$request->request_id)
