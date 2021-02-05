@@ -14,7 +14,8 @@ class AddNotePatientLabReports extends Migration
     public function up()
     {
         Schema::table('patient_lab_reports', function (Blueprint $table) {
-            $table->text('note')->nullable();
+            $table->text('note')->nullable()->after('result');
+            $table->string('titer')->nullable()->after('note');
         });
     }
 
