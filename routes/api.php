@@ -231,6 +231,7 @@ Route::group([
     Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
+    Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
 });
 
 // Get list of meetings.

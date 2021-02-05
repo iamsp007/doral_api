@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendAppointNotification;
 use App\Http\Controllers\Zoom\MeetingController;
 use App\Http\Requests\AppointmentRequest;
 use App\Models\Appointment;
@@ -82,6 +83,8 @@ class AppointmentController extends Controller
                 'start_time'=>$appointment->start_datetime,
                 'agenda'=>'Agenda'
             ]);
+            $clinicianDetail = User::whereIn('id',[$request->provider1,$request->provider2])->get();
+            event(new SendAppointNotification($appointment,$clinicianDetail));
             return $this->generateResponse(true,'Your Appointment book Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
@@ -277,7 +280,7 @@ class AppointmentController extends Controller
                 'reasons' => $reasons
             ];
             $status = true;
-            $message = "Reasons List";
+            $message = "Please select reason";
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
@@ -324,8 +327,7 @@ class AppointmentController extends Controller
     public function cancelAppointment(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'appointment_id'=>'required|exists:appointments,id',
-            'reason_notes'=>'required'
+            'appointment_id'=>'required|exists:appointments,id'
         ]);
         if ($validator->fails()){
             return $this->generateResponse(false,'Invalid Data',$validator->errors(),200);
@@ -444,5 +446,23 @@ class AppointmentController extends Controller
             }
         }
         return $time;
+    }
+
+    /**
+     * Appointments
+     */
+    public function appointments(Request $request)
+    {
+        try {
+            if (!$request->date) {
+                throw new Exception("Invalid parameter passed");
+            }
+            $response = Appointment::getAppointments($request);
+            return $this->generateResponse($response['status'], $response['message'], $response['data']);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
     }
 }
