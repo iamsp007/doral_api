@@ -309,7 +309,7 @@ class PatientRequestController extends Controller
                 $data=PatientRequest::with('detail')
                     ->where('id','=',$request->request_id)
                     ->first();
-                return $this->generateResponse(true,'Request Accepted!',$data,200);
+                return $this->generateResponse(true,'Request Accepted!',$patient->toArray(),200);
             }
         }
 
