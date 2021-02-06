@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use mysql_xdevapi\Exception;
 use phpDocumentor\Reflection\Types\Object_;
+use Carbon\Carbon;
 
 class PatientRequestController extends Controller
 {
@@ -30,6 +31,20 @@ class PatientRequestController extends Controller
     public function index()
     {
         //
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRoadLStatus()
+    {
+        $patientroadl = PatientRequest::
+        	where('user_id', Auth::user()->id)
+        	->whereDate('created_at', Carbon::today())
+        	->where('status','active')->first();
+        return $this->generateResponse(true,'Patient Request Status',$patientroadl,200);
     }
 
     /**
