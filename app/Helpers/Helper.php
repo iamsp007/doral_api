@@ -186,12 +186,14 @@ class Helper extends BaseController
 
         $data = [
             "registration_ids" => [$token],
+            "priority"=> "high",
             "notification" => [
                 "title" => $title,
                 "body" => $message,
                 "icon" => asset('images/no-image.jpeg'),
                 "notification_type" => $notification_type,
                 "click_action"=>$link,
+                "sound"=> "default"
             ],
             'data'=>$data
         ];
