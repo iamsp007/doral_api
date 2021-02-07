@@ -324,7 +324,7 @@ class PatientRequestController extends Controller
                 $data=PatientRequest::with('detail')
                     ->where('id','=',$request->request_id)
                     ->first();
-                return $this->generateResponse(true,'Request Accepted!',$patient->toArray(),200);
+                return $this->generateResponse(true,'Request Accepted!',$data,200);
             }
         }
 
@@ -334,7 +334,10 @@ class PatientRequestController extends Controller
     public function clinicianPatientRequestList(Request $request){
         $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail','appointmentType')
             ->where(function ($q){
-                $q->where('clincial_id','=',null)->orWhere('clincial_id','=',Auth::user()->id);
+                $q->where(function ($query){
+                    $query->where('clincial_id','=',null)
+                        ->orWhere('clincial_id','=',Auth::user()->id);
+                })->orWhere('user_id','=',Auth::user()->id);
             })
             ->where('is_active','=','1')
             ->orderBy('id','desc')
