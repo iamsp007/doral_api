@@ -246,12 +246,20 @@ class PatientController extends Controller
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
 
+//    public function getNewPatientListForAppointment(Request $request){
+//        // patient referral accept status patient list
+//        $patientList = PatientReferral::with('detail','service','filetype')
+//            ->where('status','=','accept')
+//            ->get();
+//        return $this->generateResponse(true,'get new patient list',$patientList,200);
+//    }
+
     public function scheduleAppoimentList(Request $request){
         // patient referral pending status patient list
         $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
                     $q->select('first_name', 'last_name', 'id');
                 }])
-            ->with(['patients','meeting','service','filetype'])
+            ->with(['patients','meeting','service','filetype','roadl'])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
@@ -301,36 +309,33 @@ class PatientController extends Controller
             $status='reject';
         }
 
-        $updatePatient = PatientReferral::whereIn('id',$request->id)->update(['status'=>$status]);
+        $message='';
+        $smsData=array();
+        $patients = PatientReferral::whereIn('user_id',$request->id)->get();
+        if (count($patients)>0){
+            foreach ($patients as $value) {
+                if ($status==="accept"){
+                    $users = User::find($value->user_id);
+                    if ($users){
+                        $users->status = '1';
+                        $users->save();
 
-        $ids = $request->id;
-
-        if (count($ids)>0){
-            $message='';
-            $smsData=array();
-            foreach ($ids as $id) {
-                $patient = PatientReferral::find($id);
-                if ($patient){
-                    $patient->status = $status;
-                    if ($status==="accept") {
-                        $users = User::find($patient->user_id);
-                        if ($users){
-                            $users->status = '1';
-                            $users->save();
-
-                            $smsData[]=array(
-                                'to'=>$users->phone,
-                                'message'=>'Welcome To Doral Health Connect.
+                        $smsData[]=array(
+                            'to'=>$users->phone,
+                            'message'=>'Welcome To Doral Health Connect.
 Please click below application link and download.
 '.url("application/android/patientDoral.apk").'
 Default Password : doral@123',
-                            );
-                        }
+                        );
                     }
+                }
+                $patient = PatientReferral::find($value->id);
+                if ($patient){
+                    $patient->status = $status;
                     $patient->save();
-                    $message='Change Patient Status Successfully';
                 }
             }
+            $message='Change Patient Status Successfully';
             event(new SendingSMS($smsData));
             return $this->generateResponse(true,$message,null,200);
         }

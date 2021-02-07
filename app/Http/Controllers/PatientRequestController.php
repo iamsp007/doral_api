@@ -8,6 +8,7 @@ use App\Events\SendPatientNotificationMap;
 use App\Http\Requests\CCMReadingRequest;
 use App\Http\Requests\ClinicianRequestAcceptRequest;
 use App\Http\Requests\PatientRequestAcceptRequest;
+use App\Models\AssignAppointmentRoadl;
 use App\Models\CCMReading;
 use App\Models\RoadlInformation;
 use App\Models\User;
@@ -18,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use mysql_xdevapi\Exception;
 use phpDocumentor\Reflection\Types\Object_;
+use Carbon\Carbon;
 
 class PatientRequestController extends Controller
 {
@@ -29,6 +31,20 @@ class PatientRequestController extends Controller
     public function index()
     {
         //
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRoadLStatus()
+    {
+        $patientroadl = PatientRequest::
+        	where('user_id', Auth::user()->id)
+        	->whereDate('created_at', Carbon::today())
+        	->where('status','active')->first();
+        return $this->generateResponse(true,'Patient Request Status',$patientroadl,200);
     }
 
     /**
@@ -66,13 +82,40 @@ class PatientRequestController extends Controller
             }
             $patient->status='active';
             if ($patient->save()){
-                $clinicianList = User::whereHas('roles',function ($q){
-                    $q->where('name','=','clinician');
-                })->where('is_available','=','1')->get();
-                $data=PatientRequest::with('detail')
-                    ->where('id','=',$patient->id)
-                    ->first();
-                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+
+                if ($request->has('type')){
+                    $assignAppointemntRoadl = AssignAppointmentRoadl::where([
+                        'appointment_id'=>$request->appointemnt_id,
+                        'patient_request_id'=>$patient->id,
+                        'referral_type'=>$request->type
+                    ])->first();
+                    if ($assignAppointemntRoadl===null){
+                        $assignAppointemntRoadl = new AssignAppointmentRoadl();
+                    }
+                    $assignAppointemntRoadl->appointment_id = $request->appointemnt_id;
+                    $assignAppointemntRoadl->patient_request_id = $patient->id;
+                    $assignAppointemntRoadl->referral_type = $request->type;
+                    $assignAppointemntRoadl->save();
+
+                    $clinicianList = User::whereHas('roles',function ($q) use ($request){
+                        $q->where('name','=',$request->type);
+                    })->where('is_available','=','1')->get();
+
+                    $data=PatientRequest::with('detail')
+                        ->where('id','=',$patient->id)
+                        ->first();
+                    event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+                }else{
+                    $clinicianList = User::whereHas('roles',function ($q){
+                        $q->where('name','=','clinician');
+                    })->where('is_available','=','1')->get();
+                    $data=PatientRequest::with('detail')
+                        ->where('id','=',$patient->id)
+                        ->first();
+                    event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+                }
+
+
                 return $this->generateResponse(true,'Add Request Successfully!');
             }
             return $this->generateResponse(false,'Something Went Wrong!');
@@ -128,89 +171,103 @@ class PatientRequestController extends Controller
 
     public function ccmReading(CCMReadingRequest $request)
     {
-        $ccmReadingModel = new CCMReading();
-        $ccmReadingModel->user_id = $request->user_id;
-        $ccmReadingModel->reading_type = $request->reading_type;
-        $ccmReadingModel->reading_value = $request->reading_value;
-        $userDetails = User::getUserDetails($request->user_id);
-//        dd($request->all());
-        if($request->reading_type == 1) {
-            $reading_level = 1;
-            $explodeValue = explode("/",$request->reading_value);
-            if($explodeValue[0] >= 130 && $explodeValue[0] <= 139) {
-                $reading_level = 2;
-            }else if($explodeValue[0] >= 140) {
-                $reading_level = 3;
-            }
-            $ccmReadingModel->reading_level = $reading_level;
-        }else if($request->reading_type == 2) {
+        try {
+            $ccmReadingModel = new CCMReading();
+            $ccmReadingModel->user_id = $request->user_id;
+            $ccmReadingModel->reading_type = $request->reading_type;
+            $ccmReadingModel->reading_value = $request->reading_value;
+            $userDetails = User::getUserDetails($request->user_id);
 
-            if($request->reading_value > 250) {
-                $reading_level = 4;
-            }else if($request->reading_level < 60) {
-                $reading_level = 3;
+            if ($request->reading_type == 0) {
+
+                $readingLevel = 1;
+                $explodeValue = explode("/",$request->reading_value);
+                if($explodeValue[0] >= 130 && $explodeValue[0] <= 139) {
+                    $readingLevel = 2;
+                } else if($explodeValue[0] >= 140) {
+                    $readingLevel = 3;
+                }
+                $ccmReadingModel->reading_level = $readingLevel;
+
+            } else if ($request->reading_type == 1) {
+
+                if($request->reading_value > 250) {
+                    $readingLevel = 4;
+                } else if($request->readingLevel < 60) {
+                    $readingLevel = 3;
+                }
+                $ccmReadingModel->reading_level = $readingLevel;
+
+            } else if ($request->reading_type == 2) {
+
+                if ($request->reading_value > 110) {
+                    $readingLevel = 1;
+                }
+                $ccmReadingModel->reading_level = $readingLevel;
             }
-            $ccmReadingModel->reading_level = 3;
-        }else if($request->reading_type == 3) {
-            if($request->reading_value > 110) {
-                $reading_level = 1;
+
+            if ($request->reading_type == 0) {
+
+                $messages = array();
+
+                if ($readingLevel == 3){
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+
+                } else {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is slightly higher than regular. https://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+                }
+                // event(new SendingSMS($messages));
+
+            } elseif ($request->reading_type == 1) {
+
+                $messages = array();
+
+                if ($readingLevel == 3) {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood sugar is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+                } else {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood sugar is slightly higher than regular. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+                }
+                event(new SendingSMS($messages));
+
+            } elseif ($request->reading_type == 2) {
+
+                $messages = array();
+
+                if ($readingLevel == 3) {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' pulse oximetry is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel);
+
+                } else {
+                    $messages[] =array(
+                        'to'=>env('SMS_TO'),
+                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' pulse oximetry is slightly higher than regular. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+                    );
+                }
+                event(new SendingSMS($messages));
+
             }
-            $ccmReadingModel->reading_level = 3;
+
+            if ($ccmReadingModel->save()) {
+
+                return $this->generateResponse(true,'CCM Reading Success!',$ccmReadingModel);
+            }
+            return $this->generateResponse(false,'Something Went Wrong!');
+        } catch (\Exception $ex) {
+            return $this->generateResponse(false,$ex->getMessage());
         }
-
-        if ($request->reading_type==="1"){
-            $meesages = array();
-            $meesages[] =array(
-                'to'=>env('SMS_TO'),
-                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is slightly higher than regular. https://app.doralhealthconnect.com/caregiver/1');
-
-            if ($reading_level===3){
-                $meesages[] =array(
-                    'to'=>env('SMS_TO'),
-                    'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/2');
-
-            }
-            event(new SendingSMS($meesages));
-        }elseif ($request->reading_type==="2"){
-            if($reading_level == 3) {
-                $le = 'lower';
-            }else {
-                $le = 'higher';
-            }
-
-            $meesages = array();
-            $meesages[] =array(
-                'to'=>env('SMS_TO'),
-                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://app.doralhealthconnect.com/caregiver/'.$reading_level
-            );
-
-            if ($reading_level===3){
-                $meesages[] =array(
-                    'to'=>env('SMS_TO'),
-                    'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/2');
-
-            }
-            event(new SendingSMS($meesages));
-        }elseif ($request->reading_type==="3"){
-            if($reading_level == 3) {
-                $le = 'lower';
-            }else {
-                $le = 'higher';
-            }
-
-            $meesages = array();
-            $meesages[] =array(
-                'to'=>env('SMS_TO'),
-                'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' sugar is slightly '.$le.' regular. http://app.doralhealthconnect.com/caregiver/'.$reading_level
-            );
-            event(new SendingSMS($meesages));
-        }
-
-        if ($ccmReadingModel->save()){
-
-            return $this->generateResponse(true,'CCM Reading Success!',$ccmReadingModel);
-        }
-        return $this->generateResponse(false,'Something Went Wrong!');
     }
 
     public function clinicianRequestAccept(ClinicianRequestAcceptRequest $request){
@@ -223,6 +280,8 @@ class PatientRequestController extends Controller
             if ($patient->save()){
                 $users = User::find($request->user_id);
                 $users->is_available = 2;
+                $users->latitude = $request->latitude;
+                $users->longitude = $request->longitude;
                 $users->save();
 
                 $roadlInformation = new RoadlInformation();
@@ -234,15 +293,33 @@ class PatientRequestController extends Controller
                 $roadlInformation->status = "start";
                 $roadlInformation->save();
 
+                $assignAppointemntRoadl = AssignAppointmentRoadl::where([
+                    'patient_request_id'=>$patient->id
+                ])->first();
+                if ($assignAppointemntRoadl){
+                    $patient->clinician = AssignAppointmentRoadl::where([
+                        'appointment_id'=>$assignAppointemntRoadl->appointment_id
+                    ])->with('requests',function ($q){
+                          $q->select('id','clincial_id','latitude','longitude','reason','is_active','dieses','symptoms','is_parking','status');
+                        })
+                        ->select('appointment_id','patient_request_id','referral_type')
+                        ->get()->toArray();
+                    $patient->type = 1;
+                }else{
+                    $patient->clinician = $users;
+                    $patient->type = 0;
+                }
+
                 $clinician=User::where(['id'=>$request->user_id])
                     ->first();
-                $data=array(
-                    'latitude'=>$request->latitude,
-                    'longitude'=>$request->longitude,
-                    'patient_request_id'=>$request->request_id,
-                    'clinician'=>$clinician
-                );
-                event(new SendPatientNotificationMap($data,$patient->user_id));
+//                $data=array(
+//                    'latitude'=>$request->latitude,
+//                    'longitude'=>$request->longitude,
+//                    'patient_request_id'=>$request->request_id,
+//                    'clinician'=>$clinician
+//                );
+                event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id));
+                event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id));
 
                 $data=PatientRequest::with('detail')
                     ->where('id','=',$request->request_id)
@@ -255,9 +332,12 @@ class PatientRequestController extends Controller
     }
 
     public function clinicianPatientRequestList(Request $request){
-        $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail')
+        $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail','appointmentType')
             ->where(function ($q){
-                $q->where('clincial_id','=',null)->orWhere('clincial_id','=',Auth::user()->id);
+                $q->where(function ($query){
+                    $query->where('clincial_id','=',null)
+                        ->orWhere('clincial_id','=',Auth::user()->id);
+                })->orWhere('user_id','=',Auth::user()->id);
             })
             ->where('is_active','=','1')
             ->orderBy('id','desc')

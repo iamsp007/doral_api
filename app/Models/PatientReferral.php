@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class PatientReferral extends Model
 {
     use HasFactory;
-    protected $fillable = array('referral_id', 'service_id', 'file_type', 'user_id','first_name', 'last_name', 'dob', 'middle_name', 'gender', 'patient_id', 'medicaid_number', 'medicare_number', 'ssn', 'start_date', 'from_date', 'to_date', 'address_1', 'address_2', 'city', 'state', 'county', 'Zip', 'phone1', 'phone2', 'email', 'eng_name', 'eng_addres', 'emg_phone', 'emg_relationship', 'form_id', 'caregiver_code', 'working_hour', 'benefit_plan', 'enrollment', 'creation_date', 'services', 'insurance', 'hmo_to_mlts');
+    protected $fillable = array('referral_id', 'service_id', 'file_type', 'user_id','first_name', 'last_name', 'dob', 'middle_name', 'gender', 'patient_id', 'medicaid_number', 'medicare_number', 'ssn', 'start_date', 'from_date', 'to_date', 'address_1', 'address_2', 'city', 'state', 'county', 'Zip', 'phone1', 'phone2', 'email', 'eng_name', 'eng_addres', 'emg_phone', 'emg_relationship', 'form_id', 'caregiver_code', 'working_hour', 'benefit_plan', 'enrollment', 'creation_date', 'services', 'insurance', 'hmo_to_mlts', 'person_code','grp_number','id_number','eff_date','term_date','initial','division','coverage','plan','network','coverage_level','apt');
 
     protected $guarded = [];
 
@@ -59,6 +59,10 @@ class PatientReferral extends Model
 
     public function plans(){
         return $this->hasOne(Plans::class,'id','benefit_plan');
+    }
+
+    public function referral(){
+        return $this->hasOne(Referral::class,'id','referral_id');
     }
 
     /**

@@ -83,6 +83,13 @@ class Appointment extends Model
         return $this->hasOne(User::class, 'id', 'cancel_user');
     }
     /**
+     * Get Roadl Request
+     */
+    public function roadl()
+    {
+        return $this->hasMany(AssignAppointmentRoadl::class, 'appointment_id', 'id');
+    }
+    /**
      * Get All Appointment
      */
     public static function getAppointment($id)
@@ -333,6 +340,41 @@ class Appointment extends Model
                 'message' => $e->getMessage()
             ];
             return $response;
+        }
+    }
+
+    /**
+     * Upcoming Appointments
+     */
+    public static function getAppointments($request)
+    {
+        try {
+            $result = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->with(['patients', 'meeting', 'service', 'filetype'])
+                ->with(['provider1Details' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->with(['provider2Details' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+                ->whereDate('start_datetime', '=', date("Y-m-d", strtotime($request->date)))
+                ->where('status', 'open')
+                ->get();
+
+            return [
+                'status' => true,
+                'message' => "Appoinments",
+                'data' => $result
+            ];
+        } catch (\Exception $e) {
+            report($e);
+            return [
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => null
+            ];
         }
     }
 }

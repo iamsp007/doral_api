@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Events\SendClinicianPatientRequestNotification;
 use App\Http\Requests\RoadlInformationRequest;
 use App\Http\Requests\RoadlInformationShowRequest;
+use App\Models\AssignAppointmentRoadl;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
 use App\Models\RoadlInformation;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoadlController extends Controller
 {
@@ -24,10 +26,7 @@ class RoadlController extends Controller
         $roadlInformation->status = $request->has('status')?$request->input('status'):"start";
         if ($roadlInformation->save()){
             if ($roadlInformation->status==="complete"){
-                $user = User::whereHas('roles',function ($q){
-                    $q->where('name','=','clinician');
-                })
-                    ->find($request->user_id);
+                $user = User::find($request->user_id);
                 if ($user){
                     $user->is_available = 1;
                     $user->save();
@@ -68,7 +67,6 @@ class RoadlController extends Controller
             $data=PatientRequest::with('detail')
                 ->where('id','=',$patient_request_id)
                 ->first();
-            event(new SendClinicianPatientRequestNotification($data,$clinicianList));
             return $this->generateResponse(true,'Get Near Me Patient Request List',array('clinicianList'=>$clinicianList,'patientDetail'=>$data),200);
         }catch (\Exception $exception){
             return $this->generateResponse(false,$exception->getMessage(),null,200);
@@ -113,20 +111,73 @@ class RoadlController extends Controller
 
     public function getRoadLProccess(Request $request,$patient_request_id){
 
-        $data = PatientRequest::with('routes')
-            ->where([['id','=',$patient_request_id],['status','=','active']])
-            ->first();
-        if ($data){
-            if (count($data->routes)>0){
-                $data->destination = array(
-                    'latitude'=>$data->routes[count($data->routes)-1]->latitude,
-                    'longitude'=>$data->routes[count($data->routes)-1]->longitude);
+        if (Auth::user()->hasRole('patient')){
+            $roadlList = AssignAppointmentRoadl::where('patient_request_id','=',$patient_request_id)->first();
+            $data=array();
+            $data['type']=0;
+            if ($roadlList){
+                $data['type']=1;
+                $locations = AssignAppointmentRoadl::with('requests')->where('appointment_id','=',$roadlList->appointment_id)->get()->toArray();
+
+                $location=array();
+                foreach ($locations as $value) {
+                    $requests = $value['requests'];
+                    $last_location = RoadlInformation::where('user_id','=',$requests['clincial_id'])->where('patient_requests_id','=',$patient_request_id)->orderBy('id','desc')->first();
+
+                    $location[]=array(
+                        'referral_type'=>$value['referral_type'],
+                        'latitude'=>$last_location?$last_location->latitude:null,
+                        'longitude'=>$last_location?$last_location->longitude:null,
+                        'start_latitude'=>$requests['detail']?$requests['detail']['latitude']:null,
+                        'end_longitude'=>$requests['detail']?$requests['detail']['longitude']:null,
+                        'first_name'=>$requests['detail']?$requests['detail']['first_name']:null,
+                        'last_name'=>$requests['detail']?$requests['detail']['last_name']:null
+                    );
+                }
+                $data['clinicians']=$location;
+                $data['patient']=array(
+                    'latitude'=>$requests['latitude'],
+                    'longitude'=>$requests['longitude'],
+                );
+                return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
             }else{
-                $data->destination = array(
-                    'latitude'=>$data->latitude,
-                    'longitude'=>$data->longitude);
+                $datas = PatientRequest::with('detail','routes','appointmentType')
+                    ->where([['id','=',$patient_request_id],['status','=','active']])
+                    ->first();
+                $last_location = RoadlInformation::where('user_id','=',$datas->clincial_id)->where('patient_requests_id','=',$patient_request_id)->orderBy('id','desc')->first();
+
+                $location[]=array(
+                    'referral_type'=>'Doral',
+                    'latitude'=>$last_location?$last_location->latitude:null,
+                    'longitude'=>$last_location?$last_location->longitude:null,
+                    'start_latitude'=>$datas->detail?$datas->detail->latitude:null,
+                    'end_longitude'=>$datas->detail?$datas->detail->longitude:null,
+                    'first_name'=>$datas->detail?$datas->detail->first_name:null,
+                    'last_name'=>$datas->detail?$datas->detail->last_name:null
+                );
+                $data['clinicians']=$location;
+                $data['patient']=array(
+                    'latitude'=>$datas->latitude,
+                    'longitude'=>$datas->longitude,
+                );
+                return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
             }
-            return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
+        }else{
+            $data = PatientRequest::with('routes','appointmentType')
+                ->where([['id','=',$patient_request_id],['status','=','active']])
+                ->first();
+            if ($data){
+                if (count($data->routes)>0){
+                    $data->destination = array(
+                        'latitude'=>$data->routes[count($data->routes)-1]->latitude,
+                        'longitude'=>$data->routes[count($data->routes)-1]->longitude);
+                }else{
+                    $data->destination = array(
+                        'latitude'=>$data->latitude,
+                        'longitude'=>$data->longitude);
+                }
+                return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
+            }
         }
 
         return $this->generateResponse(false,'Something Went Wrong!',null,200);

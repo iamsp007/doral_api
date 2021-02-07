@@ -13,6 +13,14 @@ class CCMReading extends Model
 
 
     protected $fillable=['user_id','reading_type','reading_value','reading_level'];
+
+    /**
+     * Relation with user
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+    }
 //    /**
 //     * Get the user's Date Of Birth.
 //     *

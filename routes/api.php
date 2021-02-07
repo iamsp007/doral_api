@@ -56,6 +56,7 @@ Route::group([
 
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
+    Route::post('company_referral/update', 'App\Http\Controllers\CompanyController@update');
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
 
     Route::post('caregiver/actionstore', 'App\Http\Controllers\CaregiverController@actionStore')->name('caregiver.actionstore');
@@ -177,7 +178,10 @@ Route::group([
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
     Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
     Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
-    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
+    Route::get('get-roadl-status', 'App\Http\Controllers\PatientRequestController@getRoadLStatus');
+    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');    
+    //new patient list for appointment
+    Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
     //Appointment
     Route::post('send-video-meeting-notification', 'App\Http\Controllers\SessionsController@sendVideoMeetingNotification');
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
@@ -227,6 +231,8 @@ Route::group([
     Route::post('demographyData-update', 'App\Http\Controllers\UserController@demographyDataUpdate');
     Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
+    Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
+    Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
 });
 
 // Get list of meetings.
@@ -239,3 +245,6 @@ Route::post('/meetings', 'App\Http\Controllers\Zoom\MeetingController@create');
 Route::get('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@get')->where('id', '[0-9]+');
 Route::patch('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@update')->where('id', '[0-9]+');
 Route::delete('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@delete')->where('id', '[0-9]+');
+
+Route::post('/lab-report/store', 'App\Http\Controllers\PatientLabReportController@store')->name('lab-report.store');
+Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportController@addNote')->name('lab-report-note.store');
