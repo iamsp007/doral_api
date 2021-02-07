@@ -18,10 +18,10 @@ class CreatePatientInsurancesTable extends Migration
             $table->integer('user_id');
             $table->integer('patient_id');
             $table->string('name');
-            $table->string('payer_id', 50);
-            $table->string('phone', 50);
-            $table->string('policy_no', 255);
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->string('payer_id');
+            $table->string('phone');
+            $table->string('policy_no');
+            $table->enum('status',['active','inactive'])->default('active');
             $table->timestamps();
         });
     }
