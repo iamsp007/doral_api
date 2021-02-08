@@ -27,7 +27,7 @@ class CreateDemographicDetails extends Migration
             $table->string('ServiceRequestStartDate')->nullble();
             $table->string('AdmissionID')->nullble();
             $table->string('MedicaidNumber')->nullble();
-            $table->string('MedicaidNumber')->nullble();
+            $table->string('MedicareNumber')->nullble();
             $table->string('SSN')->nullble();
             $table->string('HomePhone')->nullble();
             $table->integer('PayerID')->nullble();
