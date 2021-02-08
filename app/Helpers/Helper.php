@@ -146,7 +146,7 @@ class Helper extends BaseController
 
     }
 
-    public function sendNotification($token,$title,$data,$notification_type='1'){
+    public function sendNotification($token,$title,$message,$data,$notification_type='1'){
         $path_to_fcm='https://fcm.googleapis.com/fcm/send';
         $server_key=env('FIREBASE_CREDENTIALS');
         $key= $token;
@@ -156,17 +156,13 @@ class Helper extends BaseController
         );
         $fields=array(
             "registration_ids" => [$token],
-            'title'=>$title,
-            'notification_type'=>$notification_type,
-//            'notification'=>array(
-//                'title'=>$title,
-//                'body'=> [
-//                    'title' => $title,
-//                    'message' => $title,
-//                    'data' => $data
-//                ]
-//            ),
-            'data' => $data
+            "notification" => [
+                "title" => $title,
+                "body" => $message,
+                "icon" => asset('images/no-image.jpeg'),
+                "notification_type" => $notification_type,
+            ],
+            'data'=>$data
         );
 
         $payload=json_encode($fields);
@@ -184,16 +180,20 @@ class Helper extends BaseController
         curl_close($curl_session);
     }
 
-    public function sendWebNotification($token,$title,$data,$notification_type='1'){
+    public function sendWebNotification($token,$title,$message,$data,$notification_type='1',$link=''){
+
         $SERVER_API_KEY = env('FIREBASE_CREDENTIALS');
 
         $data = [
             "registration_ids" => [$token],
+            "priority"=> "high",
             "notification" => [
                 "title" => $title,
-                "body" => $title,
+                "body" => $message,
                 "icon" => asset('images/no-image.jpeg'),
                 "notification_type" => $notification_type,
+                "click_action"=>$link,
+                "sound"=> "default"
             ],
             'data'=>$data
         ];

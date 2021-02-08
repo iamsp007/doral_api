@@ -90,7 +90,6 @@ class PatientReferralController extends Controller
 
                 $filePath = storage_path('app/'.$path);
 
-
                 $data = Excel::import(new BulkImport(
                     $request->referral_id,
                     $request->service_id,
