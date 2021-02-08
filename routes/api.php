@@ -178,6 +178,7 @@ Route::group([
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
     Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
     Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
+    Route::get('get-roadl-status', 'App\Http\Controllers\PatientRequestController@getRoadLStatus');
     Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');    
     //new patient list for appointment
     Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
@@ -231,6 +232,7 @@ Route::group([
     Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
+    Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
 });
 
 // Get list of meetings.

@@ -28,8 +28,15 @@ class SendPatientNotificationMap
             $message="Clinician RoadL Route";
             $title="Clinician RoadL Route";
             $token=$user->device_token;
+            $web_token=$user->web_token;
             $helper = new Helper();
-            $helper->sendNotification($token,$title,$data);
+            if ($token){
+                $helper->sendNotification($token,$title,$message,$data,2);
+            }
+            if ($web_token){
+                $link=env('WEB_URL').'clinician/running-roadl/'.$data['id'];
+                $helper->sendWebNotification($web_token,$title,$message,$data,2,$link);
+            }
         }
     }
 }

@@ -32,10 +32,11 @@ class SendVideoMeetingNotification
             $web_token=$user->web_token;
             $helper = new Helper();
             if ($token){
-                $helper->sendNotification($token,$title,$data,2);
+                $helper->sendNotification($token,$title,$message,$data,3);
             }
             if ($web_token){
-                $helper->sendWebNotification($web_token,$title,$data,2);
+                $link=env('WEB_URL').'clinician/scheduled-appointment';
+                $helper->sendWebNotification($web_token,$title,$message,$data,3,$link);
             }
         }
     }
