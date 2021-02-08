@@ -53,4 +53,8 @@ class Company extends Authenticatable
         return $this->hasOne(Referral::class,'id','referal_id')
             ->where('guard_name','=','referral');
     }
+
+    public function paymentInfo(){
+        return $this->hasMany(CompanyPaymentPlanInfo::class);
+    }
 }
