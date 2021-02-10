@@ -43,8 +43,8 @@ class PatientRequestController extends Controller
     {
         try {
             if ($request->has('type')){
-                $types = explode(',',$request->type);
-                foreach ($types as $value) {
+
+                foreach ($request->type as $value) {
                     $response = $this->createPatientRequest($request,$value);
                 }
             }else{
