@@ -15,7 +15,7 @@ class CreatePatientDetailsTable extends Migration
     {
         Schema::create('patient_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('doral_id')->nullable();
+            $table->string('doral_id')->nullable();
             $table->integer('agency_id')->nullable();
             $table->integer('office_id')->nullable();
             $table->integer('patient_id')->nullable();
@@ -46,7 +46,7 @@ class CreatePatientDetailsTable extends Migration
             $table->string('home_phone2_location_address')->nullable();
             $table->string('home_phone3_location_address_id')->nullable();
             $table->string('home_phone3_location_address')->nullable();
-            $table->string('Direction')->nullable();
+            $table->string('direction')->nullable();
             
             $table->integer('payer_id')->nullable();
             $table->string('payer_name')->nullable();
