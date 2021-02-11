@@ -15,22 +15,54 @@ class CreatePatientDetailsTable extends Migration
     {
         Schema::create('patient_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('doral_id');
-            $table->integer('agency_id');
-            $table->integer('office_id');
-            $table->integer('patient_id');
-            $table->string('first_name');
-            $table->string('middle_name');
-            $table->string('last_name');
-            $table->date('birth_date');
-            $table->enum('gender', ['1', '2','3'])->comment('1=male,2=female,3=other');
-            $table->integer('priority_code');
-            $table->date('service_request_start_date');
-            $table->integer('admission_id');
-            $table->integer('medica_id_number');
-            $table->integer('medicare_number');
-            $table->integer('ssn');
-            $table->foreignId('payer_id')->index('payer_id');
+            $table->integer('doral_id')->nullable();
+            $table->integer('agency_id')->nullable();
+            $table->integer('office_id')->nullable();
+            $table->integer('patient_id')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->enum('gender', ['1', '2','3'])->comment('1=male,2=female,3=other')->nullable();
+
+            $table->integer('priority_code')->nullable();
+            $table->date('service_request_start_date')->nullable();
+
+            $table->integer('admission_id')->nullable();
+            $table->string('medicaid_number')->nullable();
+            $table->string('medicare_number')->nullable();
+
+            $table->integer('ssn')->nullable();
+            $table->string('alert')->nullable();
+
+            $table->string('home_phone')->nullable();
+            $table->string('phone2')->nullable();
+            $table->string('phone2_description')->nullable();
+            $table->string('phone3')->nullable();
+            $table->string('phone3_description')->nullable();
+            $table->string('home_phone_location_address_id')->nullable();
+            $table->string('home_phone_location_address')->nullable();
+            $table->string('home_phone2_location_address_id')->nullable();
+            $table->string('home_phone2_location_address')->nullable();
+            $table->string('home_phone3_location_address_id')->nullable();
+            $table->string('home_phone3_location_address')->nullable();
+            $table->string('Direction')->nullable();
+            
+            $table->integer('payer_id')->nullable();
+            $table->string('payer_name')->nullable();
+            $table->string('payer_coordinator_id')->nullable();
+            $table->string('payer_coordinator_name')->nullable();
+            $table->string('patient_status_id')->nullable();
+            $table->string('patient_status_name')->nullable();
+            $table->string('wage_parity')->nullable();
+            $table->string('wage_parity_from_date1')->nullable();
+            $table->string('wage_parity_to_date1')->nullable();
+            $table->string('wage_parity_from_date2')->nullable();
+            $table->string('wage_parity_to_date2')->nullable();
+            $table->string('primary_language_id')->nullable();
+            $table->string('primary_language')->nullable();
+            $table->string('secondary_language_id')->nullable();
+            $table->string('secondary_language')->nullable();
 
             $table->timestamps();
         });

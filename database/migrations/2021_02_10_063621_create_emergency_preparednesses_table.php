@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLanguagesTable extends Migration
+class CreateEmergencyPreparednessesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateLanguagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('languages', function (Blueprint $table) {
+        Schema::create('emergency_preparednesses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('status', ['0', '1'])->comment('0=inactive,1=active')->default('1');
+            $table->foreignId('patient_id')->index('patient_id');
+            $table->string('emergency_preparedness_id')->nullable();
+            $table->string('type')->nullable();
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateLanguagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('languages');
+        Schema::dropIfExists('emergency_preparednesses');
     }
 }
