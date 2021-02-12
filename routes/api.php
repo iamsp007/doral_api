@@ -65,6 +65,10 @@ Route::group([
     // supervisour api
     Route::get('getNewPatientListAll', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('getNewPatientList', 'App\Http\Controllers\PatientController@getNewPatientList');
+    
+    // role and permission api
+    Route::post('get-role-permission', 'App\Http\Controllers\RolesAndPermissionController@getRolePermission');
+     Route::post('set-role-permission', 'App\Http\Controllers\RolesAndPermissionController@setRolePermission');
 
     Route::group([
         'middleware' => ['auth:api'],

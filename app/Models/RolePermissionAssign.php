@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RoleModuleName extends Model
+class RolePermissionAssign extends Model
 {
     use HasFactory;
     /**
@@ -13,12 +13,9 @@ class RoleModuleName extends Model
      *
      * @var array
      */
-    protected $table='rl_module_name';
+    public $timestamps = false;
+    protected $table='rl_role_permission';
     protected $fillable = [
-        'name'
+        'role_id','rl_permission_id'
     ];
-
-    public function modulePermission(){
-        return $this->hasMany(RolePermission::class,'rl_module_name_id');
-    }
 }
