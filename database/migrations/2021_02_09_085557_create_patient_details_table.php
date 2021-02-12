@@ -25,14 +25,14 @@ class CreatePatientDetailsTable extends Migration
             $table->date('birth_date')->nullable();
             $table->enum('gender', ['1', '2','3'])->comment('1=male,2=female,3=other')->nullable();
 
-            $table->integer('priority_code')->nullable();
+            $table->string('priority_code')->nullable();
             $table->date('service_request_start_date')->nullable();
 
             $table->integer('admission_id')->nullable();
             $table->string('medicaid_number')->nullable();
             $table->string('medicare_number')->nullable();
 
-            $table->integer('ssn')->nullable();
+            $table->string('ssn')->nullable();
             $table->string('alert')->nullable();
 
             $table->string('home_phone')->nullable();
@@ -48,7 +48,7 @@ class CreatePatientDetailsTable extends Migration
             $table->string('home_phone3_location_address')->nullable();
             $table->string('direction')->nullable();
             
-            $table->integer('payer_id')->nullable();
+            $table->string('payer_id')->nullable();
             $table->string('payer_name')->nullable();
             $table->string('payer_coordinator_id')->nullable();
             $table->string('payer_coordinator_name')->nullable();
