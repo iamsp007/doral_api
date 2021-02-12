@@ -40,6 +40,8 @@ class RoadlController extends Controller
                     $user->save();
                 }
             }
+            $location = ["lat"=>$request->latitude, "long"=>$request->longitude];
+            event(new \App\Events\ActionEvent($location));
             return $this->generateResponse(true,'Adding RoadlInformation Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
