@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePatientAlertsTable extends Migration
+class CreatePatientBranchesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreatePatientAlertsTable extends Migration
      */
     public function up()
     {
-        Schema::create('patient_alerts', function (Blueprint $table) {
+        Schema::create('patient_branches', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->index('patient_id');
-            $table->foreignId('alert_id')->index('alert_id');
+            $table->foreignId('branch_id')->index('branch_id');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreatePatientAlertsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('patient_alerts');
+        Schema::dropIfExists('patient_branches');
     }
 }

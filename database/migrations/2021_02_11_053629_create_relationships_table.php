@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAlertsTable extends Migration
+class CreateRelationshipsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateAlertsTable extends Migration
      */
     public function up()
     {
-        Schema::create('alerts', function (Blueprint $table) {
+        Schema::create('relationships', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('status', ['0', '1'])->comment('0=inactive,1=active')->default('1');
+            $table->string('relation_id')->nullable();
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateAlertsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('alerts');
+        Schema::dropIfExists('relationships');
     }
 }

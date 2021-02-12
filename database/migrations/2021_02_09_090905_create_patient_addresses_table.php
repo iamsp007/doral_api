@@ -16,17 +16,17 @@ class CreatePatientAddressesTable extends Migration
         Schema::create('patient_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->index('patient_id');
-            $table->integer('address_id');
-            $table->string('address1');
-            $table->string('address2');
-            $table->string('cross_street');
+            $table->integer('address_id')->nullable();
+            $table->string('address1')->nullable();
+            $table->string('address2')->nullable();
+            $table->string('cross_street')->nullable();
+            $table->string('zip5')->nullable();
+            $table->string('zip4')->nullable();
             $table->foreignId('city_id')->index('city_id');
-            $table->string('zip5');
-            $table->string('zip4');
             $table->foreignId('state_id')->index('state_id');
             $table->foreignId('county_id')->index('county_id');
-            $table->string('is_primary_address');
-            $table->string('addresstypes');
+            $table->boolean('is_primary_address')->nullable();
+            $table->string('AddressTypes')->nullable();
 
             $table->timestamps();
         });
