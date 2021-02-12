@@ -15,6 +15,7 @@ class CreateVisitorDetailsTable extends Migration
     {
         Schema::create('visitor_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_id')->index('patient_id');
             $table->integer('visitor_id')->nullable();
             $table->date('visit_date')->nullable();
             $table->integer('caregiver_id')->nullable();
