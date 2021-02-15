@@ -271,7 +271,7 @@ class PatientRequestController extends Controller
                 $users->save();
 
                 $roadlInformation = new RoadlInformation();
-                $roadlInformation->user_id = $patient->user_id;
+                $roadlInformation->user_id = $request->user_id;
                 $roadlInformation->patient_requests_id = $patient->id;
                 $roadlInformation->client_id = $request->user_id;
                 $roadlInformation->latitude = $request->latitude;
