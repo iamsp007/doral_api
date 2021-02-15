@@ -15,6 +15,7 @@ class CreateNursesTable extends Migration
     {
         Schema::create('nurses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_id')->index('patient_id');
             $table->integer('nurse_id')->nullable();
             $table->string('name')->nullable();
             $table->timestamps();

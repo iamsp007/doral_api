@@ -191,6 +191,7 @@ class RoadlController extends Controller
                 $data['patient']=array(
                     'latitude'=>$requests['latitude'],
                     'longitude'=>$requests['longitude'],
+                    'detail'=>$requests['patient'],
                 );
                 return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
             }
@@ -216,6 +217,7 @@ class RoadlController extends Controller
             $data['patient']=array(
                 'latitude'=>$datas->latitude,
                 'longitude'=>$datas->longitude,
+                'detail'=>$datas->patient,
             );
             return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
         }

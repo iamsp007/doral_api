@@ -14,6 +14,10 @@ class PatientRequest extends Model
 
         return $this->hasOne(User::class,'id','clincial_id');
     }
+    public function patient(){
+
+        return $this->hasOne(User::class,'id','user_id')->with('detail');
+    }
     public function patientDetail(){
 
         return $this->hasOne(User::class,'id','user_id')->with('detail');

@@ -162,7 +162,8 @@ class Helper extends BaseController
                 "icon" => asset('images/no-image.jpeg'),
                 "notification_type" => $notification_type,
             ],
-            'data'=>$data
+            'data'=>$data,
+            "messageType" => $notification_type
         );
 
         $payload=json_encode($fields);
