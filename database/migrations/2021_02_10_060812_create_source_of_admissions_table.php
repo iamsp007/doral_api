@@ -15,6 +15,7 @@ class CreateSourceOfAdmissionsTable extends Migration
     {
         Schema::create('source_of_admissions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_id')->index('patient_id');
             $table->string('source_of_admission_id')->nullable();
             $table->string('name')->nullable();
             $table->timestamps();
