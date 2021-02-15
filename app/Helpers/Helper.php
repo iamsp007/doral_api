@@ -165,7 +165,7 @@ class Helper extends BaseController
             'data'=>$data,
             "messageType" => $notification_type
         );
-
+\Log::info($fields);
         $payload=json_encode($fields);
         $curl_session=curl_init();
         curl_setopt($curl_session,CURLOPT_URL,$path_to_fcm);
