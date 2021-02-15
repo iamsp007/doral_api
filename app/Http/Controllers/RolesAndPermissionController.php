@@ -47,7 +47,6 @@ class RolesAndPermissionController extends Controller
     public function getRolePermission(Request $request)
     {
         $request = json_decode($request->getContent() , true);
-
         $status = 0;
         $data = [];
         $message = 'Something wrong';
@@ -57,6 +56,8 @@ class RolesAndPermissionController extends Controller
             $roleList = Role::with(['moduleAssign', 'rolePermission'])->select('id', 'name')
                 ->whereIn('roles.id', $roleIds)->get()
                 ->toArray();
+
+           
 
             $rolesData = [];
             $i = 0;
@@ -90,21 +91,111 @@ class RolesAndPermissionController extends Controller
                 }
             }
 
+           // print_r($rolesData); exit();
+
             $users1 = Company::select('id', 'name', 'email')->whereHas('roles', function ($q) use ($roleIds)
             {
                 $q->whereIn('id', $roleIds);
             })->get()
                 ->toArray();
 
+            foreach ($users1 as $key => $value) {
+                $users1[$key]['tabel'] = 'company';
+            }
+
             $users2 = User::select('id', DB::raw('CONCAT(first_name," ", last_name) AS name') , 'email')->whereHas('roles', function ($q) use ($roleIds)
             {
                 $q->whereIn('id', $roleIds);
             })->get()
                 ->toArray();
+                $rolesUsersData = [];
+             foreach ($users2 as $key => $value) {
+                $users2[$key]['tabel'] = 'users';
+            }
+             if(isset($request['user_ids'])) 
+             {
+                
+                foreach ($request['user_ids'] as $key => $value) {
+                    if($value['tabel'] == 'users') {
 
+                         $usersData = User::select('id', DB::raw('CONCAT(first_name," ", last_name) AS name') , 'email')->with('roles')->where('id',$value['id'])->first();
+
+                         $roleList = Role::with(['moduleAssign'])->select('id', 'name')
+                            ->where('roles.id', $usersData->roles[0]->id)->get()
+                            ->toArray();
+
+                        $tempData = [];
+                        $j = 0;
+                        foreach ($roleList as $r_val)
+                        {
+                            if (isset($r_val['module_assign']) && $r_val['module_assign'])
+                            {
+                                $tempData[$j]['id'] = $r_val['id'];
+                                $tempData[$j]['name'] = $usersData->name;
+                                foreach ($r_val['module_assign'] as $m_val)
+                                {
+                                    $moduleList = RoleModuleName::select('id', 'name as module_name')->with(['modulePermission' => function ($query)
+                                    {
+                                        $query->select('id as permission_id', 'rl_module_name_id', 'name as permission_name');
+                                    }
+                                    ])
+                                    ->where('id', $m_val['rl_module_name_id'])->get()
+                                    ->toArray();
+
+                                    if (isset($moduleList[0]))
+                                    {
+                                        $tempData[$j]['modules'][] = $moduleList[0];
+                                    }
+                                }
+                    
+                                $j++;
+                             }
+
+                            $rolesUsersData[] =  $tempData[0];
+                        }
+
+                    } else {
+                        $usersData = Company::select('id',  'name' , 'email')->with('roles')->where('id',$value['id'])->first();
+                         $roleList = Role::with(['moduleAssign'])->select('id', 'name')
+                            ->where('roles.id', $usersData->roles[0]->id)->get()
+                            ->toArray();
+
+                        $tempData = [];
+                        $j = 0;
+                        foreach ($roleList as $r_val)
+                        {
+                            if (isset($r_val['module_assign']) && $r_val['module_assign'])
+                            {
+                                $tempData[$j]['id'] = $r_val['id'];
+                                $tempData[$j]['name'] = $usersData->name;
+                                foreach ($r_val['module_assign'] as $m_val)
+                                {
+                                    $moduleList = RoleModuleName::select('id', 'name as module_name')->with(['modulePermission' => function ($query)
+                                    {
+                                        $query->select('id as permission_id', 'rl_module_name_id', 'name as permission_name');
+                                    }
+                                    ])
+                                    ->where('id', $m_val['rl_module_name_id'])->get()
+                                    ->toArray();
+
+                                    if (isset($moduleList[0]))
+                                    {
+                                        $tempData[$j]['modules'][] = $moduleList[0];
+                                    }
+                                }
+                    
+                                $j++;
+                             }
+
+                             $rolesUsersData[] = $tempData[0];
+                        }
+                    }
+                }
+             }
+            //print_r($rolesData); exit();
             $users = array_merge($users1, $users2);
-
-            $data = ['rolesData' => $rolesData, 'users' => $users, ];
+            //print_r($users); exit();
+            $data = ['rolesData' => $rolesData, 'rolesUsersData'=>$rolesUsersData,'users' => $users, ];
             $status = true;
             $message = "get Successfully";
             return $this->generateResponse($status, $message, $data);
