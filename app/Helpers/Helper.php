@@ -163,7 +163,7 @@ class Helper extends BaseController
                 "notification_type" => $notification_type,
             ],
             'data'=>$data,
-            "notification_type" => $notification_type
+            "messageType" => $notification_type
         );
 
         $payload=json_encode($fields);
