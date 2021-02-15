@@ -26,7 +26,7 @@ class CreatePatientAddressesTable extends Migration
             $table->foreignId('state_id')->index('state_id');
             $table->foreignId('county_id')->index('county_id');
             $table->boolean('is_primary_address')->nullable();
-            $table->string('AddressTypes')->nullable();
+            $table->string('address_type')->nullable();
 
             $table->timestamps();
         });

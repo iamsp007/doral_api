@@ -15,6 +15,7 @@ class CreateBranchesTable extends Migration
     {
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_id')->index('patient_id');
             $table->string('branch_id')->nullable();
             $table->string('name')->nullable();
             $table->timestamps();
