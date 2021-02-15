@@ -18,10 +18,10 @@ class CreatePatientInsurancesTable extends Migration
             $table->integer('user_id');
             $table->integer('patient_id');
             $table->string('name');
-            $table->string('payer_id');
-            $table->string('phone');
-            $table->string('policy_no');
-            $table->enum('status',['active','inactive'])->default('active');
+            $table->string('payer_id', 50);
+            $table->string('phone', 50);
+            $table->string('policy_no', 255);
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
     }
@@ -33,14 +33,6 @@ class CreatePatientInsurancesTable extends Migration
      */
     public function down()
     {
-        Schema::create('patient_insurances', function (Blueprint $table) {
-            $table->dropColumn('user_id');
-            $table->dropColumn('patient_id');
-            $table->dropColumn('name');
-            $table->dropColumn('payer_id');
-            $table->dropColumn('phone');
-            $table->dropColumn('policy_no');
-            $table->dropColumn('status');
-        });
+        Schema::dropIfExists('patient_insurances');
     }
 }
