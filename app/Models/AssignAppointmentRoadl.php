@@ -10,6 +10,6 @@ class AssignAppointmentRoadl extends Model
     use HasFactory;
 
     public function requests(){
-        return $this->hasOne(PatientRequest::class,'id','patient_request_id')->with('detail','routes');
+        return $this->hasOne(PatientRequest::class,'id','patient_request_id')->with(['detail','routes','patient']);
     }
 }
