@@ -29,7 +29,9 @@ class PatientRequestController extends Controller
         $patientroadl = PatientRequest::
         	where('user_id', Auth::user()->id)
         	->whereDate('created_at', Carbon::today())
-        	->where('status','active')->first();
+        	->where('status','active')
+            ->orderBy('id','desc')
+            ->first();
         return $this->generateResponse(true,'Patient Request Status',$patientroadl,200);
     }
 
@@ -273,7 +275,7 @@ class PatientRequestController extends Controller
                 $roadlInformation = new RoadlInformation();
                 $roadlInformation->user_id = $request->user_id;
                 $roadlInformation->patient_requests_id = $patient->id;
-                $roadlInformation->client_id = $request->user_id;
+                $roadlInformation->client_id = $patient->user_id;
                 $roadlInformation->latitude = $request->latitude;
                 $roadlInformation->longitude = $request->longitude;
                 $roadlInformation->status = "start";
