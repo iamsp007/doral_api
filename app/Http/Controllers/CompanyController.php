@@ -8,6 +8,8 @@ use App\Models\Referral;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use URL;
+use App\Mail\ReferralAcceptedMail;
 
 class CompanyController extends Controller
 {
@@ -433,10 +435,33 @@ class CompanyController extends Controller
             $data = array(
                 'status' => $Company['status']
             );
-
+            
             $updateRecord = Company::where('id', $Company['Company_id'])
                 ->update($data);
             if ($updateRecord) {
+                if ($Company['status'] == 1) {
+                    $company = Company::find($Company['Company_id']);
+                    $data = 'abcefghijklmnopqrstuvwxyz';
+                    $generate_password = substr(str_shuffle($data), 0, 6);
+                    $company->password = Hash::make($generate_password);
+                    $company->save();
+
+                    $email = $company->email;
+
+                    $url = URL::to('/').'/referral/email_verified/'.base64_encode($company->id);
+                    $details = [
+                        'name' => $company->name,
+                        'password' => $generate_password,
+                        'href' => $url,
+                        'email' => $email
+                    ];
+                    try {
+                        \Mail::to($email)->send(new ReferralAcceptedMail($details));
+                    }catch (\Exception $exception){
+                        \Log::info($exception->getMessage());
+                    }
+                    
+                }
                 $status = true;
                 $message = 'Status updated';
             }
