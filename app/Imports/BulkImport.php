@@ -6,6 +6,7 @@ use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\PatientReferralNotSsn;
 use App\Models\User;
+use App\Models\FailRecodeImport;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Date;
@@ -19,10 +20,14 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Spatie\Permission\Models\Permission;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
 
 HeadingRowFormatter::default('slug');
 
-class BulkImport implements ToModel, WithHeadingRow, WithValidation
+
+class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,ShouldQueue
 {
     /**
     * @param array $row
@@ -33,13 +38,15 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
     public $service_id = null;
     public $file_type = null;
     public $form_id = null;
+    public $file_name = null;
 
-    public function __construct($rid, $sid, $ftype, $fid) {
+    public function __construct($rid, $sid, $ftype, $fid,$file_name) {
 //        \Log::info($sid);
        $this->referral_id = $rid;
        $this->service_id = $sid;
        $this->file_type = $ftype;
        $this->form_id = $fid;
+       $this->$file_name = $file_name;
     }
 
 
@@ -358,6 +365,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
               $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
               $patientRefNotSsn->save();
           }
+         
+
+
           //dd($record);
           //PatientReferral::insert($record);
         } catch(Exception $e) {
@@ -366,12 +376,30 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
     }
 
 
-    public function rules(): array
+   public function rules(): array
     {
-        /*return [
-            'ssn'=>'required',
-            'date_of_birth'=>'required',
-        ];*/
-        return [];
+        // return [
+        //     'first_name' => 'required',
+        //     'last_name' => 'required',
+        // ];
+
+      return [];
     }
+
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
+
+   //  public function onError(\Throwable $e)
+   // {
+   //      return new FailRecodeImport([
+   //        'row' => $e->row(),
+   //        'attribute' => $e->attribute(),
+   //        'errors' => $e->errors(),
+   //        'values' => $e->values(),
+   //        'file_name'=> $this->file_name
+   //      ]);
+   //  }
+
 }
