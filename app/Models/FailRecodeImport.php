@@ -13,7 +13,7 @@ class FailRecodeImport extends Model
      *
      * @var array
      */
-    protected $table='fail_import_recode11';
+    protected $table='fail_import_recode';
     protected $fillable = [
         'row', 'attribute','errors','values','file_name'
     ];

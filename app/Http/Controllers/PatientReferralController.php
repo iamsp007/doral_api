@@ -61,13 +61,13 @@ class PatientReferralController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate($request,[
             'file_name'=>'required',
             'file_type'=>'required',
             'referral_id'=>'required',
             'service_id'=>'required',
         ]);
+        
 
         try {
 
@@ -92,15 +92,13 @@ class PatientReferralController extends Controller
 
                 $filePath = storage_path('app/'.$path);
 
-                 $data = Excel::queueImport(new BulkImport(
+                 $data = Excel::Import(new BulkImport(
                     $request->referral_id,
                     $request->service_id,
                     $request->file_type,
                     $request->form_id,
-                    $fileNameToStore
+                    $fileNameToStore,
                 ), $request->file('file_name'));
-
-              //dd($data); exit();
 
 
                 return $this->generateResponse(true,'CSV Uploaded successfully',$data,200);

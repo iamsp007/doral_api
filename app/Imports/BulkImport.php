@@ -22,7 +22,6 @@ use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\SkipsOnError;
 
 HeadingRowFormatter::default('slug');
 
@@ -34,27 +33,32 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
+
+    
     public $referral_id = null;
     public $service_id = null;
     public $file_type = null;
     public $form_id = null;
     public $file_name = null;
+    private $row = 0;
 
     public function __construct($rid, $sid, $ftype, $fid,$file_name) {
 //        \Log::info($sid);
+      
        $this->referral_id = $rid;
        $this->service_id = $sid;
        $this->file_type = $ftype;
        $this->form_id = $fid;
-       $this->$file_name = $file_name;
+       $this->file_name = $file_name;
     }
 
 
 
     public function model(array $row)
     {
+
+      try {
         $record = [];
-        try {
             $dob = "";
             if(isset($row['date_of_birth'])) {
                 $dob = date('Y-m-d', strtotime($row['date_of_birth']));
@@ -365,25 +369,32 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
               $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
               $patientRefNotSsn->save();
           }
+
+        }catch(Exception $e) {
+             $faild_recodes = new FailRecodeImport();
+                 $faild_recodes->error = $e->getMessage();
+                 $faild_recodes->file_name = $this->file_name;
+                 $faild_recodes->row = ++$this->row;
+                 $faild_recodes->save();
+        }
          
 
 
           //dd($record);
           //PatientReferral::insert($record);
-        } catch(Exception $e) {
-            \Log::info($e);
-        }
+        
     }
 
 
    public function rules(): array
     {
         // return [
-        //     'first_name' => 'required',
-        //     'last_name' => 'required',
+        //     '*.last_name' => ['required'],
         // ];
 
       return [];
+
+      
     }
 
     public function chunkSize(): int
@@ -391,15 +402,5 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
         return 1000;
     }
 
-   //  public function onError(\Throwable $e)
-   // {
-   //      return new FailRecodeImport([
-   //        'row' => $e->row(),
-   //        'attribute' => $e->attribute(),
-   //        'errors' => $e->errors(),
-   //        'values' => $e->values(),
-   //        'file_name'=> $this->file_name
-   //      ]);
-   //  }
 
 }
