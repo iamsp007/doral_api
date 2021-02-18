@@ -9,6 +9,7 @@ use App\Http\Requests\CCMReadingRequest;
 use App\Http\Requests\ClinicianRequestAcceptRequest;
 use App\Models\AssignAppointmentRoadl;
 use App\Models\CCMReading;
+use App\Models\Referral;
 use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
@@ -320,14 +321,54 @@ class PatientRequestController extends Controller
     }
 
     public function clinicianPatientRequestList(Request $request){
-        $patientRequestList = PatientRequest::with('detail','ccrm','patientDetail','appointmentType')
-            ->where('is_active','=','1')
-            ->orderBy('id','desc')
-            ->get();
+
+        $referral = Referral::where('guard_name','=','partner')
+            ->whereIn('name',Auth::user()->roles->pluck('name'))
+            ->pluck('name');
+        if (count($referral)>0){
+            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
+                ->whereHas('appointmentType',function ($q) use ($referral){
+                    $q->whereIn('referral_type',$referral);
+                })
+                ->where(function ($q) use ($request){
+                    if ($request->has('type') && $request->type==='pending'){
+                        $q->whereNull('clincial_id');
+                    }elseif ($request->has('type') && $request->type==='running'){
+                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
+                    }elseif ($request->has('type') && $request->type==='complete'){
+                        $q->where('status','=','complete');
+                    }elseif ($request->has('type') && $request->type==='latest'){
+                        $q->where('created_at', '>',
+                            Carbon::now()->subHours(1)->toDateTimeString()
+                        );
+                    }
+                })
+                ->orderBy('id','desc')
+                ->get();
+
+        }else{
+            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
+                ->where(function ($q) use ($request){
+                    if ($request->has('type') && $request->type==='pending'){
+                        $q->whereNull('clincial_id');
+                    }elseif ($request->has('type') && $request->type==='running'){
+                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
+                    }elseif ($request->has('type') && $request->type==='complete'){
+                        $q->where('status','=','complete');
+                    }elseif ($request->has('type') && $request->type==='latest'){
+                        $q->where('created_at', '>',
+                            Carbon::now()->subHours(1)->toDateTimeString()
+                        );
+                    }
+                })
+                ->orderBy('id','desc')
+                ->get();
+        }
+
         if (count($patientRequestList)>0){
             return $this->generateResponse(true,'Patient Request List',$patientRequestList,200);
         }
-        return $this->generateResponse(false,'Something Went Wrong',null,200);
+        return $this->generateResponse(false,'Patient Request Not Available',$patientRequestList,200);
     }
 
     public function sendNexmoMessage($userDetails,$type){
