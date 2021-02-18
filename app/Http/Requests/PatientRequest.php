@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Helpers\Helper;
+use App\Models\Referral;
 use App\Models\User;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Foundation\Http\FormRequest;

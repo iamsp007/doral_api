@@ -357,7 +357,7 @@ class PatientRequestController extends Controller
                         $q->where('status','=','complete');
                     }elseif ($request->has('type') && $request->type==='latest'){
                         $q->where('created_at', '>',
-                            Carbon::now()->subHours(1)->toDateTimeString()
+                            Carbon::now()->subHours(3)->toDateTimeString()
                         );
                     }
                 })
