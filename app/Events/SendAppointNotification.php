@@ -15,19 +15,18 @@ class SendAppointNotification
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct($data,$clinicianList)
+    public function __construct($data,$clinicianList,$title="Your Appointment is booked by patient",$message="Your Appointment is booked by patient")
     {
         foreach ($clinicianList as $item) {
-            $message="Your Appointment is booked by patient";
-            $title="Your Appointment is booked by patient";
             $token=$item->device_token;
             $web_token=$item->web_token;
             $helper = new Helper();
             if ($token){
-                $helper->sendNotification($token,$title,$data,1);
+                $helper->sendNotification($token,$title,$message,$data,4);
             }
             if ($web_token){
-                $helper->sendWebNotification($web_token,$title,$data,1);
+                $link=env('WEB_URL').'clinician/scheduled-appointment';
+                $helper->sendWebNotification($web_token,$title,$message,$data,4,$link);
             }
         }
     }

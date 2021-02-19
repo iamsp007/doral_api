@@ -280,7 +280,7 @@ class AppointmentController extends Controller
                 'reasons' => $reasons
             ];
             $status = true;
-            $message = "Reasons List";
+            $message = "Please select reason";
             return $this->generateResponse($status, $message, $data);
         } catch (\Exception $e) {
             $status = false;
@@ -327,8 +327,7 @@ class AppointmentController extends Controller
     public function cancelAppointment(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'appointment_id'=>'required|exists:appointments,id',
-            'reason_notes'=>'required'
+            'appointment_id'=>'required|exists:appointments,id'
         ]);
         if ($validator->fails()){
             return $this->generateResponse(false,'Invalid Data',$validator->errors(),200);
@@ -341,6 +340,13 @@ class AppointmentController extends Controller
             $appointment->reason_notes = $request->has('reason_notes')?$request->reason_notes:null;
             $appointment->cancel_user = Auth::user()->id;
             if ($appointment->save()){
+                $clinicianDetail = User::whereIn('id',[$appointment->provider1,$appointment->provider2])->get();
+                $title='Your Appointment is cancelled by '.Auth::user()->first_name.' '.Auth::user()->last_name;
+                $message=$request->has('reason_notes')?$request->input('reason_notes'):null;
+                if ($message===null){
+                    $message=CancelAppointmentReasons::where(['id'=>$request->reason_id])->first()->reason;
+                }
+                event(new SendAppointNotification($appointment,$clinicianDetail,$title,$message));
                 return $this->generateResponse(true,'Appointment Cancel Successfully!',null,200);
             }
             return $this->generateResponse(false,'Something Went Wrong!',null,422);
@@ -447,5 +453,23 @@ class AppointmentController extends Controller
             }
         }
         return $time;
+    }
+
+    /**
+     * Appointments
+     */
+    public function appointments(Request $request)
+    {
+        try {
+            if (!$request->date) {
+                throw new Exception("Invalid parameter passed");
+            }
+            $response = Appointment::getAppointments($request);
+            return $this->generateResponse($response['status'], $response['message'], $response['data']);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
     }
 }

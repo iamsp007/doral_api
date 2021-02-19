@@ -6,6 +6,7 @@ use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\PatientReferralNotSsn;
 use App\Models\User;
+use App\Models\FailRecodeImport;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Date;
@@ -19,38 +20,54 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Spatie\Permission\Models\Permission;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 HeadingRowFormatter::default('slug');
 
-class BulkImport implements ToModel, WithHeadingRow, WithValidation
+
+class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,ShouldQueue
 {
     /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
+
+    
     public $referral_id = null;
     public $service_id = null;
     public $file_type = null;
     public $form_id = null;
+    public $file_name = null;
+    private $row = 0;
 
-    public function __construct($rid, $sid, $ftype, $fid) {
+    public function __construct($rid, $sid, $ftype, $fid,$file_name) {
 //        \Log::info($sid);
+      
        $this->referral_id = $rid;
        $this->service_id = $sid;
        $this->file_type = $ftype;
        $this->form_id = $fid;
+       $this->file_name = $file_name;
     }
 
 
 
     public function model(array $row)
     {
+
+      try {
         $record = [];
-        try {
-            if( (isset($row['ssn']) && !empty($row['ssn'])) && (isset($row['date_of_birth']) && !empty($row['date_of_birth']))) {
+            $dob = "";
+            if(isset($row['date_of_birth'])) {
+                $dob = date('Y-m-d', strtotime($row['date_of_birth']));
+            }else if(isset($row['dob'])) {
+                $dob = date('Y-m-d', strtotime($row['dob']));
+            }
+            if( (isset($row['ssn']) && !empty($row['ssn'])) && (!empty($dob))) {
                 $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
-                if ($patient){
+                if ($patient) {
                     $user = User::find($patient->user_id);
                     $address = $patient->address1;
                     if (isset($row['street1'])){
@@ -143,6 +160,26 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                             'cert_next_date' => $patient->cert_next_date
                         ];
                     }
+                    // Wage Parity Section Start
+                    $wageParity = [];
+                    if(isset($row['plan'])) {
+                        $wageParity = [
+                            'person_code' => $row['person_code'],
+                            'grp_number' => $row['grp_number'],
+                            'id_number' => $row['id_number'],
+                            'eff_date' => $row['eff_date'],
+                            'term_date' => $row['term_date'],
+                            'initial' => $row['initial'],
+                            'division' => $row['division'],
+                            'coverage' => $row['coverage'],
+                            'plan' => $row['plan'],
+                            'network' => $row['network'],
+                            'coverage_level' => $row['coverage_level'],
+                            'apt' => $row['apt']
+                        ];
+                    }
+                    
+                    // Wage Parity Section End
                     $record = [
                              'user_id'=>$user->id,
                              'referral_id'=>$this->referral_id,
@@ -154,7 +191,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                              'middle_name'=>isset($row['middle_name'])?$row['middle_name']:$patient->middle_name,
                              'gender'=>isset($row['gender'])?$row['gender']:$patient->gender,
                              'email' => isset($row['email'])?$row['email']:$patient->email,
-                             'dob'=>Carbon::createFromDate($row['date_of_birth']),
+                             'dob'=>$dob,
+//                             'dob'=>Carbon::createFromDate($dob),
                              'phone1'=>isset($row['phone2'])?$row['phone2']:$patient->phone1,
                              'phone2'=>isset($row['phone2'])?$row['phone2']:$patient->phone2,
                              'address_1'=>$address,
@@ -174,6 +212,9 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                          ];
                     if(count($dataV) > 0) {
                       $record = array_merge($record, $dataV);
+                    }
+                    if(count($wageParity) > 0) {
+                      $record = array_merge($record, $wageParity);
                     }
                     PatientReferral::where('id', $patient->id)
                             ->update($record);
@@ -264,8 +305,26 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                               $benefit_plan = 1;
                             }
                         }
-                        PatientReferral::updateorcreate(
-                           [
+                        // Wage Parity Section Start
+                        $wageParity = [];
+                        if(isset($row['plan'])) {
+                            $wageParity = [
+                                'person_code' => $row['person_code'],
+                                'grp_number' => $row['grp_number'],
+                                'id_number' => $row['id_number'],
+                                'eff_date' => $row['eff_date'],
+                                'term_date' => $row['term_date'],
+                                'initial' => $row['initial'],
+                                'division' => $row['division'],
+                                'coverage' => $row['coverage'],
+                                'plan' => $row['plan'],
+                                'network' => $row['network'],
+                                'coverage_level' => $row['coverage_level'],
+                                'apt' => $row['apt']
+                            ];
+                        }
+                        // Wage Parity Section End
+                        $record = [
                                'user_id'=>$user->id,
                                'referral_id'=>$this->referral_id,
                                'service_id'=>$this->service_id,
@@ -277,7 +336,8 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                                'gender'=>isset($row['gender'])?$row['gender']:null,
                                'email' => isset($row['email'])?$row['email']:null,
                                'ssn' => $row['ssn'],
-                               'dob'=>Carbon::createFromDate($row['date_of_birth']),
+                               'dob'=>$dob,
+//                               'dob'=>Carbon::createFromDate($dob),
                                'phone1'=>isset($row['phone2'])?$row['phone2']:null,
                                'phone2'=>isset($row['phone2'])?$row['phone2']:null,
                                'address_1'=>$address,
@@ -294,9 +354,13 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
                                'county' => isset($row['county'])?$row['county']:null,
                                'working_hour' => $working_hour,
                                'benefit_plan' => $benefit_plan
-                           ]);
+                           ];
+                          if(count($wageParity) > 0) {
+                            $record = array_merge($record, $wageParity);
+                          }
+                          PatientReferral::updateorcreate($record);
                     }
-                    \Log::info(123456);
+//                    \Log::info(123456);
                   }
           } else {
               $patientRefNotSsn = new PatientReferralNotSsn();
@@ -305,20 +369,38 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation
               $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
               $patientRefNotSsn->save();
           }
+
+        }catch(Exception $e) {
+             $faild_recodes = new FailRecodeImport();
+                 $faild_recodes->error = $e->getMessage();
+                 $faild_recodes->file_name = $this->file_name;
+                 $faild_recodes->row = ++$this->row;
+                 $faild_recodes->save();
+        }
+         
+
+
           //dd($record);
           //PatientReferral::insert($record);
-        } catch(Exception $e) {
-            \Log::info($e);
-        }
+        
     }
 
 
-    public function rules(): array
+   public function rules(): array
     {
-        /*return [
-            'ssn'=>'required',
-            'date_of_birth'=>'required',
-        ];*/
-        return [];
+        // return [
+        //     '*.last_name' => ['required'],
+        // ];
+
+      return [];
+
+      
     }
+
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
+
+
 }

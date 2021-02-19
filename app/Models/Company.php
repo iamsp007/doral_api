@@ -12,7 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 class Company extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
-    protected $guard = 'company';
+    protected $guard = 'referral';
     /**
      * The attributes that are mass assignable.
      *

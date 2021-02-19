@@ -9,6 +9,8 @@ use App\Models\Referral;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use URL;
+use App\Mail\ReferralAcceptedMail;
 
 class CompanyController extends Controller
 {
@@ -434,7 +436,7 @@ class CompanyController extends Controller
             $data = array(
                 'status' => $Company['status']
             );
-
+            
             $updateRecord = Company::where('id', $Company['Company_id'])
                 ->update($data);
             if ($updateRecord) {
@@ -442,7 +444,8 @@ class CompanyController extends Controller
                 $message = 'Status updated';
             }
             $data = [
-                'Company_id' => $updateRecord
+                'Company_id' => $Company['Company_id'],
+                'Company_status' => $Company['status']
             ];
             return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
