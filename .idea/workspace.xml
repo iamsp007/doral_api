@@ -3,16 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientLabReportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientLabReportController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RoadlController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/RoadlController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/PatientLabReportRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/PatientLabReportRequest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/AssignAppointmentRoadl.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/AssignAppointmentRoadl.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_02_04_052925_drop_x_ray_due_date_x_ray_expiry_date_x_ray_result_from_patient_lab_reports.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_02_04_052925_drop_x_ray_due_date_x_ray_expiry_date_x_ray_result_from_patient_lab_reports.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_02_04_111946_add_sequence_and_parent_id_lab_report_types.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_02_04_111946_add_sequence_and_parent_id_lab_report_types.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_02_04_131409_add_note_patient_lab_reports.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_02_04_131409_add_note_patient_lab_reports.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_02_06_120414_add_fields_to_patient_referral.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_02_06_120414_add_fields_to_patient_referral.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/PartnerUser.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/PartnerUser.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +16,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -182,6 +181,7 @@
       <path value="$PROJECT_DIR$/vendor/nexmo/laravel" />
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-zendframework-bridge" />
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-diactoros" />
+      <path value="$PROJECT_DIR$/vendor/predis/predis" />
     </include_path>
   </component>
   <component name="ProjectId" id="1jExH90K84QkoSjIviyVDY4aK6W" />
@@ -194,7 +194,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../doral_web" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -493,7 +493,24 @@
       <workItem from="1612537688276" duration="566000" />
       <workItem from="1612544384040" duration="1455000" />
       <workItem from="1612663633633" duration="596000" />
-      <workItem from="1612664340377" duration="3104000" />
+      <workItem from="1612664340377" duration="3563000" />
+      <workItem from="1612701097629" duration="2583000" />
+      <workItem from="1612785005558" duration="1269000" />
+      <workItem from="1612845149003" duration="161000" />
+      <workItem from="1612859950931" duration="2901000" />
+      <workItem from="1612877938807" duration="1441000" />
+      <workItem from="1612885922855" duration="2293000" />
+      <workItem from="1612926137493" duration="5008000" />
+      <workItem from="1612931201357" duration="69000" />
+      <workItem from="1612936060055" duration="3710000" />
+      <workItem from="1612964728399" duration="27000" />
+      <workItem from="1612980006023" duration="19000" />
+      <workItem from="1613027651629" duration="1796000" />
+      <workItem from="1613045745403" duration="2410000" />
+      <workItem from="1613050683073" duration="599000" />
+      <workItem from="1613058911774" duration="720000" />
+      <workItem from="1613100218090" duration="2593000" />
+      <workItem from="1613109716109" duration="1090000" />
     </task>
     <servers />
   </component>
