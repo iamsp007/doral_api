@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\CompanyPaymentPlanInfo;
 use Illuminate\Http\Request;
 use App\Models\Referral;
 use Exception;
@@ -187,7 +188,7 @@ class CompanyController extends Controller
      */
     public function show(Request $request,$id)
     {
-        $company = Company::with('referral')->find($id);
+        $company = Company::with('referral')->with('paymentInfo')->find($id);
         if ($company){
             return $this->generateResponse(true,'Company Information',$company,200);
         }
@@ -449,6 +450,46 @@ class CompanyController extends Controller
             return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
             //dd($e);
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, $data);
+        }
+    }
+
+    /**
+     * Insert / Update Service Payment
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function insertUpdateServicePayment(Request $request) {
+        $request = json_decode($request->getContent(), true);
+       
+        $status = 0;
+        $data = [];
+        $message = 'Something wrong';
+        try {
+
+            $companyPaymentPlan = CompanyPaymentPlanInfo::where('service_id',$request['service_id'])->where('service_payment_plan_id',$request['service_payment_plan_id'])->where('company_id',$request['company_id'])->get()->first();
+            if ($companyPaymentPlan) {
+                $companyPaymentPlan->service_payment_plan_details_id = $request['service_payment_plan_details_id']; 
+                $companyPaymentPlan->save();
+            } else {
+                $companyPaymentPlan = new CompanyPaymentPlanInfo();
+                $companyPaymentPlan->service_id = $request['service_id'];
+                $companyPaymentPlan->service_payment_plan_id = $request['service_payment_plan_id'];
+                $companyPaymentPlan->service_payment_plan_details_id = $request['service_payment_plan_details_id'];
+                $companyPaymentPlan->company_id = $request['company_id'];
+                $companyPaymentPlan->save();
+            }
+            
+            $data = [
+                'Payment Information' => $request
+            ];
+            $status = true;
+            $message = "Compnay Payment Information saved Succesfully";
+            return $this->generateResponse($status, $message, $data);
+        } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);
