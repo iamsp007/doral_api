@@ -16,9 +16,8 @@ class CreateEmergencyPreparednessesTable extends Migration
         Schema::create('emergency_preparednesses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->index('patient_id');
-            $table->string('emergency_preparedness_id')->nullable();
             $table->string('type')->nullable();
-            $table->string('name')->nullable();
+            $table->json('value');
             $table->timestamps();
         });
     }
