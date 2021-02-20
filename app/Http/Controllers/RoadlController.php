@@ -137,31 +137,31 @@ class RoadlController extends Controller
             $data['type']=1;
             $locations=array();
             if (Auth::user()->hasRole('LAB')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->where('referral_type','=','LAB')
                     ->orderBy('id','desc')
                     ->get()->toArray();
             }elseif (Auth::user()->hasRole('X-RAY')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->where('referral_type','=','X-RAY')
                     ->orderBy('id','desc')
                     ->get()->toArray();
             }elseif (Auth::user()->hasRole('CHHA')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->where('referral_type','=','CHHA')
                     ->orderBy('id','desc')
                     ->get()->toArray();
             }elseif (Auth::user()->hasRole('Home Oxygen')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->where('referral_type','=','Home Oxygen')
                     ->orderBy('id','desc')
                     ->get()->toArray();
             }elseif (Auth::user()->hasRole('clinician') || Auth::user()->hasRole('patient')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->orderBy('id','desc')
                     ->get()->toArray();
@@ -171,6 +171,7 @@ class RoadlController extends Controller
             if (count($locations)>0){
                 foreach ($locations as $value) {
                     $requests = $value['requests'];
+                    $referral = $value['referral'];
                     $last_location = RoadlInformation::where('user_id','=',$value['requests']['clincial_id'])
                         ->where('patient_requests_id','=',$requests['id'])
                         ->orderBy('id','desc')
@@ -184,6 +185,8 @@ class RoadlController extends Controller
                         'first_name'=>$requests['detail']?$requests['detail']['first_name']:null,
                         'last_name'=>$requests['detail']?$requests['detail']['last_name']:null,
                         'status'=>$requests['clincial_id']===null?'pending':($last_location?$last_location->status:$requests['status']),
+                        'color'=>$referral?$referral['color']:'blue',
+                        'icon'=>$referral?env('WEB_URL').'assets/icon/'.$referral['icon']:env('WEB_URL').'assets/icon/'.'Clinician Request.png',
                         'id'=>$requests['id']
                     );
                 }
@@ -197,7 +200,7 @@ class RoadlController extends Controller
             }
             return $this->generateResponse(false,'No Patient Request Found this user',null,200);
         }else{
-            $datas = PatientRequest::with('detail','routes','appointmentType')
+            $datas = PatientRequest::with(['detail','routes','appointmentType'])
                 ->where([['id','=',$patient_request_id],['status','=','active']])
                 ->first();
             $last_location = RoadlInformation::where('user_id','=',$datas->clincial_id)->where('patient_requests_id','=',$patient_request_id)->orderBy('id','desc')->first();
@@ -212,6 +215,8 @@ class RoadlController extends Controller
                 'last_name'=>$datas->detail?$datas->detail->last_name:null,
                 'status'=>$datas->clincial_id===null?'pending':($last_location?$last_location->status:$datas->status),
                 'id'=>$datas->id,
+                'color'=>'blue',
+                'icon'=>env('WEB_URL').'assets/icon/'.'Clinician Request.png',
             );
             $data['clinicians']=$location;
             $data['patient']=array(
