@@ -28,6 +28,9 @@ class CreatePatientDetailsTable extends Migration
             $table->string('priority_code')->nullable();
             $table->date('service_request_start_date')->nullable();
 
+            $table->integer('nurse_id')->nullable();
+            $table->string('nurse_name')->nullable();
+
             $table->integer('admission_id')->nullable();
             $table->string('medicaid_number')->nullable();
             $table->string('medicare_number')->nullable();
@@ -35,6 +38,18 @@ class CreatePatientDetailsTable extends Migration
             $table->string('ssn')->nullable();
             $table->string('alert')->nullable();
 
+            $table->string('source_admission_id')->nullable();
+            $table->string('source_admission_name')->nullable();
+
+            $table->string('team_id')->nullable();
+            $table->string('team_name')->nullable();
+
+            $table->string('location_id')->nullable();
+            $table->string('location_name')->nullable();
+
+            $table->string('branch_id')->nullable();
+            $table->string('branch_name')->nullable();
+           
             $table->string('home_phone')->nullable();
             $table->string('phone2')->nullable();
             $table->string('phone2_description')->nullable();
