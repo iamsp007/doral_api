@@ -36,7 +36,7 @@ class CreatePatientDetailsTable extends Migration
             $table->string('medicare_number')->nullable();
 
             $table->string('ssn')->nullable();
-            $table->string('alert')->nullable();
+            $table->longText('alert')->nullable();
 
             $table->string('source_admission_id')->nullable();
             $table->string('source_admission_name')->nullable();
