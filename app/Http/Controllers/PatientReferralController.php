@@ -67,6 +67,8 @@ class PatientReferralController extends Controller
             'referral_id'=>'required',
             'service_id'=>'required',
         ]);
+        
+
         try {
 
             $folder = 'csv';
@@ -90,12 +92,15 @@ class PatientReferralController extends Controller
 
                 $filePath = storage_path('app/'.$path);
 
-                $data = Excel::import(new BulkImport(
+                 $data = Excel::Import(new BulkImport(
                     $request->referral_id,
                     $request->service_id,
                     $request->file_type,
-                    $request->form_id
+                    $request->form_id,
+                    $fileNameToStore,
                 ), $request->file('file_name'));
+
+
                 return $this->generateResponse(true,'CSV Uploaded successfully',$data,200);
             }
 
