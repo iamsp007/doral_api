@@ -12,4 +12,12 @@ class AssignAppointmentRoadl extends Model
     public function requests(){
         return $this->hasOne(PatientRequest::class,'id','patient_request_id')->with(['detail','routes','patient']);
     }
+
+    public function request(){
+        return $this->hasOne(PatientRequest::class,'id','patient_request_id')->with(['detail','patient']);
+    }
+
+    public function referral(){
+        return $this->hasOne(Referral::class,'name','referral_type');
+    }
 }
