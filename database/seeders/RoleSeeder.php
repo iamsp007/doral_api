@@ -15,7 +15,7 @@ class RoleSeeder extends Seeder
     public function run()
     {
         $this->command->getOutput()->progressStart(15);
-        $noral_roles = ['admin','co-ordinator','supervisor','clinician','patient','LAB','X-RAY','CHHA','Home Oxygen','Home Influsion','Wound Care','DME'];
+        $noral_roles = ['admin','co-ordinator','supervisor','clinician','patient','LAB','X-RAY','CHHA','Home Oxygen','Home Influsion','Wound Care','DME','cashier'];
         foreach ($noral_roles as $noral_role) {
             $role = Role::create(['guard_name' => 'web', 'name' => $noral_role]);
         }

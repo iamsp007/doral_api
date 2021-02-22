@@ -364,6 +364,23 @@ class PatientRequestController extends Controller
                 ->where('user_id','=',Auth::user()->id)
                 ->orderBy('id','desc')
                 ->get();
+        }elseif (Auth::user()->hasRole('cashier')){
+            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
+                ->where(function ($q) use ($request){
+                    if ($request->has('type') && $request->type==='pending'){
+                        $q->whereNull('clincial_id');
+                    }elseif ($request->has('type') && $request->type==='running'){
+                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
+                    }elseif ($request->has('type') && $request->type==='complete'){
+                        $q->where('status','=','complete');
+                    }elseif ($request->has('type') && $request->type==='latest'){
+                        $q->where('created_at', '>',
+                            Carbon::now()->subHours(3)->toDateTimeString()
+                        );
+                    }
+                })
+                ->orderBy('id','desc')
+                ->get();
         } else{
             $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
                 ->where(function ($q) use ($request){
