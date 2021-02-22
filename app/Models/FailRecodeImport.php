@@ -15,6 +15,6 @@ class FailRecodeImport extends Model
      */
     protected $table='fail_import_recode';
     protected $fillable = [
-        'row', 'attribute','errors','values','file_name'
+        'row', 'attribute','errors','values','file_name','service_id'
     ];
 }

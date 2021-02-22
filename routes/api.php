@@ -194,6 +194,10 @@ Route::group([
     'prefix' => 'auth'
 ], function () {
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+   Route::get('patient-referral-failed/{id}', 'App\Http\Controllers\PatientReferralController@faileRecode');
+   Route::get('patient-referral-failed-view/{id}', 'App\Http\Controllers\PatientReferralController@viewfaileRecode');
+
+   
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
 });

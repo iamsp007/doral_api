@@ -22,19 +22,21 @@ use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 
 HeadingRowFormatter::default('slug');
 
 
-class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,ShouldQueue
+class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailure,WithChunkReading,ShouldQueue
 {
+
+    use Importable;
     /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
 
-    
     public $referral_id = null;
     public $service_id = null;
     public $file_type = null;
@@ -370,7 +372,18 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
               $patientRefNotSsn->save();
           }
 
-        }catch(Exception $e) {
+        // }catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        //             $failures = $e->failures();
+     
+        //     foreach ($failures as $failure) {
+        //             $failure->row(); // row that went wrong
+        //             $failure->attribute(); // either heading key (if using heading row concern) or column index
+        //             $failure->errors(); // Actual error messages from Laravel validator
+        //             $failure->values(); // The values of the row that has failed.
+
+        //             print_r($failure); exit();
+        //         }
+         }catch(Exception $e) {
              $faild_recodes = new FailRecodeImport();
                  $faild_recodes->error = $e->getMessage();
                  $faild_recodes->file_name = $this->file_name;
@@ -388,19 +401,26 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
 
    public function rules(): array
     {
-        // return [
-        //     '*.last_name' => ['required'],
-        // ];
-
-      return [];
-
+        return [
+            '*.last_name' => ['required'],
+        ];
       
     }
+
+    //  public function onFailure(Failure ...$failures)
+    // {
+    //     // Handle the failures how you'd like.
+    // }
+
+
+
 
     public function chunkSize(): int
     {
         return 1000;
     }
+
+   
 
 
 }

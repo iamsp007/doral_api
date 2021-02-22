@@ -13,6 +13,7 @@ use Excel;
 use App\Imports\BulkImport;
 use App\Imports\BulkCertImport;
 use App\Models\PatientAssistant;
+use App\Models\FailRecodeImport;
 
 class PatientReferralController extends Controller
 {
@@ -68,7 +69,7 @@ class PatientReferralController extends Controller
             'service_id'=>'required',
         ]);
         
-
+          
         try {
 
             $folder = 'csv';
@@ -92,22 +93,41 @@ class PatientReferralController extends Controller
 
                 $filePath = storage_path('app/'.$path);
 
-                 $data = Excel::Import(new BulkImport(
-                    $request->referral_id,
-                    $request->service_id,
-                    $request->file_type,
+                //  $data = Excel::Import(new BulkImport(
+                //     $request->referral_id,
+                //     $request->service_id,
+                //     $request->file_type,
+                //     $request->form_id,
+                //     $fileNameToStore,
+                // ), $request->file('file_name'));
+
+                $import = new BulkImport( $request->referral_id,
+                     $request->service_id,
+                     $request->file_type,
                     $request->form_id,
-                    $fileNameToStore,
-                ), $request->file('file_name'));
-
-
-                return $this->generateResponse(true,'CSV Uploaded successfully',$data,200);
+                     $fileNameToStore);
+                $import->Import($request->file('file_name'));
+                // if ($import->failures()->isNotEmpty()) {
+                //         return back()->withFailures($import->failures());
+                //     }
+                return $this->generateResponse(true,'CSV Uploaded successfully',$import,200);
             }
 
             return $this->generateResponse(false,'Something Went Wrong!',null,200);
-        }catch (\Exception $exception){
-            \Log::info($exception->getMessage());
-            return $this->generateResponse(false,$exception->getMessage(),null,200);
+        // }catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        //             $failures = $e->failures();
+     
+        //     foreach ($failures as $failure) {
+        //             $failure->row(); // row that went wrong
+        //             $failure->attribute(); // either heading key (if using heading row concern) or column index
+        //             $failure->errors(); // Actual error messages from Laravel validator
+        //             $failure->values(); // The values of the row that has failed.
+
+        //             print_r($failure); exit();
+        //         }
+         }catch (\Exception $exception){
+                    \Log::info($exception->getMessage());
+                    return $this->generateResponse(false,$exception->getMessage(),null,200);
         }
 
         return $this->generateResponse(false,'something Went Wrong!',null,200);
@@ -302,6 +322,53 @@ class PatientReferralController extends Controller
         }catch (\Exception $exception){
             \Log::info($exception->getMessage());
             return $this->generateResponse(false,$exception->getMessage(),null,200);
+        }
+    }
+
+    public function faileRecode(Request $request) {
+       $data = array();
+       $id = $request->id;
+        try {
+            $faileRecode = FailRecodeImport::where('service_id', $id)
+            ->select('id','row','file_name','attribute','errors')
+            ->get();
+            if (!$faileRecode) {
+                throw new Exception("No Referance Patients are registered");
+            }
+            $data = [
+                'faileRecode' => $faileRecode
+            ];
+            //return $this->generateResponse(true, 'Referance Patients!', $data);
+            return $this->generateResponse(true,'Failedrecode!',$faileRecode,200);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
+        }
+    }
+
+    public function viewfaileRecode(Request $request) {
+       $data = array();
+       $id = $request->id;
+        try {
+            $faileRecode = FailRecodeImport::where('id', $id)
+            ->select('values')
+            ->first();
+            $data = array();
+
+            $data_send = json_decode($faileRecode->values);
+             array_push($data,$data_send);
+
+            if (!$faileRecode) {
+                throw new Exception("No Referance Patients are registered");
+            }
+            // $data = [
+            //     'faileRecode' => $data_send
+            // ];
+            //return $this->generateResponse(true, 'Referance Patients!', $data);
+            return $this->generateResponse(true,'Failedrecode!',$data,200);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
         }
     }
 }
