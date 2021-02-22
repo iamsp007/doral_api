@@ -379,6 +379,7 @@ class PatientRequestController extends Controller
                         );
                     }
                 })
+                ->whereNull('appointmentType')
                 ->orderBy('id','desc')
                 ->get();
         } else{
