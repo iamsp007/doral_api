@@ -113,6 +113,7 @@ Route::group([
 
         //Applicant
         Route::get('get-clinician-list', 'App\Http\Controllers\ApplicantController@getClinicianList');
+        Route::post('get-clinician-data', 'App\Http\Controllers\ApplicantController@getClinicianData');
         Route::get('get-clinician-detail/{id}', 'App\Http\Controllers\ApplicantController@getClinicianDetail');
 
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
@@ -230,11 +231,13 @@ Route::group([
     Route::post('appointment/patient-md-form', 'App\Http\Controllers\PatientMdFormController@store' )->middleware('role:co-ordinator|patient|clinician');
     Route::post('add-insurance', 'App\Http\Controllers\PatientInsuranceController@updateOrCreateInsurance');
     Route::post('demographyData-update', 'App\Http\Controllers\UserController@demographyDataUpdate');
-    Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
 });
+
+// Get List of Medicines.
+Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
 
 // Get list of meetings.
 Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
