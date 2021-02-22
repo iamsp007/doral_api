@@ -65,6 +65,9 @@ class PatientRequestController extends Controller
         $patient->latitude = $request->latitude;
         $patient->longitude = $request->longitude;
         $patient->reason = $request->reason;
+        if($request->has('test_name')){
+            $patient->test_name=$request->test_name;
+        }
         if($request->has('dieses')){
             $patient->dieses=$request->dieses;
         }
