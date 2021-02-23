@@ -19,6 +19,7 @@ class CreatePatientEmergencyContactsTable extends Migration
             $table->string('name')->nullable();
             $table->string('relationship_id')->nullable();
             $table->string('relationship_name')->nullable();
+            $table->string('relationship_other')->nullable();
             $table->string('lives_with_patient')->nullable();
             $table->string('have_keys')->nullable();
             $table->string('phone1')->nullable();

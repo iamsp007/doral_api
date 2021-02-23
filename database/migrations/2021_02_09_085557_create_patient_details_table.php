@@ -78,8 +78,11 @@ class CreatePatientDetailsTable extends Migration
             $table->string('primary_language')->nullable();
             $table->string('secondary_language_id')->nullable();
             $table->string('secondary_language')->nullable();
-            $table->enum('status', ['0', '1', '2', '3'])->default('0')->comment('0=pending,1=active,2=inactive,3=reject,4=deactivate');
+            $table->enum('status', ['0', '1', '2', '3', '4'])->default('0')->comment('0=pending,1=active,2=inactive,3=reject,4=deactivate');
 
+            $table->date('modified_date')->nullable();
+            $table->string('mr_number')->nullable();
+            
             $table->timestamps();
         });
     }
