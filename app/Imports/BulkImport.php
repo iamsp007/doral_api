@@ -373,18 +373,6 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
               $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
               $patientRefNotSsn->save();
           }
-
-        // }catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-        //             $failures = $e->failures();
-     
-        //     foreach ($failures as $failure) {
-        //             $failure->row(); // row that went wrong
-        //             $failure->attribute(); // either heading key (if using heading row concern) or column index
-        //             $failure->errors(); // Actual error messages from Laravel validator
-        //             $failure->values(); // The values of the row that has failed.
-
-        //             print_r($failure); exit();
-        //         }
          }catch(Exception $e) {
              $faild_recodes = new FailRecodeImport();
                  $faild_recodes->error = $e->getMessage();
