@@ -112,7 +112,7 @@ Route::group([
         Route::get('email/templatelist', 'App\Http\Controllers\EmailTemplateController@index');
 
         //Applicant
-        Route::get('get-clinician-list', 'App\Http\Controllers\ApplicantController@getClinicianList');
+        Route::get('get-clinician-list/{status_id}', 'App\Http\Controllers\ApplicantController@getClinicianList');
         Route::post('get-clinician-data', 'App\Http\Controllers\ApplicantController@getClinicianData');
         Route::get('get-clinician-detail/{id}', 'App\Http\Controllers\ApplicantController@getClinicianDetail');
 
