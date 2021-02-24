@@ -62,75 +62,59 @@ class PatientReferralController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'file_name'=>'required',
-            'file_type'=>'required',
-            'referral_id'=>'required',
-            'service_id'=>'required',
-        ]);
-        
-          
-        try {
+         $this->validate($request, ['file_name' => 'required', 'file_type' => 'required', 'referral_id' => 'required', 'service_id' => 'required', ]);
+
+        try
+        {
 
             $folder = 'csv';
-            if ($request->file_type===1){
+            if ($request->file_type === 1)
+            {
                 $folder = "demographic";
-            }elseif ($request->file_type===2){
+            }
+            elseif ($request->file_type === 2)
+            {
                 $folder = "clinical";
-            }elseif ($request->file_type===3){
+            }
+            elseif ($request->file_type === 3)
+            {
                 $folder = "compliance_due";
-            }elseif ($request->file_type===4){
+            }
+            elseif ($request->file_type === 4)
+            {
                 $folder = "previous_md";
             }
 
             // upload file
-            if ($request->hasFile('file_name')) {
-                $filenameWithExt = $request->file('file_name')->getClientOriginalName();
-                $filename =  preg_replace("/[^a-z0-9\_\-\.]/i", '_',pathinfo($filenameWithExt, PATHINFO_FILENAME));
-                $extension = $request->file('file_name')->getClientOriginalExtension();
+            if ($request->hasFile('file_name'))
+            {
+                $filenameWithExt = $request->file('file_name')
+                    ->getClientOriginalName();
+                $filename = preg_replace("/[^a-z0-9\_\-\.]/i", '_', pathinfo($filenameWithExt, PATHINFO_FILENAME));
+                $extension = $request->file('file_name')
+                    ->getClientOriginalExtension();
                 $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-                $path = $request->file('file_name')->storeAs($folder, $fileNameToStore);
+                $path = $request->file('file_name')
+                    ->storeAs($folder, $fileNameToStore);
 
-                $filePath = storage_path('app/'.$path);
+                $filePath = storage_path('app/' . $path);
 
-                //  $data = Excel::Import(new BulkImport(
-                //     $request->referral_id,
-                //     $request->service_id,
-                //     $request->file_type,
-                //     $request->form_id,
-                //     $fileNameToStore,
-                // ), $request->file('file_name'));
-
-                $import = new BulkImport( $request->referral_id,
-                     $request->service_id,
-                     $request->file_type,
-                    $request->form_id,
-                     $fileNameToStore);
+                $import = new BulkImport($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt);
                 $import->Import($request->file('file_name'));
-                // if ($import->failures()->isNotEmpty()) {
-                //         return back()->withFailures($import->failures());
-                //     }
-                return $this->generateResponse(true,'CSV Uploaded successfully',$import,200);
+
+                return $this->generateResponse(true, 'CSV Uploaded successfully', $import, 200);
             }
 
-            return $this->generateResponse(false,'Something Went Wrong!',null,200);
-        // }catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-        //             $failures = $e->failures();
-     
-        //     foreach ($failures as $failure) {
-        //             $failure->row(); // row that went wrong
-        //             $failure->attribute(); // either heading key (if using heading row concern) or column index
-        //             $failure->errors(); // Actual error messages from Laravel validator
-        //             $failure->values(); // The values of the row that has failed.
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
 
-        //             print_r($failure); exit();
-        //         }
-         }catch (\Exception $exception){
-                    \Log::info($exception->getMessage());
-                    return $this->generateResponse(false,$exception->getMessage(),null,200);
+        }
+        catch(\Exception $exception)
+        {
+            \Log::info($exception->getMessage());
+            return $this->generateResponse(false, $exception->getMessage() , null, 200);
         }
 
-        return $this->generateResponse(false,'something Went Wrong!',null,200);
+        return $this->generateResponse(false, 'something Went Wrong!', null, 200);
     }
 
     /**

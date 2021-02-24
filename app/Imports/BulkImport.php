@@ -23,14 +23,16 @@ use Maatwebsite\Excel\Concerns\WithProgressBar;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Validators\Failure;
 
 HeadingRowFormatter::default('slug');
 
 
-class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailure,WithChunkReading,ShouldQueue
+class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,SkipsOnFailure,ShouldQueue 
 {
 
-    use Importable;
+    use Importable,SkipsFailures;
     /**
     * @param array $row
     *
@@ -398,29 +400,40 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
         
     }
 
+    /**
+ * @param Failure[] $failures
+ */
+public function onFailure(Failure ...$failures)
+{
+
+    foreach ($failures as $failure) {
+      $faild_recodes = new FailRecodeImport();
+        $faild_recodes->errors = $failure->errors()[0];
+       $faild_recodes->attribute = $failure->attribute(); 
+       $faild_recodes->values = json_encode($failure->values());
+       $faild_recodes->file_name = $this->file_name;
+       $faild_recodes->row = $failure->row();
+       $faild_recodes->service_id = $this->service_id;
+       $faild_recodes->save();
+    }   
+ }
+
 
    public function rules(): array
     {
         return [
-            '*.last_name' => ['required'],
+            '*.last_name' => 'required',
+            '*.first_name' => 'required',
+            '*.ssn' => 'required',
         ];
       
     }
-
-    //  public function onFailure(Failure ...$failures)
-    // {
-    //     // Handle the failures how you'd like.
-    // }
-
-
-
 
     public function chunkSize(): int
     {
         return 1000;
     }
 
-   
 
 
 }
