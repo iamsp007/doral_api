@@ -42,6 +42,13 @@ class PatientRequest extends Model
     {
         return $this->hasOne(AssignAppointmentRoadl::class, 'patient_request_id', 'id');
     }
+    /**
+     * Get Meeting Reasons
+     */
+    public function requestType()
+    {
+        return $this->hasOne(AssignAppointmentRoadl::class, 'patient_request_id', 'id')->with('referral');
+    }
 
     public function getSymptomsAttribute($value){
         if ($value){
