@@ -15,10 +15,11 @@ class CreatePatientEmergencyContactsTable extends Migration
     {
         Schema::create('patient_emergency_contacts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->index('patient_id');
+            $table->foreignId('user_id')->index('user_id');
             $table->string('name')->nullable();
             $table->string('relationship_id')->nullable();
             $table->string('relationship_name')->nullable();
+            $table->string('relationship_other')->nullable();
             $table->string('lives_with_patient')->nullable();
             $table->string('have_keys')->nullable();
             $table->string('phone1')->nullable();
