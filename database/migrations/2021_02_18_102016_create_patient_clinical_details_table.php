@@ -19,7 +19,7 @@ class CreatePatientClinicalDetailsTable extends Migration
             $table->integer('nursing_visits_due')->nullable();
             $table->enum('md_order_required', ['0', '1'])->default('0')->comment('0=no,1=yes');
             $table->integer('md_order_due')->nullable();
-            $table->integer('md_visit_due')->nullable();
+            $table->string('md_visit_due')->nullable();
             
             $table->timestamps();
         });

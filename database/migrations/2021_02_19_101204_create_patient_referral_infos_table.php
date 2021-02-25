@@ -17,9 +17,9 @@ class CreatePatientReferralInfosTable extends Migration
             $table->id();
             $table->foreignId('patient_id')->index('patient_id');         
             $table->string('referral_master_id');
-            $table->date('referral_created_date');
+            $table->string('referral_created_date');
             $table->string('referral_name');
-            $table->date('referral_received_date');
+            $table->string('referral_received_date');
             $table->string('referral_status_id');
             $table->string('referral_status');
             $table->string('referral_commission_status_id');
