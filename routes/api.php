@@ -158,6 +158,8 @@ Route::group([
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
     Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
+     Route::post('newpatient-data', 'App\Http\Controllers\PatientController@newpatientData');
+      Route::post('patient-data', 'App\Http\Controllers\PatientController@patientData');
     Route::post('roadl-information', 'App\Http\Controllers\RoadlController@create');
     Route::post('roadl-information-show', 'App\Http\Controllers\RoadlController@show');
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
@@ -178,7 +180,9 @@ Route::group([
     Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
     Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
+    Route::post('get-schedule-appoiment-list-data', 'App\Http\Controllers\PatientController@scheduleAppoimentListData');
     Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
+    Route::post('get-cancel-appoiment-list-data', 'App\Http\Controllers\PatientController@cancelAppoimentListData');
     Route::get('get-roadl-status', 'App\Http\Controllers\PatientRequestController@getRoadLStatus');
     Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');    
     //new patient list for appointment
@@ -194,6 +198,10 @@ Route::group([
     'prefix' => 'auth'
 ], function () {
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+   Route::get('patient-referral-failed/{id}', 'App\Http\Controllers\PatientReferralController@faileRecode');
+   Route::get('patient-referral-failed-view/{id}', 'App\Http\Controllers\PatientReferralController@viewfaileRecode');
+
+   
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
 });

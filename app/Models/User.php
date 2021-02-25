@@ -290,4 +290,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Caregivers::class, 'patient_id', 'id')->orderBy('id','desc');
     }
+
+     public function patientDetail(){
+        return $this->hasOne(PatientReferral::class,'user_id','id')->with(['service','filetype']);
+    }
+
+
 }

@@ -22,19 +22,23 @@ use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Validators\Failure;
 
 HeadingRowFormatter::default('slug');
 
 
-class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,ShouldQueue
+class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,SkipsOnFailure,ShouldQueue 
 {
+
+    use Importable,SkipsFailures;
     /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
 
-    
     public $referral_id = null;
     public $service_id = null;
     public $file_type = null;
@@ -369,8 +373,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
               $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
               $patientRefNotSsn->save();
           }
-
-        }catch(Exception $e) {
+         }catch(Exception $e) {
              $faild_recodes = new FailRecodeImport();
                  $faild_recodes->error = $e->getMessage();
                  $faild_recodes->file_name = $this->file_name;
@@ -385,15 +388,32 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
         
     }
 
+    /**
+ * @param Failure[] $failures
+ */
+public function onFailure(Failure ...$failures)
+{
+
+    foreach ($failures as $failure) {
+      $faild_recodes = new FailRecodeImport();
+        $faild_recodes->errors = $failure->errors()[0];
+       $faild_recodes->attribute = $failure->attribute(); 
+       $faild_recodes->values = json_encode($failure->values());
+       $faild_recodes->file_name = $this->file_name;
+       $faild_recodes->row = $failure->row();
+       $faild_recodes->service_id = $this->service_id;
+       $faild_recodes->save();
+    }   
+ }
+
 
    public function rules(): array
     {
-        // return [
-        //     '*.last_name' => ['required'],
-        // ];
-
-      return [];
-
+        return [
+            '*.last_name' => 'required',
+            '*.first_name' => 'required',
+            '*.ssn' => 'required',
+        ];
       
     }
 
@@ -401,6 +421,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
     {
         return 1000;
     }
+
 
 
 }

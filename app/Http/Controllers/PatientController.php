@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-
+use DB;
 class PatientController extends Controller
 {
     /**
@@ -341,4 +341,81 @@ Default Password : doral@123',
         }
         return $this->generateResponse(false,'No Patient Referral Ids Found',null,422);
     }
+
+
+    public function newpatientData(Request $request) {
+
+         $requestData = $request->all();
+
+         $patientList = User::with('patientDetail','roles')
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','patient');
+            })
+            ->whereHas('patientDetail',function ($q){
+                $q->where('status','=','pending')->whereNotNull('first_name');
+            })
+            ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+            ->get();
+        return $this->generateResponse(true,'get new patient list',$patientList,200);
+    }
+
+    public function patientData(Request $request) {
+         $requestData = $request->all();
+          $patientList = User::with('patientDetail','roles')
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','patient');
+            })
+            ->where('status','=','1')
+             ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+            ->get();
+        return $this->generateResponse(true,'get new patient list',$patientList,200);
+
+    }
+
+     public function scheduleAppoimentListData(Request $request){
+        // patient referral pending status patient list
+        $requestData = $request->all();
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['meeting','service','filetype','roadl'])
+            ->with(['patients' => function ($q) use($requestData) {
+                $q->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%');
+            }])
+           
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
+            ->orderBy('start_datetime','asc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+    }
+
+      public function cancelAppoimentListData(Request $request){
+        // patient referral pending status patient list
+         $requestData = $request->all();
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['cancelAppointmentReasons','service','filetype','cancelByUser'])
+             ->with(['patients' => function ($q) use($requestData) {
+                $q->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%');
+            }])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->where('status','=','cancel')
+            ->orderBy('start_datetime','desc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+    }
+
+    
 }
