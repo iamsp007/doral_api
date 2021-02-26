@@ -185,7 +185,7 @@ Route::group([
     Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
     Route::post('get-cancel-appoiment-list-data', 'App\Http\Controllers\PatientController@cancelAppoimentListData');
     Route::get('get-roadl-status', 'App\Http\Controllers\PatientRequestController@getRoadLStatus');
-    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');    
+     
     //new patient list for appointment
     Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
     //Appointment
@@ -201,7 +201,8 @@ Route::group([
     Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
    Route::get('patient-referral-failed/{id}', 'App\Http\Controllers\PatientReferralController@faileRecode');
    Route::get('patient-referral-failed-view/{id}', 'App\Http\Controllers\PatientReferralController@viewfaileRecode');
-
+   Route::post('search-patient-data', 'App\Http\Controllers\PatientReferralController@searchPatientData');
+ Route::post('search-patient-data-failed-file', 'App\Http\Controllers\PatientReferralController@searchPatientDataFailedfile');
    
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
@@ -260,3 +261,4 @@ Route::delete('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@del
 
 Route::post('/lab-report/store', 'App\Http\Controllers\PatientLabReportController@store')->name('lab-report.store');
 Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportController@addNote')->name('lab-report-note.store');
+Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');   

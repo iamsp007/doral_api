@@ -14,6 +14,7 @@ use App\Imports\BulkImport;
 use App\Imports\BulkCertImport;
 use App\Models\PatientAssistant;
 use App\Models\FailRecodeImport;
+use DB;
 
 class PatientReferralController extends Controller
 {
@@ -354,5 +355,25 @@ class PatientReferralController extends Controller
             $message = $e->getMessage();
             return $this->generateResponse(false, $message, $data);
         }
+    }
+
+    public function searchPatientData(Request $request) {
+        $requestData = $request->all();
+        $status = false;
+        $data = [];
+        $message = "Data get successfully.";
+
+         $patientReferral = PatientReferral::with('detail', 'service', 'filetype', 'mdforms', 'plans')->where('service_id', '=',$requestData['id'])->whereNotNull('first_name')  ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')->get();
+         return $this->generateResponse($status, $message, $patientReferral, 200);
+    }
+
+    public function searchPatientDataFailedfile(Request $request) {
+        $requestData = $request->all();
+        $status = false;
+        $data = [];
+        $message = "Data get successfully.";
+
+        $response = FailRecodeImport::where('service_id', '=',$requestData['id'])->where('file_name', 'like', '%'.$requestData['searchTerm'].'%')->select('id','row','file_name','attribute','errors')->get();
+        return $this->generateResponse($status, $message, $response, 200);
     }
 }

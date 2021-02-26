@@ -300,6 +300,7 @@ class PatientController extends Controller
     }
 
     public function changePatientStatus(Request $request){
+
         $this->validate($request,[
             'id'=>'required',
             'status'=>'required'
