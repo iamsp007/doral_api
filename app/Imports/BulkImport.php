@@ -31,14 +31,13 @@ HeadingRowFormatter::default('slug');
 
 class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,SkipsOnFailure,ShouldQueue 
 {
-
     use Importable,SkipsFailures;
+
     /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-
     public $referral_id = null;
     public $service_id = null;
     public $file_type = null;
@@ -47,8 +46,6 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
     private $row = 0;
 
     public function __construct($rid, $sid, $ftype, $fid,$file_name) {
-//        \Log::info($sid);
-      
        $this->referral_id = $rid;
        $this->service_id = $sid;
        $this->file_type = $ftype;
@@ -56,75 +53,74 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
        $this->file_name = $file_name;
     }
 
-
-
     public function model(array $row)
     {
-
-      try {
-        $record = [];
+        try {
+            $record = [];
             $dob = "";
-            if(isset($row['date_of_birth'])) {
+
+            if (isset($row['date_of_birth'])) {
                 $dob = date('Y-m-d', strtotime($row['date_of_birth']));
-            }else if(isset($row['dob'])) {
+            } else if (isset($row['dob'])) {
                 $dob = date('Y-m-d', strtotime($row['dob']));
             }
-            if( (isset($row['ssn']) && !empty($row['ssn'])) && (!empty($dob))) {
+
+            if ((isset($row['ssn']) && !empty($row['ssn'])) && (!empty($dob))) {
                 $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
                 if ($patient) {
                     $user = User::find($patient->user_id);
                     $address = $patient->address1;
-                    if (isset($row['street1'])){
+                    if (isset($row['street1'])) {
                         $address = $row['street1'];
-                    }elseif (isset($row['address1'])){
+                    } elseif (isset($row['address1'])) {
                         $address = $row['address1'];
-                    }elseif (isset($row['address'])){
+                    } elseif (isset($row['address'])) {
                         $address = $row['address'];
                     }
 
                     $address2 = $patient->address2;
-                    if (isset($row['street2'])){
+                    if (isset($row['street2'])) {
                         $address2 = $row['street2'];
-                    }elseif (isset($row['address2'])){
+                    } elseif (isset($row['address2'])) {
                         $address2 = $row['address2'];
                     }
 
                     $emergency1_name = $patient->eng_name;
-                    if (isset($row['emergency1_name'])){
+                    if (isset($row['emergency1_name'])) {
                         $emergency1_name = $row['emergency1_name'];
                     }
 
                     $emergency1_relationship = $patient->emg_relationship;
-                    if (isset($row['emergency1_relationship'])){
+                    if (isset($row['emergency1_relationship'])) {
                         $emergency1_relationship = $row['emergency1_relationship'];
                     }
 
                     $emergency1_address = $patient->eng_addres;
-                    if (isset($row['emergency1_address'])){
+                    if (isset($row['emergency1_address'])) {
                         $emergency1_address = $row['emergency1_address'];
                     }
 
                     $emergency1_phone = $patient->emg_phone;
-                    if (isset($row['emergency1_phone'])){
+                    if (isset($row['emergency1_phone'])) {
                         $emergency1_phone = $row['emergency1_phone'];
                     }
 
                     $working_hour = $patient->working_hour;
                     $benefit_plan = $patient->benefit_plan;
-                    if(isset($row['working_hour']) && !empty($row['working_hour'])) {
+                    if (isset($row['working_hour']) && !empty($row['working_hour'])) {
                         $working_hour = $row['working_hour'];
-                        if($working_hour >=1 && $working_hour <=20) {
-                          $benefit_plan = 1;
-                        } else if($working_hour >=21 && $working_hour <=25) {
-                          $benefit_plan = 2;
-                        } else if($working_hour >=26 && $working_hour <=30) {
-                          $benefit_plan = 3;
-                        } else if($working_hour >=31 && $working_hour <=35) {
-                          $benefit_plan = 4;
-                        } else if($working_hour >=36 && $working_hour <=40) {
-                          $benefit_plan = 5;
+                        if ($working_hour >= 1 && $working_hour <= 20) {
+                            $benefit_plan = 1;
+                        } else if ($working_hour >=21 && $working_hour <= 25) {
+                            $benefit_plan = 2;
+                        } else if( $working_hour >=26 && $working_hour <= 30) {
+                            $benefit_plan = 3;
+                        } else if ($working_hour >=31 && $working_hour <= 35) {
+                            $benefit_plan = 4;
+                        } else if ($working_hour >=36 && $working_hour <= 40) {
+                            $benefit_plan = 5;
                         } else {
-                          $benefit_plan = 1;
+                            $benefit_plan = 1;
                         }
                     }
                     $dataV = [];

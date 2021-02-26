@@ -299,6 +299,37 @@ class PatientController extends Controller
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
 
+    public function updatePatientStatus(Request $request)
+    {
+        $input = $request->all();
+        $status = $input['status'];
+        $id = $input['id'];
+
+        $status= 1;
+        if ($status == 3){
+            $status = 3 ;
+        }
+        $user = User::find($id);
+        $userUpdate = User::find($id)->update([
+            'status' => $status,
+        ]);
+
+        if ($userUpdate) {
+            $smsData[] = [
+                'to'=> $user->phone,
+                'message'=>'Welcome To Doral Health Connect.
+                Please click below application link and download.
+                '.url("application/android/patientDoral.apk").'
+                Default Password : doral@123',
+            ];
+            
+            event(new SendingSMS($smsData));
+            return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
+        }
+
+        return $this->generateResponse(false, 'No Patient Referral Ids Found', $user, 400);
+    }
+
     public function changePatientStatus(Request $request){
         $this->validate($request,[
             'id'=>'required',
@@ -341,7 +372,6 @@ Default Password : doral@123',
         }
         return $this->generateResponse(false,'No Patient Referral Ids Found',null,422);
     }
-
 
     public function newpatientData(Request $request) {
 
