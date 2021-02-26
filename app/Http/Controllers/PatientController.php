@@ -310,11 +310,9 @@ class PatientController extends Controller
             $status = 3 ;
         }
         $user = User::find($id);
-        $userUpdate = User::find($id)->update([
-            'status' => $status,
-        ]);
+        $user->status = $status;
 
-        if ($userUpdate) {
+        if ($user->save()) {
             $smsData[] = [
                 'to'=> $user->phone,
                 'message'=>'Welcome To Doral Health Connect.
@@ -327,7 +325,7 @@ class PatientController extends Controller
             return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
         }
 
-        return $this->generateResponse(false, 'No Patient Referral Ids Found', $user, 400);
+        return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
     }
 
     public function changePatientStatus(Request $request){
