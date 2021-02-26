@@ -305,9 +305,9 @@ class PatientController extends Controller
         $status = $input['status'];
         $id = $input['id'];
 
-        $status= 1;
+        $status = '1';
         if ($status == 3){
-            $status = 3 ;
+            $status = '3' ;
         }
         $user = User::find($id);
         $user->status = $status;
