@@ -353,7 +353,7 @@ class PatientController extends Controller
                             'to'=>$users->phone,
                             'message'=>'Welcome To Doral Health Connect.
 Please click below application link and download.
-'.url("application/android/patientDoral.apk").'
+'.url(env("WEB_URL").'download-application').'
 Default Password : doral@123',
                         );
                     }
