@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-
+use DB;
 class PatientController extends Controller
 {
     /**
@@ -299,6 +299,35 @@ class PatientController extends Controller
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
 
+    public function updatePatientStatus(Request $request)
+    {
+        $input = $request->all();
+        $status = $input['status'];
+        $id = $input['id'];
+
+        $status = '1';
+        if ($status == 3){
+            $status = '3' ;
+        }
+        $user = User::find($id);
+        $user->status = $status;
+
+        if ($user->save()) {
+            $smsData[] = [
+                'to'=> $user->phone,
+                'message'=>'Welcome To Doral Health Connect.
+                Please click below application link and download.
+                '.url("application/android/patientDoral.apk").'
+                Default Password : doral@123',
+            ];
+            
+            event(new SendingSMS($smsData));
+            return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
+        }
+
+        return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
+    }
+
     public function changePatientStatus(Request $request){
         $this->validate($request,[
             'id'=>'required',
@@ -341,4 +370,80 @@ Default Password : doral@123',
         }
         return $this->generateResponse(false,'No Patient Referral Ids Found',null,422);
     }
+
+    public function newpatientData(Request $request) {
+
+         $requestData = $request->all();
+
+         $patientList = User::with('patientDetail','roles')
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','patient');
+            })
+            ->whereHas('patientDetail',function ($q){
+                $q->where('status','=','pending')->whereNotNull('first_name');
+            })
+            ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+            ->get();
+        return $this->generateResponse(true,'get new patient list',$patientList,200);
+    }
+
+    public function patientData(Request $request) {
+         $requestData = $request->all();
+          $patientList = User::with('patientDetail','roles')
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','patient');
+            })
+            ->where('status','=','1')
+             ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+            ->get();
+        return $this->generateResponse(true,'get new patient list',$patientList,200);
+
+    }
+
+     public function scheduleAppoimentListData(Request $request){
+        // patient referral pending status patient list
+        $requestData = $request->all();
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['meeting','service','filetype','roadl'])
+            ->with(['patients' => function ($q) use($requestData) {
+                $q->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%');
+            }])
+           
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
+            ->orderBy('start_datetime','asc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+    }
+
+      public function cancelAppoimentListData(Request $request){
+        // patient referral pending status patient list
+         $requestData = $request->all();
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['cancelAppointmentReasons','service','filetype','cancelByUser'])
+             ->with(['patients' => function ($q) use($requestData) {
+                $q->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%');
+            }])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->where('status','=','cancel')
+            ->orderBy('start_datetime','desc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+    }
+
+    
 }
