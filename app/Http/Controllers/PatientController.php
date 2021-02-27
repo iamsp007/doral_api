@@ -305,12 +305,12 @@ class PatientController extends Controller
         $status = $input['status'];
         $id = $input['id'];
 
-        $status = '1';
-        if ($status == 3){
-            $status = '3' ;
+        $statusData = '1';
+        if ($status === "3") {
+            $statusData = '3' ;
         }
         $user = User::find($id);
-        $user->status = $status;
+        $user->status = $statusData;
 
         if ($user->save()) {
             $smsData[] = [
@@ -322,7 +322,7 @@ class PatientController extends Controller
             ];
             
             event(new SendingSMS($smsData));
-            return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
+            return $this->generateResponse(true, 'Change Patient Status Successfully.', null, 200);
         }
 
         return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
