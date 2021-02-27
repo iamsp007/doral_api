@@ -11,9 +11,9 @@ class PatientReportController extends Controller
     {
         $input = $request->all();
         if(isset($input['lab_report_type_id']) && !empty($input['lab_report_type_id'])) {
-            $patientReport = PatientReport::where('lab_report_type_id', $input['lab_report_type_id'])->where('user_id' ,$input['user_id'])->first();
+            $patientReport = PatientReport::where('lab_report_type_id', $input['lab_report_type_id'])->where('user_id' ,$input['user_id'])->get();
         } else {
-            $patientReport = PatientReport::find($input['user_id']);
+            $patientReport = PatientReport::find($input['user_id'])->get();
         }
 
         if ($patientReport) {
