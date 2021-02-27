@@ -12,6 +12,6 @@ class PatientReport extends Model
 
     public function getFileNameAttribute($fileName)
     {
-        return public_path().'/patient_report/'.$fileName;
+        return env('APP_URL').'patient_report/'.$fileName;
     }
 }
