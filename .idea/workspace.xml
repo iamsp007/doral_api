@@ -193,7 +193,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../global_garner/upos_react_pwa" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../global_garner/upos" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -514,6 +514,8 @@
       <workItem from="1613638487565" duration="4412000" />
       <workItem from="1613653407718" duration="2127000" />
       <workItem from="1613991575870" duration="542000" />
+      <workItem from="1614068660322" duration="801000" />
+      <workItem from="1614088025312" duration="607000" />
     </task>
     <servers />
   </component>
