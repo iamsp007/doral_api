@@ -313,14 +313,15 @@ class PatientController extends Controller
         $user->status = $status;
 
         if ($user->save()) {
+            $link=env("WEB_URL").'download-application';
             $smsData[] = [
                 'to'=> $user->phone,
                 'message'=>'Welcome To Doral Health Connect.
                 Please click below application link and download.
-                '.url("application/android/patientDoral.apk").'
-                Default Password : doral@123',
+                '.$link.'
+                Default Password : Patient@doral',
             ];
-            
+
             event(new SendingSMS($smsData));
             return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
         }
@@ -348,13 +349,13 @@ class PatientController extends Controller
                     if ($users){
                         $users->status = '1';
                         $users->save();
-
+                        $link=env("WEB_URL").'download-application';
                         $smsData[]=array(
                             'to'=>$users->phone,
                             'message'=>'Welcome To Doral Health Connect.
 Please click below application link and download.
-'.url(env("WEB_URL").'download-application').'
-Default Password : doral@123',
+'.$link.'
+Default Password : Patient@doral',
                         );
                     }
                 }
@@ -410,7 +411,7 @@ Default Password : doral@123',
             ->with(['patients' => function ($q) use($requestData) {
                 $q->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%');
             }])
-           
+
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
@@ -445,5 +446,5 @@ Default Password : doral@123',
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }
 
-    
+
 }
