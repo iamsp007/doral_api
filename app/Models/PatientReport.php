@@ -9,4 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PatientReport extends Model
 {
     use HasFactory;
+
+    public function getFileNameAttribute($fileName)
+    {
+        return public_path().'/patient_report/'.$fileName;
+    }
 }
