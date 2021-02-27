@@ -263,3 +263,5 @@ Route::delete('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@del
 
 Route::post('/lab-report/store', 'App\Http\Controllers\PatientLabReportController@store')->name('lab-report.store');
 Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportController@addNote')->name('lab-report-note.store');
+
+Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@index');
