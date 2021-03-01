@@ -271,6 +271,7 @@ class UserController extends Controller
             $demographyDetails->cell_phone1 = $request->cell_phone1;
             $demographyDetails->work_phone3 = $request->work_phone3;
 //            $demographyDetails->nurse = $request->nurse;
+           $demographyDetails->apt = $request->apt;
             $user->save();
             $demographyDetails->save();
             return $this->generateResponse(true,'Update Details Success',$demographyDetails,200);
