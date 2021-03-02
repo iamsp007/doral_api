@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/doral_api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/doral_api.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientLabReportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientLabReportController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2021_02_07_085406_create_patient_insurances_table.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/framework/laravel-excel/laravel-excel-tLiZHBOAcj4BxFuVrc6qcUettAwSFwzq.tmp" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/laravel-excel/laravel-excel-tLiZHBOAcj4BxFuVrc6qcUettAwSFwzq.tmp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,6 +187,8 @@
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-zendframework-bridge" />
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-diactoros" />
       <path value="$PROJECT_DIR$/vendor/predis/predis" />
+      <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/constant_time_encoding" />
     </include_path>
   </component>
   <component name="ProjectId" id="1jExH90K84QkoSjIviyVDY4aK6W" />
@@ -194,7 +201,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../doral_web" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../doral_html" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -511,6 +518,7 @@
       <workItem from="1613058911774" duration="720000" />
       <workItem from="1613100218090" duration="2593000" />
       <workItem from="1613109716109" duration="1090000" />
+      <workItem from="1614682475327" duration="3099000" />
     </task>
     <servers />
   </component>
@@ -528,5 +536,15 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1614686378654">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1614686378654" />
+    <state x="686" y="292" width="620" height="522" key="find.popup" timestamp="1614659033371">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="686" y="292" width="620" height="522" key="find.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1614659033371" />
   </component>
 </project>
