@@ -16,7 +16,9 @@ class CreateCaregiverInfosTable extends Migration
         Schema::create('caregiver_infos', function (Blueprint $table) {
             $table->id();
             
-            $table->integer('user_id');
+            $table->foreignId('user_id')->index('user_id');
+            $table->foreignId('company_id')->index('company_id');         
+            $table->foreignId('service_id')->index('service_id');         
             $table->integer('caregiver_id');
             $table->string('intials');
             $table->integer('caregiver_gender_id');
