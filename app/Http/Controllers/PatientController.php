@@ -309,21 +309,24 @@ class PatientController extends Controller
         if ($status === '3') {
             $statusData = '3' ;
         }
-
-        $user = User::whereIn('id',$ids)->update(['status' => $statusData]);
+        $users = User::whereIn('id',$ids);
+        $user = $users->update(['status' => $statusData]);
 
         if ($user) {
-            $link=env("WEB_URL").'download-application';
-            $smsData[] = [
-                'to'=> $user->phone,
-                'message'=>'Welcome To Doral Health Connect.
-                Please click below application link and download.
-                '.$link.'
-                Default Password : Patient@doral',
-            ];
+            foreach ($users as $value) {
+                $link=env("WEB_URL").'download-application';
+                $smsData[] = [
+                    'to'=> $value->phone,
+                    'message'=>'Welcome To Doral Health Connect.
+                    Please click below application link and download.
+                    '.$link.'
+                    Default Password : Patient@doral',
+                ];
 
-            event(new SendingSMS($smsData));
-            return $this->generateResponse(true, 'Change Patient Status Successfully.', null, 200);
+                event(new SendingSMS($smsData));
+            }
+            
+            return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
         }
 
         return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
