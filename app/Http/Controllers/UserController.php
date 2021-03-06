@@ -254,14 +254,14 @@ class UserController extends Controller
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
                 'dob' => date('Y-m-d', strtotime($input['dob'])),
-                'email' => $input['email'],
+                // 'email' => $input['email'],
                 'phone' => $input['home_phone'],
             ]);
        
            
             $notificationPreferences = [];
-            if ($input['notification_preferences_email'] || $input['method_name'] || $input['mobile_or_sms'] || $input['voice_message']) {
-                $notificationPreferences['Name'] =  $input['notification_preferences_email'];
+            if ($input['email'] || $input['method_name'] || $input['mobile_or_sms'] || $input['voice_message']) {
+                $notificationPreferences['Email'] =  $input['email'];
                 $notificationPreferences['Method']['Name'] = $input['method_name'];
                 $notificationPreferences['MobileOrSMS'] =  $input['mobile_or_sms'];
                 $notificationPreferences['VoiceMessage'] =  $input['voice_message'];
