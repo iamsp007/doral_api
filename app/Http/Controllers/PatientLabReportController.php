@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PatientLabReportRequest;
+use App\Models\LabReportType;
 use App\Models\PatientLabReport;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PatientLabReportController extends Controller
 {
@@ -47,7 +50,7 @@ class PatientLabReportController extends Controller
         if (isset($input['titer'])) {
             $patientLabReport->titer = $input['titer'];
         }
-        
+
         $patientLabReport->due_date = date('Y-m-d', strtotime($input['lab_due_date']));
         $patientLabReport->expiry_date = date('Y-m-d', strtotime($input['lab_expiry_date']));
         $patientLabReport->result = $input['result'];
@@ -131,6 +134,56 @@ class PatientLabReportController extends Controller
      */
     public function destroy(Request $request)
     {
+        dd($request->all());
+    }
+
+    public function getLabReportReferral(Request $request){
+        $roles = Auth::user()->roles->pluck('id')->toArray();
+
+        $labReportTypes = LabReportType::where('status','=','1')
+            ->where(function ($q) use ($roles){
+                if (count($roles)>1){
+                    $q->where('referral_id','=',$roles[1]);
+                }
+
+            })
+            ->get();
+        return $this->generateResponse(true,'lab Report type Referral List',$labReportTypes,200);
+    }
+
+    public function labReportUpload(Request $request){
+        $roles = Auth::user()->roles->pluck('id')->toArray();
+        $this->validate($request, [
+            'lab_report_id' => 'required',
+            'patient_id' => 'required',
+            'files' => 'required'
+        ]);
+        $data = [];
+        if($request->hasfile('files'))
+        {
+            foreach($request->file('files') as $key=>$file)
+            {
+                $name = time() .'.'. $file->getClientOriginalName();
+                $filePath = 'lab/reports/' . $name;
+                Storage::disk('local')->put($filePath,file_get_contents($file));
+             //   $file->move(public_path().'/files/', $name);
+                $data[$key] = $name;
+            }
+        }
+dd($data);
+        $file = $request->filenames;
+//            $name = time() . $file->getClientOriginalName();
+//            $filePath = 'images/' . $name;
+        dd($file);
+
+        if ($request->hasFile('filenames')){
+            $file = $request->allFiles();
+//            $name = time() . $file->getClientOriginalName();
+//            $filePath = 'images/' . $name;
+            dd($file);
+            Storage::disk('s3')->put($filePath, file_get_contents($file));
+        }
+
         dd($request->all());
     }
 }
