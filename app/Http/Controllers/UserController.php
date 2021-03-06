@@ -260,7 +260,7 @@ class UserController extends Controller
        
            
             $notificationPreferences = [];
-            if ($input['notification_preferences_email'] || $input['method_name']) {
+            if ($input['notification_preferences_email'] || $input['method_name'] || $input['mobile_or_sms'] || $input['voice_message']) {
                 $notificationPreferences['Name'] =  $input['notification_preferences_email'];
                 $notificationPreferences['Method']['Name'] = $input['method_name'];
                 $notificationPreferences['MobileOrSMS'] =  $input['mobile_or_sms'];
