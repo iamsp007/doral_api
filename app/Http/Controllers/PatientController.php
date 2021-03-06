@@ -306,7 +306,7 @@ class PatientController extends Controller
             'status' => '0',
             'phone' => $request['phone']
         ]);
-        if ($user) {
+        if ($users) {
             return $this->generateResponse(true, 'Change Patient phone Successfully.', null, 200);
         }
         return $this->generateResponse(false, 'Patient Not Found', null, 400);
