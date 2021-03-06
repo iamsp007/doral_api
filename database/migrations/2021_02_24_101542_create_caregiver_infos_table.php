@@ -26,10 +26,10 @@ class CreateCaregiverInfosTable extends Migration
             $table->string('alternate_caregiver_code')->nullable();
             $table->integer('time_attendance_pin')->nullable();
             $table->json('mobile')->nullable();
-            $table->json('ethnicity')->nullable();
+            $table->string('ethnicity')->nullable();
             $table->string('country_of_birth')->nullable();
             $table->string('employee_type')->nullable();
-            $table->json('marital_status')->nullable();
+            $table->string('marital_status')->nullable();
             $table->string('dependents')->nullable();
             $table->json('status')->nullable();
             $table->string('employee_id')->nullable();
