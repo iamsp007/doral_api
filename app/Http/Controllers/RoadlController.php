@@ -248,6 +248,7 @@ class RoadlController extends Controller
                 'longitude'=>$datas->longitude,
                 'detail'=>$datas->patient,
             );
+
             return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
         }
 
