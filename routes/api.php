@@ -195,8 +195,8 @@ Route::group([
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
     Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
 });
-Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus');
-
+Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus'); 
+Route::post('update-patient-phone', 'App\Http\Controllers\PatientController@updatePatientPhone');      
 // Referral
 Route::group([
     'prefix' => 'auth'
