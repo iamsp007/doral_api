@@ -257,7 +257,6 @@ class UserController extends Controller
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
                 'dob' => date('Y-m-d', strtotime($input['dob'])),
-                // 'email' => $input['email'],
                 'phone' => $input['home_phone'],
             ]);
        
@@ -285,12 +284,12 @@ class UserController extends Controller
             }
             
             CaregiverInfo::where('user_id', $input['user_id'])->update([
-                'ethnicity' => json_encode($ethnicity),
+                // 'ethnicity' => json_encode($ethnicity),
                 'country_of_birth' => $input['country_of_birth'],
                 'professional_licensenumber' => $input['professional_licensenumber'],
                 'npi_number' => $input['npi_number'],
-                'marital_status' => json_encode($maritalStatus),
-                'notification_preferences' => json_encode($notificationPreferences)
+                // 'marital_status' => json_encode($maritalStatus),
+                // 'notification_preferences' => json_encode($notificationPreferences)
             ]);
 
             $language = [];
@@ -313,7 +312,7 @@ class UserController extends Controller
             ];
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => $input['ssn'],
-                'language' => json_encode($language),
+                // 'language' => json_encode($language),
                 'address' => $address
             ]);
 
@@ -328,10 +327,10 @@ class UserController extends Controller
                 'phone1' => $input['phone1'],
                 'phone2' => $input['phone2'],
                 'address' => $input['address'],
-                'relation' =>  json_encode($relationship),
+                // 'relation' =>  json_encode($relationship),
             ]);
 
-            return $this->generateResponse(true, 'Update Details Success', $null, 200);
+            return $this->generateResponse(true, 'Update Details Success', 'null', 200);
         }
 
         return $this->generateResponse(false, 'Something Went Wrong', null, 200);
