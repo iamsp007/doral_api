@@ -259,11 +259,11 @@ class UserController extends Controller
             }
 
             $user = User::find($input['user_id'])->update([
-                'gender' => $gender,
-                'first_name' => $input['FirstName'],
-                'last_name' => $input['LastName'],
-                'dob' => $input['BirthDate'],
-                'email' => $input['notification_preferences_email'],
+                'gender' => $input['gender'],
+                'first_name' => $input['first_name'],
+                'last_name' => $input['last_name'],
+                'dob' => $input['dob'],
+                'email' => $input['email'],
                 'phone' => $input['home_phone'],
             ]);
        
