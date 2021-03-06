@@ -302,11 +302,17 @@ class PatientController extends Controller
     public function updatePatientPhone(Request $request)
     {
         $input = $request->all();
-        $users = User::where('id',$request['id'])->update([
+        $users = User::where('phone', $request['phone'])->first();
+
+        if ($users) {
+            return $this->generateResponse(false, 'Phone number must unique', null, 400);
+        }
+        
+        $user = User::where('id',$request['id'])->update([
             'status' => '0',
             'phone' => $request['phone']
         ]);
-        if ($users) {
+        if ($user) {
             return $this->generateResponse(true, 'Change Patient phone Successfully.', null, 200);
         }
         return $this->generateResponse(false, 'Patient Not Found', null, 400);
