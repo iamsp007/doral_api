@@ -298,7 +298,25 @@ class PatientController extends Controller
             ->get();
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
+    
+    public function updatePatientPhone(Request $request)
+    {
+        $input = $request->all();
+        $users = User::where('phone', $request['phone'])->first();
 
+        if ($users) {
+            return $this->generateResponse(false, 'Phone number must unique', null, 400);
+        }
+        
+        $user = User::where('id',$request['id'])->update([
+            'status' => '0',
+            'phone' => $request['phone']
+        ]);
+        if ($user) {
+            return $this->generateResponse(true, 'Change Patient phone Successfully.', null, 200);
+        }
+        return $this->generateResponse(false, 'Patient Not Found', null, 400);
+    }
     public function updatePatientStatus(Request $request)
     {
         $input = $request->all();
