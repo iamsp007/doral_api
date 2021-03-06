@@ -9,6 +9,7 @@ use App\Models\UploadDocuments;
 use App\Models\User;
 use App\Models\CaregiverInfo;
 use App\Models\Demographic;
+use App\Models\PatientEmergencyContact;
 use Illuminate\Http\Request;
 use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
@@ -276,12 +277,19 @@ class UserController extends Controller
                 ];
             }
 
+            $maritalStatus = [];
+            if ($input['marital_status_name']) {
+                $maritalStatus = [
+                    'Name' => $input['marital_status_name'],
+                ];
+            }
+            
             CaregiverInfo::where('user_id', $input['user_id'])->update([
                 'ethnicity' => json_encode($ethnicity),
                 'country_of_birth' => $input['country_of_birth'],
                 'professional_licensenumber' => $input['professional_licensenumber'],
                 'npi_number' => $input['npi_number'],
-                'marital_status_name' => $input['marital_status_name'],
+                'marital_status' => json_encode($maritalStatus),
                 'notification_preferences' => json_encode($notificationPreferences)
             ]);
 
