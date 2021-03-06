@@ -249,15 +249,6 @@ class UserController extends Controller
         if ($request->type==="1"){
             $input = $request->all();
 
-            $gender = '';
-            if ($input['Gender'] == 'MALE') {
-                $gender = 1;
-            } else if ($input['Gender'] == 'FEMALE') {
-                $gender = 2;
-            } else {
-                $gender = 3;
-            }
-
             $user = User::find($input['user_id'])->update([
                 'gender' => $input['gender'],
                 'first_name' => $input['first_name'],
