@@ -196,7 +196,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../global_garner/upos" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -519,6 +519,8 @@
       <workItem from="1613991575870" duration="542000" />
       <workItem from="1614068660322" duration="801000" />
       <workItem from="1614088025312" duration="607000" />
+      <workItem from="1615050387297" duration="692000" />
+      <workItem from="1615051458985" duration="303000" />
     </task>
     <servers />
   </component>
@@ -538,6 +540,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1615051082486">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1615051082486" />
     <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1615021813380">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -546,5 +552,9 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="627" y="314" width="728" height="485" key="MultipleFileMergeDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1615021816902" />
+    <state x="686" y="292" width="684" height="522" key="find.popup" timestamp="1615050668200">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="686" y="292" width="684" height="522" key="find.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1615050668200" />
   </component>
 </project>
