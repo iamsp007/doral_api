@@ -313,7 +313,7 @@ class UserController extends Controller
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => $input['ssn'],
                 // 'language' => json_encode($language),
-                'address' => $address
+                // 'address' => json_encode($address),
             ]);
 
             $relationship = [];
