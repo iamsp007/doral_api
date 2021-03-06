@@ -17,7 +17,7 @@ class CreatePatientEmergencyContactsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->index('user_id');
             $table->string('name')->nullable();
-            $table->json('relation')->nullable();
+            $table->string('relation')->nullable();
             $table->string('lives_with_patient')->nullable();
             $table->string('have_keys')->nullable();
             $table->string('phone1')->nullable();
