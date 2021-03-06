@@ -246,87 +246,94 @@ class UserController extends Controller
 
     public function demographyDataUpdate(Request $request)
     {
-        $input = $request->all();
+        if ($request->type==="1"){
+            $input = $request->all();
 
-        $gender = '';
-        if ($input['Gender'] == 'MALE') {
-            $gender = 1;
-        } else if ($input['Gender'] == 'FEMALE') {
-            $gender = 2;
-        } else {
-            $gender = 3;
-        }
+            $gender = '';
+            if ($input['Gender'] == 'MALE') {
+                $gender = 1;
+            } else if ($input['Gender'] == 'FEMALE') {
+                $gender = 2;
+            } else {
+                $gender = 3;
+            }
 
-        $user = User::find($input['user_id'])->update([
-            'gender' => $gender,
-            'first_name' => $input['FirstName'],
-            'last_name' => $input['LastName'],
-            'dob' => $input['BirthDate'],
-            'email' => $input['notification_preferences_email'],
-            'phone' => $input['home_phone'],
-        ]);
+            $user = User::find($input['user_id'])->update([
+                'gender' => $gender,
+                'first_name' => $input['FirstName'],
+                'last_name' => $input['LastName'],
+                'dob' => $input['BirthDate'],
+                'email' => $input['notification_preferences_email'],
+                'phone' => $input['home_phone'],
+            ]);
        
-        $notificationPreferences = [];
-        if ($input['notification_preferences_email'] || $input['method_name']) {
-            $notificationPreferences['Name'] =  $input['notification_preferences_email'];
-            $notificationPreferences['Method']['Name'] = $input['method_name'];
-            $notificationPreferences['MobileOrSMS'] =  $input['mobile_or_sms'];
-            $notificationPreferences['VoiceMessage'] =  $input['voice_message'];
-        }
+           
+            $notificationPreferences = [];
+            if ($input['notification_preferences_email'] || $input['method_name']) {
+                $notificationPreferences['Name'] =  $input['notification_preferences_email'];
+                $notificationPreferences['Method']['Name'] = $input['method_name'];
+                $notificationPreferences['MobileOrSMS'] =  $input['mobile_or_sms'];
+                $notificationPreferences['VoiceMessage'] =  $input['voice_message'];
+            }
 
-        $ethnicity = [];
-        if ($input['ethnicity']) {
-            $ethnicity = [
-                'Name' => $input['ethnicity'],
+            $ethnicity = [];
+            if ($input['ethnicity']) {
+                $ethnicity = [
+                    'Name' => $input['ethnicity'],
+                ];
+            }
+
+            CaregiverInfo::where('user_id' ,$input['user_id'])->update([
+                'ethnicity' => json_encode($ethnicity),
+                'country_of_birth' => $input['country_of_birth'],
+                'professional_licensenumber' => $input['professional_licensenumber'],
+                'npi_number' => $input['npi_number'],
+                'marital_status_name' => $input['marital_status_name'],
+                'notification_preferences' => json_encode($notificationPreferences)
+            ]);
+
+            $language = [];
+            if ($input['language1'] || $input['language2'] || $input['language3'] || $input['language4']) {
+                $language[] = [
+                    'Language1' =>  $input['language1'],
+                    'Language2' =>  $input['language2'],
+                    'Language3' =>  $input['language3'],
+                    'Language4' =>  $input['language4'],
+                ];
+            }
+        
+            $address[] = [
+                'Street1' =>  $input['street1'],
+                'Street2' =>  $input['street2'],
+                'City' =>  $input['city'],
+                'State' =>  $input['state'],
+                'Zip4' =>  $input['zip4'],
+                'Zip5' =>  $input['zip5'],
             ];
+            Demographic::where('user_id' ,$input['user_id'])->update([
+                'ssn' => $input['ssn'],
+                'language' => json_encode($language),
+                'address' => $address
+            ]);
+
+            $relationship = [];
+            if ($input['relationship_name']) {
+                $relationship = [
+                    'Name' => $input['relationship_name']
+                ];
+            }
+            PatientEmergencyContact::where('user_id' ,$input['user_id'])->update([
+                'name' => $input['contact_name'],
+                'phone1' => $input['phone1'],
+                'phone2' => $input['phone2'],
+                'address' => $input['address'],
+                'relation' =>  json_encode($relationship),
+            ]);
+
+            return $this->generateResponse(true, 'Update Details Success', $null, 200);
         }
 
-        CaregiverInfo::where('user_id' ,$input['user_id'])->update([
-            'ethnicity' => json_encode($ethnicity),
-            'country_of_birth' => $input['country_of_birth'],
-            'professional_licensenumber' => $input['professional_licensenumber'],
-            'npi_number' => $input['npi_number'],
-            'marital_status_name' => $input['marital_status_name'],
-            'notification_preferences' => json_encode($notificationPreferences)
-        ]);
-
-        $language = [];
-        if ($input['language1'] || $input['language2'] || $input['language3'] || $input['language4']) {
-            $language[] = [
-                'Language1' =>  $input['language1'],
-                'Language2' =>  $input['language2'],
-                'Language3' =>  $input['language3'],
-                'Language4' =>  $input['language4'],
-            ];
-        }
-      
-        $address[] = [
-            'Street1' =>  $input['street1'],
-            'Street2' =>  $input['street2'],
-            'City' =>  $input['city'],
-            'State' =>  $input['state'],
-            'Zip4' =>  $input['zip4'],
-            'Zip5' =>  $input['zip5'],
-        ];
-        Demographic::where('user_id' ,$input['user_id'])->update([
-            'ssn' => $input['ssn'],
-            'language' => json_encode($language),
-            'address' => $address
-        ]);
-
-        $relationship = [];
-        if ($input['relationship_name']) {
-            $relationship = [
-                'Name' => $input['relationship_name']
-            ];
-        }
-        PatientEmergencyContact::where('user_id' ,$input['user_id'])->update([
-            'name' => $input['contact_name'],
-            'phone1' => $input['phone1'],
-            'phone2' => $input['phone2'],
-            'address' => $input['address'],
-            'relation' =>  json_encode($relationship),
-        ]);
+        return $this->generateResponse(false, 'Something Went Wrong', null, 200);
     }
 //     public function demographyDataUpdate(Request $request)
 //     {
