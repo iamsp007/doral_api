@@ -7,6 +7,8 @@ use App\Models\PatientInsurance;
 use App\Models\PatientReferral;
 use App\Models\UploadDocuments;
 use App\Models\User;
+use App\Models\CaregiverInfo;
+use App\Models\Demographic;
 use Illuminate\Http\Request;
 use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
@@ -274,7 +276,7 @@ class UserController extends Controller
                 ];
             }
 
-            CaregiverInfo::where('user_id' ,$input['user_id'])->update([
+            CaregiverInfo::where('user_id', $input['user_id'])->update([
                 'ethnicity' => json_encode($ethnicity),
                 'country_of_birth' => $input['country_of_birth'],
                 'professional_licensenumber' => $input['professional_licensenumber'],
