@@ -246,9 +246,6 @@ Route::group([
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
 
-    // upload lab report referral
-    Route::post('lab-report-referral', 'App\Http\Controllers\PatientLabReportController@getLabReportReferral');
-    Route::post('lab-report-upload-multiple', 'App\Http\Controllers\PatientLabReportController@labReportUpload');
 });
 
 // Get List of Medicines.

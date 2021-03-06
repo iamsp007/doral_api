@@ -209,7 +209,8 @@ class RoadlController extends Controller
                         'status'=>$requests['clincial_id']===null?'pending':($last_location?$last_location->status:$requests['status']),
                         'color'=>$referral?$referral['color']:'blue',
                         'icon'=>$referral?env('WEB_URL').'assets/icon/'.$referral['icon']:env('WEB_URL').'assets/icon/'.'Clinician Request.png',
-                        'id'=>$requests['id']
+                        'id'=>$requests['id'],
+                        'user_id'=>$requests['clincial_id'],
                     );
                 }
                 $data['clinicians']=$location;
@@ -239,6 +240,7 @@ class RoadlController extends Controller
                 'id'=>$datas->id,
                 'color'=>'blue',
                 'icon'=>env('WEB_URL').'assets/icon/'.'Clinician Request.png',
+                'user_id'=>$datas->clincial_id,
             );
             $data['clinicians']=$location;
             $data['patient']=array(
@@ -247,25 +249,6 @@ class RoadlController extends Controller
                 'detail'=>$datas->patient,
             );
             return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
-        }
-        if (Auth::user()->hasRole('patient')){
-
-        }else{
-            $data = PatientRequest::with('routes','appointmentType')
-                ->where([['id','=',$patient_request_id],['status','=','active']])
-                ->first();
-            if ($data){
-                if (count($data->routes)>0){
-                    $data->destination = array(
-                        'latitude'=>$data->routes[count($data->routes)-1]->latitude,
-                        'longitude'=>$data->routes[count($data->routes)-1]->longitude);
-                }else{
-                    $data->destination = array(
-                        'latitude'=>$data->latitude,
-                        'longitude'=>$data->longitude);
-                }
-                return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
-            }
         }
 
         return $this->generateResponse(false,'Something Went Wrong!',null,200);

@@ -181,6 +181,9 @@
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-zendframework-bridge" />
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-diactoros" />
       <path value="$PROJECT_DIR$/vendor/predis/predis" />
+      <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/constant_time_encoding" />
+      <path value="$PROJECT_DIR$/vendor/aws/aws-sdk-php" />
     </include_path>
   </component>
   <component name="ProjectId" id="1jExH90K84QkoSjIviyVDY4aK6W" />
@@ -533,5 +536,15 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1615021813380">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="247" y="121" width="1478" height="879" key="MergeDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1615021813380" />
+    <state x="627" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1615021816902">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="627" y="314" width="728" height="485" key="MultipleFileMergeDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1615021816902" />
   </component>
 </project>
