@@ -192,8 +192,8 @@ Route::group([
     Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
     Route::post('get-cancel-appoiment-list-data', 'App\Http\Controllers\PatientController@cancelAppoimentListData');
     Route::get('get-roadl-status', 'App\Http\Controllers\PatientRequestController@getRoadLStatus');
-    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');    
-    
+    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
+
     //new patient list for appointment
     Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
     //Appointment
@@ -201,8 +201,8 @@ Route::group([
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
     Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
 });
-Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus');    
-    
+Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus'); 
+Route::post('update-patient-phone', 'App\Http\Controllers\PatientController@updatePatientPhone');      
 // Referral
 Route::group([
     'prefix' => 'auth'
@@ -211,7 +211,7 @@ Route::group([
    Route::get('patient-referral-failed/{id}', 'App\Http\Controllers\PatientReferralController@faileRecode');
    Route::get('patient-referral-failed-view/{id}', 'App\Http\Controllers\PatientReferralController@viewfaileRecode');
 
-   
+
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
 });
@@ -251,6 +251,7 @@ Route::group([
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
+
 });
 
 // Get List of Medicines.
