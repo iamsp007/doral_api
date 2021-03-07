@@ -7,6 +7,8 @@ use App\Models\PatientReferral;
 use App\Models\PatientReferralNotSsn;
 use App\Models\User;
 use App\Models\FailRecodeImport;
+use App\Models\CaregiverInfo;
+use App\Models\PatientLabReport;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Date;
@@ -64,9 +66,35 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
             } else if (isset($row['dob'])) {
                 $dob = date('Y-m-d', strtotime($row['dob']));
             }
+            if (isset($row['caregiver_code']) && $this->file_type == '3') {
+                $userCaregiver = CaregiverInfo::where('caregiver_code' , $row['caregiver_code'])->first();
+    
+                if ($userCaregiver) {
+                    $patientLabReport = new PatientLabReport();
+                    // $coordinatorModel = LabReportType::updateOrCreate(
+                    //     ['name' => $row['compliance_item']],
+                    //     ['status' => '1',]
+                    // );
+                    $labReportType = LabReportType::where('name', $row['compliance_item'])->first();
+
+                    $patientLabReport->lab_report_type_id = $labReportType->id;
+                    $patientLabReport->patient_referral_id = $userCaregiver->user_id;
+                    if (isset($row['lab_perform_date'])) {
+                        $patientLabReport->perform_date = date('Y-m-d', strtotime($row['lab_perform_date']));
+                    }
+                    $patientLabReport->due_date = date('Y-m-d', strtotime($row['compliance_due_date']));
+                    $patientLabReport->expiry_date = date('Y-m-d', strtotime($row['compliance_due_date']));
+                    $patientLabReport->perform_date = date('Y-m-d', strtotime($input['compliance_completion_date']));
+
+                    $patientLabReport->result = $row['compliance_result'];
+
+                    $patientLabReport->save();
+                }
+            }
 
             if ((isset($row['ssn']) && !empty($row['ssn'])) && (!empty($dob))) {
                 $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
+
                 if ($patient) {
                     $user = User::find($patient->user_id);
                     $address = $patient->address1;
@@ -192,7 +220,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
                              'gender'=>isset($row['gender'])?$row['gender']:$patient->gender,
                              'email' => isset($row['email'])?$row['email']:$patient->email,
                              'dob'=>$dob,
-//                             'dob'=>Carbon::createFromDate($dob),
+                            // 'dob'=>Carbon::createFromDate($dob),
                              'phone1'=>isset($row['phone2'])?$row['phone2']:$patient->phone1,
                              'phone2'=>isset($row['phone2'])?$row['phone2']:$patient->phone2,
                              'address_1'=>$address,
@@ -337,7 +365,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
                                'email' => isset($row['email'])?$row['email']:null,
                                'ssn' => $row['ssn'],
                                'dob'=>$dob,
-//                               'dob'=>Carbon::createFromDate($dob),
+                                //'dob'=>Carbon::createFromDate($dob),
                                'phone1'=>isset($row['phone2'])?$row['phone2']:null,
                                'phone2'=>isset($row['phone2'])?$row['phone2']:null,
                                'address_1'=>$address,

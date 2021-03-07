@@ -66,6 +66,12 @@ Route::group([
     Route::get('getNewPatientListAll', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('getNewPatientList', 'App\Http\Controllers\PatientController@getNewPatientList');
 
+    // Employee Reports
+    Route::get('employee-reports', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@index')->name('employee.reports.index');
+    Route::post('employee-reports/{id}/store', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@store')->name('employee.reports.store');
+    Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
+    Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
+
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
