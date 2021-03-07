@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RoadlController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/RoadlController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,7 +196,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../doral_web" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -521,7 +520,9 @@
       <workItem from="1614068660322" duration="801000" />
       <workItem from="1614088025312" duration="607000" />
       <workItem from="1615050387297" duration="692000" />
-      <workItem from="1615051458985" duration="1061000" />
+      <workItem from="1615051458985" duration="1788000" />
+      <workItem from="1615093646327" duration="18000" />
+      <workItem from="1615094859954" duration="657000" />
     </task>
     <servers />
   </component>
@@ -541,10 +542,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1615051082486">
+    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1615096095770">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1615051082486" />
+    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1615096095770" />
     <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1615021813380">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
