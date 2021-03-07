@@ -69,7 +69,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
             if (isset($row['caregiver_code']) && $this->file_type == '3') {
                 $userCaregiver = CaregiverInfo::where('caregiver_code' , $row['caregiver_code'])->first();
     
-                if (! $userCaregiver) {
+                if ($userCaregiver) {
                     $patientLabReport = new PatientLabReport();
                     // $coordinatorModel = LabReportType::updateOrCreate(
                     //     ['name' => $row['compliance_item']],
