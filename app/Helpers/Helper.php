@@ -162,9 +162,10 @@ class Helper extends BaseController
                 "icon" => asset('images/no-image.jpeg'),
                 "notification_type" => $notification_type,
             ],
-            'data'=>$data
+            'data'=>$data,
+            "messageType" => $notification_type
         );
-
+\Log::info($fields);
         $payload=json_encode($fields);
         $curl_session=curl_init();
         curl_setopt($curl_session,CURLOPT_URL,$path_to_fcm);
@@ -215,5 +216,24 @@ class Helper extends BaseController
 
         $response = curl_exec($ch);
         \Log::info($response);
+    }
+
+    public function sendLocationEmit($data){
+        try {
+            $client = new Client();
+            $uri = env('WEB_URL') . 'send-location';
+           return $response =  $client->request('GET', $uri, [
+               'json'=>$data,
+               'headers' => [
+                   'Accept' => 'application/json',
+                   'Content-Type' => 'application/json',
+                   'X-Requested-With' => 'XMLHttpRequest',
+               ]
+           ]);
+        }catch (ClientException $exception){
+            return $exception->getResponse();
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
     }
 }

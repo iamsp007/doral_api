@@ -40,6 +40,30 @@ class RoadlController extends Controller
                     $user->save();
                 }
             }
+            $user = User::find($request->user_id);
+            $datas = PatientRequest::with(['detail','requestType'])
+                ->where([['id','=',$request->patient_requests_id],['status','=','active']])
+                ->first();
+            $icon=env('WEB_URL').'assets/icon/'.'Clinician Request.png';
+            $color='blue';
+            if ($datas->requestType && $datas->requestType->referral){
+                $icon=env('WEB_URL').'assets/icon/'.$datas->requestType->referral->icon;
+                $color=$datas->requestType->referral->color;
+            }
+            $location=array(
+                'referral_type'=>'LAB',
+                'latitude'=>$request->latitude,
+                'longitude'=>$request->longitude,
+                'start_latitude'=>$datas->detail?$datas->detail->latitude:null,
+                'end_longitude'=>$datas->detail?$datas->detail->longitude:null,
+                'first_name'=>$datas->detail?$datas->detail->first_name:null,
+                'last_name'=>$datas->detail?$datas->detail->last_name:null,
+                'status'=>$request->has('status')?$request->input('status'):"start",
+                'color'=>$color,
+                'icon'=>$icon,
+                'id'=>$request->patient_requests_id
+            );
+            $this->sendLocationEmit($location);
             return $this->generateResponse(true,'Adding RoadlInformation Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
@@ -135,31 +159,31 @@ class RoadlController extends Controller
             $data['type']=1;
             $locations=array();
             if (Auth::user()->hasRole('LAB')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->where('referral_type','=','LAB')
                     ->orderBy('id','desc')
                     ->get()->toArray();
             }elseif (Auth::user()->hasRole('X-RAY')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->where('referral_type','=','X-RAY')
                     ->orderBy('id','desc')
                     ->get()->toArray();
             }elseif (Auth::user()->hasRole('CHHA')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->where('referral_type','=','CHHA')
                     ->orderBy('id','desc')
                     ->get()->toArray();
             }elseif (Auth::user()->hasRole('Home Oxygen')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->where('referral_type','=','Home Oxygen')
                     ->orderBy('id','desc')
                     ->get()->toArray();
             }elseif (Auth::user()->hasRole('clinician') || Auth::user()->hasRole('patient')){
-                $locations = AssignAppointmentRoadl::with('requests')
+                $locations = AssignAppointmentRoadl::with(['requests','referral'])
                     ->where('appointment_id','=',$roadlList->appointment_id)
                     ->orderBy('id','desc')
                     ->get()->toArray();
@@ -169,6 +193,7 @@ class RoadlController extends Controller
             if (count($locations)>0){
                 foreach ($locations as $value) {
                     $requests = $value['requests'];
+                    $referral = $value['referral'];
                     $last_location = RoadlInformation::where('user_id','=',$value['requests']['clincial_id'])
                         ->where('patient_requests_id','=',$requests['id'])
                         ->orderBy('id','desc')
@@ -182,19 +207,23 @@ class RoadlController extends Controller
                         'first_name'=>$requests['detail']?$requests['detail']['first_name']:null,
                         'last_name'=>$requests['detail']?$requests['detail']['last_name']:null,
                         'status'=>$requests['clincial_id']===null?'pending':($last_location?$last_location->status:$requests['status']),
-                        'id'=>$requests['id']
+                        'color'=>$referral?$referral['color']:'blue',
+                        'icon'=>$referral?env('WEB_URL').'assets/icon/'.$referral['icon']:env('WEB_URL').'assets/icon/'.'Clinician Request.png',
+                        'id'=>$requests['id'],
+                        'user_id'=>$requests['clincial_id'],
                     );
                 }
                 $data['clinicians']=$location;
                 $data['patient']=array(
                     'latitude'=>$requests['latitude'],
                     'longitude'=>$requests['longitude'],
+                    'detail'=>$requests['patient'],
                 );
                 return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
             }
             return $this->generateResponse(false,'No Patient Request Found this user',null,200);
         }else{
-            $datas = PatientRequest::with('detail','routes','appointmentType')
+            $datas = PatientRequest::with(['detail','routes','appointmentType'])
                 ->where([['id','=',$patient_request_id],['status','=','active']])
                 ->first();
             $last_location = RoadlInformation::where('user_id','=',$datas->clincial_id)->where('patient_requests_id','=',$patient_request_id)->orderBy('id','desc')->first();
@@ -209,32 +238,18 @@ class RoadlController extends Controller
                 'last_name'=>$datas->detail?$datas->detail->last_name:null,
                 'status'=>$datas->clincial_id===null?'pending':($last_location?$last_location->status:$datas->status),
                 'id'=>$datas->id,
+                'color'=>'blue',
+                'icon'=>env('WEB_URL').'assets/icon/'.'Clinician Request.png',
+                'user_id'=>$datas->clincial_id,
             );
             $data['clinicians']=$location;
             $data['patient']=array(
                 'latitude'=>$datas->latitude,
                 'longitude'=>$datas->longitude,
+                'detail'=>$datas->patient,
             );
-            return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
-        }
-        if (Auth::user()->hasRole('patient')){
 
-        }else{
-            $data = PatientRequest::with('routes','appointmentType')
-                ->where([['id','=',$patient_request_id],['status','=','active']])
-                ->first();
-            if ($data){
-                if (count($data->routes)>0){
-                    $data->destination = array(
-                        'latitude'=>$data->routes[count($data->routes)-1]->latitude,
-                        'longitude'=>$data->routes[count($data->routes)-1]->longitude);
-                }else{
-                    $data->destination = array(
-                        'latitude'=>$data->latitude,
-                        'longitude'=>$data->longitude);
-                }
-                return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
-            }
+            return $this->generateResponse(true,'Roadl Proccess Route List',$data,200);
         }
 
         return $this->generateResponse(false,'Something Went Wrong!',null,200);

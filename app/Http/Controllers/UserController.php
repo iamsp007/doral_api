@@ -7,6 +7,9 @@ use App\Models\PatientInsurance;
 use App\Models\PatientReferral;
 use App\Models\UploadDocuments;
 use App\Models\User;
+use App\Models\CaregiverInfo;
+use App\Models\Demographic;
+use App\Models\PatientEmergencyContact;
 use Illuminate\Http\Request;
 use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
@@ -247,82 +250,170 @@ class UserController extends Controller
     public function demographyDataUpdate(Request $request)
     {
         if ($request->type==="1"){
-            $demographyDetails = PatientReferral::where(['user_id'=>$request->patient_id])->first();
-            if ($demographyDetails===null){
-                $demographyDetails = new PatientReferral();
-                $demographyDetails->user_id = $request->patient_id;
-            }
-            $user = User::find($demographyDetails->user_id);
-            $demographyDetails->phone1 = $request->phoneno;
-            $user->phone = $request->phoneno;
-            $demographyDetails->email = $request->emailId;
-            $user->email = $request->emailId;
-            $demographyDetails->start_date = $request->start_date;
-//            $demographyDetails->ethnicity = $request->ethnicity;
-            $demographyDetails->ssn = $request->SSN;
-            $demographyDetails->patient_id = $request->admissionId;
-            $demographyDetails->address_1 = $request->address;
-            $demographyDetails->eng_name = $request->eng_name;
-            $demographyDetails->eng_addres = $request->eng_address;
-            $demographyDetails->emg_phone = $request->emg_phone;
-            $demographyDetails->emg_relationship = $request->emg_relationship;
-            $demographyDetails->work_name = $request->work_name;
-            $demographyDetails->home_phone1 = $request->home_phone1;
-            $demographyDetails->cell_phone1 = $request->cell_phone1;
-            $demographyDetails->work_phone3 = $request->work_phone3;
-//            $demographyDetails->nurse = $request->nurse;
-            $user->save();
-            $demographyDetails->save();
-            return $this->generateResponse(true,'Update Details Success',$demographyDetails,200);
-        }elseif ($request->type==="2"){
-            $demographyDetails = PatientReferral::where(['user_id'=>$request->patient_id])->first();
-            if ($demographyDetails===null){
-                $demographyDetails = new PatientReferral();
-                $demographyDetails->user_id = $request->patient_id;
-            }
-            $demographyDetails->medicaid_number = $request->medicaid_number;
-            $demographyDetails->medicare_number = $request->medicare_number;
-            $demographyDetails->save();
-            if (is_array($request->insurance_id)){
-                foreach ($request->insurance_id as $key=>$value) {
-                    $patientInsurance = PatientInsurance::find($value);
-                    if ($patientInsurance){
-                        if ($request->has('name_'.$key)){
-                            $patientInsurance->name = $request->input('name_'.$key);
-                        }
-                        if ($request->has('payerId_'.$key)){
-                            $patientInsurance->payer_id = $request->input('payerId_'.$key);
-                        }
-                        if ($request->has('policy_no_'.$key)){
-                            $patientInsurance->policy_no = $request->input('policy_no_'.$key);
-                        }
-                        if ($request->has('Phone_'.$key)){
-                            $patientInsurance->phone = $request->input('Phone_'.$key);
-                        }
-                        $patientInsurance->save();
-                    }
-                }
-            }
-            return $this->generateResponse(true,'Insurance Update Details Success',$request->input('payerId_'.$key),200);
-        }elseif ($request->type==="3"){
-            if ($request->has('caregiver_id')){
-                $caregivers = Caregivers::where('id','=',$request->caregiver_id)
-                    ->where('patient_id','=',$request->patient_id)
-                    ->first();
-                if ($caregivers){
-                    $caregivers->name = $request->c_name;
-                    $caregivers->phone = $request->c_phone;
-                    $caregivers->start_time = $request->start_time;
-                    $caregivers->end_time = $request->end_time;
-                    $caregivers->save();
-                }
+            $input = $request->all();
+
+            $user = User::find($input['user_id'])->update([
+                'gender' => $input['gender'],
+                'first_name' => $input['first_name'],
+                'last_name' => $input['last_name'],
+                'dob' => date('Y-m-d', strtotime($input['dob'])),
+                'phone' => $input['home_phone'],
+            ]);
+       
+           
+            $notificationPreferences = [];
+            if ($input['email'] || $input['method_name'] || $input['mobile_or_sms'] || $input['voice_message']) {
+                $notificationPreferences['Email'] =  $input['email'];
+                $notificationPreferences['Method']['Name'] = $input['method_name'];
+                $notificationPreferences['MobileOrSMS'] =  $input['mobile_or_sms'];
+                $notificationPreferences['VoiceMessage'] =  $input['voice_message'];
             }
 
-            return $this->generateResponse(true,'Caregiver Detail Update Successfully!',$caregivers,200);
+            $ethnicity = [];
+            if ($input['ethnicity']) {
+                $ethnicity = [
+                    'Name' => $input['ethnicity'],
+                ];
+            }
+
+            $maritalStatus = [];
+            if ($input['marital_status_name']) {
+                $maritalStatus = [
+                    'Name' => $input['marital_status_name'],
+                ];
+            }
+            
+            CaregiverInfo::where('user_id', $input['user_id'])->update([
+                // 'ethnicity' => json_encode($ethnicity),
+                'country_of_birth' => $input['country_of_birth'],
+                'professional_licensenumber' => $input['professional_licensenumber'],
+                'npi_number' => $input['npi_number'],
+                // 'marital_status' => json_encode($maritalStatus),
+                // 'notification_preferences' => json_encode($notificationPreferences)
+            ]);
+
+            $language = [];
+            if ($input['language1'] || $input['language2'] || $input['language3'] || $input['language4']) {
+                $language[] = [
+                    'Language1' =>  $input['language1'],
+                    'Language2' =>  $input['language2'],
+                    'Language3' =>  $input['language3'],
+                    'Language4' =>  $input['language4'],
+                ];
+            }
+        
+            $address[] = [
+                'Street1' =>  $input['street1'],
+                'Street2' =>  $input['street2'],
+                'City' =>  $input['city'],
+                'State' =>  $input['state'],
+                'Zip4' =>  $input['zip4'],
+                'Zip5' =>  $input['zip5'],
+            ];
+            Demographic::where('user_id' ,$input['user_id'])->update([
+                'ssn' => $input['ssn'],
+                // 'language' => json_encode($language),
+                // 'address' => json_encode($address),
+            ]);
+
+            $relationship = [];
+            if ($input['relationship_name']) {
+                $relationship = [
+                    'Name' => $input['relationship_name']
+                ];
+            }
+            PatientEmergencyContact::where('user_id' ,$input['user_id'])->update([
+                'name' => $input['contact_name'],
+                'phone1' => $input['phone1'],
+                'phone2' => $input['phone2'],
+                'address' => $input['address'],
+                // 'relation' =>  json_encode($relationship),
+            ]);
+
+            return $this->generateResponse(true, 'Update Details Success', 'null', 200);
         }
 
-        return $this->generateResponse(false,'Something Went Wrong',null,200);
+        return $this->generateResponse(false, 'Something Went Wrong', null, 200);
     }
+//     public function demographyDataUpdate(Request $request)
+//     {
+//         if ($request->type==="1"){
+//             $demographyDetails = PatientReferral::where(['user_id'=>$request->patient_id])->first();
+//             if ($demographyDetails===null){
+//                 $demographyDetails = new PatientReferral();
+//                 $demographyDetails->user_id = $request->patient_id;
+//             }
+//             $user = User::find($demographyDetails->user_id);
+//             $demographyDetails->phone1 = $request->phoneno;
+//             $user->phone = $request->phoneno;
+//             $demographyDetails->email = $request->emailId;
+//             $user->email = $request->emailId;
+//             $demographyDetails->start_date = $request->start_date;
+// //            $demographyDetails->ethnicity = $request->ethnicity;
+//             $demographyDetails->ssn = $request->SSN;
+//             $demographyDetails->patient_id = $request->admissionId;
+//             $demographyDetails->address_1 = $request->address;
+//             $demographyDetails->eng_name = $request->eng_name;
+//             $demographyDetails->eng_addres = $request->eng_address;
+//             $demographyDetails->emg_phone = $request->emg_phone;
+//             $demographyDetails->emg_relationship = $request->emg_relationship;
+//             $demographyDetails->work_name = $request->work_name;
+//             $demographyDetails->home_phone1 = $request->home_phone1;
+//             $demographyDetails->cell_phone1 = $request->cell_phone1;
+//             $demographyDetails->work_phone3 = $request->work_phone3;
+// //            $demographyDetails->nurse = $request->nurse;
+//             $user->save();
+//             $demographyDetails->save();
+//             return $this->generateResponse(true,'Update Details Success',$demographyDetails,200);
+//         }elseif ($request->type==="2"){
+//             $demographyDetails = PatientReferral::where(['user_id'=>$request->patient_id])->first();
+//             if ($demographyDetails===null){
+//                 $demographyDetails = new PatientReferral();
+//                 $demographyDetails->user_id = $request->patient_id;
+//             }
+//             $demographyDetails->medicaid_number = $request->medicaid_number;
+//             $demographyDetails->medicare_number = $request->medicare_number;
+//             $demographyDetails->save();
+//             if (is_array($request->insurance_id)){
+//                 foreach ($request->insurance_id as $key=>$value) {
+//                     $patientInsurance = PatientInsurance::find($value);
+//                     if ($patientInsurance){
+//                         if ($request->has('name_'.$key)){
+//                             $patientInsurance->name = $request->input('name_'.$key);
+//                         }
+//                         if ($request->has('payerId_'.$key)){
+//                             $patientInsurance->payer_id = $request->input('payerId_'.$key);
+//                         }
+//                         if ($request->has('policy_no_'.$key)){
+//                             $patientInsurance->policy_no = $request->input('policy_no_'.$key);
+//                         }
+//                         if ($request->has('Phone_'.$key)){
+//                             $patientInsurance->phone = $request->input('Phone_'.$key);
+//                         }
+//                         $patientInsurance->save();
+//                     }
+//                 }
+//             }
+//             return $this->generateResponse(true,'Insurance Update Details Success',$request->input('payerId_'.$key),200);
+//         }elseif ($request->type==="3"){
+//             if ($request->has('caregiver_id')){
+//                 $caregivers = Caregivers::where('id','=',$request->caregiver_id)
+//                     ->where('patient_id','=',$request->patient_id)
+//                     ->first();
+//                 if ($caregivers){
+//                     $caregivers->name = $request->c_name;
+//                     $caregivers->phone = $request->c_phone;
+//                     $caregivers->start_time = $request->start_time;
+//                     $caregivers->end_time = $request->end_time;
+//                     $caregivers->save();
+//                 }
+//             }
+
+//             return $this->generateResponse(true,'Caregiver Detail Update Successfully!',$caregivers,200);
+//         }
+
+//         return $this->generateResponse(false,'Something Went Wrong',null,200);
+//     }
 
     public function ccmReadingLevelHigh()
     {

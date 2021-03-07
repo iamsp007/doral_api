@@ -15,8 +15,8 @@ class CreateCoordinatorsTable extends Migration
     {
         Schema::create('coordinators', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('status', ['0', '1'])->comment('0=inactive,1=active')->default('1');
+            $table->string('coordinator_id')->nullable();
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }

@@ -16,3 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+//Route::get('/map', function (\Illuminate\Support\Facades\Request $request) {
+//    $lat = 21.455414;
+//    $long = 69.145474;
+//    $location = ["lat"=>$lat, "long"=>$long];
+//    event(new \App\Events\ActionEvent($location));
+//    return response()->json(['status'=>'success', 'data'=>$location]);
+//});
+
