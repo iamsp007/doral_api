@@ -316,12 +316,12 @@ class UserController extends Controller
                 // 'address' => json_encode($address),
             ]);
 
-            $relationship = [];
-            if ($input['relationship_name']) {
-                $relationship = [
-                    'Name' => $input['relationship_name']
-                ];
-            }
+            // $relationship = [];
+            // if ($input['relationship_name']) {
+            //     $relationship = [
+            //         'Name' => $input['relationship_name']
+            //     ];
+            // }
             PatientEmergencyContact::where('user_id' ,$input['user_id'])->update([
                 'name' => $input['contact_name'],
                 'phone1' => $input['phone1'],
