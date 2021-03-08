@@ -22,7 +22,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Spatie\Permission\Models\Permission;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
-use Illuminate\Contracts\Queue\ShouldQueue;
+// use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
@@ -31,7 +31,7 @@ use Maatwebsite\Excel\Validators\Failure;
 HeadingRowFormatter::default('slug');
 
 
-class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,SkipsOnFailure,ShouldQueue 
+class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,SkipsOnFailure 
 {
     use Importable,SkipsFailures;
 
@@ -68,13 +68,10 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
             }
             if (isset($row['caregiver_code']) && $this->file_type == '3') {
                 $userCaregiver = CaregiverInfo::where('caregiver_code' , $row['caregiver_code'])->first();
-    
+                \Log::info($userCaregiver);
                 if ($userCaregiver) {
                     $patientLabReport = new PatientLabReport();
-                    // $coordinatorModel = LabReportType::updateOrCreate(
-                    //     ['name' => $row['compliance_item']],
-                    //     ['status' => '1',]
-                    // );
+                    
                     $labReportType = LabReportType::where('name', $row['compliance_item'])->first();
 
                     $patientLabReport->lab_report_type_id = $labReportType->id;
