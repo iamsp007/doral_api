@@ -298,7 +298,7 @@ class PatientController extends Controller
             ->get();
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
-    
+
     public function updatePatientPhone(Request $request)
     {
         $input = $request->all();
@@ -307,7 +307,7 @@ class PatientController extends Controller
         if ($users) {
             return $this->generateResponse(false, 'Phone number must unique', null, 400);
         }
-        
+
         $user = User::where('id',$request['id'])->update([
             'status' => '0',
             'phone' => $request['phone']
@@ -335,15 +335,14 @@ class PatientController extends Controller
                 $link=env("WEB_URL").'download-application';
                 $smsData[] = [
                     'to'=> $value->phone,
-                    'message'=>'Welcome To Doral Health Connect.
-                    Please click below application link and download.
+                    'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now.
                     '.$link.'
                     Default Password : Patient@doral',
                 ];
 
                 event(new SendingSMS($smsData));
             }
-            
+
             return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
         }
 
@@ -373,9 +372,8 @@ class PatientController extends Controller
                         $link=env("WEB_URL").'download-application';
                         $smsData[]=array(
                             'to'=>$users->phone,
-                            'message'=>'Welcome To Doral Health Connect.
-Please click below application link and download.
-'.$link.'
+                            'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities.
+                            If you have any medical concern or need annual physical please click on the link below and book your appointment now.'.$link.'
 Default Password : Patient@doral',
                         );
                     }

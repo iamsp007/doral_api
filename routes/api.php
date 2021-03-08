@@ -66,6 +66,12 @@ Route::group([
     Route::get('getNewPatientListAll', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('getNewPatientList', 'App\Http\Controllers\PatientController@getNewPatientList');
 
+    // Employee Reports
+    Route::get('employee-reports', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@index')->name('employee.reports.index');
+    Route::post('employee-reports/{id}/store', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@store')->name('employee.reports.store');
+    Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
+    Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
+
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
@@ -246,9 +252,6 @@ Route::group([
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
 
-    // upload lab report referral
-    Route::post('lab-report-referral', 'App\Http\Controllers\PatientLabReportController@getLabReportReferral');
-    Route::post('lab-report-upload-multiple', 'App\Http\Controllers\PatientLabReportController@labReportUpload');
 });
 
 // Get List of Medicines.
