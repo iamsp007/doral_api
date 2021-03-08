@@ -14,6 +14,7 @@ class UpdateStatusTypePatientLabReport extends Migration
     public function up()
     {
         Schema::table('patient_lab_reports', function (Blueprint $table) {
+            $table->dropColumn('result');
             $table->string('result');
         });
     }
