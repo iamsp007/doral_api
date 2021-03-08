@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateStatusTypePatientLabReport extends Migration
+class AddStatusTypePatientLabReport extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class UpdateStatusTypePatientLabReport extends Migration
     public function up()
     {
         Schema::table('patient_lab_reports', function (Blueprint $table) {
-            $table->dropColumn('result');
-            
+            $table->string('result');
         });
     }
 
