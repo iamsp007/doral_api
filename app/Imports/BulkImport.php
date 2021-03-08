@@ -7,6 +7,7 @@ use App\Models\PatientReferral;
 use App\Models\PatientReferralNotSsn;
 use App\Models\User;
 use App\Models\FailRecodeImport;
+use App\Models\LabReportType;
 use App\Models\CaregiverInfo;
 use App\Models\PatientLabReport;
 use Carbon\Carbon;
@@ -22,8 +23,8 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Spatie\Permission\Models\Permission;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
+// use Illuminate\Contracts\Queue\ShouldQueue;
+// use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Validators\Failure;
@@ -31,7 +32,7 @@ use Maatwebsite\Excel\Validators\Failure;
 HeadingRowFormatter::default('slug');
 
 
-class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkReading,SkipsOnFailure,ShouldQueue 
+class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailure 
 {
     use Importable,SkipsFailures;
 
@@ -66,15 +67,17 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
             } else if (isset($row['dob'])) {
                 $dob = date('Y-m-d', strtotime($row['dob']));
             }
-            if (isset($row['caregiver_code']) && $this->file_type == '3') {
+            
+            
+            \Log::info($this->file_type);
+            if (isset($row['caregiver_code']) && isset($row['compliance_item'])) {
                 $userCaregiver = CaregiverInfo::where('caregiver_code' , $row['caregiver_code'])->first();
-    
+                
+                \Log::info('test');
+                \Log::info($userCaregiver);
                 if ($userCaregiver) {
                     $patientLabReport = new PatientLabReport();
-                    // $coordinatorModel = LabReportType::updateOrCreate(
-                    //     ['name' => $row['compliance_item']],
-                    //     ['status' => '1',]
-                    // );
+                    
                     $labReportType = LabReportType::where('name', $row['compliance_item'])->first();
 
                     $patientLabReport->lab_report_type_id = $labReportType->id;
@@ -84,7 +87,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
                     }
                     $patientLabReport->due_date = date('Y-m-d', strtotime($row['compliance_due_date']));
                     $patientLabReport->expiry_date = date('Y-m-d', strtotime($row['compliance_due_date']));
-                    $patientLabReport->perform_date = date('Y-m-d', strtotime($input['compliance_completion_date']));
+                    $patientLabReport->perform_date = date('Y-m-d', strtotime($row['compliance_completion_date']));
 
                     $patientLabReport->result = $row['compliance_result'];
 
@@ -209,44 +212,43 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
                     
                     // Wage Parity Section End
                     $record = [
-                             'user_id'=>$user->id,
-                             'referral_id'=>$this->referral_id,
-                             'service_id'=>$this->service_id,
-                             'file_type'=>$this->file_type,
-                             'form_id'=>isset($this->form_id)?$this->form_id:$patient->form_id,
-                             'first_name'=>isset($row['first_name']) ? $row['first_name'] : $patient->first_name,
-                             'last_name'=>isset($row['last_name']) ? $row['last_name'] : $patient->last_name,
-                             'middle_name'=>isset($row['middle_name'])?$row['middle_name']:$patient->middle_name,
-                             'gender'=>isset($row['gender'])?$row['gender']:$patient->gender,
-                             'email' => isset($row['email'])?$row['email']:$patient->email,
-                             'dob'=>$dob,
-                            // 'dob'=>Carbon::createFromDate($dob),
-                             'phone1'=>isset($row['phone2'])?$row['phone2']:$patient->phone1,
-                             'phone2'=>isset($row['phone2'])?$row['phone2']:$patient->phone2,
-                             'address_1'=>$address,
-                             'address_2'=>$address2,
-                             'eng_name'=>$emergency1_name,
-                             'emg_relationship'=>$emergency1_relationship,
-                             'eng_addres'=>$emergency1_address,
-                             'emg_phone'=>$emergency1_phone,
-                             'patient_id'=>isset($row['admission_id'])?$row['admission_id']:$patient->patient_id,
-                             'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:$patient->caregiver_code,
-                             'city' => isset($row['city'])?$row['city']:$patient->city,
-                             'state' => isset($row['state'])?$row['state']:$patient->state,
-                             'Zip' => isset($row['zip_code'])?$row['zip_code']:$patient->Zip,
-                             'county' => isset($row['county'])?$row['county']:$patient->county,
-                             'working_hour' => $working_hour,
-                             'benefit_plan' => $benefit_plan
-                         ];
+                        'user_id'=>$user->id,
+                        'referral_id'=>$this->referral_id,
+                        'service_id'=>$this->service_id,
+                        'file_type'=>$this->file_type,
+                        'form_id'=>isset($this->form_id)?$this->form_id:$patient->form_id,
+                        'first_name'=>isset($row['first_name']) ? $row['first_name'] : $patient->first_name,
+                        'last_name'=>isset($row['last_name']) ? $row['last_name'] : $patient->last_name,
+                        'middle_name'=>isset($row['middle_name'])?$row['middle_name']:$patient->middle_name,
+                        'gender'=>isset($row['gender'])?$row['gender']:$patient->gender,
+                        'email' => isset($row['email'])?$row['email']:$patient->email,
+                        'dob'=>$dob,
+                        // 'dob'=>Carbon::createFromDate($dob),
+                        'phone1'=>isset($row['phone2'])?$row['phone2']:$patient->phone1,
+                        'phone2'=>isset($row['phone2'])?$row['phone2']:$patient->phone2,
+                        'address_1'=>$address,
+                        'address_2'=>$address2,
+                        'eng_name'=>$emergency1_name,
+                        'emg_relationship'=>$emergency1_relationship,
+                        'eng_addres'=>$emergency1_address,
+                        'emg_phone'=>$emergency1_phone,
+                        'patient_id'=>isset($row['admission_id'])?$row['admission_id']:$patient->patient_id,
+                        'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:$patient->caregiver_code,
+                        'city' => isset($row['city'])?$row['city']:$patient->city,
+                        'state' => isset($row['state'])?$row['state']:$patient->state,
+                        'Zip' => isset($row['zip_code'])?$row['zip_code']:$patient->Zip,
+                        'county' => isset($row['county'])?$row['county']:$patient->county,
+                        'working_hour' => $working_hour,
+                        'benefit_plan' => $benefit_plan
+                    ];
                     if(count($dataV) > 0) {
-                      $record = array_merge($record, $dataV);
+                        $record = array_merge($record, $dataV);
                     }
                     if(count($wageParity) > 0) {
-                      $record = array_merge($record, $wageParity);
+                        $record = array_merge($record, $wageParity);
                     }
-                    PatientReferral::where('id', $patient->id)
-                            ->update($record);
-                }else{
+                    PatientReferral::where('id', $patient->id)->update($record);
+                } else {
                     $user = new User();
                     $patient = new PatientReferral();
                     $user->first_name = $row['first_name'];
@@ -277,8 +279,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
                     $user->phone = $phone;
                     $user->assignRole('patient')->syncPermissions(Permission::all());
 
-                    if ($user->save()){
-
+                    if ($user->save()) {
                         $address = '';
                         if (isset($row['street1'])){
                             $address = $row['street1'];
@@ -353,99 +354,90 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,WithChunkRea
                         }
                         // Wage Parity Section End
                         $record = [
-                               'user_id'=>$user->id,
-                               'referral_id'=>$this->referral_id,
-                               'service_id'=>$this->service_id,
-                               'file_type'=>$this->file_type,
-                               'form_id'=>isset($this->form_id)?$this->form_id:NULL,
-                               'first_name'=>$row['first_name'],
-                               'last_name'=>$row['last_name'],
-                               'middle_name'=>isset($row['middle_name'])?$row['middle_name']:null,
-                               'gender'=>isset($row['gender'])?$row['gender']:null,
-                               'email' => isset($row['email'])?$row['email']:null,
-                               'ssn' => $row['ssn'],
-                               'dob'=>$dob,
-                                //'dob'=>Carbon::createFromDate($dob),
-                               'phone1'=>isset($row['phone2'])?$row['phone2']:null,
-                               'phone2'=>isset($row['phone2'])?$row['phone2']:null,
-                               'address_1'=>$address,
-                               'address_2'=>$address2,
-                               'eng_name'=>$emergency1_name,
-                               'emg_relationship'=>$emergency1_relationship,
-                               'eng_addres'=>$emergency1_address,
-                               'emg_phone'=>$emergency1_phone,
-                               'patient_id'=>isset($row['admission_id'])?$row['admission_id']:null,
-                               'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:null,
-                               'city' => isset($row['city'])?$row['city']:null,
-                               'state' => isset($row['state'])?$row['state']:null,
-                               'Zip' => isset($row['zip_code'])?$row['zip_code']:null,
-                               'county' => isset($row['county'])?$row['county']:null,
-                               'working_hour' => $working_hour,
-                               'benefit_plan' => $benefit_plan
-                           ];
-                          if(count($wageParity) > 0) {
+                            'user_id'=>$user->id,
+                            'referral_id'=>$this->referral_id,
+                            'service_id'=>$this->service_id,
+                            'file_type'=>$this->file_type,
+                            'form_id'=>isset($this->form_id)?$this->form_id:NULL,
+                            'first_name'=>$row['first_name'],
+                            'last_name'=>$row['last_name'],
+                            'middle_name'=>isset($row['middle_name'])?$row['middle_name']:null,
+                            'gender'=>isset($row['gender'])?$row['gender']:null,
+                            'email' => isset($row['email'])?$row['email']:null,
+                            'ssn' => $row['ssn'],
+                            'dob'=>$dob,
+                            //'dob'=>Carbon::createFromDate($dob),
+                            'phone1'=>isset($row['phone2'])?$row['phone2']:null,
+                            'phone2'=>isset($row['phone2'])?$row['phone2']:null,
+                            'address_1'=>$address,
+                            'address_2'=>$address2,
+                            'eng_name'=>$emergency1_name,
+                            'emg_relationship'=>$emergency1_relationship,
+                            'eng_addres'=>$emergency1_address,
+                            'emg_phone'=>$emergency1_phone,
+                            'patient_id'=>isset($row['admission_id'])?$row['admission_id']:null,
+                            'caregiver_code' => isset($row['caregiver_code'])?$row['caregiver_code']:null,
+                            'city' => isset($row['city'])?$row['city']:null,
+                            'state' => isset($row['state'])?$row['state']:null,
+                            'Zip' => isset($row['zip_code'])?$row['zip_code']:null,
+                            'county' => isset($row['county'])?$row['county']:null,
+                            'working_hour' => $working_hour,
+                            'benefit_plan' => $benefit_plan
+                        ];
+                        if(count($wageParity) > 0) {
                             $record = array_merge($record, $wageParity);
-                          }
-                          PatientReferral::updateorcreate($record);
+                        }
+                        PatientReferral::updateorcreate($record);
                     }
-//                    \Log::info(123456);
-                  }
-          } else {
-              $patientRefNotSsn = new PatientReferralNotSsn();
-              $patientRefNotSsn->referral_id = $this->referral_id;
-              $patientRefNotSsn->patient_id = isset($row['admission_id'])?$row['admission_id']:null;
-              $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
-              $patientRefNotSsn->save();
-          }
-         }catch(Exception $e) {
-             $faild_recodes = new FailRecodeImport();
-                 $faild_recodes->error = $e->getMessage();
-                 $faild_recodes->file_name = $this->file_name;
-                 $faild_recodes->row = ++$this->row;
-                 $faild_recodes->save();
+                    // \Log::info(123456);
+                }
+            } else {
+                $patientRefNotSsn = new PatientReferralNotSsn();
+                $patientRefNotSsn->referral_id = $this->referral_id;
+                $patientRefNotSsn->patient_id = isset($row['admission_id'])?$row['admission_id']:null;
+                $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
+                $patientRefNotSsn->save();
+            }
+        } catch(Exception $e) {
+            $faild_recodes = new FailRecodeImport();
+            $faild_recodes->error = $e->getMessage();
+            $faild_recodes->file_name = $this->file_name;
+            $faild_recodes->row = ++$this->row;
+            $faild_recodes->save();
         }
-         
-
-
-          //dd($record);
-          //PatientReferral::insert($record);
-        
     }
 
     /**
- * @param Failure[] $failures
- */
-public function onFailure(Failure ...$failures)
-{
+     * @param Failure[] $failures
+     */
+    public function onFailure(Failure ...$failures)
+    {
+        foreach ($failures as $failure) {
+            $faild_recodes = new FailRecodeImport();
 
-    foreach ($failures as $failure) {
-      $faild_recodes = new FailRecodeImport();
-        $faild_recodes->errors = $failure->errors()[0];
-       $faild_recodes->attribute = $failure->attribute(); 
-       $faild_recodes->values = json_encode($failure->values());
-       $faild_recodes->file_name = $this->file_name;
-       $faild_recodes->row = $failure->row();
-       $faild_recodes->service_id = $this->service_id;
-       $faild_recodes->save();
-    }   
- }
+            $faild_recodes->errors = $failure->errors()[0];
+            $faild_recodes->attribute = $failure->attribute(); 
+            $faild_recodes->values = json_encode($failure->values());
+            $faild_recodes->file_name = $this->file_name;
+            $faild_recodes->row = $failure->row();
+            $faild_recodes->service_id = $this->service_id;
+            $faild_recodes->save();
+        }   
+    }
 
 
-   public function rules(): array
+    public function rules(): array
     {
         return [
-            '*.last_name' => 'required',
-            '*.first_name' => 'required',
+            // '*.last_name' => 'required',
+            // '*.first_name' => 'required',
             '*.ssn' => 'required',
         ];
-      
+    
     }
 
     public function chunkSize(): int
     {
         return 1000;
     }
-
-
-
 }
