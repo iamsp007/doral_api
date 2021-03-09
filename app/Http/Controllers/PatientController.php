@@ -298,6 +298,22 @@ class PatientController extends Controller
             ->get();
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
+    
+    public function updatePatientPhone(Request $request)
+    {
+        $input = $request->all();
+       
+        $users = User::where('id',$input['id']);
+        $user = $users->update([
+            'status' => '0',
+            'phone' => $input['phone'],
+        ]);
+        if ($user) {
+            return $this->generateResponse(true, 'Change Patient phone successfully.', null, 200);
+        }
+
+        return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
+    }
 
     public function updatePatientPhone(Request $request)
     {
@@ -342,8 +358,8 @@ class PatientController extends Controller
 
                 event(new SendingSMS($smsData));
             }
-
-            return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
+            
+            return $this->generateResponse(true, 'Change Patient Status Successfully.', null, 200);
         }
 
         return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
