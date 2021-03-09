@@ -256,7 +256,7 @@ class UserController extends Controller
                 'gender' => $input['gender'],
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
-                'dob' => date('Y-m-d', strtotime($input['dob'])),
+                // 'dob' => date('Y-m-d', strtotime($input['dob'])),
                 'phone' => $input['home_phone'],
             ]);
        
