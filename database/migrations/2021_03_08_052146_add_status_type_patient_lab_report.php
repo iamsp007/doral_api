@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddReferralIdLabReportTypes extends Migration
+class AddStatusTypePatientLabReport extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddReferralIdLabReportTypes extends Migration
      */
     public function up()
     {
-        Schema::table('lab_report_types', function (Blueprint $table) {
-            $table->foreignId('referral_id')->index('referral_id');  
+        Schema::table('patient_lab_reports', function (Blueprint $table) {
+            $table->string('result');
         });
     }
 
@@ -25,8 +25,8 @@ class AddReferralIdLabReportTypes extends Migration
      */
     public function down()
     {
-        Schema::table('lab_report_types', function (Blueprint $table) {
-            $table->dropColumn('referral_id');
+        Schema::table('patient_lab_reports', function (Blueprint $table) {
+            //
         });
     }
 }

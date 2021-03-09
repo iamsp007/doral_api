@@ -315,6 +315,24 @@ class PatientController extends Controller
         return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
     }
 
+    public function updatePatientPhone(Request $request)
+    {
+        $input = $request->all();
+        $users = User::where('phone', $request['phone'])->first();
+
+        if ($users) {
+            return $this->generateResponse(false, 'Phone number must unique', null, 400);
+        }
+
+        $user = User::where('id',$request['id'])->update([
+            'status' => '0',
+            'phone' => $request['phone']
+        ]);
+        if ($user) {
+            return $this->generateResponse(true, 'Change Patient phone Successfully.', null, 200);
+        }
+        return $this->generateResponse(false, 'Patient Not Found', null, 400);
+    }
     public function updatePatientStatus(Request $request)
     {
         $input = $request->all();
@@ -333,8 +351,7 @@ class PatientController extends Controller
                 $link=env("WEB_URL").'download-application';
                 $smsData[] = [
                     'to'=> $value->phone,
-                    'message'=>'Welcome To Doral Health Connect.
-                    Please click below application link and download.
+                    'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now.
                     '.$link.'
                     Default Password : Patient@doral',
                 ];
@@ -371,9 +388,8 @@ class PatientController extends Controller
                         $link=env("WEB_URL").'download-application';
                         $smsData[]=array(
                             'to'=>$users->phone,
-                            'message'=>'Welcome To Doral Health Connect.
-Please click below application link and download.
-'.$link.'
+                            'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities.
+                            If you have any medical concern or need annual physical please click on the link below and book your appointment now.'.$link.'
 Default Password : Patient@doral',
                         );
                     }

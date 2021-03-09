@@ -66,6 +66,12 @@ Route::group([
     Route::get('getNewPatientListAll', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('getNewPatientList', 'App\Http\Controllers\PatientController@getNewPatientList');
 
+    // Employee Reports
+    Route::get('employee-reports', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@index')->name('employee.reports.index');
+    Route::post('employee-reports/{id}/store', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@store')->name('employee.reports.store');
+    Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
+    Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
+
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
@@ -186,8 +192,8 @@ Route::group([
     Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
     Route::post('get-cancel-appoiment-list-data', 'App\Http\Controllers\PatientController@cancelAppoimentListData');
     Route::get('get-roadl-status', 'App\Http\Controllers\PatientRequestController@getRoadLStatus');
-    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');    
-    
+    Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
+
     //new patient list for appointment
     Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
     //Appointment
@@ -206,7 +212,7 @@ Route::group([
    Route::get('patient-referral-failed/{id}', 'App\Http\Controllers\PatientReferralController@faileRecode');
    Route::get('patient-referral-failed-view/{id}', 'App\Http\Controllers\PatientReferralController@viewfaileRecode');
 
-   
+
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
 });
@@ -246,6 +252,7 @@ Route::group([
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
+
 });
 
 // Get List of Medicines.
