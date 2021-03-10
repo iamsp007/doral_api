@@ -45,14 +45,41 @@ class PatientRequestController extends Controller
     public function store(PatientRequestValidation $request)
     {
         try {
-            if ($request->has('type')){
-
-                foreach ($request->type as $value) {
-                    $response = $this->createPatientRequest($request,$value);
-                }
-            }else{
-                $response = $this->createPatientRequest($request);
-            }
+//            $patientRequest = PatientRequest::where('user_id', $request->patient_id)->whereNull('parent_id')->where('status', 'active')->first();
+//            if(! $patientRequest) {
+//                $patient = new PatientRequest();
+//                $patient->user_id = $request->patient_id;
+//                $patient->latitude = $request->latitude;
+//                $patient->longitude = $request->longitude;
+//                $patient->reason = $request->reason;
+//                $patient->save();
+//
+//                $patientSecond = new PatientRequest();
+//               
+//                $patientSecond->user_id = $request->patient_id;
+//                $patientSecond->type_id = $request->type_id;
+//                $patientSecond->parent_id = $patient->id;
+//
+//                $patientSecond->save();
+//              
+//            } else {
+//                $patientSecond = new PatientRequest();
+//              
+//                $patientSecond->user_id = $request->patient_id;
+//                $patientSecond->type_id = $request->type_id;
+//                
+//                $patientSecond->parent_id = $patientRequest->id;
+//
+//                $patientSecond->save();
+//            }
+//            return $this->generateResponse(true,'Add Request Successfully!');
+             if ($request->has('type')){
+                 foreach ($request->type as $value) {
+                     $response = $this->createPatientRequest($request,$value);
+                 }
+             }else{
+                 $response = $this->createPatientRequest($request);
+             }
             return $response;
         }catch (Exception $exception){
             return $this->generateResponse(false,$exception->getMessage());
