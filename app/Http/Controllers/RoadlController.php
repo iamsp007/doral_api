@@ -256,4 +256,29 @@ class RoadlController extends Controller
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 
+    public function getRoadLProccessNew(Request $request){
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(),[
+            'parent_id'=>'required|exists:patient_requests,parent_id'
+        ]);
+        if ($validator->fails()){
+            return $this->generateResponse(false,$validator->errors()->first(),$validator->errors()->messages(),200);
+        }
+
+        $patientRequest = PatientRequest::with(['detail','patient','ccrm'])
+            ->where(function ($q) use ($request){
+                if ($request->has('type_id')){
+                    $q->where('type_id','=',$request->type_id);
+                }
+            })
+            ->where('parent_id','=',$request->parent_id)
+            ->whereNotNull('parent_id')
+            ->get();
+        if (count($patientRequest)>0){
+            return $this->generateResponse(true,'roadl request list',$patientRequest,200);
+        }
+
+        return $this->generateResponse(false,'Something Went Wrong!',null,200);
+    }
+
 }
