@@ -252,7 +252,7 @@ class UserController extends Controller
         if ($request->type==="1"){
             $input = $request->all();
 
-            $user = User::find($input['user_id'])->update([
+            User::find($input['user_id'])->update([
                 'gender' => $input['gender'],
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
@@ -275,7 +275,7 @@ class UserController extends Controller
                     'Name' => $input['ethnicity'],
                 ];
             }
-
+            $ethnicity = json_encode($ethnicity);
             $maritalStatus = [];
             if ($input['marital_status_name']) {
                 $maritalStatus = [
@@ -322,15 +322,19 @@ class UserController extends Controller
             //         'Name' => $input['relationship_name']
             //     ];
             // }
+            $contactName = '';
+            if (isset($input['contact_name'])) {
+                $contactName - $input['contact_name'];
+            }
             PatientEmergencyContact::where('user_id' ,$input['user_id'])->update([
-                'name' => $input['contact_name'],
+                'name' => $contactName,
                 'phone1' => $input['phone1'],
                 'phone2' => $input['phone2'],
                 'address' => $input['address'],
                 // 'relation' =>  json_encode($relationship),
             ]);
 
-            return $this->generateResponse(true, 'Update Details Success', 'null', 200);
+            return $this->generateResponse(true, 'Update Details Success', $ethnicity, 200);
         }
 
         return $this->generateResponse(false, 'Something Went Wrong', null, 200);
