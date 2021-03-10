@@ -183,6 +183,7 @@ Route::group([
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
+    Route::post('get-roadl-proccess-new', 'App\Http\Controllers\RoadlController@getRoadLProccessNew');
     Route::post('create-virtual-room', 'App\Http\Controllers\SessionsController@createRoom');
     Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
@@ -201,8 +202,8 @@ Route::group([
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
     Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
 });
-Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus');    
-Route::post('update-patient-phone', 'App\Http\Controllers\PatientController@updatePatientPhone');    
+Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus');
+Route::post('update-patient-phone', 'App\Http\Controllers\PatientController@updatePatientPhone');
 
 // Referral
 Route::group([
