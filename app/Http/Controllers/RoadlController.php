@@ -157,6 +157,7 @@ class RoadlController extends Controller
         $data['type']=0;
         if ($roadlList){
             $data['type']=1;
+            $data['roadl_id']=$roadlList->appointment_id;
             $locations=array();
             if (Auth::user()->hasRole('LAB')){
                 $locations = AssignAppointmentRoadl::with(['requests','referral'])
@@ -227,7 +228,7 @@ class RoadlController extends Controller
                 ->where([['id','=',$patient_request_id],['status','=','active']])
                 ->first();
             $last_location = RoadlInformation::where('user_id','=',$datas->clincial_id)->where('patient_requests_id','=',$patient_request_id)->orderBy('id','desc')->first();
-
+            $data['roadl_id']=$datas->id;
             $location[]=array(
                 'referral_type'=>'Doral',
                 'latitude'=>$last_location?$last_location->latitude:null,
