@@ -45,10 +45,10 @@ class PatientRequestController extends Controller
     public function store(PatientRequestValidation $request)
     {
         try {
-            $patientRequest = PatientRequest::where('user_id', $request->patient_id)->whereNull('parent_id')->where('status', 'active')->first();
+            $patientRequest = PatientRequest::where('user_id', $request->user_id)->whereNull('parent_id')->where('status', 'active')->first();
             if(! $patientRequest) {
                 $patient = new PatientRequest();
-                $patient->user_id = $request->patient_id;
+                $patient->user_id = $request->user_id;
                 $patient->latitude = $request->latitude;
                 $patient->longitude = $request->longitude;
                 $patient->reason = $request->reason;
@@ -56,8 +56,11 @@ class PatientRequestController extends Controller
 
                 $patientSecond = new PatientRequest();
 
-                $patientSecond->user_id = $request->patient_id;
+                $patientSecond->user_id = $request->user_id;
                 $patientSecond->type_id = $request->type_id;
+                $patientSecond->latitude = $request->latitude;
+                $patientSecond->longitude = $request->longitude;
+                $patientSecond->reason = $request->reason;
                 $patientSecond->parent_id = $patient->id;
 
                 $patientSecond->save();
@@ -65,7 +68,7 @@ class PatientRequestController extends Controller
             } else {
                 $patientSecond = new PatientRequest();
 
-                $patientSecond->user_id = $request->patient_id;
+                $patientSecond->user_id = $request->user_id;
                 $patientSecond->type_id = $request->type_id;
 
                 $patientSecond->parent_id = $patientRequest->id;
