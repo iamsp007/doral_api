@@ -55,24 +55,25 @@ class PatientRequestController extends Controller
                 $patient->save();
 
                 $patientSecond = new PatientRequest();
-               
+
                 $patientSecond->user_id = $request->patient_id;
                 $patientSecond->type_id = $request->type_id;
                 $patientSecond->parent_id = $patient->id;
 
                 $patientSecond->save();
-              
+              $parent_id=$patient->id;
             } else {
                 $patientSecond = new PatientRequest();
-              
+
                 $patientSecond->user_id = $request->patient_id;
                 $patientSecond->type_id = $request->type_id;
-                
+
                 $patientSecond->parent_id = $patientRequest->id;
 
                 $patientSecond->save();
+                $parent_id=$patientRequest->id;
             }
-            return $this->generateResponse(true,'Add Request Successfully!');
+            return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
 //             if ($request->has('type')){
 //                 foreach ($request->type as $value) {
 //                     $response = $this->createPatientRequest($request,$value);
