@@ -340,7 +340,7 @@ class UserController extends Controller
             return $this->generateResponse(true, 'Update Details Success', $request->type, 200);
         } else if($request->type === "3") {
             
-            Company::where('user_id' ,$input['user_id'])->update([
+            Company::where('id' ,$input['company_id'])->update([
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'phone' => $input['phone'],
@@ -355,7 +355,7 @@ class UserController extends Controller
                 'administrator_phone_no' => $input['administrator_phone_no'],
                 'insurance_id' => $input['insurance_id'],
                 'expiration_date' => $input['expiration_date'],
-                'services' => explode(",",$input['services'])
+                'services' => implode(",",$input['services'])
             ]);
             return $this->generateResponse(true, 'Update Details Success', null, 200);
         }
