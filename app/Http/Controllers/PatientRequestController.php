@@ -65,6 +65,9 @@ class PatientRequestController extends Controller
 
                 $patientSecond->user_id = $request->user_id;
                 $patientSecond->type_id = $request->type_id;
+                $patientSecond->latitude = $request->latitude;
+                $patientSecond->longitude = $request->longitude;
+                $patientSecond->reason = $request->reason;
                 $patientSecond->parent_id = $patient->id;
 
                 $patientSecond->save();
@@ -72,7 +75,7 @@ class PatientRequestController extends Controller
             } else {
                 $patientSecond = new PatientRequest();
 
-                $patientSecond->user_id = $request->patient_id;
+                $patientSecond->user_id = $request->user_id;
                 $patientSecond->type_id = $request->type_id;
 
                 $patientSecond->parent_id = $patientRequest->id;
