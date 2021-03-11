@@ -340,7 +340,7 @@ class UserController extends Controller
             return $this->generateResponse(true, 'Update Details Success', $request->type, 200);
         } else if($request->type === "3") {
             
-            Company::where('user_id' ,$input['id'])->update([
+            Company::where('id' ,$input['company_id'])->update([
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'phone' => $input['phone'],
