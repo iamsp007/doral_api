@@ -253,6 +253,7 @@ Route::group([
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
+    Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
 
 });
 

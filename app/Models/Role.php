@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     use HasFactory;
+
+    public function vendor(){
+
+        return $this->hasOne(Referral::class,'role_id','id');
+    }
 }

@@ -48,7 +48,7 @@ class PatientRequest extends Model
      */
     public function requestType()
     {
-        return $this->hasOne(Role::class, 'id', 'type_id');
+        return $this->hasOne(Role::class, 'id', 'type_id')->with('vendor');
     }
 
     public function getSymptomsAttribute($value){

@@ -550,4 +550,12 @@ class PatientRequestController extends Controller
 
     }
 
+    public function getVendorList(Request $request){
+
+        $vendorList = Referral::where('guard_name','=','partner')
+            ->where('status','=','active')
+            ->get();
+        return $this->generateResponse(true,'Vendor List APi',$vendorList,200);
+    }
+
 }
