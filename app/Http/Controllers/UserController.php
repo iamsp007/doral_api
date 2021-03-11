@@ -355,7 +355,7 @@ class UserController extends Controller
                 'administrator_phone_no' => $input['administrator_phone_no'],
                 'insurance_id' => $input['insurance_id'],
                 'expiration_date' => $input['expiration_date'],
-                'services' => explode(",",$input['services'])
+                'services' => implode(",",$input['services'])
             ]);
             return $this->generateResponse(true, 'Update Details Success', null, 200);
         }
