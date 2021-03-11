@@ -81,6 +81,7 @@ class PatientRequest extends FormRequest
     public function rules()
     {
         return [
+            'type_id'=>'required',
             'latitude'=>'required',
             'longitude'=>'required',
             'reason'=>'required',
