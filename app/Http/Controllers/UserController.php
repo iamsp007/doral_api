@@ -334,7 +334,7 @@ class UserController extends Controller
         } else if($request->type === "2") {
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'medicaid_number' => $input['medicaid_number'],
-                'medicare_number' => ['medicare_number'],
+                'medicare_number' => $input['medicare_number'],
             ]);
 
             return $this->generateResponse(true, 'Update Details Success', $request->type, 200);
@@ -354,7 +354,8 @@ class UserController extends Controller
                 'licence_no' => $input['licence_no'],
                 'administrator_phone_no' => $input['administrator_phone_no'],
                 'insurance_id' => $input['insurance_id'],
-                'expiration_date' => $input['expiration_date']
+                'expiration_date' => $input['expiration_date'],
+                'services' => explode(",",$input['services'])
             ]);
             return $this->generateResponse(true, 'Update Details Success', null, 200);
         }
