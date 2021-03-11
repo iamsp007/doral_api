@@ -271,7 +271,7 @@ class PatientRequestController extends Controller
                 return $this->generateResponse(false,'Request Already Accepted!',null,200);
             }
             $patient->clincial_id=$request->user_id;
-            $patient->status='arrive';
+            $patient->status='accept';
             if ($patient->save()){
                 $users = User::find($request->user_id);
                 $users->is_available = 2;
