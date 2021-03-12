@@ -265,7 +265,7 @@ class RoadlController extends Controller
             return $this->generateResponse(false,$validator->errors()->first(),$validator->errors()->messages(),200);
         }
 
-        $patientRequest = PatientRequest::with('detail','patient')
+        $patientRequest = PatientRequest::with('detail','patient','requestType')
             ->where(function ($q) use ($request){
                 if ($request->has('type_id')){
                     $q->where('type_id','=',$request->type_id);
