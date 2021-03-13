@@ -298,7 +298,7 @@ class RoadlController extends Controller
                 'patient' => $patient[0],
             ];
 
-            return $this->generateResponse(true, 'roadl request list', $arr, 200);
+            return $this->generateResponse(true, 'roadl request list', $patientRequest, 200);
         }
 
         return $this->generateResponse(false,'No Request Found',null,200);
