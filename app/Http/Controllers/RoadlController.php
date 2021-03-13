@@ -274,8 +274,8 @@ class RoadlController extends Controller
                     'user_id' => isset($lookup->user_id) ? $lookup->user_id : null,
                     'clincial_id' => isset($lookup->clincial_id) ? $lookup->clincial_id : null,
                     'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : null,
-                    'latitude' => isset($lookup->latitude) ? $lookup->latitude : null,
-                    'longitude' => isset($lookup->longitude) ? $lookup->longitude : null,
+                    'latitude' => isset($lookup->detail->latitude) ? $lookup->latitude : null,
+                    'longitude' => isset($lookup->detail->longitude) ? $lookup->longitude : null,
                     'first_name' => isset($lookup->detail->first_name) ? $lookup->detail->first_name : null,
                     'last_name' => isset($lookup->detail->last_name) ? $lookup->detail->last_name : null,
                     'status' => isset($lookup->status) ? $lookup->status : null,
@@ -286,8 +286,8 @@ class RoadlController extends Controller
             $patient = $patientRequest->map(function ( $lookup ) {
                 return [
                     'id' => isset($lookup->patient->id) ? $lookup->patient->id : null,
-                    'latitude' => isset($lookup->patient->latitude) ? $lookup->patient->latitude : null,
-                    'longitude' => isset($lookup->patient->longitude) ? $lookup->patient->longitude : null,
+                    'latitude' => isset($lookup->latitude) ? $lookup->patient->latitude : null,
+                    'longitude' => isset($lookup->longitude) ? $lookup->patient->longitude : null,
                     'first_name' => isset($lookup->patient->first_name) ? $lookup->patient->first_name : null,
                     'last_name' => isset($lookup->patient->last_name) ? $lookup->patient->last_name : null,
                 ];
