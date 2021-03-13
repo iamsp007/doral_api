@@ -270,14 +270,14 @@ class RoadlController extends Controller
 
             $clinicians = $patientRequest->map(function ( $lookup ) {
                 return [
-                    'id' => $lookup->id,
-                    'user_id' => $lookup->user_id,
-                    'clincial_id' => $lookup->clincial_id,
-                    'parent_id' => $lookup->parent_id,
-                    'latitude' => $lookup->latitude,
-                    'longitude' => $lookup->longitude,
-                    'first_name' => $lookup->detail->first_name,
-                    'last_name' => $lookup->detail->last_name,
+                    'id' => $lookup->id ?? null,
+                    'user_id' => $lookup->user_id ?? null,
+                    'clincial_id' => $lookup->clincial_id ?? null,
+                    'parent_id' => $lookup->parent_id ?? null,
+                    'latitude' => $lookup->latitude ?? null,
+                    'longitude' => $lookup->longitude ?? null,
+                    'first_name' => $lookup->detail->first_name ?? null,
+                    'last_name' => $lookup->detail->last_name ?? null,
                     'status' => $lookup->status,
                     'referral_type' => null,
                 ];
@@ -285,11 +285,11 @@ class RoadlController extends Controller
 
             $patient = $patientRequest->map(function ( $lookup ) {
                 return [
-                    'id' => $lookup->patient->id,
-                    'latitude' => $lookup->patient->latitude,
-                    'longitude' => $lookup->patient->longitude,
-                    'first_name' => $lookup->patient->first_name,
-                    'last_name' => $lookup->patient->last_name,
+                    'id' => $lookup->patient->id ?? null,
+                    'latitude' => $lookup->patient->latitude ?? null,
+                    'longitude' => $lookup->patient->longitude ?? null,
+                    'first_name' => $lookup->patient->first_name ?? null,
+                    'last_name' => $lookup->patient->last_name ?? null,
                 ];
             });
 
