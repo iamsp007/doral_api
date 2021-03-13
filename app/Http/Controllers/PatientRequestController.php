@@ -590,8 +590,13 @@ class PatientRequestController extends Controller
             ->where('status','=','active')
             ->get();
         if ($request->has('patient_id')){
-            $vendorList = collect($vendorList)->map(function ($row){
-                $row->reuests = PatientRequest::where([]);
+            $vendorList = collect($vendorList)->map(function ($row) use ($request){
+                $check = PatientRequest::where('user_id', $request->patient_id)
+                    ->whereNotNull('parent_id')
+                    ->where('type_id','=',$row->role_id)
+                    ->where('status','!=','active')->first();
+                $row->check = $check;
+                return $row;
             });
         }
         return $this->generateResponse(true,'Vendor List APi',$vendorList,200);
