@@ -266,31 +266,39 @@ class RoadlController extends Controller
             ->get();
 
         if (count($patientRequest)>0){
-            $pReq = $patientRequest->map(function ( $lookup ) {
+            $arr = [];
+
+            $clinicians = $patientRequest->map(function ( $lookup ) {
                 return [
-                    'clinicians' => [
-                        'id' => $lookup->id,
-                        'user_id' => $lookup->user_id,
-                        'clincial_id' => $lookup->clincial_id,
-                        'parent_id' => $lookup->parent_id,
-                        'latitude' => $lookup->latitude,
-                        'longitude' => $lookup->longitude,
-                        'first_name' => $lookup->detail->first_name,
-                        'last_name' => $lookup->detail->last_name,
-                        'status' => $lookup->status,
-                        'referral_type' => null,
-                    ],
-                    'patient' => [
-                        'id' => $lookup->patient->id,
-                        'latitude' => $lookup->patient->latitude,
-                        'longitude' => $lookup->patient->longitude,
-                        'first_name' => $lookup->patient->first_name,
-                        'last_name' => $lookup->patient->last_name,
-                    ],
+                    'id' => $lookup->id,
+                    'user_id' => $lookup->user_id,
+                    'clincial_id' => $lookup->clincial_id,
+                    'parent_id' => $lookup->parent_id,
+                    'latitude' => $lookup->latitude,
+                    'longitude' => $lookup->longitude,
+                    'first_name' => $lookup->detail->first_name,
+                    'last_name' => $lookup->detail->last_name,
+                    'status' => $lookup->status,
+                    'referral_type' => null,
                 ];
             });
 
-            return $this->generateResponse(true, 'roadl request list', $pReq, 200);
+            $patient = $patientRequest->map(function ( $lookup ) {
+                return [
+                    'id' => $lookup->patient->id,
+                    'latitude' => $lookup->patient->latitude,
+                    'longitude' => $lookup->patient->longitude,
+                    'first_name' => $lookup->patient->first_name,
+                    'last_name' => $lookup->patient->last_name,
+                ];
+            });
+
+            $arr = [
+                'clinicians' => $clinicians,
+                'patient' => $patient[0],
+            ];
+
+            return $this->generateResponse(true, 'roadl request list', $arr, 200);
         }
 
         return $this->generateResponse(false,'No Request Found',null,200);
