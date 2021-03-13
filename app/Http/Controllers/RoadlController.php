@@ -266,7 +266,7 @@ class RoadlController extends Controller
             ->get();
 
         if (count($patientRequest)>0){
-            $pReq = $products->map(function ( $lookup ) {
+            $pReq = $patientRequest->map(function ( $lookup ) {
                 return [
                     'clinicians' => [
                         'id' => $lookup->id,
