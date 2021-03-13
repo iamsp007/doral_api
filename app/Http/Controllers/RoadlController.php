@@ -264,8 +264,33 @@ class RoadlController extends Controller
             ->where('parent_id','=',$request->parent_id)
             ->whereNotNull('parent_id')
             ->get();
+
         if (count($patientRequest)>0){
-            return $this->generateResponse(true,'roadl request list',$patientRequest,200);
+            $pReq = $products->map(function ( $lookup ) {
+                return [
+                    'clinicians' => [
+                        'id' => $lookup->id,
+                        'user_id' => $lookup->user_id,
+                        'clincial_id' => $lookup->clincial_id,
+                        'parent_id' => $lookup->parent_id,
+                        'latitude' => $lookup->latitude,
+                        'longitude' => $lookup->longitude,
+                        'first_name' => $lookup->detail->first_name,
+                        'last_name' => $lookup->detail->last_name,
+                        'status' => $lookup->status,
+                        'referral_type' => null,
+                    ],
+                    'patient' => [
+                        'id' => $lookup->patient->id,
+                        'latitude' => $lookup->patient->latitude,
+                        'longitude' => $lookup->patient->longitude,
+                        'first_name' => $lookup->patient->first_name,
+                        'last_name' => $lookup->patient->last_name,
+                    ],
+                ];
+            });
+
+            return $this->generateResponse(true, 'roadl request list', $pReq, 200);
         }
 
         return $this->generateResponse(false,'No Request Found',null,200);
