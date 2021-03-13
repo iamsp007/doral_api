@@ -279,7 +279,7 @@ class RoadlController extends Controller
                     'first_name' => isset($lookup->detail->first_name) ? $lookup->detail->first_name : null,
                     'last_name' => isset($lookup->detail->last_name) ? $lookup->detail->last_name : null,
                     'status' => isset($lookup->status) ? $lookup->status : null,
-                    'referral_type' => isset($lookup->request_type->name) ? $lookup->request_type->name : null,
+                    'referral_type' => isset($lookup->requestType->name) ? $lookup->requestType->name : null,
                 ];
             });
 
@@ -298,7 +298,7 @@ class RoadlController extends Controller
                 'patient' => $patient[0],
             ];
 
-            return $this->generateResponse(true, 'roadl request list', $patientRequest, 200);
+            return $this->generateResponse(true, 'roadl request list', $arr, 200);
         }
 
         return $this->generateResponse(false,'No Request Found',null,200);
