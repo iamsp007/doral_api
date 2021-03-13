@@ -300,6 +300,7 @@ class PatientRequestController extends Controller
                 return $this->generateResponse(false,'Request Already Accepted!',null,200);
             }
             $patient->clincial_id=$request->user_id;
+            $patient->updated_at=Carbon::now()->toDateTime();
             $patient->status='accept';
             if ($patient->save()){
                 $users = User::find($request->user_id);
@@ -360,6 +361,10 @@ class PatientRequestController extends Controller
             $status='complete';
         }elseif ($request->has('type') && $request->type==='5'){
             $status='cancel';
+        }elseif ($request->has('type') && $request->type==='6'){
+            $status='prepare';
+        }elseif ($request->has('type') && $request->type==='7'){
+            $status='start';
         }
 
         if (Auth::user()->hasRole('patient')){
@@ -584,6 +589,11 @@ class PatientRequestController extends Controller
         $vendorList = Referral::where('guard_name','=','partner')
             ->where('status','=','active')
             ->get();
+        if ($request->has('patient_id')){
+            $vendorList = collect($vendorList)->map(function ($row){
+                $row->reuests = PatientRequest::where([]);
+            });
+        }
         return $this->generateResponse(true,'Vendor List APi',$vendorList,200);
     }
 

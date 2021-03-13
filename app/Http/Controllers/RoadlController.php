@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendClinicianPatientRequestNotification;
+use App\Events\SendingSMS;
 use App\Events\SendPatientNotificationMap;
 use App\Http\Requests\PatientRequestOtpVerifyRequest;
 use App\Http\Requests\RoadlInformationRequest;
@@ -20,32 +21,40 @@ class RoadlController extends Controller
 {
     //
     public function create(RoadlInformationRequest $request){
-        $roadlInformation = new RoadlInformation();
-        $roadlInformation->user_id = $request->user_id;
-        $roadlInformation->patient_requests_id = $request->patient_requests_id;
-        $roadlInformation->client_id = $request->client_id;
-        $roadlInformation->latitude = $request->latitude;
-        $roadlInformation->longitude = $request->longitude;
-        $roadlInformation->status = $request->has('status')?$request->input('status'):"start";
-        if ($roadlInformation->save()){
-            if ($roadlInformation->status==="complete"){
-                $patientRequest = PatientRequest::where('id','=',$request->patient_requests_id)->first();
-                if ($patientRequest){
-                    $patientRequest->otp=rand(4,4);
-                    $patientRequest->save();
-                }
+
+        $patientRequest = PatientRequest::find($request->patient_requests_id);
+        if ($patientRequest){
+            if ($request->status==="complete"){
+                $patientRequest->otp=rand(1000,9999);
+                $patientRequest->save();
 
                 $user = User::find($request->user_id);
                 if ($user){
-                    $user->is_available = 1;
+                    $user->latitude = $request->latitude;
+                    $user->longitude = $request->longitude;
                     $user->save();
                 }
                 $message="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
                 $title="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
+                $messages[]=array(
+                    'to'=>User::find($patientRequest->user_id)->phone,
+                    'message'=>$message
+                );
+                event(new SendingSMS($messages));
                 event(new SendPatientNotificationMap($patientRequest,$patientRequest->user_id,$title,$message));
+                return $this->generateResponse(true,'Otp Send Successfully!',$patientRequest,200);
+            }elseif ($request->status==="prepare"){
+                $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
             }
-
-            return $this->generateResponse(true,'Adding RoadlInformation Successfully!',null,200);
+            $patientRequest->status = $request->status;
+            $patientRequest->save();
+            $user = User::find($request->user_id)->first();
+            if ($user){
+                $user->latitude = $request->latitude;
+                $user->longitude = $request->longitude;
+                $user->save();
+            }
+            return $this->generateResponse(true,'Your Roadl Status Update Successfully!',$patientRequest,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
