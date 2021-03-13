@@ -255,7 +255,16 @@ class RoadlController extends Controller
             return $this->generateResponse(false,$validator->errors()->first(),$validator->errors()->messages(),200);
         }
 
-        $patientRequest = PatientRequest::with('detail','patient','requestType')
+        $data['clinicians']=PatientRequest::with(['detail','requestType'])
+            ->select(
+                'id',
+                'user_id',
+                'clincial_id',
+                'test_name',
+                'status',
+                'parent_id',
+                'type_id'
+            )
             ->where(function ($q) use ($request){
                 if ($request->has('type_id')){
                     $q->where('type_id','=',$request->type_id);
@@ -263,12 +272,16 @@ class RoadlController extends Controller
             })
             ->where('parent_id','=',$request->parent_id)
             ->whereNotNull('parent_id')
-            ->get();
-        if (count($patientRequest)>0){
-            return $this->generateResponse(true,'roadl request list',$patientRequest,200);
-        }
-
-        return $this->generateResponse(false,'No Request Found',null,200);
+            ->get()->toArray();
+        $data['patient']=PatientRequest::with(['patient'])
+            ->select(
+                'id',
+                'user_id',
+                'status',
+            )
+            ->where('id','=',$request->parent_id)
+            ->first();
+        return $this->generateResponse(true,'roadl request list',$data,200);
     }
 
     public function patientRequestOtpVerify(PatientRequestOtpVerifyRequest $request){
