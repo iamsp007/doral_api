@@ -41,7 +41,7 @@ class PatientRequest extends Model
      */
     public function requests()
     {
-        return $this->hasMany(PatientRequest::class, 'parent_id', 'parent_id')->with(['requestType','detail']);
+        return $this->hasMany(PatientRequest::class, 'parent_id', 'parent_id')->orderBy('id','desc')->with(['requestType','detail']);
     }
     /**
      * Get Meeting Reasons

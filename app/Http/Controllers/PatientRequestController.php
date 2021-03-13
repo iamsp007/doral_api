@@ -68,6 +68,20 @@ class PatientRequestController extends Controller
                 $patientSecond->latitude = $request->latitude;
                 $patientSecond->longitude = $request->longitude;
                 $patientSecond->reason = $request->reason;
+                if($request->has('test_name')){
+                    $patientSecond->test_name=$request->test_name;
+                }
+                if($request->has('dieses')){
+                    $patientSecond->dieses=$request->dieses;
+                }
+                if($request->has('symptoms')){
+                    $patientSecond->symptoms=$request->symptoms;
+                }
+                if($request->has('is_parking')){
+                    $patientSecond->is_parking=$request->is_parking;
+                }
+                $patientSecond->status='active';
+
                 $patientSecond->parent_id = $patient->id;
 
                 $patientSecond->save();
@@ -77,7 +91,22 @@ class PatientRequestController extends Controller
 
                 $patientSecond->user_id = $request->user_id;
                 $patientSecond->type_id = $request->type_id;
-
+                $patientSecond->latitude = $request->latitude;
+                $patientSecond->longitude = $request->longitude;
+                $patientSecond->reason = $request->reason;
+                if($request->has('test_name')){
+                    $patientSecond->test_name=$request->test_name;
+                }
+                if($request->has('dieses')){
+                    $patientSecond->dieses=$request->dieses;
+                }
+                if($request->has('symptoms')){
+                    $patientSecond->symptoms=$request->symptoms;
+                }
+                if($request->has('is_parking')){
+                    $patientSecond->is_parking=$request->is_parking;
+                }
+                $patientSecond->status='active';
                 $patientSecond->parent_id = $patientRequest->id;
 
                 $patientSecond->save();
@@ -343,7 +372,7 @@ class PatientRequestController extends Controller
                 ->whereNotNull('parent_id')
                 ->where('user_id','=',Auth::user()->id)
                 ->groupBy('parent_id')
-                ->orderBy('id','desc')
+                ->orderBy('id','asc')
                 ->get();
         }else{
             $roles = Auth::user()->roles->pluck('id');
@@ -362,7 +391,7 @@ class PatientRequestController extends Controller
                     }
                 })
                 ->groupBy('parent_id')
-                ->orderBy('id','desc')
+                ->orderBy('id','asc')
                 ->get();
         }
 

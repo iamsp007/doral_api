@@ -164,6 +164,7 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('patient-request-otp-verify', 'App\Http\Controllers\RoadlController@patientRequestOtpVerify');
     Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
     Route::post('newpatient-data', 'App\Http\Controllers\PatientController@newpatientData');
     Route::post('patient-data', 'App\Http\Controllers\PatientController@patientData');

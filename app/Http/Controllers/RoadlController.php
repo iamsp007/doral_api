@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendClinicianPatientRequestNotification;
+use App\Events\SendPatientNotificationMap;
+use App\Http\Requests\PatientRequestOtpVerifyRequest;
 use App\Http\Requests\RoadlInformationRequest;
 use App\Http\Requests\RoadlInformationShowRequest;
 use App\Models\AssignAppointmentRoadl;
@@ -27,10 +29,9 @@ class RoadlController extends Controller
         $roadlInformation->status = $request->has('status')?$request->input('status'):"start";
         if ($roadlInformation->save()){
             if ($roadlInformation->status==="complete"){
-
                 $patientRequest = PatientRequest::where('id','=',$request->patient_requests_id)->first();
                 if ($patientRequest){
-                    $patientRequest->status = 'complete';
+                    $patientRequest->otp=rand(4,4);
                     $patientRequest->save();
                 }
 
@@ -39,31 +40,11 @@ class RoadlController extends Controller
                     $user->is_available = 1;
                     $user->save();
                 }
+                $message="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
+                $title="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
+                event(new SendPatientNotificationMap($patientRequest,$patientRequest->user_id,$title,$message));
             }
-            $user = User::find($request->user_id);
-            $datas = PatientRequest::with(['detail','requestType'])
-                ->where([['id','=',$request->patient_requests_id],['status','=','active']])
-                ->first();
-            $icon=env('WEB_URL').'assets/icon/'.'Clinician Request.png';
-            $color='blue';
-            if ($datas->requestType && $datas->requestType->referral){
-                $icon=env('WEB_URL').'assets/icon/'.$datas->requestType->referral->icon;
-                $color=$datas->requestType->referral->color;
-            }
-            $location=array(
-                'referral_type'=>'LAB',
-                'latitude'=>$request->latitude,
-                'longitude'=>$request->longitude,
-                'start_latitude'=>$datas->detail?$datas->detail->latitude:null,
-                'end_longitude'=>$datas->detail?$datas->detail->longitude:null,
-                'first_name'=>$datas->detail?$datas->detail->first_name:null,
-                'last_name'=>$datas->detail?$datas->detail->last_name:null,
-                'status'=>$request->has('status')?$request->input('status'):"start",
-                'color'=>$color,
-                'icon'=>$icon,
-                'id'=>$request->patient_requests_id
-            );
-            $this->sendLocationEmit($location);
+
             return $this->generateResponse(true,'Adding RoadlInformation Successfully!',null,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
@@ -279,6 +260,13 @@ class RoadlController extends Controller
         }
 
         return $this->generateResponse(false,'No Request Found',null,200);
+    }
+
+    public function patientRequestOtpVerify(PatientRequestOtpVerifyRequest $request){
+        $patientRequest = PatientRequest::find($request->id);
+        $patientRequest->status='complete';
+        $patientRequest->save();
+        return $this->generateResponse(true,'Your Reuest is done',$patientRequest);
     }
 
 }
