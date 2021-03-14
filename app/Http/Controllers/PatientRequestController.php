@@ -32,7 +32,7 @@ class PatientRequestController extends Controller
         	where('user_id', Auth::user()->id)
             ->whereNotNull('parent_id')
         	->whereDate('created_at', Carbon::today())
-        	->where('status','active')
+        	// ->where('status','active')
             ->orderBy('id','desc')
             ->first();
         return $this->generateResponse(true,'Patient Request Status',$patientroadl,200);
