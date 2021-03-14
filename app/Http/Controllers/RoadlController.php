@@ -273,7 +273,7 @@ class RoadlController extends Controller
                     'id' => isset($lookup->id) ? $lookup->id : null,
                     'user_id' => isset($lookup->user_id) ? $lookup->user_id : null,
                     'clincial_id' => isset($lookup->clincial_id) ? $lookup->clincial_id : null,
-                    'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : null,
+                    'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : 0,
                     'latitude' => isset($lookup->detail->latitude) ? $lookup->detail->latitude : null,
                     'longitude' => isset($lookup->detail->longitude) ? $lookup->detail->longitude : null,
                     'first_name' => isset($lookup->detail->first_name) ? $lookup->detail->first_name : null,
