@@ -30,6 +30,7 @@ class PatientRequestController extends Controller
     {
         $patientroadl = PatientRequest::
         	where('user_id', Auth::user()->id)
+            ->whereNotNull('parent_id')
         	->whereDate('created_at', Carbon::today())
         	->where('status','active')
             ->orderBy('id','desc')
