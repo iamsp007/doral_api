@@ -595,7 +595,8 @@ class PatientRequestController extends Controller
                 $check = PatientRequest::where('user_id', $request->patient_id)
                     ->whereNotNull('parent_id')
                     ->where('type_id','=',$row->role_id)
-                    ->where('status','!=','active')->first();
+                    // ->where('status','!=','active')
+                    ->first();
                 $row->check = $check;
                 return $row;
             });
