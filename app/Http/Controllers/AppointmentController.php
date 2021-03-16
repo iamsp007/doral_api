@@ -37,6 +37,8 @@ class AppointmentController extends Controller
             }])
             ->get();
         if (count($response)>0){
+        	$arr = [];
+        	
             return $this->generateResponse(true,'All Appointment List',$response,200);
         }
         return $this->generateResponse(false,'No Appointment Exists',null,200);

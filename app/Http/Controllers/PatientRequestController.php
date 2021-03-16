@@ -595,7 +595,8 @@ class PatientRequestController extends Controller
                 $check = PatientRequest::where('user_id', $request->patient_id)
                     ->whereNotNull('parent_id')
                     ->where('type_id','=',$row->role_id)
-                    ->where('status','!=','active')->first();
+                    // ->where('status','!=','active')
+                    ->first();
                 $row->check = $check;
                 return $row;
             });
@@ -603,4 +604,23 @@ class PatientRequestController extends Controller
         return $this->generateResponse(true,'Vendor List APi',$vendorList,200);
     }
 
+    /**
+     * getParentIdUsingPatientId
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getParentIdUsingPatientId(Request $request)
+    {
+        try {
+            $parent = PatientRequest::select('parent_id')
+                ->where('user_id', $request->patient_id)
+                ->whereNotNull('parent_id')
+                ->first();
+
+            return $this->generateResponse(true, 'Fetched parent id', $parent, 200);
+        } catch (\Exception $ex) {
+            return $this->generateResponse(false, $ex->getMessage());
+        }
+    }
 }
