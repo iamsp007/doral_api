@@ -25,24 +25,32 @@ class RoadlController extends Controller
         $patientRequest = PatientRequest::find($request->patient_requests_id);
         if ($patientRequest){
             if ($request->status==="complete"){
-                $patientRequest->otp=rand(1000,9999);
+                $patientRequest->status = $request->status;
+//                $patientRequest->otp=rand(1000,9999);
                 $patientRequest->save();
-
-                $user = User::find($request->user_id);
-                if ($user){
-                    $user->latitude = $request->latitude;
-                    $user->longitude = $request->longitude;
-                    $user->save();
+                $allPatientRequest = PatientRequest::where('parent_id','=',$patientRequest->parent_id)
+                    ->get();
+                $collection = collect($allPatientRequest)->whereIn('status',['complete','cancel'])->count();
+                if ($collection===count($allPatientRequest)){
+                    $patientRequestParent = PatientRequest::find($patientRequest->parent_id);
+                    $patientRequestParent->status = 'complete';
+                    $patientRequestParent->save();
                 }
-                $message="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
-                $title="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
-                $messages[]=array(
-                    'to'=>User::find($patientRequest->user_id)->phone,
-                    'message'=>$message
-                );
-                event(new SendingSMS($messages));
-                event(new SendPatientNotificationMap($patientRequest,$patientRequest->user_id,$title,$message));
-                return $this->generateResponse(true,'Otp Send Successfully!',$patientRequest,200);
+//                $user = User::find($request->user_id);
+//                if ($user){
+//                    $user->latitude = $request->latitude;
+//                    $user->longitude = $request->longitude;
+//                    $user->save();
+//                }
+//                $message="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
+//                $title="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
+//                $messages[]=array(
+//                    'to'=>User::find($patientRequest->user_id)->phone,
+//                    'message'=>$message
+//                );
+//                event(new SendingSMS($messages));
+//                event(new SendPatientNotificationMap($patientRequest,$patientRequest->user_id,$title,$message));
+                return $this->generateResponse(true,'Request Status Update Successfully!',$patientRequest,200);
             }elseif ($request->status==="prepare"){
                 $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
             }
@@ -255,16 +263,7 @@ class RoadlController extends Controller
             return $this->generateResponse(false,$validator->errors()->first(),$validator->errors()->messages(),200);
         }
 
-        $data['clinicians']=PatientRequest::with(['detail','requestType'])
-            ->select(
-                'id',
-                'user_id',
-                'clincial_id',
-                'test_name',
-                'status',
-                'parent_id',
-                'type_id'
-            )
+        $patientRequest = PatientRequest::with('detail','patient','requestType')
             ->where(function ($q) use ($request){
                 if ($request->has('type_id')){
                     $q->where('type_id','=',$request->type_id);
@@ -272,16 +271,48 @@ class RoadlController extends Controller
             })
             ->where('parent_id','=',$request->parent_id)
             ->whereNotNull('parent_id')
-            ->get()->toArray();
-        $data['patient']=PatientRequest::with(['patient'])
-            ->select(
-                'id',
-                'user_id',
-                'status',
-            )
-            ->where('id','=',$request->parent_id)
-            ->first();
-        return $this->generateResponse(true,'roadl request list',$data,200);
+            ->get();
+
+        if (count($patientRequest)>0){
+            $arr = [];
+
+            $clinicians = $patientRequest->map(function ( $lookup ) {
+                return [
+                    'id' => isset($lookup->id) ? $lookup->id : null,
+                    'user_id' => isset($lookup->user_id) ? $lookup->user_id : null,
+                    'clincial_id' => isset($lookup->clincial_id) ? $lookup->clincial_id : null,
+                    'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : 0,
+                    'latitude' => isset($lookup->detail->latitude) ? $lookup->detail->latitude : null,
+                    'longitude' => isset($lookup->detail->longitude) ? $lookup->detail->longitude : null,
+                    'first_name' => isset($lookup->detail->first_name) ? $lookup->detail->first_name : null,
+                    'last_name' => isset($lookup->detail->last_name) ? $lookup->detail->last_name : null,
+                    'status' => isset($lookup->status) ? $lookup->status : null,
+                    'referral_type' => isset($lookup->requestType->name) ? $lookup->requestType->name : null,
+                    'icon' => isset($lookup->requestType->icon) ? $lookup->requestType->icon : '',
+                    'color' => isset($lookup->requestType->color) ? $lookup->requestType->color : 'blue',
+
+                ];
+            });
+
+            $patient = $patientRequest->map(function ( $lookup ) {
+                return [
+                    'id' => isset($lookup->patient->id) ? $lookup->patient->id : null,
+                    'latitude' => isset($lookup->latitude) ? $lookup->latitude : null,
+                    'longitude' => isset($lookup->longitude) ? $lookup->longitude : null,
+                    'first_name' => isset($lookup->patient->first_name) ? $lookup->patient->first_name : null,
+                    'last_name' => isset($lookup->patient->last_name) ? $lookup->patient->last_name : null,
+                ];
+            });
+
+            $arr = [
+                'clinicians' => $clinicians,
+                'patient' => $patient[0],
+            ];
+
+            return $this->generateResponse(true, 'roadl request list', $arr, 200);
+        }
+
+        return $this->generateResponse(false,'No Request Found',null,200);
     }
 
     public function patientRequestOtpVerify(PatientRequestOtpVerifyRequest $request){

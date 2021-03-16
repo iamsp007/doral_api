@@ -28,7 +28,7 @@ class AppointmentController extends Controller
         $response = Appointment::with(['bookedDetails' => function ($q) {
             $q->select('first_name', 'last_name', 'id');
         }])
-            ->with(['patients', 'meeting', 'service', 'filetype'])
+            ->with(['patients', 'meeting', 'service', 'filetype', 'roadl.requests'])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
