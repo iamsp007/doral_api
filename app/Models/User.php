@@ -294,6 +294,12 @@ class User extends Authenticatable
      public function patientDetail(){
         return $this->hasOne(PatientReferral::class,'user_id','id')->with(['service','filetype']);
     }
-
-
+    public function caregiverInfo()
+    {
+        return $this->hasOne(CaregiverInfo::class,'user_id','id');
+    }
+    public function demographic()
+    {
+        return $this->hasOne(Demographic::class,'user_id','id');
+    }
 }

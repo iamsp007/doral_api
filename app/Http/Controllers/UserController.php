@@ -76,7 +76,7 @@ class UserController extends Controller
     {
         try {
             $data = $request;
-            dd($data);
+        
             \DB::beginTransaction();
             $id = User::insert($data);
             if ($id) {
@@ -238,10 +238,9 @@ class UserController extends Controller
         }
     }
 
-    public function getPatientDetail(Request $request,$patient_id)
+    public function getPatientDetail($patient_id)
     {
-        $details = User::with('detail','leave','ccm','insurance','caseManager','primaryPhysician','specialistPhysician','caregiverHistory','caregivers')
-            ->find($patient_id);
+        $details = User::with('detail','leave','ccm','insurance','caseManager','primaryPhysician','specialistPhysician','caregiverHistory','caregivers', 'caregiverInfo', 'demographic')->find($patient_id);
         if ($details){
             return $this->generateResponse(true,'Show Patient Detail Successfully!',$details,200);
         }
