@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\SendingSMS;
 use App\Http\Requests\RoadlSelectedDiesesRequest;
 use App\Models\Appointment;
+use App\Models\Demographic;
 use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
@@ -12,8 +13,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
-use DB;
+
 class PatientController extends Controller
 {
     /**
@@ -302,7 +304,7 @@ class PatientController extends Controller
     public function updatePatientPhone(Request $request)
     {
         $input = $request->all();
-        $users = User::where('phone', $request['phone'])->first();
+        $users = User::whereNotNull('phone')->where('phone', $request['phone'])->first();
 
         if ($users) {
             return $this->generateResponse(false, 'Phone number must unique', null, 400);
@@ -310,9 +312,17 @@ class PatientController extends Controller
 
         $user = User::where('id',$request['id'])->update([
             'status' => '0',
-            'phone' => $request['phone']
+            'phone' => $request['phone'],
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
         ]);
         if ($user) {
+            $user_id = DB::getPdo()->lastInsertId();
+            Demographic::where('user_id' ,$user_id)->update([
+                'ssn' => $input['ssn'],
+                'address->City' => $request['city'],
+                'address->State' => $request['state'],
+            ]);
             return $this->generateResponse(true, 'Change Patient phone Successfully.', null, 200);
         }
         return $this->generateResponse(false, 'Patient Not Found', null, 400);
