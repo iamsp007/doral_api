@@ -263,8 +263,6 @@ class UserController extends Controller
             CaregiverInfo::where('user_id', $input['user_id'])->update([
                 'ethnicity->Name' => $input['ethnicity'],
                 'country_of_birth' => $input['country_of_birth'],
-                'professional_licensenumber' => $input['professional_licensenumber'],
-                'npi_number' => $input['npi_number'],
                 'marital_status->Name' => $input['marital_status'],
                 'notification_preferences->Email' => $input['notification_preferences_email'],
                 'notification_preferences->Method->Name' => $input['method_name'],
