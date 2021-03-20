@@ -75,6 +75,9 @@ Route::group([
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
+        // COVID-19
+        Route::post('covid-19/store', 'App\Http\Controllers\CovidForm\CovidFormController@store');
+
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
         Route::get('ccm-readings', 'App\Http\Controllers\UserController@ccmReadings');
         Route::post('save-token', 'App\Http\Controllers\Auth\AuthController@saveToken');
