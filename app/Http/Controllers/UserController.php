@@ -288,36 +288,13 @@ class UserController extends Controller
                 'Zip4' =>  $input['zip4'],
                 'Zip5' =>  $input['zip5'],
             ];
+
+            $ssn = str_replace("-","",$input['ssn']);
             Demographic::where('user_id' ,$input['user_id'])->update([
-                'ssn' => $input['ssn'],
+                'ssn' => $ssn,
                 'language' => json_encode($language),
                 // 'address' => json_encode($address),
             ]);
-
-            // $relationship = [];
-            // if ($input['relationship_name']) {
-            //     $relationship = [
-            //         'Name' => $input['relationship_name']
-            //     ];
-            // }
-            // $contactName = '';
-            // if (isset($input['contact_name'])) {
-            //     $contactName = $input['contact_name'];
-            // }
-            // $phone1 = '';
-            // if (isset($input['phone1'])) {
-            //     $phone1 = $input['phone1'];
-            // }
-
-            // $phone2 = '';
-            // if (isset($input['phone2'])) {
-            //     $phone2 = $input['phone2'];
-            // }
-
-            // $address = '';
-            // if (isset($input['address'])) {
-            //     $address = $input['address'];
-            // }
 
             $contactName = $input['contact_name'];
             $phone1 = $input['phone1'];
@@ -331,11 +308,11 @@ class UserController extends Controller
                 // if (!empty($contactName[$index]) && !empty($phone1[$index]) && !empty($phone2[$index]) && !empty($address[$index]) && !empty($relation[$index]) ) {
                     PatientEmergencyContact::create([
                         'user_id' => $input['user_id'],
-                        'name' => $contactName[$index],
-                        'phone1' => $phone1[$index],
-                        'phone2' => $phone2[$index],
-                        'address' => $address[$index],
-                        'relation' => $relation[$index],
+                        'name' => ($contactName[$index]) ? $contactName[$index] : '',
+                        'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
+                        'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
+                        'address' => ($address[$index]) ? $address[$index] : '',
+                        'relation' => ($relation[$index]) ? $relation[$index] : '',
                     ]);
                 // }
             }

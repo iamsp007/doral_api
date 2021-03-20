@@ -318,10 +318,11 @@ class PatientController extends Controller
         ]);
         if ($user) {
             $user_id = DB::getPdo()->lastInsertId();
+            $ssn = str_replace("-","",$input['ssn']);
             Demographic::where('user_id' ,$user_id)->update([
-                'ssn' => $input['ssn'],
-                'address->City' => $request['city'],
-                'address->State' => $request['state'],
+                'ssn' => $ssn,
+                // 'address->City' => $request['city'],
+                // 'address->State' => $request['state'],
             ]);
             return $this->generateResponse(true, 'Change Patient phone Successfully.', null, 200);
         }
