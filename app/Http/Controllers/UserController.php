@@ -300,32 +300,45 @@ class UserController extends Controller
             //         'Name' => $input['relationship_name']
             //     ];
             // }
-            $contactName = '';
-            if (isset($input['contact_name'])) {
-                $contactName = $input['contact_name'];
-            }
-            $phone1 = '';
-            if (isset($input['phone1'])) {
-                $phone1 = $input['phone1'];
-            }
+            // $contactName = '';
+            // if (isset($input['contact_name'])) {
+            //     $contactName = $input['contact_name'];
+            // }
+            // $phone1 = '';
+            // if (isset($input['phone1'])) {
+            //     $phone1 = $input['phone1'];
+            // }
 
-            $phone2 = '';
-            if (isset($input['phone2'])) {
-                $phone2 = $input['phone2'];
-            }
+            // $phone2 = '';
+            // if (isset($input['phone2'])) {
+            //     $phone2 = $input['phone2'];
+            // }
 
-            $address = '';
-            if (isset($input['address'])) {
-                $address = $input['address'];
-            }
+            // $address = '';
+            // if (isset($input['address'])) {
+            //     $address = $input['address'];
+            // }
 
-            PatientEmergencyContact::where('user_id' ,$input['user_id'])->update([
-                'name' => $contactName,
-                'phone1' => $phone1,
-                'phone2' => $phone2,
-                'address' => $address,
-                // 'relation' =>  json_encode($relationship),
-            ]);
+            $contactName = $input['contact_name'];
+            $phone1 = $input['phone1'];
+            $phone2 = $input['phone2'];
+            $address = $input['address'];
+            $relation = $input['relationship_name'];
+            
+            PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
+
+            foreach ($contactName as $index => $value) {
+                // if (!empty($contactName[$index]) && !empty($phone1[$index]) && !empty($phone2[$index]) && !empty($address[$index]) && !empty($relation[$index]) ) {
+                    PatientEmergencyContact::create([
+                        'user_id' => $input['user_id'],
+                        'name' => $contactName[$index],
+                        'phone1' => $phone1[$index],
+                        'phone2' => $phone2[$index],
+                        'address' => $address[$index],
+                        'relation' => $relation[$index],
+                    ]);
+                // }
+            }
 
             return $this->generateResponse(true, 'Update Details Success', null, 200);
         } else if($request->type === "2") {
