@@ -26,4 +26,17 @@ class Demographic extends Model
         'language',
         'type',
     ];
+
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function setSsnAttribute($ssn)
+    {
+        $ssn = '';
+        if ($ssn){
+            return str_replace("-","",$ssn);
+        }
+    }
 }

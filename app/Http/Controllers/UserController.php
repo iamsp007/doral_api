@@ -269,16 +269,6 @@ class UserController extends Controller
                 'notification_preferences->MobileOrSMS' => $input['mobile_or_sms'],
                 'notification_preferences->VoiceMessage' => $input['voice_message'],
             ]);
-
-            $language = [];
-            if ($input['language1'] || $input['language2'] || $input['language3'] || $input['language4']) {
-                $language[] = [
-                    'Language1' =>  $input['language1'],
-                    'Language2' =>  $input['language2'],
-                    'Language3' =>  $input['language3'],
-                    'Language4' =>  $input['language4'],
-                ];
-            }
         
             $address[] = [
                 'Street1' =>  $input['street1'],
@@ -288,36 +278,20 @@ class UserController extends Controller
                 'Zip4' =>  $input['zip4'],
                 'Zip5' =>  $input['zip5'],
             ];
+
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => $input['ssn'],
-                'language' => json_encode($language),
-                // 'address' => json_encode($address),
+                'language->Language1' => $input['language1'],
+                'language->Language2' => $input['language2'],
+                'language->Language3' => $input['language3'],
+                'language->Language4' => $input['language4'],
+                'address->Street1' => $input['street1'],
+                'address->Street2' => $input['street2'],
+                'address->City' => $input['city'],
+                'address->State' => $input['state'],
+                'address->Zip4' => $input['zip4'],
+                'address->Zip5' => $input['zip5'],
             ]);
-
-            // $relationship = [];
-            // if ($input['relationship_name']) {
-            //     $relationship = [
-            //         'Name' => $input['relationship_name']
-            //     ];
-            // }
-            // $contactName = '';
-            // if (isset($input['contact_name'])) {
-            //     $contactName = $input['contact_name'];
-            // }
-            // $phone1 = '';
-            // if (isset($input['phone1'])) {
-            //     $phone1 = $input['phone1'];
-            // }
-
-            // $phone2 = '';
-            // if (isset($input['phone2'])) {
-            //     $phone2 = $input['phone2'];
-            // }
-
-            // $address = '';
-            // if (isset($input['address'])) {
-            //     $address = $input['address'];
-            // }
 
             $contactName = $input['contact_name'];
             $phone1 = $input['phone1'];
@@ -328,16 +302,14 @@ class UserController extends Controller
             PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
 
             foreach ($contactName as $index => $value) {
-                // if (!empty($contactName[$index]) && !empty($phone1[$index]) && !empty($phone2[$index]) && !empty($address[$index]) && !empty($relation[$index]) ) {
-                    PatientEmergencyContact::create([
-                        'user_id' => $input['user_id'],
-                        'name' => $contactName[$index],
-                        'phone1' => $phone1[$index],
-                        'phone2' => $phone2[$index],
-                        'address' => $address[$index],
-                        'relation' => $relation[$index],
-                    ]);
-                // }
+                PatientEmergencyContact::create([
+                    'user_id' => $input['user_id'],
+                    'name' => ($contactName[$index]) ? $contactName[$index] : '',
+                    'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
+                    'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
+                    'address' => ($address[$index]) ? $address[$index] : '',
+                    'relation' => ($relation[$index]) ? $relation[$index] : '',
+                ]);
             }
 
             return $this->generateResponse(true, 'Update Details Success', null, 200);
