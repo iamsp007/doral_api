@@ -34,7 +34,6 @@ class User extends Authenticatable
     ];
     protected $appends = ['gender_name','avatar_image','phone_format'];
 
-////
 //    protected $dates = [ 'created_at', 'updated_at'];
 
     /**
