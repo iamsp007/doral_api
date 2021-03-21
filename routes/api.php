@@ -66,9 +66,18 @@ Route::group([
     Route::get('getNewPatientListAll', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('getNewPatientList', 'App\Http\Controllers\PatientController@getNewPatientList');
 
+    // Employee Reports
+    Route::get('employee-reports', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@index')->name('employee.reports.index');
+    Route::post('employee-reports/{id}/store', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@store')->name('employee.reports.store');
+    Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
+    Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
+
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
+        // COVID-19
+        Route::post('covid-19/store', 'App\Http\Controllers\CovidForm\CovidFormController@store');
+
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
         Route::get('ccm-readings', 'App\Http\Controllers\UserController@ccmReadings');
         Route::post('save-token', 'App\Http\Controllers\Auth\AuthController@saveToken');
@@ -158,6 +167,7 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('patient-request-otp-verify', 'App\Http\Controllers\RoadlController@patientRequestOtpVerify');
     Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
     Route::post('newpatient-data', 'App\Http\Controllers\PatientController@newpatientData');
     Route::post('patient-data', 'App\Http\Controllers\PatientController@patientData');
@@ -177,6 +187,7 @@ Route::group([
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
+    Route::post('get-roadl-proccess-new', 'App\Http\Controllers\RoadlController@getRoadLProccessNew');
     Route::post('create-virtual-room', 'App\Http\Controllers\SessionsController@createRoom');
     Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
@@ -195,8 +206,9 @@ Route::group([
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
     Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
 });
-Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus'); 
-Route::post('update-patient-phone', 'App\Http\Controllers\PatientController@updatePatientPhone');      
+Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus');
+Route::post('update-patient-phone', 'App\Http\Controllers\PatientController@updatePatientPhone');
+
 // Referral
 Route::group([
     'prefix' => 'auth'
@@ -245,7 +257,8 @@ Route::group([
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
-
+    Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
+    Route::post('get-parent-id-using-patient-id', 'App\Http\Controllers\PatientRequestController@getParentIdUsingPatientId');
 });
 
 // Get List of Medicines.

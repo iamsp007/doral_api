@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Events/SendPatientNotificationMap.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Events/SendPatientNotificationMap.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AppointmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AppointmentController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RoadlController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/RoadlController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -197,7 +200,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../doral_web" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -521,7 +524,29 @@
       <workItem from="1614068660322" duration="801000" />
       <workItem from="1614088025312" duration="607000" />
       <workItem from="1615050387297" duration="692000" />
-      <workItem from="1615051458985" duration="1061000" />
+      <workItem from="1615051458985" duration="1788000" />
+      <workItem from="1615093646327" duration="18000" />
+      <workItem from="1615094859954" duration="657000" />
+      <workItem from="1615468139787" duration="2813000" />
+      <workItem from="1615530174143" duration="754000" />
+      <workItem from="1615531422444" duration="604000" />
+      <workItem from="1615609269986" duration="2099000" />
+      <workItem from="1615611388982" duration="1793000" />
+      <workItem from="1615613203686" duration="2230000" />
+      <workItem from="1615615465571" duration="1786000" />
+      <workItem from="1615617400583" duration="576000" />
+      <workItem from="1615618849805" duration="277000" />
+      <workItem from="1615619582746" duration="477000" />
+      <workItem from="1615622334008" duration="7186000" />
+      <workItem from="1615635944092" duration="1624000" />
+      <workItem from="1615642854692" duration="1534000" />
+      <workItem from="1615824002424" duration="740000" />
+      <workItem from="1615825822523" duration="1036000" />
+      <workItem from="1615827846617" duration="599000" />
+      <workItem from="1615829280346" duration="596000" />
+      <workItem from="1615893811366" duration="23000" />
+      <workItem from="1615919410468" duration="986000" />
+      <workItem from="1615920472813" duration="133000" />
     </task>
     <servers />
   </component>
@@ -539,23 +564,5 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1615051082486">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1615051082486" />
-    <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1615021813380">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="247" y="121" width="1478" height="879" key="MergeDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1615021813380" />
-    <state x="627" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1615021816902">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="627" y="314" width="728" height="485" key="MultipleFileMergeDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1615021816902" />
-    <state x="686" y="292" width="684" height="522" key="find.popup" timestamp="1615050668200">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="686" y="292" width="684" height="522" key="find.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1615050668200" />
   </component>
 </project>

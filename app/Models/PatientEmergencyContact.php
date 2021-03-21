@@ -24,4 +24,23 @@ class PatientEmergencyContact extends Model
         'phone2',
         'address',
     ];
+
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function setPhone1Attribute($value)
+    {
+        if ($value){
+            $this->attributes['phone1'] = preg_replace("/[^0-9]+/", "", $value);
+        }
+    }
+
+    public function setPhone2Attribute($value)
+    {
+        if ($value){
+            $this->attributes['phone2'] = preg_replace("/[^0-9]+/", "", $value);
+        }
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\SendingSMS;
 use App\Http\Requests\RoadlSelectedDiesesRequest;
 use App\Models\Appointment;
+use App\Models\Demographic;
 use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
@@ -12,8 +13,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
-use DB;
+
 class PatientController extends Controller
 {
     /**
@@ -298,21 +300,30 @@ class PatientController extends Controller
             ->get();
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
-    
+
     public function updatePatientPhone(Request $request)
     {
         $input = $request->all();
-        $users = User::where('phone', $request['phone'])->first();
+        $users = User::whereNotNull('phone')->where('phone', $request['phone'])->first();
 
         if ($users) {
             return $this->generateResponse(false, 'Phone number must unique', null, 400);
         }
-        
+
         $user = User::where('id',$request['id'])->update([
             'status' => '0',
-            'phone' => $request['phone']
+            'phone' => $request['phone'],
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
         ]);
         if ($user) {
+            $user_id = DB::getPdo()->lastInsertId();
+            $ssn = str_replace("-","",$input['ssn']);
+            Demographic::where('user_id' ,$user_id)->update([
+                'ssn' => $ssn,
+                // 'address->City' => $request['city'],
+                // 'address->State' => $request['state'],
+            ]);
             return $this->generateResponse(true, 'Change Patient phone Successfully.', null, 200);
         }
         return $this->generateResponse(false, 'Patient Not Found', null, 400);
@@ -335,8 +346,7 @@ class PatientController extends Controller
                 $link=env("WEB_URL").'download-application';
                 $smsData[] = [
                     'to'=> $value->phone,
-                    'message'=>'Welcome To Doral Health Connect.
-                    Please click below application link and download.
+                    'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now.
                     '.$link.'
                     Default Password : Patient@doral',
                 ];
@@ -344,7 +354,7 @@ class PatientController extends Controller
                 event(new SendingSMS($smsData));
             }
             
-            return $this->generateResponse(true, 'Change Patient Status Successfully.', $user, 200);
+            return $this->generateResponse(true, 'Change Patient Status Successfully.', null, 200);
         }
 
         return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
@@ -373,9 +383,8 @@ class PatientController extends Controller
                         $link=env("WEB_URL").'download-application';
                         $smsData[]=array(
                             'to'=>$users->phone,
-                            'message'=>'Welcome To Doral Health Connect.
-Please click below application link and download.
-'.$link.'
+                            'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities.
+                            If you have any medical concern or need annual physical please click on the link below and book your appointment now.'.$link.'
 Default Password : Patient@doral',
                         );
                     }

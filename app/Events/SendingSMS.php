@@ -47,10 +47,14 @@ class SendingSMS
         if (env('APP_ENV')==="local"){
             $to=env('SMS_TO');
         }
-        Nexmo::message()->send([
-            'to'   =>'+1'.$to,
-            'from' => env('SMS_FROM'),
-            'text' => $text
-        ]);
+        try {
+            Nexmo::message()->send([
+                'to'   =>'+1'.$to,
+                'from' => env('SMS_FROM'),
+                'text' => $text
+            ]);
+        }catch (\Exception $exception){
+            \Log::info($exception);
+        }
     }
 }
