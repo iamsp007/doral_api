@@ -1,0 +1,163 @@
+<?php
+
+namespace App\Http\Controllers\CovidForm;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use mikehaertl\pdftk\Pdf;
+use App\Models\CovidForm;
+use Exception;
+use Storage;
+use DB;
+
+class CovidFormController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        try {
+            // dd(storage_path('app/public/covid_form/'.$request->user()->id));
+            $validator = \Validator::make($request->all(),[
+                'recipient_sign' => 'mimes:jpg,png|max:20000',
+                'interpreter_sign' => 'mimes:jpg,png|max:20000',
+                'vaccination_sign' => 'mimes:jpg,png|max:20000'
+            ]);
+            if ($validator->fails()){
+                return $this->generateResponse(false, $validator->errors()->first(), null, 200);
+            }
+            $covidForm = new CovidForm();
+            $covidForm->user_id = $request->user()->id;
+
+            $covidForm->dose = $request->dose;
+            $covidForm->patient_name = $request->user()->first_name.' '.$request->user()->last_name;
+            $covidForm->phone = $request->user()->phone;
+            $covidForm->data = $request->data;
+            $covidForm->status = $request->status;
+
+            if ($covidForm->save()){
+                $uploadFolder = 'covid_form/'.$request->user()->id;
+                if ($request->file('recipient_sign')) {
+                    $recipientSign = $request->file('recipient_sign');
+                    $recipientSignUploadedPath = $recipientSign->store($uploadFolder, 'public');
+                    $uploadedRecipientSignResponse = [
+                        "image_name" => basename($recipientSignUploadedPath),
+                        "image_url" => Storage::disk('public')->url($recipientSignUploadedPath),
+                        "mime" => $recipientSign->getClientMimeType()
+                    ];
+
+                    $covidForm->recipient_sign = $uploadedRecipientSignResponse['image_name'];
+                }
+                if ($request->file('interpreter_sign')) {
+                    $interpreterSign = $request->file('interpreter_sign');
+                    $interpreterSignUploadedPath = $interpreterSign->store($uploadFolder, 'public');
+                    $uploadedInterpreterSignResponse = [
+                        "image_name" => basename($interpreterSignUploadedPath),
+                        "image_url" => Storage::disk('public')->url($interpreterSignUploadedPath),
+                        "mime" => $interpreterSign->getClientMimeType()
+                    ];
+
+                    $covidForm->interpreter_sign = $uploadedInterpreterSignResponse['image_name'];
+                }
+                if ($request->file('vaccination_sign')) {
+                    $vaccinationSign = $request->file('vaccination_sign');
+                    $vaccinationSignUploadedPath = $vaccinationSign->store($uploadFolder, 'public');
+                    $uploadedVaccinationSignResponse = [
+                        "image_name" => basename($vaccinationSignUploadedPath),
+                        "image_url" => Storage::disk('public')->url($vaccinationSignUploadedPath),
+                        "mime" => $vaccinationSign->getClientMimeType()
+                    ];
+
+                    $covidForm->vaccination_sign = $uploadedVaccinationSignResponse['image_name'];
+                }
+
+                if ($covidForm->save()) {
+                    $pdf = new Pdf(public_path('pdf\vaccine-consent-form.pdf'), [
+                        'command' => env('PDF_COMMAND'),
+                        'useExec' => true,  // May help on Windows systems if execution fails
+                    ]);
+                    $result = $pdf
+                        ->fillForm($covidForm->data)
+                        ->saveAs(storage_path('app/public/covid_form/'.$request->user()->id.'/'.time().'.pdf'));
+                }
+                $status = true;
+                $message = "Successfully stored covid form data.";
+                return $this->generateResponse($status, $message, $covidForm, 200);
+            }
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\CovidForm  $covidForm
+     * @return \Illuminate\Http\Response
+     */
+    public function show(CovidForm $covidForm)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\CovidForm  $covidForm
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(CovidForm $covidForm)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\CovidForm  $covidForm
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, CovidForm $covidForm)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\CovidForm  $covidForm
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(CovidForm $covidForm)
+    {
+        //
+    }
+}

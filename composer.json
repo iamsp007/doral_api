@@ -17,6 +17,7 @@
         "laravel/passport": "^10.0",
         "laravel/tinker": "^2.0",
         "maatwebsite/excel": "^3.1",
+        "mikehaertl/php-pdftk": "^0.10.0",
         "nexmo/laravel": "^2.4",
         "opentok/opentok": "^4.6",
         "predis/predis": "^1.1",
