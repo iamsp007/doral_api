@@ -321,11 +321,12 @@ class UserController extends Controller
 
             return $this->generateResponse(true, 'Update Details Success', $request->type, 200);
         } else if($request->type === "3") {
-            
+            $phone = preg_replace("/[^0-9]+/", "", $input['phone']);
+            $administrator_phone_no = preg_replace("/[^0-9]+/", "", $input['administrator_phone_no']);
             Company::where('id' ,$input['company_id'])->update([
                 'name' => $input['name'],
                 'email' => $input['email'],
-                'phone' => $input['phone'],
+                'phone' => $phone,
                 'fax_no' => $input['fax_no'],
                 'zip' => $input['zip'],
                 'address1' => $input['address1'],
@@ -334,7 +335,7 @@ class UserController extends Controller
                 'registration_no' => $input['registration_no'],
                 'administrator_emailId' => $input['administrator_emailId'],
                 'licence_no' => $input['licence_no'],
-                'administrator_phone_no' => $input['administrator_phone_no'],
+                'administrator_phone_no' => $administrator_phone_no,
                 'insurance_id' => $input['insurance_id'],
                 'expiration_date' => $input['expiration_date'],
                 'services' => implode(",",$input['services'])
