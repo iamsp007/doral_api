@@ -76,7 +76,7 @@ class UserController extends Controller
     {
         try {
             $data = $request;
-            dd($data);
+        
             \DB::beginTransaction();
             $id = User::insert($data);
             if ($id) {
@@ -238,10 +238,9 @@ class UserController extends Controller
         }
     }
 
-    public function getPatientDetail(Request $request,$patient_id)
+    public function getPatientDetail($patient_id)
     {
-        $details = User::with('detail','leave','ccm','insurance','caseManager','primaryPhysician','specialistPhysician','caregiverHistory','caregivers')
-            ->find($patient_id);
+        $details = User::with('detail','leave','ccm','insurance','caseManager','primaryPhysician','specialistPhysician','caregiverHistory','caregivers', 'caregiverInfo', 'demographic')->find($patient_id);
         if ($details){
             return $this->generateResponse(true,'Show Patient Detail Successfully!',$details,200);
         }
@@ -264,24 +263,12 @@ class UserController extends Controller
             CaregiverInfo::where('user_id', $input['user_id'])->update([
                 'ethnicity->Name' => $input['ethnicity'],
                 'country_of_birth' => $input['country_of_birth'],
-                'professional_licensenumber' => $input['professional_licensenumber'],
-                'npi_number' => $input['npi_number'],
                 'marital_status->Name' => $input['marital_status'],
                 'notification_preferences->Email' => $input['notification_preferences_email'],
                 'notification_preferences->Method->Name' => $input['method_name'],
                 'notification_preferences->MobileOrSMS' => $input['mobile_or_sms'],
                 'notification_preferences->VoiceMessage' => $input['voice_message'],
             ]);
-
-            $language = [];
-            if ($input['language1'] || $input['language2'] || $input['language3'] || $input['language4']) {
-                $language[] = [
-                    'Language1' =>  $input['language1'],
-                    'Language2' =>  $input['language2'],
-                    'Language3' =>  $input['language3'],
-                    'Language4' =>  $input['language4'],
-                ];
-            }
         
             $address[] = [
                 'Street1' =>  $input['street1'],
@@ -291,44 +278,39 @@ class UserController extends Controller
                 'Zip4' =>  $input['zip4'],
                 'Zip5' =>  $input['zip5'],
             ];
+
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => $input['ssn'],
-                'language' => json_encode($language),
-                // 'address' => json_encode($address),
+                'language->Language1' => $input['language1'],
+                'language->Language2' => $input['language2'],
+                'language->Language3' => $input['language3'],
+                'language->Language4' => $input['language4'],
+                'address->Street1' => $input['street1'],
+                'address->Street2' => $input['street2'],
+                'address->City' => $input['city'],
+                'address->State' => $input['state'],
+                'address->Zip4' => $input['zip4'],
+                'address->Zip5' => $input['zip5'],
             ]);
 
-            // $relationship = [];
-            // if ($input['relationship_name']) {
-            //     $relationship = [
-            //         'Name' => $input['relationship_name']
-            //     ];
-            // }
-            $contactName = '';
-            if (isset($input['contact_name'])) {
-                $contactName = $input['contact_name'];
-            }
-            $phone1 = '';
-            if (isset($input['phone1'])) {
-                $phone1 = $input['phone1'];
-            }
+            $contactName = $input['contact_name'];
+            $phone1 = $input['phone1'];
+            $phone2 = $input['phone2'];
+            $address = $input['address'];
+            $relation = $input['relationship_name'];
+            
+            PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
 
-            $phone2 = '';
-            if (isset($input['phone2'])) {
-                $phone2 = $input['phone2'];
+            foreach ($contactName as $index => $value) {
+                PatientEmergencyContact::create([
+                    'user_id' => $input['user_id'],
+                    'name' => ($contactName[$index]) ? $contactName[$index] : '',
+                    'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
+                    'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
+                    'address' => ($address[$index]) ? $address[$index] : '',
+                    'relation' => ($relation[$index]) ? $relation[$index] : '',
+                ]);
             }
-
-            $address = '';
-            if (isset($input['address'])) {
-                $address = $input['address'];
-            }
-
-            PatientEmergencyContact::where('user_id' ,$input['user_id'])->update([
-                'name' => $contactName,
-                'phone1' => $phone1,
-                'phone2' => $phone2,
-                'address' => $address,
-                // 'relation' =>  json_encode($relationship),
-            ]);
 
             return $this->generateResponse(true, 'Update Details Success', null, 200);
         } else if($request->type === "2") {
@@ -339,11 +321,12 @@ class UserController extends Controller
 
             return $this->generateResponse(true, 'Update Details Success', $request->type, 200);
         } else if($request->type === "3") {
-            
+            $phone = preg_replace("/[^0-9]+/", "", $input['phone']);
+            $administrator_phone_no = preg_replace("/[^0-9]+/", "", $input['administrator_phone_no']);
             Company::where('id' ,$input['company_id'])->update([
                 'name' => $input['name'],
                 'email' => $input['email'],
-                'phone' => $input['phone'],
+                'phone' => $phone,
                 'fax_no' => $input['fax_no'],
                 'zip' => $input['zip'],
                 'address1' => $input['address1'],
@@ -352,7 +335,7 @@ class UserController extends Controller
                 'registration_no' => $input['registration_no'],
                 'administrator_emailId' => $input['administrator_emailId'],
                 'licence_no' => $input['licence_no'],
-                'administrator_phone_no' => $input['administrator_phone_no'],
+                'administrator_phone_no' => $administrator_phone_no,
                 'insurance_id' => $input['insurance_id'],
                 'expiration_date' => $input['expiration_date'],
                 'services' => implode(",",$input['services'])
