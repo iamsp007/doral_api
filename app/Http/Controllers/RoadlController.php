@@ -289,7 +289,7 @@ class RoadlController extends Controller
                     'status' => isset($lookup->status) ? $lookup->status : null,
                     'referral_type' => isset($lookup->requestType->name) ? $lookup->requestType->name : null,
                     'icon' => isset($lookup->requestType->icon) ? $lookup->requestType->icon : '',
-                    'color' => isset($lookup->requestType->color) ? $lookup->requestType->color : 'blue',
+                    'color' => isset($lookup->requestType->color) ? $lookup->requestType->color : '#0000FF',
 
                 ];
             });
