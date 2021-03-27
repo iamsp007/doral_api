@@ -76,6 +76,7 @@ Route::group([
         'middleware' => ['auth:api'],
     ], function () {
         // COVID-19
+        Route::get('get-covid-19-patient-list', 'App\Http\Controllers\CovidForm\CovidFormController@index');
         Route::post('covid-19/store', 'App\Http\Controllers\CovidForm\CovidFormController@store');
 
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');

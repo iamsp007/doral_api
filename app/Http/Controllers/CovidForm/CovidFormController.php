@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\CovidForm;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use mikehaertl\pdftk\Pdf;
+// use mikehaertl\pdftk\Pdf;
 use App\Models\CovidForm;
 use Exception;
 use Storage;
+use PDF;
 use DB;
 
 class CovidFormController extends Controller
@@ -19,7 +21,8 @@ class CovidFormController extends Controller
      */
     public function index()
     {
-        //
+        $patientList = CovidForm::all();
+        return $this->generateResponse(true, 'Covid 19 patient list', $patientList, 200);
     }
 
     /**
@@ -54,8 +57,8 @@ class CovidFormController extends Controller
             $covidForm->user_id = $request->user()->id;
 
             $covidForm->dose = $request->dose;
-            $covidForm->patient_name = $request->user()->first_name.' '.$request->user()->last_name;
-            $covidForm->phone = $request->user()->phone;
+            $covidForm->patient_name = $request->patient_name;
+            $covidForm->phone = $request->phone;
             $covidForm->data = $request->data;
             $covidForm->status = $request->status;
 
@@ -96,13 +99,14 @@ class CovidFormController extends Controller
                 }
 
                 if ($covidForm->save()) {
-                    $pdf = new Pdf(public_path('pdf\vaccine-consent-form.pdf'), [
-                        'command' => env('PDF_COMMAND'),
-                        'useExec' => true,  // May help on Windows systems if execution fails
-                    ]);
-                    $result = $pdf
-                        ->fillForm($covidForm->data)
-                        ->saveAs(storage_path('app/public/covid_form/'.$request->user()->id.'/'.time().'.pdf'));
+                    $this->savePdf($covidForm);
+                    // $pdf = new Pdf(public_path('pdf\vaccine-consent-form.pdf'), [
+                    //     'command' => env('PDF_COMMAND'),
+                    //     'useExec' => true,  // May help on Windows systems if execution fails
+                    // ]);
+                    // $result = $pdf
+                    //     ->fillForm($covidForm->data)
+                    //     ->saveAs(storage_path('app/public/covid_form/'.$request->user()->id.'/'.time().'.pdf'));
                 }
                 $status = true;
                 $message = "Successfully stored covid form data.";
@@ -159,5 +163,25 @@ class CovidFormController extends Controller
     public function destroy(CovidForm $covidForm)
     {
         //
+    }
+
+    public function savePdf($covidForm)
+    {
+        try {
+            $pdf = PDF::loadView('pdf.covid-19-form', [
+                'data' => $covidForm->data,
+            ]);
+            $pdf->setPaper('a4', 'portrait');
+            $path = public_path('covid/');
+            $fileName =  'covid-report-'.$covidForm->id.'.pdf';
+            $pdf->save($path . '/' . $fileName);
+
+            $covidForm->file_name = $fileName;
+            $covidForm->save();
+
+            // return $pdf->stream('covid-report-'.$covidForm->id.'.pdf')->header('Content-Type','application/pdf');
+        } catch(Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 }
