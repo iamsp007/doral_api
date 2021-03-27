@@ -58,11 +58,11 @@ class CovidFormController extends Controller
             $covidForm = new CovidForm();
             $covidForm->user_id = $request->user()->id;
 
-            $covidForm->dose = $request->form->dose;
-            $covidForm->patient_name = $request->form->patient_name;
-            $covidForm->phone = $request->form->phone;
-            $covidForm->data = $request->form->data;
-            $covidForm->status = $request->form->status;
+            $covidForm->dose = $request['form']['dose'];
+            $covidForm->patient_name = $request['form']['patient_name'];
+            $covidForm->phone = $request['form']['phone'];
+            $covidForm->data = $request['form']['data'];
+            $covidForm->status = $request['form']['status'];
 
             if ($covidForm->save()){
                 $uploadFolder = 'covid_form/'.$request->user()->id;
