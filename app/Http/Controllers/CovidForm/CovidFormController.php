@@ -43,6 +43,8 @@ class CovidFormController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info("REQUEST ALL");
+        Log::info($request->all());
         try {
             // dd(storage_path('app/public/covid_form/'.$request->user()->id));
             $validator = \Validator::make($request->all(),[
@@ -116,6 +118,8 @@ class CovidFormController extends Controller
         } catch (\Exception $e) {
             $status = false;
             $message = $e->getMessage();
+            Log::error("CATCH");
+            Log::error($e->getMessage());
             return $this->generateResponse($status, $message, null);
         }
     }
@@ -168,7 +172,7 @@ class CovidFormController extends Controller
     public function savePdf($covidForm)
     {
         try {
-            $pdf = PDF::loadView('pdf.covid-19-form', [
+            $pdf = PDF::loadView('pdf.pdf', [
                 'data' => $covidForm->data,
             ]);
             $pdf->setPaper('a4', 'portrait');
