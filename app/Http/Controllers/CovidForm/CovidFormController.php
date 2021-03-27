@@ -55,15 +55,16 @@ class CovidFormController extends Controller
             if ($validator->fails()){
                 return $this->generateResponse(false, $validator->errors()->first(), null, 200);
             }
-            $data = json_decode($request->all(), true);
+            Log::info(json_decode($request->all(), true));
+            Log::info(json_decode($request->all()));
             $covidForm = new CovidForm();
             $covidForm->user_id = $request->user()->id;
 
-            $covidForm->dose = $data['form']->dose;
-            $covidForm->patient_name = $data['form']->patient_name;
-            $covidForm->phone = $data['form']->phone;
-            $covidForm->data = $data['form']->data;
-            $covidForm->status = $data['form']->status;
+            $covidForm->dose = $request->form->dose;
+            $covidForm->patient_name = $request->form->patient_name;
+            $covidForm->phone = $request->form->phone;
+            $covidForm->data = $request->form->data;
+            $covidForm->status = $request->form->status;
 
             if ($covidForm->save()){
                 $uploadFolder = 'covid_form/'.$request->user()->id;
