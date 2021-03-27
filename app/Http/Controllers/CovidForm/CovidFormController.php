@@ -55,7 +55,7 @@ class CovidFormController extends Controller
             if ($validator->fails()){
                 return $this->generateResponse(false, $validator->errors()->first(), null, 200);
             }
-            Log::info(json_decode(json_encode($request->all()), true));
+            Log::info(json_decode(json_encode($request->form), true));
             $covidForm = new CovidForm();
             $covidForm->user_id = $request->user()->id;
 
