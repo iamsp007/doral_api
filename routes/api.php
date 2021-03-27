@@ -78,6 +78,7 @@ Route::group([
         // COVID-19
         Route::get('get-covid-19-patient-list', 'App\Http\Controllers\CovidForm\CovidFormController@index');
         Route::post('covid-19/store', 'App\Http\Controllers\CovidForm\CovidFormController@store');
+        Route::post('covid-19/{id}/store-signatures', 'App\Http\Controllers\CovidForm\CovidFormController@storeSignatures');
 
         Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
         Route::get('ccm-readings', 'App\Http\Controllers\UserController@ccmReadings');
