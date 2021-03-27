@@ -31,7 +31,7 @@ class Referral extends Model
      */
     public function getColorAttribute($value)
     {
-        $color='green';
+        $color='#0000FF';
         if ($value) {
             $color=$value;
         }
