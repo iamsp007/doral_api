@@ -44,7 +44,7 @@ class CovidFormController extends Controller
     public function store(Request $request)
     {
         Log::info("REQUEST ALL");
-        // Log::info($request->all());
+        Log::info($request->all());
         try {
             // dd(storage_path('app/public/covid_form/'.$request->user()->id));
             $validator = \Validator::make($request->all(),[
@@ -55,15 +55,14 @@ class CovidFormController extends Controller
             if ($validator->fails()){
                 return $this->generateResponse(false, $validator->errors()->first(), null, 200);
             }
-            Log::info(json_decode(json_encode($request->form), true));
             $covidForm = new CovidForm();
             $covidForm->user_id = $request->user()->id;
 
-            $covidForm->dose = $request->form->dose;
-            $covidForm->patient_name = $request->form->patient_name;
-            $covidForm->phone = $request->form->phone;
-            $covidForm->data = $request->form->data;
-            $covidForm->status = $request->form->status;
+            $covidForm->dose = $request->dose;
+            $covidForm->patient_name = $request->patient_name;
+            $covidForm->phone = $request->phone;
+            $covidForm->data = $request->data;
+            $covidForm->status = $request->status;
 
             if ($covidForm->save()){
                 $uploadFolder = 'covid_form/'.$request->user()->id;
