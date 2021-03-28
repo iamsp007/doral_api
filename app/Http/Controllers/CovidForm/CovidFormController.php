@@ -65,51 +65,6 @@ class CovidFormController extends Controller
             $covidForm->status = $request->status;
 
             if ($covidForm->save()){
-                $uploadFolder = 'covid_form/'.$request->user()->id;
-                if ($request->file('recipient_sign')) {
-                    $recipientSign = $request->file('recipient_sign');
-                    $recipientSignUploadedPath = $recipientSign->store($uploadFolder, 'public');
-                    $uploadedRecipientSignResponse = [
-                        "image_name" => basename($recipientSignUploadedPath),
-                        "image_url" => Storage::disk('public')->url($recipientSignUploadedPath),
-                        "mime" => $recipientSign->getClientMimeType()
-                    ];
-
-                    $covidForm->recipient_sign = $uploadedRecipientSignResponse['image_name'];
-                }
-                if ($request->file('interpreter_sign')) {
-                    $interpreterSign = $request->file('interpreter_sign');
-                    $interpreterSignUploadedPath = $interpreterSign->store($uploadFolder, 'public');
-                    $uploadedInterpreterSignResponse = [
-                        "image_name" => basename($interpreterSignUploadedPath),
-                        "image_url" => Storage::disk('public')->url($interpreterSignUploadedPath),
-                        "mime" => $interpreterSign->getClientMimeType()
-                    ];
-
-                    $covidForm->interpreter_sign = $uploadedInterpreterSignResponse['image_name'];
-                }
-                if ($request->file('vaccination_sign')) {
-                    $vaccinationSign = $request->file('vaccination_sign');
-                    $vaccinationSignUploadedPath = $vaccinationSign->store($uploadFolder, 'public');
-                    $uploadedVaccinationSignResponse = [
-                        "image_name" => basename($vaccinationSignUploadedPath),
-                        "image_url" => Storage::disk('public')->url($vaccinationSignUploadedPath),
-                        "mime" => $vaccinationSign->getClientMimeType()
-                    ];
-
-                    $covidForm->vaccination_sign = $uploadedVaccinationSignResponse['image_name'];
-                }
-
-                // if ($covidForm->save()) {
-                    // $this->savePdf($covidForm);
-                    // $pdf = new Pdf(public_path('pdf\vaccine-consent-form.pdf'), [
-                    //     'command' => env('PDF_COMMAND'),
-                    //     'useExec' => true,  // May help on Windows systems if execution fails
-                    // ]);
-                    // $result = $pdf
-                    //     ->fillForm($covidForm->data)
-                    //     ->saveAs(storage_path('app/public/covid_form/'.$request->user()->id.'/'.time().'.pdf'));
-                // }
                 $status = true;
                 $message = "Successfully stored covid form data.";
                 return $this->generateResponse($status, $message, $covidForm, 200);
@@ -174,16 +129,14 @@ class CovidFormController extends Controller
         try {
             $pdf = PDF::loadView('pdf.pdf', [
                 'data' => $covidForm->data,
+                'recipient' => $covidForm->recipient_signature,
+                'interpreter' => $covidForm->interpreter_signature,
+                'vaccination' => $covidForm->vaccination_signature,
             ]);
             $pdf->setPaper('a4', 'portrait');
-            $path = public_path('covid/');
-            $fileName =  'covid-report-'.$covidForm->id.'.pdf';
-            $pdf->save($path . '/' . $fileName);
-
-            $covidForm->file_name = $fileName;
+            Storage::put('public/covid_form/'.$covidForm->id.'/covid-report-'.$covidForm->id.'.pdf', $pdf->output());
+            $covidForm->pdf_file = 'covid-report-'.$covidForm->id.'.pdf';
             $covidForm->save();
-
-            // return $pdf->stream('covid-report-'.$covidForm->id.'.pdf')->header('Content-Type','application/pdf');
         } catch(Exception $e) {
             Log::error($e->getMessage());
         }
@@ -193,7 +146,7 @@ class CovidFormController extends Controller
     {
         try {
             $covidForm = CovidForm::find($id);
-            $uploadFolder = 'covid_form/'.$request->user()->id;
+            $uploadFolder = 'covid_form/'.$covidForm->id;
             if ($request->file('recipient_sign')) {
                 $recipientSign = $request->file('recipient_sign');
                 $recipientSignUploadedPath = $recipientSign->store($uploadFolder, 'public');
@@ -228,6 +181,7 @@ class CovidFormController extends Controller
                 $covidForm->vaccination_sign = $uploadedVaccinationSignResponse['image_name'];
             }
             if ($covidForm->save()) {
+                $this->savePdf($covidForm);
                 $status = true;
                 $message = "Successfully stored covid signatures.";
                 return $this->generateResponse($status, $message, $covidForm, 200);
