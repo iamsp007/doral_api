@@ -36,11 +36,21 @@ class CovidForm extends Model
     ];
 
     /**
+     * The attributes that are hidden.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'data'
+    ];
+
+    /**
      * The attributes that are append.
      *
      * @var array
      */
     protected $appends = [
+        'form',
         'recipient_signature',
         'interpreter_signature',
         'vaccination_signature',
@@ -53,6 +63,20 @@ class CovidForm extends Model
     public function clinician()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    /**
+     * Get the data field data in form field.
+     *
+     * @return string
+     */
+    public function getFormAttribute()
+    {
+        if (isset($this['data'])) {
+            return $this['data'];
+        } else {
+            return null;
+        }
     }
 
     /**
