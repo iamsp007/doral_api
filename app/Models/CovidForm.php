@@ -36,10 +36,102 @@ class CovidForm extends Model
     ];
 
     /**
-     * Relation with patient
+     * The attributes that are hidden.
+     *
+     * @var array
      */
-    public function patient()
+    protected $hidden = [
+        'data'
+    ];
+
+    /**
+     * The attributes that are append.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'form',
+        'recipient_signature',
+        'interpreter_signature',
+        'vaccination_signature',
+        'pdf'
+    ];
+
+    /**
+     * Relation with clinician
+     */
+    public function clinician()
     {
-        return $this->belongsTo(PatientReferral::class, 'user_id', 'id');
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    /**
+     * Get the data field data in form field.
+     *
+     * @return string
+     */
+    public function getFormAttribute()
+    {
+        if (isset($this['data'])) {
+            return $this['data'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the recipient signature images.
+     *
+     * @return string
+     */
+    public function getRecipientSignatureAttribute()
+    {
+        if (isset($this['recipient_sign'])) {
+            return env('APP_URL').'/storage/covid_form/'.$this['id'].'/'. $this['recipient_sign'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the interpreter signature images.
+     *
+     * @return string
+     */
+    public function getInterpreterSignatureAttribute()
+    {
+        if (isset($this['interpreter_sign'])) {
+            return env('APP_URL').'/storage/covid_form/'.$this['id'].'/'. $this['interpreter_sign'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the vaccination signature images.
+     *
+     * @return string
+     */
+    public function getVaccinationSignatureAttribute()
+    {
+        if (isset($this['vaccination_sign'])) {
+            return env('APP_URL').'/storage/covid_form/'.$this['id'].'/'. $this['vaccination_sign'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the PDF.
+     *
+     * @return string
+     */
+    public function getPdfAttribute()
+    {
+        if (isset($this['pdf_file'])) {
+            return env('APP_URL').'/storage/covid_form/'.$this['id'].'/'. $this['pdf_file'];
+        } else {
+            return null;
+        }
     }
 }
