@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\FailRecodeImport;
 use App\Models\LabReportType;
 use App\Models\CaregiverInfo;
+use App\Models\Demographic;
 use App\Models\PatientLabReport;
 use Carbon\Carbon;
 use Exception;
@@ -67,14 +68,47 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
             } else if (isset($row['dob'])) {
                 $dob = date('Y-m-d', strtotime($row['dob']));
             }
+
+            \Log::info('covid-19 start');
+            if ($this->file_type === '6') {
+                $ssn = str_replace("-","",$row['ssn']);
+                $demographic = Demographic::with('user')->where('ssn', $ssn)->first();
+                
+                if ($demographic) {
+                    $user = User::find($demographic->user_id);
+                } else {
+                    $user = new User();
+                }
+
+                $user->first_name = isset($row['first_name']) ? $row['first_name'] : '';
+                $user->last_name = isset($row['last_name']) ? $row['last_name'] : '';
+                $user->gender = isset($row['gender']) ? $row['gender'] : '';
+                $user->phone = isset($row['phone_number']) ? $row['phone_number'] : '';
+                $user->dob = $dob;
+                $user->email = isset($row['email']) ? $row['email'] : '';
+                $user->email = isset($row['email']) ? $row['email'] : '';
+
+                $address = [
+                    'apt_building' => isset($row['apt_building']) ? $row['apt_building'] : '',
+                    'address1' => isset($row['address1']) ? $row['address1'] : '',
+                    'address2' => isset($row['address2']) ? $row['address2'] : '',
+                    'city' => isset($row['city']) ? $row['city'] : '',
+                    'state' => isset($row['state']) ? $row['state'] : '',
+                    'zip_code' => isset($row['zip_code']) ? $row['zip_code'] : '',
+                ];
+
+                $user->address = $address;
+                $user->gender_at_birth = isset($row['gender_at_birth']) ? $row['gender_at_birth'] : '';
+                $user->ssn = isset($row['ssn']) ? $row['ssn'] : '';
+                $user->marital_status = isset($row['marital_status']) ? $row['marital_status'] : '';
+               
+                $user->save();
+            }
+            \Log::info('covid-19 end');
             
-            
-            \Log::info($this->service_id);
             if (isset($row['caregiver_code']) && isset($row['compliance_item'])) {
                 $userCaregiver = CaregiverInfo::where('caregiver_code' , $row['caregiver_code'])->first();
-                
-                \Log::info('test');
-                \Log::info($userCaregiver);
+              
                 if ($userCaregiver) {
                     $patientLabReport = new PatientLabReport();
                     
@@ -94,7 +128,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                     $patientLabReport->save();
                 }
             }
-
+          
             // if ((isset($row['ssn']) && !empty($row['ssn'])) && (!empty($dob))) {
             //     $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
 
