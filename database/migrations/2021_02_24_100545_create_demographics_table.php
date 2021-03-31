@@ -19,6 +19,7 @@ class CreateDemographicsTable extends Migration
             $table->foreignId('user_id')->index('user_id');
             $table->foreignId('service_id')->index('service_id');
             $table->foreignId('company_id')->index('company_id');
+            $table->enum('gender_at_birth', ['1', '2','3'])->comment('1=male,2=female,3=other');
             $table->string('patient_id');
             $table->string('ssn')->nullable();
             $table->string('medicaid_number')->nullable();
