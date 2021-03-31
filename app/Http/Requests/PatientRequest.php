@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Helpers\Helper;
+use App\Models\Referral;
 use App\Models\User;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Foundation\Http\FormRequest;
@@ -80,6 +81,7 @@ class PatientRequest extends FormRequest
     public function rules()
     {
         return [
+            'type_id'=>'required',
             'latitude'=>'required',
             'longitude'=>'required',
             'reason'=>'required',

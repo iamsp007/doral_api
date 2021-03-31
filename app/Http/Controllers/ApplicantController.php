@@ -13,6 +13,7 @@ use App\Models\UploadDocuments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Exception;
+use DB;
 
 class ApplicantController extends Controller
 {
@@ -946,13 +947,13 @@ class ApplicantController extends Controller
         }
     }
 
-    public function getClinicianList()
+    public function getClinicianList($status_id = 0)
     {
         $status = false;
         $data = [];
         $message = "Applicants are not available.";
         try {
-            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->whereHas('roles', function($q) {
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->where('status','=',$status_id)->whereHas('roles', function($q) {
                     $q->where('name','=', 'clinician');
                 })->get();
             if (!$response) {
@@ -987,4 +988,30 @@ class ApplicantController extends Controller
             return $this->generateResponse($status, $message, $data, 200);
         }
     }
+
+    public function getClinicianData(Request $request) {
+        $requestData = $request->all();
+        $status = false;
+        $data = [];
+        $message = "Applicants are not available.";
+        try {
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->where('status','=',$requestData['status'])->whereHas('roles', function($q) {
+                    $q->where('name','=', 'clinician');
+                })
+                ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+                ->get();
+
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "All Applicants.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
 }

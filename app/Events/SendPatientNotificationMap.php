@@ -21,12 +21,10 @@ class SendPatientNotificationMap
      *
      * @return void
      */
-    public function __construct($data,$userid)
+    public function __construct($data,$userid,$title='Clinician RoadL Route',$message='Clinician RoadL Route')
     {
         $user = User::find($userid);
         if ($user){
-            $message="Clinician RoadL Route";
-            $title="Clinician RoadL Route";
             $token=$user->device_token;
             $web_token=$user->web_token;
             $helper = new Helper();
