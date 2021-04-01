@@ -55,7 +55,7 @@ class CovidFormController extends Controller
             if ($validator->fails()){
                 return $this->generateResponse(false, $validator->errors()->first(), null, 200);
             }
-            $covidForm = new CovidForm();
+            $covidForm = CovidForm::firstOrNew(['id' => $request->id]);
             $covidForm->user_id = $request->user()->id;
 
             $covidForm->dose = $request->dose;
@@ -63,6 +63,7 @@ class CovidFormController extends Controller
             $covidForm->phone = $request->phone;
             $covidForm->data = $request->data;
             $covidForm->status = $request->status;
+            $covidForm->form_filling_date = $request->form_filling_date;
 
             if ($covidForm->save()){
                 $status = true;

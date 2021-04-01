@@ -23,7 +23,9 @@ class CovidForm extends Model
         'recipient_sign',
         'interpreter_sign',
         'vaccination_sign',
+        'pdf_file',
         'status',
+        'form_filling_date'
     ];
 
     /**
