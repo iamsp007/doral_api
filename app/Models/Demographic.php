@@ -17,15 +17,37 @@ class Demographic extends Model
     protected $fillable = [
         'doral_id',
         'user_id',
+        'service_id',
+        'patient_id',
+        'gender_at_birth',
         'ssn',
-        'team',
-        'location',
-        'branch',
+        'medicaid_number',
+        'medicare_number',
         'accepted_services',
         'address',
         'language',
+        'ethnicity',
+        'country_of_birth',
+        'employee_type',
+        'marital_status',
+        'status',
+        'notification_preferences',
         'type',
     ];
+
+
+    /**
+     * The attributes that are casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'accepted_services' => 'array',
+        'address' => 'array',
+        'language' => 'array',
+        'notification_preferences' => 'array',
+    ];
+
 
     /**
      * Get the user's Date Of Birth.
@@ -38,5 +60,10 @@ class Demographic extends Model
         if ($ssn){
             return str_replace("-","",$ssn);
         }
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class,'id','user_id');
     }
 }

@@ -9,9 +9,11 @@ use App\Models\User;
 use App\Models\FailRecodeImport;
 use App\Models\LabReportType;
 use App\Models\CaregiverInfo;
+use App\Models\Demographic;
 use App\Models\PatientLabReport;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -68,13 +70,63 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                 $dob = date('Y-m-d', strtotime($row['dob']));
             }
             
+            \Log::info('covid-19 start');
             
-            \Log::info($this->service_id);
+            if ($this->file_type === '6') {
+                $ssn = str_replace("-","",$row['ssn']);
+                $demographic = Demographic::where('ssn', $ssn)->first();
+
+                if ($demographic) {
+                    $user = User::find($demographic->user_id);
+                    $demographicModel = Demographic::find($demographic->id);
+                    $doral_id = $demographic->doral_id;
+                } else {
+                    $user = new User();
+                    $demographicModel = new Demographic();
+                    $doral_id = createDoralId();
+                }
+                $password = str_replace(" ", "",$row['first_name']) . '@' . $doral_id;
+
+                $user->first_name = $row['first_name'];
+                $user->last_name = $row['last_name'];
+                $user->gender = setGender($row['gender']);
+                $user->phone = setPhone($row['phone_number']);
+                $user->dob = dateFormat($row['date_of_birth']);
+                $user->email = isset($row['email']) ? $row['email'] : '';
+                $user->password = setPassword($password);
+                $user->save();
+
+                $address = [
+                    'apt_building' => $row['apt_building'],
+                    'address1' => $row['address1'],
+                    'address2' => $row['address2'],
+                    'city' => $row['city'],
+                    'state' => $row['state'],
+                    'zip_code' => $row['zip_code'],
+                ];
+                
+                // if(Auth::guard('referral')) {
+                //     $company_id = Auth::guard('referral')->user()->id;
+                    $demographicModel->company_id = '9';
+                    
+                    // \Log::info(Auth::guard('referral'));
+                // }
+
+                $demographicModel->user_id = $user->id;
+                $demographicModel->service_id = '6';
+                $demographicModel->ssn = setSsn($row['ssn']);
+                $demographicModel->marital_status = $row['marital_status'];
+                $demographicModel->address = $address;
+                $demographicModel->gender_at_birth = setGender($row['gender_at_birth']);
+                
+                $demographicModel->status = 'Active';
+                $demographicModel->save();
+            }
+            \Log::info('covid-19 end');
+            
             if (isset($row['caregiver_code']) && isset($row['compliance_item'])) {
                 $userCaregiver = CaregiverInfo::where('caregiver_code' , $row['caregiver_code'])->first();
-                
-                \Log::info('test');
-                \Log::info($userCaregiver);
+              
                 if ($userCaregiver) {
                     $patientLabReport = new PatientLabReport();
                     
@@ -94,7 +146,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                     $patientLabReport->save();
                 }
             }
-
+          
             // if ((isset($row['ssn']) && !empty($row['ssn'])) && (!empty($dob))) {
             //     $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
 

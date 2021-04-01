@@ -24,16 +24,16 @@ class RoadlController extends Controller
 
         $patientRequest = PatientRequest::find($request->patient_requests_id);
         if ($patientRequest){
-            if ($request->status==="complete"){
+            if ($request->status==="4"){
                 $patientRequest->status = $request->status;
 //                $patientRequest->otp=rand(1000,9999);
                 $patientRequest->save();
                 $allPatientRequest = PatientRequest::where('parent_id','=',$patientRequest->parent_id)
                     ->get();
-                $collection = collect($allPatientRequest)->whereIn('status',['complete','cancel'])->count();
+                $collection = collect($allPatientRequest)->whereIn('status',['4','5'])->count();
                 if ($collection===count($allPatientRequest)){
                     $patientRequestParent = PatientRequest::find($patientRequest->parent_id);
-                    $patientRequestParent->status = 'complete';
+                    $patientRequestParent->status = '4';
                     $patientRequestParent->save();
                 }
 //                $user = User::find($request->user_id);
@@ -51,7 +51,7 @@ class RoadlController extends Controller
 //                event(new SendingSMS($messages));
 //                event(new SendPatientNotificationMap($patientRequest,$patientRequest->user_id,$title,$message));
                 return $this->generateResponse(true,'Request Status Update Successfully!',$patientRequest,200);
-            }elseif ($request->status==="prepare"){
+            }elseif ($request->status==="6"){
                 $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
             }
             $patientRequest->status = $request->status;
@@ -79,7 +79,7 @@ class RoadlController extends Controller
 
     public function getNearByClinicianList(Request $request,$patient_request_id){
         try {
-            $patient_requests = PatientRequest::where([['id','=',$patient_request_id],['status','=','active']])->first();
+            $patient_requests = PatientRequest::where([['id','=',$patient_request_id],['status','=','1']])->first();
 
             if ($patient_requests->clincial_id!==null){
                 return $this->generateResponse(false,'Request Already Accepted',[],200);
@@ -223,7 +223,7 @@ class RoadlController extends Controller
             return $this->generateResponse(false,'No Patient Request Found this user',null,200);
         }else{
             $datas = PatientRequest::with(['detail','routes','appointmentType'])
-                ->where([['id','=',$patient_request_id],['status','=','active']])
+                ->where([['id','=',$patient_request_id],['status','=','1']])
                 ->first();
             $last_location = RoadlInformation::where('user_id','=',$datas->clincial_id)->where('patient_requests_id','=',$patient_request_id)->orderBy('id','desc')->first();
             $data['roadl_id']=$datas->id;
@@ -317,7 +317,7 @@ class RoadlController extends Controller
 
     public function patientRequestOtpVerify(PatientRequestOtpVerifyRequest $request){
         $patientRequest = PatientRequest::find($request->id);
-        $patientRequest->status='complete';
+        $patientRequest->status='4';
         $patientRequest->save();
         return $this->generateResponse(true,'Your Reuest is done',$patientRequest);
     }
