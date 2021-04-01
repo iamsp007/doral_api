@@ -32,7 +32,7 @@ class PatientRequestController extends Controller
         	where('user_id', Auth::user()->id)
             ->whereNotNull('parent_id')
         	->whereDate('created_at', Carbon::today())
-        	// ->where('status','active')
+        	// ->where('status','1')
             ->orderBy('id','desc')
             ->first();
         return $this->generateResponse(true,'Patient Request Status',$patientroadl,200);
@@ -49,11 +49,11 @@ class PatientRequestController extends Controller
         try {
             $check = PatientRequest::where('user_id', $request->user_id)
                 ->where('type_id','=',$request->type_id)
-                ->where('status', 'active')->count();
+                ->where('status', '1')->count();
             if ($check>0){
                 return $this->generateResponse(false,'Already Create This Request',null,200);
             }
-            $patientRequest = PatientRequest::where('user_id', $request->patient_id)->whereNull('parent_id')->where('status', 'active')->first();
+            $patientRequest = PatientRequest::where('user_id', $request->patient_id)->whereNull('parent_id')->where('status', '1')->first();
             if(! $patientRequest) {
                 $patient = new PatientRequest();
                 $patient->user_id = $request->user_id;
@@ -81,7 +81,6 @@ class PatientRequestController extends Controller
                 if($request->has('is_parking')){
                     $patientSecond->is_parking=$request->is_parking;
                 }
-                $patientSecond->status='active';
 
                 $patientSecond->parent_id = $patient->id;
 
@@ -107,7 +106,6 @@ class PatientRequestController extends Controller
                 if($request->has('is_parking')){
                     $patientSecond->is_parking=$request->is_parking;
                 }
-                $patientSecond->status='active';
                 $patientSecond->parent_id = $patientRequest->id;
 
                 $patientSecond->save();
@@ -153,7 +151,7 @@ class PatientRequestController extends Controller
         if($request->has('is_parking')){
             $patient->is_parking=$request->is_parking;
         }
-        $patient->status='active';
+        
         if ($patient->save()){
 
             if ($type!=='patient'){
@@ -302,7 +300,7 @@ class PatientRequestController extends Controller
             }
             $patient->clincial_id=$request->user_id;
             $patient->updated_at=Carbon::now()->toDateTime();
-            $patient->status='accept';
+            $patient->status='2';
             if ($patient->save()){
                 $users = User::find($request->user_id);
                 $users->is_available = 2;
@@ -349,32 +347,34 @@ class PatientRequestController extends Controller
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
 
-    public function clinicianPatientRequestList(Request $request){
-
-        $status='all';
-        if ($request->has('type') && $request->type==='1'){
-            $status='active';
-        }elseif ($request->has('type') && $request->type==='2'){
-            $status='accept';
-        }elseif ($request->has('type') && $request->type==='3'){
-            $status='arrive';
-        }elseif ($request->has('type') && $request->type==='4'){
-            $status='complete';
-        }elseif ($request->has('type') && $request->type==='5'){
-            $status='cancel';
-        }elseif ($request->has('type') && $request->type==='6'){
-            $status='prepare';
-        }elseif ($request->has('type') && $request->type==='7'){
-            $status='start';
-        }
+    public function clinicianPatientRequestList(Request $request)
+    {
+        $status = $request['id'];
+        // $status='all';
+        // if ($request->has('type') && $request->type==='1'){
+        //     $status='active';
+        // }elseif ($request->has('type') && $request->type==='2'){
+        //     $status='accept';
+        // }elseif ($request->has('type') && $request->type==='3'){
+        //     $status='arrive';
+        // }elseif ($request->has('type') && $request->type==='4'){
+        //     $status='complete';
+        // }elseif ($request->has('type') && $request->type==='5'){
+        //     $status='cancel';
+        // }elseif ($request->has('type') && $request->type==='6'){
+        //     $status='prepare';
+        // }elseif ($request->has('type') && $request->type==='7'){
+        //     $status='start';
+        // }
 
         if (Auth::user()->hasRole('patient')){
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
-                ->where(function ($q) use ($status){
-                    if ($status!=='all'){
-                        $q->where('status','=',$status);
-                    }
-                })
+                // ->where(function ($q) use ($status){
+                //     if ($status!=='all'){
+                //         $q->where('status','=',$status);
+                //     }
+                // })
+                ->whereIn('status',$status)
                 ->whereNotNull('parent_id')
                 ->where('user_id','=',Auth::user()->id)
                 ->groupBy('parent_id')
@@ -384,11 +384,12 @@ class PatientRequestController extends Controller
             $roles = Auth::user()->roles->pluck('id');
 
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
-                ->where(function ($q) use ($status){
-                    if ($status!=='all'){
-                        $q->where('status','=',$status);
-                    }
-                })
+                // ->where(function ($q) use ($status){
+                //     if ($status!=='all'){
+                //         $q->where('status','=',$status);
+                //     }
+                // })
+                ->whereIn('status',$status)
                 ->whereNotNull('parent_id')
                 ->where(function ($q) use ($roles){
                     $role = Auth::user()->roles;
@@ -595,7 +596,7 @@ class PatientRequestController extends Controller
                 $check = PatientRequest::where('user_id', $request->patient_id)
                     ->whereNotNull('parent_id')
                     ->where('type_id','=',$row->role_id)
-                    // ->where('status','!=','active')
+                    // ->where('status','!=','1')
                     ->first();
                 $row->check = $check;
                 return $row;
