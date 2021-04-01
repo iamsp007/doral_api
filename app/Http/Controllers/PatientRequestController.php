@@ -349,7 +349,9 @@ class PatientRequestController extends Controller
 
     public function clinicianPatientRequestList(Request $request)
     {
-        $status = $request['id'];
+        $type = $request['type'];
+        $status = explode(",",$type);
+       
         // $status='all';
         // if ($request->has('type') && $request->type==='1'){
         //     $status='active';
@@ -400,6 +402,7 @@ class PatientRequestController extends Controller
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
+              
         }
 
 //        $referral = Referral::where('guard_name','=','partner')
