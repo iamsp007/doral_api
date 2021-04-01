@@ -19,6 +19,7 @@ class Demographic extends Model
         'user_id',
         'service_id',
         'patient_id',
+        'gender_at_birth',
         'ssn',
         'medicaid_number',
         'medicare_number',

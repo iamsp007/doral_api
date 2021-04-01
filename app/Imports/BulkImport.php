@@ -13,6 +13,7 @@ use App\Models\Demographic;
 use App\Models\PatientLabReport;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -68,41 +69,58 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
             } else if (isset($row['dob'])) {
                 $dob = date('Y-m-d', strtotime($row['dob']));
             }
-
+            
             \Log::info('covid-19 start');
+            
             if ($this->file_type === '6') {
                 $ssn = str_replace("-","",$row['ssn']);
-                $demographic = Demographic::with('user')->where('ssn', $ssn)->first();
-                
+                $demographic = Demographic::where('ssn', $ssn)->first();
+
                 if ($demographic) {
                     $user = User::find($demographic->user_id);
+                    $demographicModel = Demographic::find($demographic->id);
+                    $doral_id = $demographic->doral_id;
                 } else {
                     $user = new User();
+                    $demographicModel = new Demographic();
+                    $doral_id = createDoralId();
                 }
+                $password = str_replace(" ", "",$row['first_name']) . '@' . $doral_id;
 
-                $user->first_name = isset($row['first_name']) ? $row['first_name'] : '';
-                $user->last_name = isset($row['last_name']) ? $row['last_name'] : '';
-                $user->gender = isset($row['gender']) ? $row['gender'] : '';
-                $user->phone = isset($row['phone_number']) ? $row['phone_number'] : '';
-                $user->dob = $dob;
+                $user->first_name = $row['first_name'];
+                $user->last_name = $row['last_name'];
+                $user->gender = setGender($row['gender']);
+                $user->phone = setPhone($row['phone_number']);
+                $user->dob = dateFormat($row['date_of_birth']);
                 $user->email = isset($row['email']) ? $row['email'] : '';
-                $user->email = isset($row['email']) ? $row['email'] : '';
+                $user->password = setPassword($password);
+                $user->save();
 
                 $address = [
-                    'apt_building' => isset($row['apt_building']) ? $row['apt_building'] : '',
-                    'address1' => isset($row['address1']) ? $row['address1'] : '',
-                    'address2' => isset($row['address2']) ? $row['address2'] : '',
-                    'city' => isset($row['city']) ? $row['city'] : '',
-                    'state' => isset($row['state']) ? $row['state'] : '',
-                    'zip_code' => isset($row['zip_code']) ? $row['zip_code'] : '',
+                    'apt_building' => $row['apt_building'],
+                    'address1' => $row['address1'],
+                    'address2' => $row['address2'],
+                    'city' => $row['city'],
+                    'state' => $row['state'],
+                    'zip_code' => $row['zip_code'],
                 ];
+                
+                // if(Auth::guard('referral')) {
+                //     $company_id = Auth::guard('referral')->user()->id;
+                    $demographicModel->company_id = '9';
+                    
+                    // \Log::info(Auth::guard('referral'));
+                // }
 
-                $user->address = $address;
-                $user->gender_at_birth = isset($row['gender_at_birth']) ? $row['gender_at_birth'] : '';
-                $user->ssn = isset($row['ssn']) ? $row['ssn'] : '';
-                $user->marital_status = isset($row['marital_status']) ? $row['marital_status'] : '';
-               
-                $user->save();
+                $demographicModel->user_id = $user->id;
+                $demographicModel->service_id = '6';
+                $demographicModel->ssn = setSsn($row['ssn']);
+                $demographicModel->marital_status = $row['marital_status'];
+                $demographicModel->address = $address;
+                $demographicModel->gender_at_birth = setGender($row['gender_at_birth']);
+                
+                $demographicModel->status = 'Active';
+                $demographicModel->save();
             }
             \Log::info('covid-19 end');
             
