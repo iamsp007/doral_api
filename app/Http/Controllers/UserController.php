@@ -270,27 +270,27 @@ class UserController extends Controller
                 'notification_preferences->VoiceMessage' => $input['voice_message'],
             ]);
         
-            $address[] = [
-                'Street1' =>  $input['street1'],
-                'Street2' =>  $input['street2'],
-                'City' =>  $input['city'],
-                'State' =>  $input['state'],
-                'Zip4' =>  $input['zip4'],
-                'Zip5' =>  $input['zip5'],
-            ];
+//            $address[] = [
+//                'Street1' =>  $input['street1'],
+//                'Street2' =>  $input['street2'],
+//                'City' =>  $input['city'],
+//                'State' =>  $input['state'],
+//                'Zip4' =>  $input['zip4'],
+//                'Zip5' =>  $input['zip5'],
+//            ];
 
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => $input['ssn'],
-                'language->Language1' => $input['language1'],
-                'language->Language2' => $input['language2'],
-                'language->Language3' => $input['language3'],
-                'language->Language4' => $input['language4'],
-                'address->Street1' => $input['street1'],
-                'address->Street2' => $input['street2'],
-                'address->City' => $input['city'],
-                'address->State' => $input['state'],
-                'address->Zip4' => $input['zip4'],
-                'address->Zip5' => $input['zip5'],
+                'language->Language1' => ($input['language1']) ? $input['language1'] : '',
+                'language->Language2' => ($input['language2']) ? $input['language2'] : '',
+                'language->Language3' => ($input['language3']) ? $input['language3'] : '',
+                'language->Language4' => ($input['language4']) ? $input['language4'] : '',
+                'address->Street1' => ($input['street1']) ? $input['street1'] : '',
+                'address->Street2' => ($input['street2']) ? $input['street2'] : '',
+                'address->City' => ($input['city']) ? $input['city'] : '',
+                'address->State' => ($input['state']) ? $input['state'] : '',
+                'address->Zip4' => ($input['zip4']) ? $input['zip4'] : '',
+                'address->Zip5' => ($input['zip5']) ? $input['zip5'] : '',
             ]);
 
             $contactName = $input['contact_name'];
