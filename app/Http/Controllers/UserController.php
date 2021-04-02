@@ -262,20 +262,20 @@ class UserController extends Controller
             ]);
 
             Demographic::where('user_id' ,$input['user_id'])->update([
-                'ssn' => $input['ssn'],
-                'language' => $input['language'],
-                'address->address1' => $input['address1'],
-                'address->address2' => $input['address2'],
-                'address->city' => $input['city'],
-                'address->state' => $input['state'],
-                'address->zip_code' => $input['zip_code'],
-                'ethnicity' => $input['ethnicity'],
-                'country_of_birth' => $input['country_of_birth'],
-                'marital_status' => $input['marital_status'],
-                'notification_preferences->email' => $input['notification_preferences_email'],
-                'notification_preferences->name' => $input['method_name'],
-                'notification_preferences->mobile_or_sms' => $input['mobile_or_sms'],
-                'notification_preferences->voice_message' => $input['voice_message'],
+                'ssn' => isset($input['ssn']) ? $input['ssn'] : '' ,
+                'language' => isset($input['language']) ? $input['language'] : '' ,
+                'address->address1' => isset($input['address1']) ? $input['address1'] : '' ,
+                'address->address2' => isset($input['address2']) ? $input['address2'] : '' ,
+                'address->city' => isset($input['city']) ? $input['city'] : '' ,
+                'address->state' => isset($input['state']) ? $input['state'] : '' ,
+                'address->zip_code' => isset($input['zip_code']) ? $input['zip_code'] : '' ,
+                'ethnicity' => isset($input['ethnicity']) ? $input['ethnicity'] : '' ,
+                'country_of_birth' => isset($input['country_of_birth']) ? $input['country_of_birth'] : '' ,
+                'marital_status' => isset($input['marital_status']) ? $input['marital_status'] : '' ,
+                'notification_preferences->email' => isset($input['marital_status']) ? $input['marital_status'] : '' ,
+                'notification_preferences->method_name' => isset($input['method_name']) ? $input['method_name'] : '' ,
+                'notification_preferences->mobile_or_sms' => isset($input['mobile_or_sms']) ? $input['mobile_or_sms'] : '' ,
+                'notification_preferences->voice_message' => isset($input['voice_message']) ? $input['voice_message'] : '' ,
             ]);
 
             $contactName = $input['contact_name'];
