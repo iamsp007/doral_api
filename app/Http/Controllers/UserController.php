@@ -251,15 +251,16 @@ class UserController extends Controller
     {
         $input = $request->all();
         if ($request->type==="1"){
-
+        
             User::find($input['user_id'])->update([
                 'gender' => $input['gender'],
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
                 'dob' => date('Y-m-d', strtotime($input['dob'])),
                 'phone' => $input['home_phone'],
+                'email' => $input['email'],
             ]);
-        
+
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => $input['ssn'],
                 'language' => $input['language'],
