@@ -251,12 +251,13 @@ class UserController extends Controller
     {
         $input = $request->all();
         if ($request->type==="1"){
-        
+                $parts = explode('-',$input['dob']);
+                $yyyy_mm_dd = $parts[2] . '-' . $parts[0] . '-' . $parts[1];
             User::find($input['user_id'])->update([
                 'gender' => $input['gender'],
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
-                'dob' => date('Y-m-d', strtotime($input['dob'])),
+                'dob' => $yyyy_mm_dd,
                 'phone' => $input['home_phone'],
                 'email' => $input['email'],
             ]);
@@ -272,7 +273,7 @@ class UserController extends Controller
                 'ethnicity' => isset($input['ethnicity']) ? $input['ethnicity'] : '' ,
                 'country_of_birth' => isset($input['country_of_birth']) ? $input['country_of_birth'] : '' ,
                 'marital_status' => isset($input['marital_status']) ? $input['marital_status'] : '' ,
-                'notification_preferences->email' => isset($input['marital_status']) ? $input['marital_status'] : '' ,
+                'notification_preferences->email' => isset($input['email']) ? $input['email'] : '' ,
                 'notification_preferences->method_name' => isset($input['method_name']) ? $input['method_name'] : '' ,
                 'notification_preferences->mobile_or_sms' => isset($input['mobile_or_sms']) ? $input['mobile_or_sms'] : '' ,
                 'notification_preferences->voice_message' => isset($input['voice_message']) ? $input['voice_message'] : '' ,
