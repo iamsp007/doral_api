@@ -104,6 +104,7 @@ class AuthController extends Controller
             $user->dob = $request->dob;
             $user->phone = $request->phone;
             $user->status = '1';
+            $user->designation_id = $request->designation_id;
             $user->assignRole($request->type)->syncPermissions(Permission::all());
             if ($user->save()) {
                 $request = $request->toArray();
