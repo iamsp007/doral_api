@@ -160,6 +160,8 @@ Route::group([
         Route::post('document-verification', 'App\Http\Controllers\ApplicantController@documentVerification');
         Route::get('get-documents', 'App\Http\Controllers\ApplicantController@getDocuments');
         Route::post('remove-documents', 'App\Http\Controllers\ApplicantController@removeDocument');
+        Route::post('store-applicant-detail', 'App\Http\Controllers\ApplicantController@storeApplicantDetail');
+
         Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
     });
 });
@@ -178,20 +180,6 @@ Route::group([
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
     Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
-});
-
-Route::group([
-    'middleware' => ['auth:api','role:clinician'],
-], function () {
-    Route::get('get-applicnat-detail', 'App\Http\Controllers\ClinicianRegisterController@getApplicantDetail');
-    Route::get('get-emergency-contact', 'App\Http\Controllers\ClinicianRegisterController@getEmergencyContact');
-    Route::post('store-applicnat-detail', 'App\Http\Controllers\ClinicianRegisterController@storeallapplicantDetail');
-    Route::post('store-emergency-contact', 'App\Http\Controllers\ClinicianRegisterController@storeEmergencyContact');
-    Route::post('store-applicant', 'App\Http\Controllers\ClinicianRegisterController@storeApplicantDetail');
-    // Route::post('store-security-detail', 'App\Http\Controllers\ClinicianRegisterController@storeSecurityDetail');
-    // Route::post('store-address-detail', 'App\Http\Controllers\ClinicianRegisterController@storeAddressDetail');
-    // Route::post('store-prior-detail', 'App\Http\Controllers\ClinicianRegisterController@storePriorDetail');
-    // Route::post('store-reference-detail', 'App\Http\Controllers\ClinicianRegisterController@storeReferenceDetail');
 });
 
 // clincian API

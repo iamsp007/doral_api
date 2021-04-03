@@ -22,7 +22,7 @@ class CreateMoreDetailFromApplicant extends Migration
             $table->json('employer_detail')->nullable()->after('reference_detail');
             $table->json('education_detail')->nullable()->after('employer_detail');
             $table->json('language_detail')->nullable()->after('education_detail');
-            $table->json('skil_detail')->nullable()->after('language_detail');
+            $table->json('skill_detail')->nullable()->after('language_detail');
         });
     }
 
@@ -34,7 +34,17 @@ class CreateMoreDetailFromApplicant extends Migration
     public function down()
     {
         Schema::table('applicants', function (Blueprint $table) {
-            //
+            $table->dropColumn([
+                'military_detail',
+                'security_detail',
+                'address_detail',
+                'prior_detail',
+                'reference_detail',
+                'employer_detail',
+                'education_detail',
+                'language_detail',
+                'skill_detail'
+            ]);
         });
     }
 }

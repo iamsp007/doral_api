@@ -26,7 +26,7 @@ class AddFamilyDetailApplicantsTable extends Migration
     public function down()
     {
         Schema::table('applicants', function (Blueprint $table) {
-            //
+            $table->dropColumn('family_detail');
         });
     }
 }

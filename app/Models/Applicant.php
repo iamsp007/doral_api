@@ -19,6 +19,15 @@ class Applicant extends Model
     protected $fillable = [
         'user_id',
         'family_detail',
+        'military_detail',
+        'security_detail',
+        'address_detail',
+        'prior_detail',
+        'reference_detail',
+        'employer_detail',
+        'education_detail',
+        'language_detail',
+        'skill_detail',
         'applicant_name',
         'other_name',
         'ssn',
@@ -48,7 +57,16 @@ class Applicant extends Model
      * @var array
      */
     protected $casts = [
-        'family_detail' => 'array'
+        'family_detail' => 'array',
+        'military_detail' => 'array',
+        'security_detail' => 'array',
+        'address_detail' => 'array',
+        'prior_detail' => 'array',
+        'reference_detail' => 'array',
+        'employer_detail' => 'array',
+        'education_detail' => 'array',
+        'language_detail' => 'array',
+        'skill_detail' => 'array',
     ];
 
     /**

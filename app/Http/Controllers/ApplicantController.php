@@ -1095,4 +1095,20 @@ class ApplicantController extends Controller
         }
     }
 
+    public function storeApplicantDetail(Request $request)
+    {
+        $applicant = Applicant::where('user_id' => $request->user()->id)->first();
+
+        if (!$applicant) {
+            $applicant = new Applicant();
+            $applicant->user_id = $request->user()->id;
+        }
+
+        $key = $request->key;
+
+        $applicant->$key = $request->$key;
+        $applicant->save();
+
+        return $this->generateResponse(true, $key.' detail added.', $applicant, 200);
+    }
 }
