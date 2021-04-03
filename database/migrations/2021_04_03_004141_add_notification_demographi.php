@@ -14,7 +14,7 @@ class AddNotificationDemographi extends Migration
     public function up()
     {
         Schema::table('demographics', function (Blueprint $table) {
-            $table->string('notification')->nullable();
+            $table->string('notification')->nullable()->after('notification_preferences');
         });
     }
 
