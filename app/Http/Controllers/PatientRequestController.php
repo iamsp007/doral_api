@@ -402,7 +402,11 @@ class PatientRequestController extends Controller
                 ->whereIn('status',$status)
                 ->whereNotNull('parent_id')
                 ->where(function ($q){
-                    $q->where('clincial_id','=',Auth::user()->id)->orWhereNull('clincial_id');
+                    $q->where('clincial_id','=',Auth::user()->id)
+                        ->orWhere(function ($q){
+                           $q->whereNull('clincial_id')
+                               ->where('type_id','=',Auth::user()->designation_id);
+                        });
                 })
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
