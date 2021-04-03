@@ -21,7 +21,8 @@ class CovidFormController extends Controller
      */
     public function index()
     {
-        $patientList = CovidForm::all();
+        $patientList = CovidForm::where('user_id', $request->user()->id)->get();
+
         return $this->generateResponse(true, 'Covid 19 patient list', $patientList, 200);
     }
 
