@@ -261,7 +261,12 @@ class UserController extends Controller
                 'phone' => $input['home_phone'],
                 'email' => $input['email'],
             ]);
-
+            if(isset($input['notification']) && !empty($input['notification'])){
+                $notification = implode(',',$input['notification']);
+            }
+            else{
+                $notification = '';
+            }
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => isset($input['ssn']) ? $input['ssn'] : '' ,
                 'language' => isset($input['language']) ? $input['language'] : '' ,
@@ -277,6 +282,7 @@ class UserController extends Controller
                 'notification_preferences->method_name' => isset($input['method_name']) ? $input['method_name'] : '' ,
                 'notification_preferences->mobile_or_sms' => isset($input['mobile_or_sms']) ? $input['mobile_or_sms'] : '' ,
                 'notification_preferences->voice_message' => isset($input['voice_message']) ? $input['voice_message'] : '' ,
+                'notification'=>$notification,
             ]);
 
             $contactName = $input['contact_name'];
@@ -286,14 +292,20 @@ class UserController extends Controller
             $relation = $input['relationship_name'];
             
             PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
-
+            
             foreach ($contactName as $index => $value) {
+                
                 PatientEmergencyContact::create([
                     'user_id' => $input['user_id'],
                     'name' => ($contactName[$index]) ? $contactName[$index] : '',
                     'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
-                    'address' => ($address[$index]) ? $address[$index] : '',
+                    'address' => isset($input['apt_building']) ? $input['apt_building'] : '' ,
+                    'address->address1' => isset($input['address1']) ? $input['address1'] : '' ,
+                    'address->address2' => isset($input['address2']) ? $input['address2'] : '' ,
+                    'address->city' => isset($input['city']) ? $input['city'] : '' ,
+                    'address->state' => isset($input['state']) ? $input['state'] : '' ,
+                    'address->zip_code' => isset($input['zip_code']) ? $input['zip_code'] : '' ,
                     'relation' => ($relation[$index]) ? $relation[$index] : '',
                 ]);
             }
