@@ -180,6 +180,20 @@ Route::group([
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
 });
 
+Route::group([
+    'middleware' => ['auth:api','role:clinician'],
+], function () {
+    Route::get('get-applicnat-detail', 'App\Http\Controllers\ClinicianRegisterController@getApplicantDetail');
+    Route::get('get-emergency-contact', 'App\Http\Controllers\ClinicianRegisterController@getEmergencyContact');
+    Route::post('store-applicnat-detail', 'App\Http\Controllers\ClinicianRegisterController@storeallapplicantDetail');
+    Route::post('store-emergency-contact', 'App\Http\Controllers\ClinicianRegisterController@storeEmergencyContact');
+    Route::post('store-applicant', 'App\Http\Controllers\ClinicianRegisterController@storeApplicantDetail');
+    // Route::post('store-security-detail', 'App\Http\Controllers\ClinicianRegisterController@storeSecurityDetail');
+    // Route::post('store-address-detail', 'App\Http\Controllers\ClinicianRegisterController@storeAddressDetail');
+    // Route::post('store-prior-detail', 'App\Http\Controllers\ClinicianRegisterController@storePriorDetail');
+    // Route::post('store-reference-detail', 'App\Http\Controllers\ClinicianRegisterController@storeReferenceDetail');
+});
+
 // clincian API
 Route::group([
     'middleware' => ['auth:api','role:clinician|co-ordinator|patient'],

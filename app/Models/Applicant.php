@@ -18,6 +18,7 @@ class Applicant extends Model
      */
     protected $fillable = [
         'user_id',
+        'family_detail',
         'applicant_name',
         'other_name',
         'ssn',
@@ -39,6 +40,15 @@ class Applicant extends Model
         'emergency_address',
         'emergency_phone',
         'emergency_relationship',
+    ];
+
+    /**
+     * The attributes that are casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'family_detail' => 'array'
     ];
 
     /**
