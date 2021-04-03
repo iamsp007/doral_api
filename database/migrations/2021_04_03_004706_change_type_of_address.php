@@ -14,7 +14,7 @@ class ChangeTypeOfAddress extends Migration
     public function up()
     {
         Schema::table('patient_emergency_contacts', function (Blueprint $table) {
-            $table->json('address')->nullable()->change();
+            $table->json('address')->after('phone2')->nullable();
         });
     }
 
