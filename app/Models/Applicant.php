@@ -28,6 +28,7 @@ class Applicant extends Model
         'education_detail',
         'language_detail',
         'skill_detail',
+        'emergency_detail',
         'applicant_name',
         'other_name',
         'ssn',
@@ -67,6 +68,7 @@ class Applicant extends Model
         'education_detail' => 'array',
         'language_detail' => 'array',
         'skill_detail' => 'array',
+        'emergency_detail' => 'array',
     ];
 
     /**
