@@ -180,6 +180,12 @@ Route::group([
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
 });
 
+Route::group([
+    'middleware' => ['auth:api','role:clinician'],
+], function () {
+    Route::post('store-family-detail', 'App\Http\Controllers\ClinicianRegisterController@storeFamilyDetail');
+});
+
 // clincian API
 Route::group([
     'middleware' => ['auth:api','role:clinician|co-ordinator|patient'],
