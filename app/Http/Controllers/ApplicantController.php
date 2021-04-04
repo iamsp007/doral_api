@@ -1120,7 +1120,7 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicant is not available.";
         try {
-            $response = Applicant::with('documents')->where('user_id', auth()->user()->id)->get();
+            $response = Applicant::with('documents')->where('user_id', auth()->user()->id)->first();
             if (!$response) {
                 throw new Exception($message);
             }
