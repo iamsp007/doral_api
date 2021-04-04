@@ -177,9 +177,9 @@ class AuthController extends Controller
     {
         $users = User::find($request->user()->id);
         if ($users) {
-            if ($users->is_available!==2){
-                $users->is_available = 0;
-            }
+//            if ($users->is_available!==2){
+//                $users->is_available = 0;
+//            }
             $users->save();
         }
         $request->user()->token()->revoke();
