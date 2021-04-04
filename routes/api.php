@@ -127,6 +127,7 @@ Route::group([
         Route::post('get-clinician-data', 'App\Http\Controllers\ApplicantController@getClinicianData');
         Route::get('get-clinician-detail/{id}', 'App\Http\Controllers\ApplicantController@getClinicianDetail');
 
+        Route::get('get-applicant-details', 'App\Http\Controllers\ApplicantController@getApplicantDetails');
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
         /*Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
         Route::post('applicants/step-two', 'App\Http\Controllers\ApplicantController@stepTwo');

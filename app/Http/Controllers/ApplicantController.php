@@ -1113,4 +1113,31 @@ class ApplicantController extends Controller
 
         return $this->generateResponse(true, $key.' detail added.', $applicant, 200);
     }
+
+    public function getApplicantDetails()
+    {
+        $status = false;
+        $data = [];
+        $message = "Applicant is not available.";
+        try {
+            $response = Applicant::select(
+                'applicant_detail',
+                'emergency_detail',
+                'family_detail',
+                'employer_detail',
+                'security_detail',
+                'military_detail'
+            )->with('documents')->where('user_id', auth()->user()->id)->get();
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "Applicant details.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
 }
