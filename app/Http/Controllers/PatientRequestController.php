@@ -49,7 +49,7 @@ class PatientRequestController extends Controller
         try {
             $check = PatientRequest::where('user_id', $request->user_id)
                 ->where('type_id','=',$request->type_id)
-                ->where('status', '1')->count();
+                ->whereIn('status', ['1','2','3','6','7'])->count();
             if ($check>0){
                 return $this->generateResponse(false,'Already Create This Request',null,200);
             }
@@ -111,9 +111,18 @@ class PatientRequestController extends Controller
                 $patientSecond->save();
                 $parent_id=$patientRequest->id;
             }
-            $clinicianList = User::whereHas('roles',function ($q) use ($request){
-                $q->where('id','=',$request->type_id);
-            })->where('is_available','=','1')->get();
+
+            $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
+
+            $markers = collect($clinicianIds)->map(function($item) use ($request){
+                $roadlController = new RoadlController();
+                $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
+                return $item;
+            })
+//                 ->where('distance','<=',20)
+                ->pluck('id');
+            $clinicianList = User::whereIn('id',$markers)->get();
+//            $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
 
             $data=PatientRequest::with('detail')
                 ->where('id','=',$patientSecond->id)
@@ -151,7 +160,7 @@ class PatientRequestController extends Controller
         if($request->has('is_parking')){
             $patient->is_parking=$request->is_parking;
         }
-        
+
         if ($patient->save()){
 
             if ($type!=='patient'){
@@ -351,7 +360,7 @@ class PatientRequestController extends Controller
     {
         $type = $request['type'];
         $status = explode(",",$type);
-       
+
         // $status='all';
         // if ($request->has('type') && $request->type==='1'){
         //     $status='active';
@@ -382,9 +391,38 @@ class PatientRequestController extends Controller
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
+        }elseif ($status==='1'){
+            $check = PatientRequest::where('clincial_id','=',Auth::user()->id)
+                ->whereIn('status', ['1','2','3','6','7'])->count();
+            if ($check>0){
+                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                    ->where('clincial_id','=',Auth::user()->id)
+                    ->whereIn('status', ['1','2','3','6','7'])
+                    ->groupBy('parent_id')
+                    ->orderBy('id','asc')
+                    ->get();
+            }else{
+                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                    // ->where(function ($q) use ($status){
+                    //     if ($status!=='all'){
+                    //         $q->where('status','=',$status);
+                    //     }
+                    // })
+                    ->whereIn('status',$status)
+                    ->whereNotNull('parent_id')
+                    ->where(function ($q){
+                        $q->where('clincial_id','=',Auth::user()->id)
+                            ->orWhere(function ($q){
+                                $q->whereNull('clincial_id')
+                                    ->where('type_id','=',Auth::user()->designation_id);
+                            });
+                    })
+                    ->groupBy('parent_id')
+                    ->orderBy('id','asc')
+                    ->get();
+            }
         }else{
             $roles = Auth::user()->roles->pluck('id');
-
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 // ->where(function ($q) use ($status){
                 //     if ($status!=='all'){
@@ -393,16 +431,17 @@ class PatientRequestController extends Controller
                 // })
                 ->whereIn('status',$status)
                 ->whereNotNull('parent_id')
-                ->where(function ($q) use ($roles){
-                    $role = Auth::user()->roles;
-                    if ($roles[count($roles)-1]!==$role[0]->id){
-                        $q->where('type_id','=',$roles[count($roles)-1]);
-                    }
+                ->where(function ($q){
+                    $q->where('clincial_id','=',Auth::user()->id)
+                        ->orWhere(function ($q){
+                           $q->whereNull('clincial_id')
+                               ->where('type_id','=',Auth::user()->designation_id);
+                        });
                 })
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
-              
+
         }
 
 //        $referral = Referral::where('guard_name','=','partner')
@@ -610,7 +649,7 @@ class PatientRequestController extends Controller
 
     /**
      * getParentIdUsingPatientId
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\Response
      */

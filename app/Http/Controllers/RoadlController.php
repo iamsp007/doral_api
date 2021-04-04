@@ -118,25 +118,21 @@ class RoadlController extends Controller
         return $clinicians;
     }
 
-    public function calculateDistanceBetweenTwoAddresses($lat1, $lng1, $lat2, $lng2){
-        $lat1 = deg2rad($lat1);
-        $lng1 = deg2rad($lng1);
+    public function calculateDistanceBetweenTwoAddresses($lat1, $lon1, $lat2, $lon2, $unit="K"){
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
 
-        $lat2 = deg2rad($lat2);
-        $lng2 = deg2rad($lng2);
-
-        $delta_lat = $lat2 - $lat1;
-        $delta_lng = $lng2 - $lng1;
-
-        $hav_lat = (sin($delta_lat / 2))**2;
-        $hav_lng = (sin($delta_lng / 2))**2;
-
-        $distance = 2 * asin(sqrt($hav_lat + cos($lat1) * cos($lat2) * $hav_lng));
-
-        $distance = 6371*$distance;
-        // If you want calculate the distance in miles instead of kilometers, replace 6371 with 3959.
-
-        return $distance;
+        if ($unit == "K") {
+            return ($miles * 1.609344);
+        } else if ($unit == "N") {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
     }
 
     public function getRoadLProccess(Request $request,$patient_request_id){
