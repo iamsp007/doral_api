@@ -102,4 +102,12 @@ class Applicant extends Model
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
+
+    /**
+     * documents
+     */
+    public function documents()
+    {
+        return $this->hasMany(UploadDocuments::class, 'user_id', 'user_id');
+    }
 }
