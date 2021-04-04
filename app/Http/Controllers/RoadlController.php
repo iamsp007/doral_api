@@ -60,6 +60,9 @@ class RoadlController extends Controller
             if ($user){
                 $user->latitude = $request->latitude;
                 $user->longitude = $request->longitude;
+                if ($request->status==='4' || $request->status==='5'){
+                    $user->is_available = '1';
+                }
                 $user->save();
             }
             return $this->generateResponse(true,'Your Roadl Status Update Successfully!',$patientRequest,200);
