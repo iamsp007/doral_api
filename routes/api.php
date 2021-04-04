@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::get('/clear-route', function() {
+    Artisan::call('route:clear');
+    return "route is cleared";
+});
 //Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
 Route::group([
     'prefix' => 'auth'
