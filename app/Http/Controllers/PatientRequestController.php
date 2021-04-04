@@ -391,36 +391,13 @@ class PatientRequestController extends Controller
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
-        }elseif ($status==='1'){
-            $check = PatientRequest::where('clincial_id','=',Auth::user()->id)
-                ->whereIn('status', ['1','2','3','6','7'])->count();
-            if ($check>0){
-                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
-                    ->where('clincial_id','=',Auth::user()->id)
-                    ->whereIn('status', ['1','2','3','6','7'])
-                    ->groupBy('parent_id')
-                    ->orderBy('id','asc')
-                    ->get();
-            }else{
-                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
-                    // ->where(function ($q) use ($status){
-                    //     if ($status!=='all'){
-                    //         $q->where('status','=',$status);
-                    //     }
-                    // })
-                    ->whereIn('status',$status)
-                    ->whereNotNull('parent_id')
-                    ->where(function ($q){
-                        $q->where('clincial_id','=',Auth::user()->id)
-                            ->orWhere(function ($q){
-                                $q->whereNull('clincial_id')
-                                    ->where('type_id','=',Auth::user()->designation_id);
-                            });
-                    })
-                    ->groupBy('parent_id')
-                    ->orderBy('id','asc')
-                    ->get();
-            }
+        }elseif (Auth::user()->is_available==='2'){
+            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                ->where('clincial_id','=',Auth::user()->id)
+                ->whereIn('status', ['1','2','3','6','7'])
+                ->groupBy('parent_id')
+                ->orderBy('id','asc')
+                ->get();
         }else{
             $roles = Auth::user()->roles->pluck('id');
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
