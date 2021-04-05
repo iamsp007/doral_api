@@ -13,7 +13,7 @@ use App\Models\UploadDocuments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Exception;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ApplicantController extends Controller
 {
@@ -1034,7 +1034,7 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicants are not available.";
         try {
-            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->where('status','=',$status_id)->whereHas('roles', function($q) {
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents','designation'])->where('status','=',$status_id)->whereHas('roles', function($q) {
                     $q->where('name','=', 'clinician');
                 })->get();
             if (!$response) {
@@ -1056,7 +1056,7 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicant detail not available.";
         try {
-            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->findOrFail($userId);
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents','designation'])->findOrFail($userId);
             if (!$response) {
                 throw new Exception($message);
             }

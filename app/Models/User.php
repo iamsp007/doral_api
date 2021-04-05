@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'gender','dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token'
+        'first_name', 'last_name', 'gender','dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token', 'designation_id',
     ];
 
     /**
@@ -175,6 +175,11 @@ class User extends Authenticatable
         return $user;
     }
 
+    public function designation()
+    {
+        return $this->hasOne(Designation::class,'id','designation_id');
+    }
+    
     public function myRoom(){
         return $this->hasOne(VirtualRoom::class,'user_id','id');
     }
