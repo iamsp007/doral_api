@@ -23,8 +23,17 @@ class PatientEmergencyContact extends Model
         'phone1',
         'phone2',
         'address',
+        
     ];
 
+    /**
+     * The attributes that are casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'address_old' => 'array',
+    ];
     /**
      * Get the user's Date Of Birth.
      *
