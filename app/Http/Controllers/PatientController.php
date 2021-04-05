@@ -354,10 +354,10 @@ class PatientController extends Controller
                 event(new SendingSMS($smsData));
             }
             
-            return $this->generateResponse(true, 'Change Patient Status Successfully.', null, 200);
+            return $this->generateResponse(true, 'Change Status Successfully.', null, 200);
         }
 
-        return $this->generateResponse(false, 'No Patient Referral Ids Found', null, 400);
+        return $this->generateResponse(false, 'Detail not Found', null, 400);
     }
 
     public function changePatientStatus(Request $request){
