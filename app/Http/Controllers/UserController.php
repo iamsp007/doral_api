@@ -289,7 +289,7 @@ class UserController extends Controller
             $contactName = $input['contact_name'];
             $phone1 = $input['phone1'];
             $phone2 = $input['phone2'];
-            $address = $input['address'];
+            // $address = $input['address'];
             $relation = $input['relationship_name'];
             
             PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
@@ -300,7 +300,7 @@ class UserController extends Controller
                     'name' => ($contactName[$index]) ? $contactName[$index] : '',
                     'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
-                    'address_old' => ($address[$index]) ? $address[$index] : '',
+                    // 'address_old' => ($address[$index]) ? $address[$index] : '',
                     'relation' => ($relation[$index]) ? $relation[$index] : '',
                 ]);
             }
