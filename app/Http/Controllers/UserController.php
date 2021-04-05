@@ -251,46 +251,30 @@ class UserController extends Controller
     {
         $input = $request->all();
         if ($request->type==="1"){
-
+        
             User::find($input['user_id'])->update([
                 'gender' => $input['gender'],
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
                 'dob' => date('Y-m-d', strtotime($input['dob'])),
                 'phone' => $input['home_phone'],
+                'email' => $input['email'],
             ]);
-
-            CaregiverInfo::where('user_id', $input['user_id'])->update([
-                'ethnicity->Name' => $input['ethnicity'],
-                'country_of_birth' => $input['country_of_birth'],
-                'marital_status->Name' => $input['marital_status'],
-                'notification_preferences->Email' => $input['notification_preferences_email'],
-                'notification_preferences->Method->Name' => $input['method_name'],
-                'notification_preferences->MobileOrSMS' => $input['mobile_or_sms'],
-                'notification_preferences->VoiceMessage' => $input['voice_message'],
-            ]);
-        
-//            $address[] = [
-//                'Street1' =>  $input['street1'],
-//                'Street2' =>  $input['street2'],
-//                'City' =>  $input['city'],
-//                'State' =>  $input['state'],
-//                'Zip4' =>  $input['zip4'],
-//                'Zip5' =>  $input['zip5'],
-//            ];
-
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => $input['ssn'],
-                'language->Language1' => ($input['language1']) ? $input['language1'] : '',
-                'language->Language2' => ($input['language2']) ? $input['language2'] : '',
-                'language->Language3' => ($input['language3']) ? $input['language3'] : '',
-                'language->Language4' => ($input['language4']) ? $input['language4'] : '',
-                'address->Street1' => ($input['street1']) ? $input['street1'] : '',
-                'address->Street2' => ($input['street2']) ? $input['street2'] : '',
-                'address->City' => ($input['city']) ? $input['city'] : '',
-                'address->State' => ($input['state']) ? $input['state'] : '',
-                'address->Zip4' => ($input['zip4']) ? $input['zip4'] : '',
-                'address->Zip5' => ($input['zip5']) ? $input['zip5'] : '',
+                'language' => $input['language'],
+                'address->address1' => $input['address1'],
+                'address->address2' => $input['address2'],
+                'address->city' => $input['city'],
+                'address->state' => $input['state'],
+                'address->zip_code' => $input['zip_code'],
+                'ethnicity' => $input['ethnicity'],
+                'country_of_birth' => $input['country_of_birth'],
+                'marital_status' => $input['marital_status'],
+                'notification_preferences->email' => $input['notification_preferences_email'],
+                'notification_preferences->name' => $input['method_name'],
+                'notification_preferences->mobile_or_sms' => $input['mobile_or_sms'],
+                'notification_preferences->voice_message' => $input['voice_message'],
             ]);
 
             $contactName = $input['contact_name'];

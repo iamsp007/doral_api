@@ -221,7 +221,7 @@ class PatientController extends Controller
             $patientRequest->dieses=$request->dieses;
             $patientRequest->symptoms=$request->symptoms;
             $patientRequest->is_parking=$request->is_parking;
-            $patientRequest->status='active';
+            
             $patientRequest->save();
             return $this->generateResponse(true, 'Detail Update Successfully!', $patientRequest,200);
         }
