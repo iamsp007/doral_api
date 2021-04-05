@@ -262,6 +262,12 @@ class UserController extends Controller
                 'email' => $input['email'],
             ]);
 
+            if (isset($input['notification']) && !empty($input['notification'])) {
+                $notification = implode(',',$input['notification']);
+            } else {
+                $notification = '';
+            }
+
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => isset($input['ssn']) ? $input['ssn'] : '' ,
                 'language' => isset($input['language']) ? $input['language'] : '' ,
@@ -273,10 +279,11 @@ class UserController extends Controller
                 'ethnicity' => isset($input['ethnicity']) ? $input['ethnicity'] : '' ,
                 'country_of_birth' => isset($input['country_of_birth']) ? $input['country_of_birth'] : '' ,
                 'marital_status' => isset($input['marital_status']) ? $input['marital_status'] : '' ,
-                'notification_preferences->email' => isset($input['email']) ? $input['email'] : '' ,
-                'notification_preferences->method_name' => isset($input['method_name']) ? $input['method_name'] : '' ,
-                'notification_preferences->mobile_or_sms' => isset($input['mobile_or_sms']) ? $input['mobile_or_sms'] : '' ,
-                'notification_preferences->voice_message' => isset($input['voice_message']) ? $input['voice_message'] : '' ,
+                // 'notification_preferences->email' => isset($input['email']) ? $input['email'] : '' ,
+                // 'notification_preferences->method_name' => isset($input['method_name']) ? $input['method_name'] : '' ,
+                // 'notification_preferences->mobile_or_sms' => isset($input['mobile_or_sms']) ? $input['mobile_or_sms'] : '' ,
+                // 'notification_preferences->voice_message' => isset($input['voice_message']) ? $input['voice_message'] : '' ,
+                'notification' => $notification,
             ]);
 
             $contactName = $input['contact_name'];

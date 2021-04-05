@@ -21,6 +21,7 @@ class PatientEmergencyContact extends Model
         'lives_with_patient',
         'have_keys',
         'phone1',
+        'address_old',
         'phone2',
         'address',
         
@@ -32,7 +33,8 @@ class PatientEmergencyContact extends Model
      * @var array
      */
     protected $casts = [
-        'address_old' => 'array',
+        // 'address_old' => 'array',
+        'address',
     ];
     /**
      * Get the user's Date Of Birth.
