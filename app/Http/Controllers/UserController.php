@@ -310,7 +310,7 @@ class UserController extends Controller
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
                     // 'address_old' => ($address[$index]) ? $address[$index] : '',
                     'relation' => ($relation[$index]) ? $relation[$index] : '',
-                    'address' => $emergencyAddress,
+                    // 'address' => $emergencyAddress,
                 ]);
             }
 
