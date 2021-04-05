@@ -39,7 +39,7 @@ class NexmoController extends Controller
                 return $this->generateResponse($success, $message, $data, $status);
             }
 	    	$verificationStart = \Nexmo::verify()->start([
-	            'number' => '+91'.$request->phone,
+	            'number' => env('PHONE_CODE').$request->phone,
 	            'brand'  => config('nexmo.app.name'),
 	            'code_length' => 4,
 	            'lg' => 'en-us',

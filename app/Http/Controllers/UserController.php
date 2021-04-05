@@ -261,21 +261,22 @@ class UserController extends Controller
                 'phone' => $input['home_phone'],
                 'email' => $input['email'],
             ]);
+
             if(isset($input['notification']) && !empty($input['notification'])){
                 $notification = implode(',',$input['notification']);
             }
             else{
                 $notification = '';
             }
+
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => isset($input['ssn']) ? $input['ssn'] : '' ,
                 'language' => isset($input['language']) ? $input['language'] : '' ,
-                'address->address' => isset($input['address']) ? $input['address'] : '' ,
-//                'address->address1' => isset($input['address1']) ? $input['address1'] : '' ,
-//                'address->address2' => isset($input['address2']) ? $input['address2'] : '' ,
-//                'address->city' => isset($input['city']) ? $input['city'] : '' ,
-//                'address->state' => isset($input['state']) ? $input['state'] : '' ,
-//                'address->zip_code' => isset($input['zip_code']) ? $input['zip_code'] : '' ,
+                'address->address1' => isset($input['address1']) ? $input['address1'] : '' ,
+                'address->address2' => isset($input['address2']) ? $input['address2'] : '' ,
+                'address->city' => isset($input['city']) ? $input['city'] : '' ,
+                'address->state' => isset($input['state']) ? $input['state'] : '' ,
+                'address->zip_code' => isset($input['zip_code']) ? $input['zip_code'] : '' ,
                 'ethnicity' => isset($input['ethnicity']) ? $input['ethnicity'] : '' ,
                 'country_of_birth' => isset($input['country_of_birth']) ? $input['country_of_birth'] : '' ,
                 'marital_status' => isset($input['marital_status']) ? $input['marital_status'] : '' ,
@@ -301,6 +302,7 @@ class UserController extends Controller
                     'name' => ($contactName[$index]) ? $contactName[$index] : '',
                     'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
+
                     'address'=>[
                     'apt_building' => isset($input['apt_building']) ? $input['apt_building'] : '',
                     'address1' => isset($input['address1']) ? $input['address1'] : '',
@@ -309,6 +311,7 @@ class UserController extends Controller
                     'state' => isset($input['state']) ? $input['state'] : '',
                     'zip_code' => isset($input['zip_code']) ? $input['zip_code'] : '',
                         ],
+                    // 'address_old' => ($address[$index]) ? $address[$index] : '',
                     'relation' => ($relation[$index]) ? $relation[$index] : '',
                 ]);
             }

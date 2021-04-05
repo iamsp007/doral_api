@@ -1095,4 +1095,42 @@ class ApplicantController extends Controller
         }
     }
 
+    public function storeApplicantDetail(Request $request)
+    {
+        $applicant = Applicant::where('user_id', $request->user()->id)->first();
+
+        if (!$applicant) {
+            $applicant = new Applicant();
+            $applicant->user_id = $request->user()->id;
+        }
+
+        $key = $request->key;
+
+        $applicant->$key = $request->$key;
+        $applicant->phone = $request->phone ?? null;
+        $applicant->home_phone = $request->home_phone ?? null;
+        $applicant->save();
+
+        return $this->generateResponse(true, $key.' detail added.', $applicant, 200);
+    }
+
+    public function getApplicantDetails()
+    {
+        $status = false;
+        $data = [];
+        $message = "Applicant is not available.";
+        try {
+            $response = Applicant::with('documents')->where('user_id', auth()->user()->id)->first();
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "Applicant details.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
 }
