@@ -293,7 +293,7 @@ class UserController extends Controller
                     'name' => ($contactName[$index]) ? $contactName[$index] : '',
                     'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
-                    'address' => ($address[$index]) ? $address[$index] : '',
+                    'address_old' => ($address[$index]) ? $address[$index] : '',
                     'relation' => ($relation[$index]) ? $relation[$index] : '',
                 ]);
             }
