@@ -69,6 +69,7 @@ class Applicant extends Model
         'language_detail' => 'array',
         'skill_detail' => 'array',
         'emergency_detail' => 'array',
+        'payroll_details' => 'array',
     ];
 
     /**
