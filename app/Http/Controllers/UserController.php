@@ -289,11 +289,19 @@ class UserController extends Controller
             $contactName = $input['contact_name'];
             $phone1 = $input['phone1'];
             $phone2 = $input['phone2'];
-            // $address = $input['address'];
             $relation = $input['relationship_name'];
-            
-            PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
 
+            $emergencyAddress = [
+                'apt_building' => $input['emergencyAptBuilding'],
+                'address1' => $input['emergencyAddress1'],
+                'address2' => $input['emergencyAddress2'],
+                'city' => $input['emergencyAddress_city'],
+                'state' => $input['emergencyAddress_state'],
+                'zip_code' => $input['emergencyAddress_zip_code'],
+            ] ;
+
+            PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
+            
             foreach ($contactName as $index => $value) {
                 PatientEmergencyContact::create([
                     'user_id' => $input['user_id'],
@@ -302,6 +310,7 @@ class UserController extends Controller
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
                     // 'address_old' => ($address[$index]) ? $address[$index] : '',
                     'relation' => ($relation[$index]) ? $relation[$index] : '',
+                    'address' => $emergencyAddress,
                 ]);
             }
 
