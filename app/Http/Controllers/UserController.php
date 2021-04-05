@@ -291,14 +291,14 @@ class UserController extends Controller
             $phone2 = $input['phone2'];
             $relation = $input['relationship_name'];
 
-            $emergencyAddress = [
-                'apt_building' => $input['emergencyAptBuilding'],
-                'address1' => $input['emergencyAddress1'],
-                'address2' => $input['emergencyAddress2'],
-                'city' => $input['emergencyAddress_city'],
-                'state' => $input['emergencyAddress_state'],
-                'zip_code' => $input['emergencyAddress_zip_code'],
-            ] ;
+            // $emergencyAddress = [
+            //     'apt_building' => $input['emergencyAptBuilding'],
+            //     'address1' => $input['emergencyAddress1'],
+            //     'address2' => $input['emergencyAddress2'],
+            //     'city' => $input['emergencyAddress_city'],
+            //     'state' => $input['emergencyAddress_state'],
+            //     'zip_code' => $input['emergencyAddress_zip_code'],
+            // ] ;
 
             PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
             
