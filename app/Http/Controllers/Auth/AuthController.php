@@ -126,10 +126,10 @@ class AuthController extends Controller
                         throw new \ErrorException('Error in insert');
                     }
                     // BELOW FOR LOGIN
-                    $credentials = ['email' => $request['email'], 'password' => $request['password'], 'status' => '1'];
-                    if (!Auth::attempt($credentials)) {
-                        return $this->generateResponse(false, 'Email or password are incorrect!');
-                    }
+                    // $credentials = ['email' => $request['email'], 'password' => $request['password'], 'status' => '1'];
+                    // if (!Auth::attempt($credentials)) {
+                    //     return $this->generateResponse(false, 'Email or password are incorrect!');
+                    // }
                     $user->isEmailVerified = $user->email_verified_at ? true : false;
                     $user->isMobileVerified = $user->phone_verified_at ? true : false;
                     $user->isProfileVerified = $user->profile_verified_at ? true : false;
