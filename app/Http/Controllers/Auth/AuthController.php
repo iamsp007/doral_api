@@ -83,7 +83,9 @@ class AuthController extends Controller
                     $users->device_type = $request->device_type;
                 }
             }
-            $users->is_available = 1;
+            if ($users->is_available!==2){
+                $users->is_available = 1;
+            }
             $users->save();
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
@@ -104,6 +106,7 @@ class AuthController extends Controller
             $user->dob = $request->dob;
             $user->phone = $request->phone;
             $user->status = '1';
+            $user->designation_id = $request->designation_id;
             $user->assignRole($request->type)->syncPermissions(Permission::all());
             if ($user->save()) {
                 $request = $request->toArray();
@@ -174,7 +177,9 @@ class AuthController extends Controller
     {
         $users = User::find($request->user()->id);
         if ($users) {
-            $users->is_available = 0;
+//            if ($users->is_available!==2){
+//                $users->is_available = 0;
+//            }
             $users->save();
         }
         $request->user()->token()->revoke();
@@ -352,7 +357,7 @@ class AuthController extends Controller
                 return $this->generateResponse($success, $message, $data, $status);
             }
             $verificationStart = \Nexmo::verify()->start([
-                'number' => '+91'.$request->phone,
+                'number' => env('PHONE_CODE').$request->phone,
                 'brand'  => config('nexmo.app.name'),
                 'code_length' => 4,
                 'lg' => 'en-us',

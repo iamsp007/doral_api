@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 // use mikehaertl\pdftk\Pdf;
 use App\Models\CovidForm;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 use Storage;
 use PDF;
@@ -21,7 +22,8 @@ class CovidFormController extends Controller
      */
     public function index()
     {
-        $patientList = CovidForm::all();
+        $patientList = CovidForm::where('user_id', Auth::user()->id)->get();
+
         return $this->generateResponse(true, 'Covid 19 patient list', $patientList, 200);
     }
 

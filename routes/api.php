@@ -127,6 +127,7 @@ Route::group([
         Route::post('get-clinician-data', 'App\Http\Controllers\ApplicantController@getClinicianData');
         Route::get('get-clinician-detail/{id}', 'App\Http\Controllers\ApplicantController@getClinicianDetail');
 
+        Route::get('get-applicant-details', 'App\Http\Controllers\ApplicantController@getApplicantDetails');
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
         /*Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
         Route::post('applicants/step-two', 'App\Http\Controllers\ApplicantController@stepTwo');
@@ -160,6 +161,8 @@ Route::group([
         Route::post('document-verification', 'App\Http\Controllers\ApplicantController@documentVerification');
         Route::get('get-documents', 'App\Http\Controllers\ApplicantController@getDocuments');
         Route::post('remove-documents', 'App\Http\Controllers\ApplicantController@removeDocument');
+        Route::post('store-applicant-detail', 'App\Http\Controllers\ApplicantController@storeApplicantDetail');
+
         Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
     });
 });
