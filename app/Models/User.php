@@ -93,7 +93,7 @@ class User extends Authenticatable
         if (isset($this->image) && !empty($this->image)) {
             return env('WEB_URL').'assets/img/user/'. $this->image;
         } else {
-            return env('WEB_URL').'assets/img/user/01.png';
+            return env('WEB_URL').'assets/img/user/avatar.jpg';
         }
     }
 
