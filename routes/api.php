@@ -284,3 +284,4 @@ Route::post('/lab-report/store', 'App\Http\Controllers\PatientLabReportControlle
 Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportController@addNote')->name('lab-report-note.store');
 
 Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@index');
+Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');

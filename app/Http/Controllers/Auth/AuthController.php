@@ -104,6 +104,7 @@ class AuthController extends Controller
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
             $user->dob = dateFormat($request->dob);
+            $user->gender = setGender($request->gender);
             $user->phone = $request->phone;
             // $user->status = '1';
             $user->designation_id = $request->designation_id;

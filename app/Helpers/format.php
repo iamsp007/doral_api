@@ -81,9 +81,9 @@ use Illuminate\Support\Facades\Hash;
     if (!function_exists('setGender')) {
         function setGender($value)
         {
-            if ($value === 'Male' || $value === 'MALE') {
+            if ($value === 'Male' || $value === 'MALE' || $value == '1') {
                 $genderData = 1;
-            } else if ($value === 'Female' || $value === 'FEMALE') {
+            } else if ($value === 'Female' || $value === 'FEMALE' || $value == '2') {
                 $genderData = 2;
             } else {
                 $genderData = 3;
