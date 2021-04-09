@@ -50,6 +50,7 @@ class Applicant extends Model
         'emergency_address',
         'emergency_phone',
         'emergency_relationship',
+        'signature'
     ];
 
     /**

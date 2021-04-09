@@ -14,7 +14,10 @@ class ClinicianController extends Controller
         $uploadFolder = 'signature/'.$user_id;
 
         $applicant = Applicant::where('user_id', $user_id)->first();
-
+        if (! $applicant) {
+            return $this->generateResponse(false, 'Record not found', null);
+        }
+        
         if ($request->file('signature')) {
             $signature = $request->file('signature');
             $signaturePath = $signature->store($uploadFolder, 'public');
@@ -24,7 +27,7 @@ class ClinicianController extends Controller
             
         }
         if ($applicant->save()) {
-            return $this->generateResponse(true, 'Applicant data!', $applicant->signature_url);
+            return $this->generateResponse(true, 'Signature added successfully!', $applicant->signature_url);
         }
 
         return $this->generateResponse(false, 'Something went wrong', null);
