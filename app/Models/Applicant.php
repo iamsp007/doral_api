@@ -72,7 +72,7 @@ class Applicant extends Model
         'payroll_details' => 'array',
     ];
 
-    protected $appends = ['signature_url'];
+    protected $appends = ['signature_url','is_signature_added'];
 
     /**
      * Relation with referances
@@ -127,5 +127,19 @@ class Applicant extends Model
         
         return null;
         
+    }
+
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getIsSignatureAddedAttribute()
+    {
+        if (isset($this->signature) && !empty($this->signature)) {
+            return true;
+        }
+        
+        return false;
     }
 }
