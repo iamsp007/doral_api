@@ -165,6 +165,8 @@ Route::group([
 
         Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
         Route::post('clinician/store-signatures', 'App\Http\Controllers\ClinicianController@storeSignatures');
+
+        Route::post('user_update', 'App\Http\Controllers\ClinicianController@userUpdate');
     });
 });
 
