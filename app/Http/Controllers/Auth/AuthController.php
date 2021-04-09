@@ -104,6 +104,7 @@ class AuthController extends Controller
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
             $user->dob = dateFormat($request->dob);
+            $user->gender = setGender($request->gender);
             $user->phone = $request->phone;
             // $user->status = '1';
             $user->designation_id = $request->designation_id;
@@ -241,7 +242,7 @@ class AuthController extends Controller
         $input = $request->all();
         $data = array();
         $rules = array(
-            'old_password' => 'required',
+            // 'old_password' => 'required',
             'new_password' => 'required|min:6',
             'confirm_password' => 'required|same:new_password',
         );
@@ -256,10 +257,11 @@ class AuthController extends Controller
                     throw new Exception("Email not match with database");
                 }
                 $userid = $user->id;
-                if ((Hash::check(request('old_password'), $user->password)) == false) {
-                    $message = "Check your old password.";
-                    return $this->generateResponse(false, $message, $data);
-                } else if ((Hash::check(request('new_password'), $user->password)) == true) {
+                // if ((Hash::check(request('old_password'), $user->password)) == false) {
+                //     $message = "Check your old password.";
+                //     return $this->generateResponse(false, $message, $data);
+                // } else 
+                if ((Hash::check(request('new_password'), $user->password)) == true) {
                     $message = "Please enter a password which is not similar then current password.";
                     return $this->generateResponse(false, $message, $data);
                 } else {
