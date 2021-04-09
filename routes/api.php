@@ -164,6 +164,7 @@ Route::group([
         Route::post('store-applicant-detail', 'App\Http\Controllers\ApplicantController@storeApplicantDetail');
 
         Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
+        Route::post('clinician/store-signatures', 'App\Http\Controllers\ClinicianController@storeSignatures');
     });
 });
 
@@ -225,6 +226,8 @@ Route::group([
 
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
+
+   
 });
 
 // Co Ordinator
