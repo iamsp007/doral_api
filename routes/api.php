@@ -269,6 +269,7 @@ Route::group([
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
     Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
     Route::post('get-parent-id-using-patient-id', 'App\Http\Controllers\PatientRequestController@getParentIdUsingPatientId');
+    Route::post('send-address-notification', 'App\Http\Controllers\NotificationController@store');
 });
 
 // Get List of Medicines.
