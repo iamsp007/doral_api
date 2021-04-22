@@ -164,6 +164,9 @@ Route::group([
         Route::post('store-applicant-detail', 'App\Http\Controllers\ApplicantController@storeApplicantDetail');
 
         Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
+        Route::post('clinician/store-signatures', 'App\Http\Controllers\ClinicianController@storeSignatures');
+
+        Route::post('user_update', 'App\Http\Controllers\ClinicianController@userUpdate');
     });
 });
 
@@ -225,6 +228,8 @@ Route::group([
 
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
+
+   
 });
 
 // Co Ordinator
@@ -264,6 +269,7 @@ Route::group([
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
     Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
     Route::post('get-parent-id-using-patient-id', 'App\Http\Controllers\PatientRequestController@getParentIdUsingPatientId');
+    Route::post('send-address-notification', 'App\Http\Controllers\NotificationController@store');
 });
 
 // Get List of Medicines.
@@ -285,3 +291,4 @@ Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportCont
 
 Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@index');
 Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
+Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
