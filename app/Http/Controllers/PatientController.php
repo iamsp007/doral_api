@@ -476,5 +476,13 @@ Default Password : Patient@doral',
         return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }
 
-
+    public function calendarAppoimentListData(){
+            // patient referral pending status patient list
+            return $appointmentList = Appointment::select(DB::raw('count(*) as total'),DB::raw('DATE_FORMAT(start_datetime, "%Y-%m-%d") as start_datetime'),DB::raw('DATE_FORMAT(end_datetime, "%Y-%m-%d") as end_datetime'))->with(['bookedDetails' => function ($q) {
+                    }])
+                ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
+                ->groupby('start_datetime','end_datetime')
+                ->orderBy('start_datetime','asc')
+                ->get()->toArray();
+        }
 }
