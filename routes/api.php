@@ -171,7 +171,8 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['auth:api','role:patient|clinician'],
+    'middleware' => ['auth:api'],
+//    'middleware' => ['auth:api','role:patient|clinician'],
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
