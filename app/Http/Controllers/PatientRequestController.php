@@ -111,32 +111,45 @@ class PatientRequestController extends Controller
                 $patientSecond->save();
                 $parent_id=$patientRequest->id;
             }
+            // If assign clinician
+            $checkAssignId = '';
+            if($request->clinician_list_id !='' && $request->clinician_list_id !=0) {
+                $checkAssignId = $request->clinician_list_id;
+            }
+            if($checkAssignId == '') {
+                $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
+                $markers = collect($clinicianIds)->map(function($item) use ($request){
+                    $roadlController = new RoadlController();
+                    $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
+                    return $item;
+                })
+                // ->where('distance','<=',20)
+                    ->pluck('id');
+                $clinicianList = User::whereIn('id',$markers)->get();
+                // $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
 
-            $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
-
-            $markers = collect($clinicianIds)->map(function($item) use ($request){
-                $roadlController = new RoadlController();
-                $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
-                return $item;
-            })
-//                 ->where('distance','<=',20)
-                ->pluck('id');
-            $clinicianList = User::whereIn('id',$markers)->get();
-//            $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
-
-            $data=PatientRequest::with('detail')
-                ->where('id','=',$patientSecond->id)
-                ->first();
-            event(new SendClinicianPatientRequestNotification($data,$clinicianList));
-            return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
-//             if ($request->has('type')){
-//                 foreach ($request->type as $value) {
-//                     $response = $this->createPatientRequest($request,$value);
-//                 }
-//             }else{
-//                 $response = $this->createPatientRequest($request);
-//             }
-//            return $response;
+                $data=PatientRequest::with('detail')
+                    ->where('id','=',$patientSecond->id)
+                    ->first();
+                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+                return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
+                // if ($request->has('type')){
+                // foreach ($request->type as $value) {
+                // $response = $this->createPatientRequest($request,$value);
+                // }
+                // }else{
+                // $response = $this->createPatientRequest($request);
+                // }
+                // return $response;
+            }else {
+                $clinicianList = User::where('id',$checkAssignId)->get();
+                $data=PatientRequest::with('detail')
+                    ->where('id','=',$patientSecond->id)
+                    ->first();
+                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+                return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
+            }
+            
         }catch (Exception $exception){
             return $this->generateResponse(false,$exception->getMessage());
         }
