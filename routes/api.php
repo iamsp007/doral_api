@@ -171,7 +171,8 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['auth:api','role:patient|clinician'],
+    'middleware' => ['auth:api'],
+//    'middleware' => ['auth:api','role:patient|clinician'],
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
@@ -268,6 +269,7 @@ Route::group([
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
     Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
+    Route::get('clinician-list', 'App\Http\Controllers\PatientRequestController@getClinicianList');
     Route::post('get-parent-id-using-patient-id', 'App\Http\Controllers\PatientRequestController@getParentIdUsingPatientId');
     Route::post('send-address-notification', 'App\Http\Controllers\NotificationController@store');
 });
