@@ -94,8 +94,11 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                 $user->dob = dateFormat($row['date_of_birth']);
                 $user->email = isset($row['email']) ? $row['email'] : '';
                 $user->password = setPassword($password);
+
+
                 $user->save();
 
+                $user->assignRole('patient')->syncPermissions(Permission::all());
                 $address = [
                     'apt_building' => $row['apt_building'],
                     'address1' => $row['address1'],

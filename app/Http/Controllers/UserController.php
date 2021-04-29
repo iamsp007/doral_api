@@ -290,7 +290,7 @@ class UserController extends Controller
             $phone1 = $input['phone1'];
             $phone2 = $input['phone2'];
             $relation = $input['relationship_name'];
-
+            $address = $input['address'];
             // $emergencyAddress = [
             //     'apt_building' => $input['emergencyAptBuilding'],
             //     'address1' => $input['emergencyAddress1'],
@@ -309,15 +309,15 @@ class UserController extends Controller
                     'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
                    'relation' => ($relation[$index]) ? $relation[$index] : '',
-                    'address' => [
-                    'apt_building' => $input['emergencyAptBuilding'],
-                    'address1' => $input['emergencyAddress1'],
-                    'address2' => $input['emergencyAddress2'],
-                    'city' => $input['emergencyAddress_city'],
-                    'state' => $input['emergencyAddress_state'],
-                    'zip_code' => $input['emergencyAddress_zip_code'],
-                    ],
-                    // 'address_old' => ($address[$index]) ? $address[$index] : '',
+                    // 'address' => [
+                    // 'apt_building' => $input['emergencyAptBuilding'],
+                    // 'address1' => $input['emergencyAddress1'],
+                    // 'address2' => $input['emergencyAddress2'],
+                    // 'city' => $input['emergencyAddress_city'],
+                    // 'state' => $input['emergencyAddress_state'],
+                    // 'zip_code' => $input['emergencyAddress_zip_code'],
+                    // ],
+                    'address_old' => ($address[$index]) ? $address[$index] : '',
                     // 'address' => $emergencyAddress,
                 ]);
             }
