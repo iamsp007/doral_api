@@ -50,12 +50,13 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
     public $file_name = null;
     private $row = 0;
 
-    public function __construct($rid, $sid, $ftype, $fid,$file_name) {
+    public function __construct($rid, $sid, $ftype, $fid,$file_name, $company_id) {
        $this->referral_id = $rid;
        $this->service_id = $sid;
        $this->file_type = $ftype;
        $this->form_id = $fid;
        $this->file_name = $file_name;
+       $this->company_id = $company_id;
     }
 
     public function model(array $row)
@@ -70,7 +71,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                 $dob = date('Y-m-d', strtotime($row['dob']));
             }
             
-            \Log::info('covid-19 start');
+            \Log::info('covid-19 start: '.$this->file_type);
             
             if ($this->file_type === '6') {
                 $ssn = str_replace("-","",$row['ssn']);
@@ -108,13 +109,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                     'zip_code' => $row['zip_code'],
                 ];
                 
-                // if(Auth::guard('referral')) {
-                //     $company_id = Auth::guard('referral')->user()->id;
-                    $demographicModel->company_id = '9';
-                    
-                    // \Log::info(Auth::guard('referral'));
-                // }
-
+                $demographicModel->company_id =  $this->company_id;
                 $demographicModel->user_id = $user->id;
                 $demographicModel->service_id = '6';
                 $demographicModel->ssn = setSsn($row['ssn']);
@@ -127,13 +122,21 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
             }
             \Log::info('covid-19 end');
             
+            \Log::info('due report start');
             if (isset($row['caregiver_code']) && isset($row['compliance_item'])) {
-                $userCaregiver = CaregiverInfo::where('caregiver_code' , $row['caregiver_code'])->first();
+                $userCaregiver = Demographic::where('patient_id' , $row['caregiver_code'])->first();
               
                 if ($userCaregiver) {
                     $patientLabReport = new PatientLabReport();
-                    
-                    $labReportType = LabReportType::where('name', $row['compliance_item'])->whereNotNull('parent_id')->first();
+
+                    $labReportType = LabReportType::firstOrNew(['name' =>  $row['compliance_item']]);
+
+                    if (! $labReportType->exists) {
+                        $labReportType->status = '1';
+                        $labReportType->sequence = '1';
+
+                        $labReportType->save();
+                    } 
 
                     $patientLabReport->lab_report_type_id = $labReportType->id;
                     $patientLabReport->patient_referral_id = $userCaregiver->user_id;
@@ -149,7 +152,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                     $patientLabReport->save();
                 }
             }
-          
+            \Log::info('due report end');
             // if ((isset($row['ssn']) && !empty($row['ssn'])) && (!empty($dob))) {
             //     $patient = PatientReferral::where(['ssn'=>$row['ssn']])->first();
 
