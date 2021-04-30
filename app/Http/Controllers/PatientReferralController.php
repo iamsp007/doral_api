@@ -12,8 +12,10 @@ use Spatie\Permission\Models\Permission;
 use Excel;
 use App\Imports\BulkImport;
 use App\Imports\BulkCertImport;
+use App\Jobs\PatientImportSheet;
 use App\Models\PatientAssistant;
 use App\Models\FailRecodeImport;
+use Illuminate\Support\Facades\Auth;
 
 class PatientReferralController extends Controller
 {
@@ -99,8 +101,13 @@ class PatientReferralController extends Controller
 
                 $filePath = storage_path('app/' . $path);
 
-                $import = new BulkImport($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt);
-                $import->Import($request->file('file_name'));
+                // $import = new BulkImport($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt);
+                $company_id = '';
+                if(Auth::guard('referral')) {
+                    $company_id = Auth::guard('referral')->user()->id;
+                }
+                $import = PatientImportSheet::dispatch($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt, $filePath, $company_id);
+               
 
                 return $this->generateResponse(true, 'CSV Uploaded successfully', $import, 200);
             }
