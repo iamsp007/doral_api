@@ -43,7 +43,7 @@ class PatientLabReportController extends Controller
         $input = $request->all();
         $patientLabReport = new PatientLabReport();
         $patientLabReport->lab_report_type_id = $input['lab_report_type_id'];
-        $patientLabReport->patient_referral_id = $input['patient_referral_id'];
+        $patientLabReport->user_id = $input['patient_referral_id'];
         if (isset($input['lab_perform_date'])) {
             $patientLabReport->perform_date = date('Y-m-d', strtotime($input['lab_perform_date']));
         }

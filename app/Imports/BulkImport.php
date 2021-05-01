@@ -124,10 +124,11 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
             
             \Log::info('due report start');
             if (isset($row['caregiver_code']) && isset($row['compliance_item'])) {
-                $userCaregiver = Demographic::where('patient_id' , $row['caregiver_code'])->first();
+                $caregiver_code = str_replace("HSC-", "",$row['caregiver_code']);
+                $userCaregiver = Demographic::where('caregiver_code', $caregiver_code)->first();
               
                 if ($userCaregiver) {
-                    $patientLabReport = new PatientLabReport();
+                    
 
                     $labReportType = LabReportType::firstOrNew(['name' =>  $row['compliance_item']]);
 
@@ -138,18 +139,28 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                         $labReportType->save();
                     } 
 
-                    $patientLabReport->lab_report_type_id = $labReportType->id;
-                    $patientLabReport->patient_referral_id = $userCaregiver->user_id;
-                    if (isset($row['lab_perform_date'])) {
-                        $patientLabReport->perform_date = date('Y-m-d', strtotime($row['lab_perform_date']));
+                    $patientLabReport = PatientLabReport::firstOrNew([
+                        'user_id' =>  $row['$userCaregiver->user_id'],
+                        'lab_report_type_id' => $labReportType->id
+                    ]);
+
+                    if ($patientLabReport->exists) {
+                        if ($patientLabReport->due_date > date('Y-m-d', strtotime($row['compliance_due_date']))) {
+                            if (isset($row['lab_perform_date'])) {
+                                $patientLabReport->perform_date = date('Y-m-d', strtotime($row['lab_perform_date']));
+                            }
+                            
+                            $patientLabReport->expiry_date = date('Y-m-d', strtotime($row['compliance_due_date']));
+                            $patientLabReport->perform_date = date('Y-m-d', strtotime($row['compliance_completion_date']));
+        
+                            $patientLabReport->result = $row['compliance_result'];
+        
+                            $patientLabReport->save();
+                        }
                     }
-                    $patientLabReport->due_date = date('Y-m-d', strtotime($row['compliance_due_date']));
-                    $patientLabReport->expiry_date = date('Y-m-d', strtotime($row['compliance_due_date']));
-                    $patientLabReport->perform_date = date('Y-m-d', strtotime($row['compliance_completion_date']));
 
-                    $patientLabReport->result = $row['compliance_result'];
-
-                    $patientLabReport->save();
+                    
+                
                 }
             }
             \Log::info('due report end');

@@ -16,7 +16,7 @@ class PatientLabReport extends Model
      */
     protected $fillable = [
         'lab_report_type_id',
-        'patient_referral_id',
+        'user_id',
         'due_date',
         'perform_date',
         'expiry_date',
