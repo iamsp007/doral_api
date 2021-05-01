@@ -102,11 +102,11 @@ class PatientReferralController extends Controller
                 $filePath = storage_path('app/' . $path);
 
                 // $import = new BulkImport($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt);
-                $company_id = '';
-                if(Auth::guard('referral')) {
-                    $company_id = Auth::guard('referral')->user()->id;
-                }
-                $import = PatientImportSheet::dispatch($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt, $filePath, $company_id);
+                $company_id = 9;
+                // if(Auth::guard('referral')) {
+                //     $company_id = Auth::guard('referral')->user()->id;
+                // }
+                $import = PatientImportSheet::dispatch($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt, $filePath);
                
 
                 return $this->generateResponse(true, 'CSV Uploaded successfully', $import, 200);
