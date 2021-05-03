@@ -146,7 +146,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
                     $patientLabReport = PatientLabReport::where([['user_id', '=', $userCaregiver->user_id],['lab_report_type_id', '=',$labReportTypeID]])->first();
                  
                     if ($patientLabReport) {
-                        if ($patientLabReport->due_date > date('Y-m-d', strtotime($row['compliance_due_date']))) {
+                        if ($patientLabReport->due_date < date('Y-m-d', strtotime($row['compliance_due_date']))) {
                             PatientLabReport::find($patientLabReport->id)->update([
                                 'due_date' => date('Y-m-d', strtotime($row['compliance_due_date'])),
                                 'perform_date' => date('Y-m-d', strtotime($row['compliance_completion_date'])),
