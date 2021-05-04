@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPdfPathToCovidFormTable extends Migration
+class CreateCalendarCategoryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class AddPdfPathToCovidFormTable extends Migration
      */
     public function up()
     {
-        Schema::table('covid_forms', function (Blueprint $table) {
-            $table->string('pdf_file')->after('vaccination_sign')->nullable();
+        Schema::create('calendar_category', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('parent_id');
+            $table->tinyInteger('status')->default('1');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AddPdfPathToCovidFormTable extends Migration
      */
     public function down()
     {
-        Schema::table('covid_forms', function (Blueprint $table) {
-            $table->dropColumn('pdf_file');
-        });
+        Schema::dropIfExists('calendar_category');
     }
 }

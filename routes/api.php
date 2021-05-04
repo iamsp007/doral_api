@@ -292,3 +292,4 @@ Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportCont
 Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@index');
 Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
 Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
+Route::get('/calendarCategory', 'App\Http\Controllers\PatientController@calendarCategory');

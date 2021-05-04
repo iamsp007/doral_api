@@ -10,6 +10,7 @@ use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
 use App\Models\User;
+use App\Models\CalendarCategory;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -485,4 +486,9 @@ Default Password : Patient@doral',
                 ->orderBy('start_datetime','asc')
                 ->get()->toArray();
         }
+        
+    public function calendarCategory(){
+            // patient referral pending status patient list
+            return $calendarCategory = CalendarCategory::all();
+        }    
 }
