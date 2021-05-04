@@ -89,7 +89,7 @@ class PatientRequest extends FormRequest
             'type_id'=>'required',
             'latitude'=>'required',
             'longitude'=>'required',
-            'reason'=>'required',
+            // 'clinician_list_id'=>'required',
         ];
     }
 
