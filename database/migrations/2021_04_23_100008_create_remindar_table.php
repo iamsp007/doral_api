@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEmployeePhysicalExaminationReportsTable extends Migration
+class CreateRemindarTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,15 @@ class CreateEmployeePhysicalExaminationReportsTable extends Migration
      */
     public function up()
     {
-        Schema::create('employee_physical_examination_reports', function (Blueprint $table) {
+        Schema::create('remindar', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->index('patient_id');
-            $table->json('report_details');
+            $table->integer('user_id');
+            $table->string('title');
+            $table->integer('cat_id');
+            $table->integer('sub_cat_id');
+            $table->date('startdate');
+            $table->string('start_end_time');
+            $table->text('notes');
             $table->timestamps();
         });
     }
@@ -28,6 +33,6 @@ class CreateEmployeePhysicalExaminationReportsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employee_physical_examination_reports');
+        Schema::dropIfExists('remindar');
     }
 }
