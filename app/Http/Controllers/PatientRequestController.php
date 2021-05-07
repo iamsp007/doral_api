@@ -373,7 +373,7 @@ class PatientRequestController extends Controller
     {
         $type = $request['type'];
         $status = explode(",",$type);
-
+        
         // $status='all';
         // if ($request->has('type') && $request->type==='1'){
         //     $status='active';
@@ -404,6 +404,7 @@ class PatientRequestController extends Controller
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
+               
         }elseif (Auth::user()->is_available==='2'){
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 ->where('clincial_id','=',Auth::user()->id)
@@ -411,8 +412,10 @@ class PatientRequestController extends Controller
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
-        }else{
+        } else {
+            
             $roles = Auth::user()->roles->pluck('id');
+           
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 // ->where(function ($q) use ($status){
                 //     if ($status!=='all'){
@@ -421,16 +424,18 @@ class PatientRequestController extends Controller
                 // })
                 ->whereIn('status',$status)
                 ->whereNotNull('parent_id')
-                ->where(function ($q){
-                    $q->where('clincial_id','=',Auth::user()->id)
-                        ->orWhere(function ($q){
-                           $q->whereNull('clincial_id')
-                               ->where('type_id','=',Auth::user()->designation_id);
-                        });
-                })
+                // ->where(function ($q){
+                //     $q->where('clincial_id','=',Auth::user()->id)
+                //         ->orWhere(function ($q){
+                //            $q->whereNull('clincial_id')
+                //                ->where('type_id','=',Auth::user()->designation_id);
+                //         });
+                // })
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
+
+                // dd($patientRequestList);
 
         }
 
