@@ -81,7 +81,10 @@ class PatientRequestController extends Controller
                 if($request->has('is_parking')){
                     $patientSecond->is_parking=$request->is_parking;
                 }
-
+                \Log::info('clinician_id'.$request->clinician_list_id);
+                if(isset($request->clinician_list_id) && $request->clinician_list_id !='' && $request->clinician_list_id !=0) {
+                    $patientSecond->clincial_id = $request->clinician_list_id;
+                }
                 $patientSecond->parent_id = $patient->id;
 
                 $patientSecond->save();
@@ -107,7 +110,12 @@ class PatientRequestController extends Controller
                     $patientSecond->is_parking=$request->is_parking;
                 }
                 $patientSecond->parent_id = $patientRequest->id;
-
+                \Log::info('clinician_id'.$request->clinician_list_id);
+                
+                if(isset($request->clinician_list_id) && $request->clinician_list_id !='' && $request->clinician_list_id !=0) {
+                    $patientSecond->clincial_id = $request->clinician_list_id;
+                }
+            
                 $patientSecond->save();
                 $parent_id=$patientRequest->id;
             }
@@ -424,7 +432,7 @@ class PatientRequestController extends Controller
         } else {
             
             $roles = Auth::user()->roles->pluck('id');
-           
+     
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 // ->where(function ($q) use ($status){
                 //     if ($status!=='all'){
