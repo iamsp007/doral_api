@@ -81,7 +81,7 @@ class PatientRequestController extends Controller
                 if($request->has('is_parking')){
                     $patientSecond->is_parking=$request->is_parking;
                 }
-                \Log::info('clinician_id'.$request->clinician_list_id);
+              
                 if(isset($request->clinician_list_id) && $request->clinician_list_id !='' && $request->clinician_list_id !=0) {
                     $patientSecond->clincial_id = $request->clinician_list_id;
                 }
@@ -110,8 +110,7 @@ class PatientRequestController extends Controller
                     $patientSecond->is_parking=$request->is_parking;
                 }
                 $patientSecond->parent_id = $patientRequest->id;
-                \Log::info('clinician_id'.$request->clinician_list_id);
-                
+                             
                 if(isset($request->clinician_list_id) && $request->clinician_list_id !='' && $request->clinician_list_id !=0) {
                     $patientSecond->clincial_id = $request->clinician_list_id;
                 }
