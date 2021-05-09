@@ -295,44 +295,11 @@ class RoadlController extends Controller
             });
 
             $patient = $patientRequest->map(function ( $lookup ) {
-                if ($lookup->patient->demographic && isset($lookup->patient->demographic->address)){
-                    $addresses=$lookup->patient->demographic->address;
-                    $address='';
-                    if (isset($addresses['address1'])){
-                        $address.=$addresses['address1'];
-                    }
-                    if (isset($addresses['address2'])){
-                        $address.=$addresses['address2'];
-                    }
-                    if (isset($addresses['city'])){
-                        $address.=','.$addresses['city'];
-                    }
-                    if (isset($addresses['state'])){
-                        $address.=','.$addresses['state'];
-                    }
-                    if (isset($addresses['country'])){
-                        $address.=','.$addresses['country'];
-                    }
-                    if (isset($addresses['zip'])){
-                        $address.=','.$addresses['zip'];
-                    }
-                    $helper = new Helper();
-                    $response = $helper->getLatLngFromAddress($address);
-                    if ($response->status==='REQUEST_DENIED'){
-                        $latitude=$lookup->patient->latitude;
-                        $longitude=$lookup->patient->longitude;
-                    }else{
-                        $latitude=$response->results[0]->geometry->location->lat;
-                        $longitude=$response->results[0]->geometry->location->lng;
-                    }
-                } else {
-                    $latitude=$lookup->patient->latitude;
-                    $longitude=$lookup->patient->longitude;
-                }
+                
                 return [
                     'id' => isset($lookup->patient->id) ? $lookup->patient->id : null,
-                    'latitude' => isset($latitude) ? $latitude : null,
-                    'longitude' => isset($longitude) ? $longitude : null,
+                    'latitude' => $lookup->latitude,
+                    'longitude' => $lookup->longitude,
                     'first_name' => isset($lookup->patient->first_name) ? $lookup->patient->first_name : null,
                     'last_name' => isset($lookup->patient->last_name) ? $lookup->patient->last_name : null,
                 ];
