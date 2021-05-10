@@ -194,6 +194,7 @@ Route::group([
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
+    Route::post('update-patient-request-status', 'App\Http\Controllers\PatientRequestController@updatePatientRequeststatus');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
     Route::post('get-roadl-proccess-new', 'App\Http\Controllers\RoadlController@getRoadLProccessNew');
