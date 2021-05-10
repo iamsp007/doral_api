@@ -455,6 +455,7 @@ class PatientRequestController extends Controller
 
         }
 
+       
 //        $referral = Referral::where('guard_name','=','partner')
 //            ->whereIn('name',Auth::user()->roles->pluck('name'))
 //            ->pluck('name');
@@ -679,6 +680,26 @@ class PatientRequestController extends Controller
                 ->first();
 
             return $this->generateResponse(true, 'Fetched parent id', $parent, 200);
+        } catch (\Exception $ex) {
+            return $this->generateResponse(false, $ex->getMessage());
+        }
+    }
+
+    public function updatePatientRequeststatus(Request $request)
+    {
+        try {
+            PatientRequest::find($request['patient_request_id'])->update([
+                'status' => '4'
+            ]);
+
+            $patientRequest = PatientRequest::where([['parent_id', $request['parent_id']],['status', '!=', 4]])->get();
+            if(count($patientRequest) == 0) {
+                PatientRequest::find($request['parent_id'])->update([
+                    'status' => '4'
+                ]);
+            };
+        
+            return $this->generateResponse(true, 'Status complated successfully', null, 200);
         } catch (\Exception $ex) {
             return $this->generateResponse(false, $ex->getMessage());
         }
