@@ -124,7 +124,16 @@ class PatientRequestController extends Controller
                 $checkAssignId = $request->clinician_list_id;
             }
             if($checkAssignId == '') {
-                $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
+                if($request->type_id == 4) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q){
+                        $q->where('name','=','clinician');
+                    })
+                    ->where('is_available','=','1')->get();
+                            
+                }else {
+                   $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get(); 
+                }
                 $markers = collect($clinicianIds)->map(function($item) use ($request){
                     $roadlController = new RoadlController();
                     $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
