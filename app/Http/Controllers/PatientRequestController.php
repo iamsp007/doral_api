@@ -450,9 +450,6 @@ class PatientRequestController extends Controller
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
-
-                // dd($patientRequestList);
-
         }
 
        
