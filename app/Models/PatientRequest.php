@@ -25,6 +25,7 @@ class PatientRequest extends Model
         'longitude',
         'reason',
         'status',
+        'preparation_time',
     ];
 
     public function detail(){
