@@ -701,4 +701,17 @@ class PatientRequestController extends Controller
             return $this->generateResponse(false, $ex->getMessage());
         }
     }
+
+    public function updatePreperationTime(Request $request)
+    {
+        try {
+            PatientRequest::find($request['patient_request_id'])->update([
+                'preparation_time' => $request['preparation_time']
+            ]);
+
+            return $this->generateResponse(true, 'Preparation time updated successfully', null, 200);
+        } catch (\Exception $ex) {
+            return $this->generateResponse(false, $ex->getMessage());
+        }
+    }
 }
