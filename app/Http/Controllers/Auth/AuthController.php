@@ -51,11 +51,12 @@ class AuthController extends Controller
                 $field = 'phone';
             }
             //$credentials = [$field => $username, 'password' => $password];
-            $credentials = [$field => $username, 'password' => $password];
-            // print_r($credentials);die;
-            if (!Auth::attempt($credentials)) {
-                return $this->generateResponse(false, $field . ' or password are incorrect!', null);
+            $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
+            
+            if (! Auth::attempt($credentials)) {
+                return $this->generateResponse(false, $field . 'Email or password are incorrect!', null);
             }
+
             $user = $request->user();
             $user->isEmailVerified = $user->email_verified_at ? true : false;
             $user->isMobileVerified = $user->phone_verified_at ? true : false;
