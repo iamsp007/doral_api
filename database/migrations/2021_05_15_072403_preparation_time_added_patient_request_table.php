@@ -15,6 +15,7 @@ class PreparationTimeAddedPatientRequestTable extends Migration
     {
         Schema::table('patient_requests', function (Blueprint $table) {
             $table->time("preparation_time")->nullable();
+            $table->date("preparasion_date")->nullable();
         });
     }
 

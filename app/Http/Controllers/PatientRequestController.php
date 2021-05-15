@@ -706,7 +706,8 @@ class PatientRequestController extends Controller
     {
         try {
             PatientRequest::find($request['patient_request_id'])->update([
-                'preparation_time' => $request['preparation_time']
+                'preparation_time' => $request['preparation_time'],
+                'preparasion_date' => dateFormat($request['preparasion_date'])
             ]);
 
             return $this->generateResponse(true, 'Preparation time updated successfully', null, 200);
