@@ -189,7 +189,7 @@ Route::group([
 
 // clincian API
 Route::group([
-    'middleware' => ['auth:api','role:clinician|co-ordinator|patient'],
+    'middleware' => ['auth:api','role:clinician|co-ordinator|patient|lab|LAB'],
 ], function () {
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
