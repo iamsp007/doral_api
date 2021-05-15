@@ -704,10 +704,11 @@ class PatientRequestController extends Controller
 
     public function updatePreperationTime(Request $request)
     {
+        // dd($request->all());
         try {
             PatientRequest::find($request['patient_request_id'])->update([
                 'preparation_time' => $request['preparation_time'],
-                'preparasion_date' => dateFormat($request['preparasion_date'])
+                'preparasion_date' => $request['preparasion_date']
             ]);
 
             return $this->generateResponse(true, 'Preparation time updated successfully', null, 200);
