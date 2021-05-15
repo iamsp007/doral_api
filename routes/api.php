@@ -189,12 +189,13 @@ Route::group([
 
 // clincian API
 Route::group([
-    'middleware' => ['auth:api','role:clinician|co-ordinator|patient|lab|LAB'],
+    'middleware' => ['auth:api','role:clinician|co-ordinator|patient|LAB|Radiology|CHHA|Home Oxygen|Home Influsion|Wound Care|DME'],
 ], function () {
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
     Route::post('update-patient-request-status', 'App\Http\Controllers\PatientRequestController@updatePatientRequeststatus');
+    Route::post('update-preparation-time', 'App\Http\Controllers\PatientRequestController@updatePreperationTime');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
     Route::post('get-roadl-proccess-new', 'App\Http\Controllers\RoadlController@getRoadLProccessNew');
