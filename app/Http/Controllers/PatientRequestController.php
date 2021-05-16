@@ -389,24 +389,34 @@ class PatientRequestController extends Controller
     {
         $type = $request['type'];
         $status = explode(",",$type);
-        
-        // $status='all';
-        // if ($request->has('type') && $request->type==='1'){
-        //     $status='active';
-        // }elseif ($request->has('type') && $request->type==='2'){
-        //     $status='accept';
-        // }elseif ($request->has('type') && $request->type==='3'){
-        //     $status='arrive';
-        // }elseif ($request->has('type') && $request->type==='4'){
-        //     $status='complete';
-        // }elseif ($request->has('type') && $request->type==='5'){
-        //     $status='cancel';
-        // }elseif ($request->has('type') && $request->type==='6'){
-        //     $status='prepare';
-        // }elseif ($request->has('type') && $request->type==='7'){
-        //     $status='start';
-        // }
-
+        if(Auth::user()->hasRole('patient')) {
+            $role = 5;
+        }else if(Auth::user()->hasRole('clinician')) {
+            $role = 4;
+            $designation = '';
+            if(Auth::user()->designation_id == 2) {
+                $designation = 2;
+            }else if(Auth::user()->designation_id == 1) {
+                $designation = 1;
+            }
+        }else if(Auth::user()->hasRole('LAB')) {
+            $role = 6;
+        }else if(Auth::user()->hasRole('Radiology')) {
+            $role = 7;
+        }else if(Auth::user()->hasRole('CHHA')) {
+            $role = 8;
+        }else if(Auth::user()->hasRole('Home Oxygen')) {
+            $role = 9;
+        }else if(Auth::user()->hasRole('Home Influsion')) {
+            $role = 10;
+        }else if(Auth::user()->hasRole('Wound Care')) {
+            $role = 11;
+        }else if(Auth::user()->hasRole('DME')) {
+            $role = 12;
+        }
+//        echo "<pre>";
+//        print_r(Auth::user()->is_available);
+//        exit();
         if (Auth::user()->hasRole('patient')){
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 // ->where(function ($q) use ($status){
@@ -422,24 +432,59 @@ class PatientRequestController extends Controller
                 ->get();
                
         }elseif (Auth::user()->is_available==='2'){
+//            echo "<pre>";
+//            print_r(11);
+//            exit();
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 ->where('clincial_id','=',Auth::user()->id)
-                ->whereIn('status', ['1','2','3','6','7'])
+                ->whereNotNull('parent_id')
+                ->where('type_id',$role)
+                ->whereIn('status', $status)
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
         } else {
+            if($status[0] == 1) {
+                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                    ->whereIn('status',$status)
+                    ->whereNotNull('parent_id')
+                    ->where('type_id',$role)
+                    ->groupBy('parent_id')
+                    ->orderBy('id','asc')
+                    ->get();
+                if($role == 4 && $designation !='') {
+                    $directClinicins = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                        ->whereIn('status',$status)
+                        ->where('clincial_id','=',Auth::user()->id)
+                        ->whereNotNull('parent_id')
+                        ->where('type_id',$designation)
+                        ->groupBy('parent_id')
+                        ->orderBy('id','asc')
+                        ->get();
+                    if(count($directClinicins)>0) {
+                        $patientRequestList = $directClinicins;
+                    }
+                }
+            }else {
+                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                ->where('clincial_id','=',Auth::user()->id)
+                ->whereNotNull('parent_id')
+                ->whereIn('status', ['2','3','6','7'])
+                ->groupBy('parent_id')
+                ->orderBy('id','asc')
+                ->get();
+            }
             
-            $roles = Auth::user()->roles->pluck('id');
-     
-            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+            
+//            $roles = Auth::user()->roles->pluck('id');
+//            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 // ->where(function ($q) use ($status){
                 //     if ($status!=='all'){
                 //         $q->where('status','=',$status);
                 //     }
                 // })
-                ->whereIn('status',$status)
-                ->whereNotNull('parent_id')
+//                ->whereIn('status',$status)
+//                ->whereNotNull('parent_id')
                 // ->where(function ($q){
                 //     $q->where('clincial_id','=',Auth::user()->id)
                 //         ->orWhere(function ($q){
@@ -447,9 +492,9 @@ class PatientRequestController extends Controller
                 //                ->where('type_id','=',Auth::user()->designation_id);
                 //         });
                 // })
-                ->groupBy('parent_id')
-                ->orderBy('id','asc')
-                ->get();
+//                ->groupBy('parent_id')
+//                ->orderBy('id','asc')
+//                ->get();
         }
 
        
