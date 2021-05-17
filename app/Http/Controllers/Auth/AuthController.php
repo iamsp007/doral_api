@@ -84,9 +84,9 @@ class AuthController extends Controller
                     $users->device_type = $request->device_type;
                 }
             }
-            if ($users->is_available!==2){
-                $users->is_available = 1;
-            }
+            // if ($users->is_available!==2){
+            //     $users->is_available = 1;
+            // }
             $users->save();
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
