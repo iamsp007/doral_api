@@ -14,10 +14,12 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
+use App\Mail\UpdateStatusNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class PatientRequestController extends Controller
 {
@@ -375,9 +377,34 @@ class PatientRequestController extends Controller
                 event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id));
                 event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id));
 
-                $data=PatientRequest::with('detail')
+                $data=PatientRequest::with('detail', 'patient')
                     ->where('id','=',$request->request_id)
                     ->first();
+
+                // if ($data->patient && $data->patient->email) {
+                //     $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
+                //     $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
+                //     $details = [
+                //         'first_name' => ($data->patient->first_name) ? $data->patient->first_name : '' ,
+                //         'last_name' => ($data->patient->last_name) ? $data->patient->last_name : '',
+                //         'status' => 'Accepted',
+                //         'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within 30 minutes',
+                //     ];
+                //     Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
+                // }
+
+                // if ($data->detail && $data->detail->email) {
+                //     $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
+                //     $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
+                //     $details = [
+                //         'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
+                //         'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
+                //         'status' => 'Accepted',
+                //         'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within 20 minutes',
+                //     ];
+                //     Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
+                // }
+
                 return $this->generateResponse(true,'Request Accepted!',$data,200);
             }
         }
@@ -730,8 +757,13 @@ class PatientRequestController extends Controller
     public function updatePatientRequeststatus(Request $request)
     {
         try {
+            $patientRequstModel = PatientRequest::find($request['patient_request_id'])->with('patient', 'detail');
             PatientRequest::find($request['patient_request_id'])->update([
                 'status' => '4'
+            ]);
+
+            $patientRequstModel->detail()->update([
+                'is_available' => 1,
             ]);
 
             $patientRequest = PatientRequest::where([['parent_id', $request['parent_id']],['status', '!=', 4]])->get();
@@ -740,7 +772,31 @@ class PatientRequestController extends Controller
                     'status' => '4'
                 ]);
             };
-        
+
+            // if ($patientRequstModel->patient && $patientRequstModel->patient->email) {
+            //     $clinicianFirstName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
+            //     $clinicianLastName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
+            //     $details = [
+            //         'first_name' => ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '' ,
+            //         'last_name' => ($patientRequstModel->patient->last_name) ? $patientRequstModel->patient->last_name : '',
+            //         'status' => 'Completed',
+            //         'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within 30 minutes',
+            //     ];
+            //     Mail::to($patientRequstModel->patient->email)->send(new UpdateStatusNotification($details));
+            // }
+
+            // if ($patientRequstModel->detail && $patientRequstModel->detail->email) {
+            //     $patientFirstName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
+            //     $patientLastName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
+            //     $details = [
+            //         'first_name' => ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '' ,
+            //         'last_name' => ($patientRequstModel->detail->last_name) ? $patientRequstModel->detail->last_name : '',
+            //         'status' => 'Completed',
+            //         'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within 20 minutes',
+            //     ];
+            //     Mail::to($patientRequstModel->detail->email)->send(new UpdateStatusNotification($details));
+            // }
+
             return $this->generateResponse(true, 'Status complated successfully', null, 200);
         } catch (\Exception $ex) {
             return $this->generateResponse(false, $ex->getMessage());
@@ -749,7 +805,6 @@ class PatientRequestController extends Controller
 
     public function updatePreperationTime(Request $request)
     {
-        // dd($request->all());
         try {
             PatientRequest::find($request['patient_request_id'])->update([
                 'preparation_time' => $request['preparation_time'],
