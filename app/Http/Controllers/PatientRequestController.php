@@ -381,29 +381,29 @@ class PatientRequestController extends Controller
                     ->where('id','=',$request->request_id)
                     ->first();
 
-                // if ($data->patient && $data->patient->email) {
-                //     $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
-                //     $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
-                //     $details = [
-                //         'first_name' => ($data->patient->first_name) ? $data->patient->first_name : '' ,
-                //         'last_name' => ($data->patient->last_name) ? $data->patient->last_name : '',
-                //         'status' => 'Accepted',
-                //         'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within 30 minutes',
-                //     ];
-                //     Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
-                // }
+                if ($data->patient && $data->patient->email) {
+                    $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
+                    $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
+                    $details = [
+                        'first_name' => ($data->patient->first_name) ? $data->patient->first_name : '' ,
+                        'last_name' => ($data->patient->last_name) ? $data->patient->last_name : '',
+                        'status' => 'Accepted',
+                        'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within 30 minutes',
+                    ];
+                    Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
+                }
 
-                // if ($data->detail && $data->detail->email) {
-                //     $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
-                //     $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
-                //     $details = [
-                //         'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
-                //         'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
-                //         'status' => 'Accepted',
-                //         'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within 20 minutes',
-                //     ];
-                //     Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
-                // }
+                if ($data->detail && $data->detail->email) {
+                    $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
+                    $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
+                    $details = [
+                        'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
+                        'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
+                        'status' => 'Accepted',
+                        'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within 20 minutes',
+                    ];
+                    Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
+                }
 
                 return $this->generateResponse(true,'Request Accepted!',$data,200);
             }
@@ -757,11 +757,12 @@ class PatientRequestController extends Controller
     public function updatePatientRequeststatus(Request $request)
     {
         try {
-            $patientRequstModel = PatientRequest::find($request['patient_request_id'])->with('patient', 'detail');
+           
+            $patientRequstModel = PatientRequest::where('id',$request['patient_request_id'])->with('patient', 'detail')->first();
             PatientRequest::find($request['patient_request_id'])->update([
                 'status' => '4'
             ]);
-
+        
             $patientRequstModel->detail()->update([
                 'is_available' => 1,
             ]);
