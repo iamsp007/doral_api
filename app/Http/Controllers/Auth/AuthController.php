@@ -50,11 +50,11 @@ class AuthController extends Controller
             if (is_numeric($request->username)) {
                 $field = 'phone';
             }
-            //$credentials = [$field => $username, 'password' => $password];
-            $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
+            $credentials = [$field => $username, 'password' => $password];
+            // $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
             
             if (! Auth::attempt($credentials)) {
-                return $this->generateResponse(false, $field . 'Email or password are incorrect!', null);
+                return $this->generateResponse(false, 'Email or password are incorrect!', null);
             }
 
             $user = $request->user();

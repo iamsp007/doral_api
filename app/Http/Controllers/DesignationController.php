@@ -18,7 +18,8 @@ class DesignationController extends Controller
         $data = array();
         try {
             
-            $designation = Designation::all()->toArray();
+            $designation = Designation::where('role_id',4)->get();
+          
             if (!$designation) {
                 throw new Exception("No designation are registered");
             }
