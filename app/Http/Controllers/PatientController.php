@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendingSMS;
-use App\Http\Requests\RoadlSelectedDiesesRequest;
+use App\Mail\AcceptedMail;
 use App\Models\Appointment;
 use App\Models\Demographic;
 use App\Models\Patient;
@@ -14,20 +14,10 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Mail;
 
 class PatientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Search patient by name / Email / phone
      *
@@ -160,52 +150,6 @@ class PatientController extends Controller
             $message = $e->getMessage(). $e->getLine();
             return $this->generateResponse($status, $message, $resp);
         }
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Patient $patient)
-    {
-        //
     }
 
     /**
@@ -343,15 +287,28 @@ class PatientController extends Controller
 
         if ($user) {
             foreach ($users as $value) {
-                $link=env("WEB_URL").'download-application';
-                $smsData[] = [
-                    'to'=> $value->phone,
-                    'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now.
-                    '.$link.'
-                    Default Password : Patient@doral',
-                ];
+                if ($value->phone) {
+                    $link=env("WEB_URL").'download-application';
+                    $smsData[] = [
+                        'to'=> $value->phone,
+                        'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now.
+                        '.$link.'
+                        Default Password : Patient@doral',
+                    ];
+                    if ($statusData === '1') {
+                        $details = [
+                            'name' => $user->first_name,
+                            'password' => 'partner@doral',
+                            'email' => $user->email,
+                            'login_url' => route('login'),
+                        ];
+                    
+                        Mail::to($user->email)->send(new AcceptedMail($details));
+                    }
+                    event(new SendingSMS($smsData));
+                }
+                
 
-                event(new SendingSMS($smsData));
             }
             
             return $this->generateResponse(true, 'Change Status Successfully.', null, 200);
