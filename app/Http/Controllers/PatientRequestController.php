@@ -333,7 +333,7 @@ class PatientRequestController extends Controller
     }
 
     public function clinicianRequestAccept(ClinicianRequestAcceptRequest $request){
-        $patient = \App\Models\PatientRequest::find($request->request_id);
+        $patient = PatientRequest::find($request->request_id);
         if ($patient){
             if(null!==$patient->clincial_id){
                 return $this->generateResponse(false,'Request Already Accepted!',null,200);
@@ -381,6 +381,10 @@ class PatientRequestController extends Controller
                     ->where('id','=',$request->request_id)
                     ->first();
 
+
+                $roadlController = new RoadlController();
+                $distance = $roadlController->calculateDistanceBetweenTwoAddresses($patient->latitude, $patient->longitude, $request->latitude,$request->longitude);
+                
                 if ($data->patient && $data->patient->email) {
                     $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
                     $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
@@ -388,7 +392,7 @@ class PatientRequestController extends Controller
                         'first_name' => ($data->patient->first_name) ? $data->patient->first_name : '' ,
                         'last_name' => ($data->patient->last_name) ? $data->patient->last_name : '',
                         'status' => 'Accepted',
-                        'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within 30 minutes',
+                        'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within ' . $distance . ' minutes',
                     ];
                     Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
                 }
@@ -400,7 +404,7 @@ class PatientRequestController extends Controller
                         'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
                         'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
                         'status' => 'Accepted',
-                        'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within 20 minutes',
+                        'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within ' . $distance . ' minutes',
                     ];
                     Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
                 }

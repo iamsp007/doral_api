@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PatientOccupational;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
 use Excel;
 use App\Imports\BulkOccupationalImport;
 
@@ -33,16 +30,6 @@ class PatientOccupationalController extends Controller
             $message = $e->getMessage();
             return $this->generateResponse(false, $message, $data);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -110,50 +97,5 @@ class PatientOccupationalController extends Controller
         ];
 
         return response()->json($response, 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\PatientReferral  $PatientReferral
-     * @return \Illuminate\Http\Response
-     */
-    public function show(PatientReferral $PatientReferral)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\PatientReferral  $PatientReferral
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(PatientReferral $PatientReferral)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\PatientReferral  $PatientReferral
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, PatientReferral $PatientReferral)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\PatientReferral  $PatientReferral
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(PatientReferral $PatientReferral)
-    {
-        //
     }
 }
