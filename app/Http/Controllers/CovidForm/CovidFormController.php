@@ -5,7 +5,6 @@ namespace App\Http\Controllers\CovidForm;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-// use mikehaertl\pdftk\Pdf;
 use App\Models\CovidForm;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -25,16 +24,6 @@ class CovidFormController extends Controller
         $patientList = CovidForm::where('user_id', Auth::user()->id)->get();
 
         return $this->generateResponse(true, 'Covid 19 patient list', $patientList, 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -80,51 +69,6 @@ class CovidFormController extends Controller
             Log::error($e->getMessage());
             return $this->generateResponse($status, $message, null);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\CovidForm  $covidForm
-     * @return \Illuminate\Http\Response
-     */
-    public function show(CovidForm $covidForm)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\CovidForm  $covidForm
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(CovidForm $covidForm)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\CovidForm  $covidForm
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, CovidForm $covidForm)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\CovidForm  $covidForm
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(CovidForm $covidForm)
-    {
-        //
     }
 
     public function savePdf($covidForm)
