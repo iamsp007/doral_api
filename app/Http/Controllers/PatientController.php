@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendingSMS;
+use App\Jobs\SendEmailJob;
 use App\Mail\AcceptedMail;
 use App\Models\Appointment;
 use App\Models\Demographic;
@@ -15,6 +16,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class PatientController extends Controller
 {
@@ -295,20 +297,26 @@ class PatientController extends Controller
                         '.$link.'
                         Default Password : Patient@doral',
                     ];
+                    
+                    event(new SendingSMS($smsData));
+                }
+                if ($value->email) {
+                    $password = Str::random(8);
+                    
+                    $user->update(['password' => setPassword($password)]);
                     if ($statusData === '1') {
+                        $first_name = ($value->first_name) ? $value->first_name : '';
+                        $last_name = ($value->last_name) ? $value->last_name : '';
                         $details = [
-                            'name' => $user->first_name,
-                            'password' => 'partner@doral',
-                            'email' => $user->email,
+                            'name' => $first_name . ' ' . $last_name,
+                            'password' => $password,
+                            'email' => $value->email,
                             'login_url' => route('login'),
                         ];
                     
-                        Mail::to($user->email)->send(new AcceptedMail($details));
+                        SendEmailJob::dispatch($value->email,$details,'AcceptedMail');
                     }
-                    event(new SendingSMS($smsData));
                 }
-                
-
             }
             
             return $this->generateResponse(true, 'Change Status Successfully.', null, 200);
