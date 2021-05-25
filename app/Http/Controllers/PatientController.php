@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class PatientController extends Controller
 {
@@ -286,9 +287,10 @@ class PatientController extends Controller
         }
         $users = User::whereIn('id',$ids);
         $user = $users->update(['status' => $statusData]);
-
+      
         if ($user) {
-            foreach ($users as $value) {
+           
+            foreach ($users->get() as $value) {
                 if ($value->phone) {
                     $link=env("WEB_URL").'download-application';
                     $smsData[] = [
@@ -300,28 +302,28 @@ class PatientController extends Controller
                     
                     event(new SendingSMS($smsData));
                 }
-                if ($value->email) {
-                    $password = Str::random(8);
+              
+                // if ($value->email) {
+                //     // $password = Str::random(8);
                     
-                    $user->update(['password' => setPassword($password)]);
-                    if ($statusData === '1') {
-                        $first_name = ($value->first_name) ? $value->first_name : '';
-                        $last_name = ($value->last_name) ? $value->last_name : '';
-                        $details = [
-                            'name' => $first_name . ' ' . $last_name,
-                            'password' => $password,
-                            'email' => $value->email,
-                            'login_url' => route('login'),
-                        ];
-                    
-                        SendEmailJob::dispatch($value->email,$details,'AcceptedMail');
-                    }
-                }
+                //     // $value->update(['password' => setPassword($password)]);
+                //     if ($statusData === '1') {
+                //         $first_name = ($value->first_name) ? $value->first_name : '';
+                //         $last_name = ($value->last_name) ? $value->last_name : '';
+                //         $details = [
+                //             'name' => $first_name . ' ' . $last_name,
+                //             'password' => 'Patient@doral',
+                //             'email' => $value->email,
+                //             'login_url' => route('login'),
+                //         ];
+
+                //         $mail = Mail::to($value->email)->send(new AcceptedMail($details));
+                //     }
+                // }
             }
             
             return $this->generateResponse(true, 'Change Status Successfully.', null, 200);
         }
-
         return $this->generateResponse(false, 'Detail not Found', null, 400);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AcceptedMail;
 use App\Models\Company;
 use App\Models\CompanyPaymentPlanInfo;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use URL;
 use App\Mail\ReferralAcceptedMail;
+use Illuminate\Support\Facades\Mail;
 
 class CompanyController extends Controller
 {
@@ -437,8 +439,8 @@ class CompanyController extends Controller
                 'status' => $Company['status']
             );
             
-            $updateRecord = Company::where('id', $Company['Company_id'])
-                ->update($data);
+            $updateRecord = Company::where('id', $Company['Company_id']);
+            $updateRecord->update($data);
             if ($updateRecord) {
                 $status = true;
                 $message = 'Status updated';
@@ -447,9 +449,17 @@ class CompanyController extends Controller
                 'Company_id' => $Company['Company_id'],
                 'Company_status' => $Company['status']
             ];
+          
+            $details = [
+                'name' =>$updateRecord->name,
+                'password' => 'referral@doral',
+                'email' => $updateRecord->email,
+                'login_url' => route('login'),
+            ];
+            Mail::to($updateRecord->email)->send(new AcceptedMail($details));
+
             return $this->generateResponse($status, $message, $data);
         } catch (Exception $e) {
-            //dd($e);
             $status = false;
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);

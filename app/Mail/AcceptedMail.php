@@ -30,6 +30,6 @@ class AcceptedMail extends Mailable
     public function build()
     {
         return $this->subject('Email Accepted By Admin')
-        ->view('emails.accepted_mail');
+        ->view('email.accepted_mail');
     }
 }
