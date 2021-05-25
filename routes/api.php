@@ -126,6 +126,10 @@ Route::group([
         Route::get('get-clinician-list/{status_id}', 'App\Http\Controllers\ApplicantController@getClinicianList');
         Route::post('get-clinician-data', 'App\Http\Controllers\ApplicantController@getClinicianData');
         Route::get('get-clinician-detail/{id}', 'App\Http\Controllers\ApplicantController@getClinicianDetail');
+        
+        Route::get('patient-list', 'App\Http\Controllers\ConversationController@index');
+        Route::get('conversation/{id}', 'App\Http\Controllers\ConversationController@show');
+        Route::delete('conversation/{id}', 'App\Http\Controllers\ConversationController@destroy');
 
         Route::get('get-applicant-details', 'App\Http\Controllers\ApplicantController@getApplicantDetails');
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
