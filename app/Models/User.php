@@ -179,6 +179,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Designation::class,'id','designation_id');
     }
+
+    public function conversation()
+    {
+        return $this->hasOne(Conversation::class,'user_id','id');
+    }
     
     public function myRoom(){
         return $this->hasOne(VirtualRoom::class,'user_id','id');

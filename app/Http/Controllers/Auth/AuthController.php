@@ -88,6 +88,8 @@ class AuthController extends Controller
             //     $users->is_available = 1;
             // }
             $users->save();
+
+            
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
             $status = false;
