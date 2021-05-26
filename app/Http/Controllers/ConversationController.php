@@ -67,34 +67,32 @@ class ConversationController extends Controller
             return $this->generateResponse(false, $validator->errors()->first(), null, 200);
         } 
         try {
-            if (isset($input["conversation_id"])) {
-                $conversation = Conversation::find($input['conversation_id']);
-                $message = 'Conversation updated successfully.';
+            // if (isset($input["conversation_id"])) {
+            //     $conversation = Conversation::find($input['conversation_id']);
+            //     $message = 'Conversation updated successfully.';
 
-                $chat = [
-                    $input['senderType'] => $input['message']
-                ];
-        
-                $input['message'] = $chat;
-                $input['message'] = array_push($conversation->chat, array($input['message']));
-            } else {
+            //     $chat = [
+            //         $input['senderType'] => $input['message']
+            //     ];
+            //     // dump($conversation->chat);
+            //     // dump($chat);
+            //     $input['chat'] = array_merge($conversation->chat, $chat);
+            //     // dd($input['chat']);
+            // } else {
                 $conversation = new Conversation();
                 $message = 'Conversation added successfully!';
 
-                $chat = [
-                    $input['senderType'] => $input['message']
-                ];
-        
-                $input['message'] = $chat;
-            }
+                $input['chat'] = $input['message'];
 
-            if ($input['senderType'] === 'patient') {
-                $input['user_id'] = $input['senderID'];
-                $input['supporter_id'] = $input['receiverId'];
-            } elseif ($input['senderType'] === 'clinician') {
-                $input['supporter_id'] = $input['senderID'];
-                $input['user_id'] = $input['receiverId'];
-            }
+                if ($input['senderType'] === 'patient') {
+                    $input['user_id'] = $input['senderID'];
+                    $input['supporter_id'] = $input['receiverId'];
+                } elseif ($input['senderType'] === 'clinician') {
+                    $input['supporter_id'] = $input['senderID'];
+                    $input['user_id'] = $input['receiverId'];
+                }
+                $input['parentID'] = $input['parentID'];
+            // }
 
             if($conversation->fill($input)->save()) {
                 return $this->generateResponse(true, $message, $conversation, 200);
@@ -114,9 +112,10 @@ class ConversationController extends Controller
      * @param  \App\Models\Conversation  $conversation
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function getConversation(Request $request)
     {
-        $conversation = Conversation::with('clinician','patient')->find($id);
+        $input = $request->all();
+        $conversation = Conversation::with('clinician','patient')->where('parentID',$input)->get();
         if ($conversation){
           
             return $this->generateResponse(true,'Conversation List',$conversation,200);

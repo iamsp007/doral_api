@@ -20,15 +20,7 @@ class Conversation extends Model
         'user_id',
         'chat',
         'type',
-    ];
-
-    /**
-     * The attributes that are casted.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'chat' => 'array'
+        'parentID',
     ];
 
     public function clinician()
