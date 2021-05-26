@@ -280,7 +280,7 @@ class AuthController extends Controller
                     ];
                     
                     Mail::to($input['email'])->send(new ChangePasswordNotification($details));
-
+                   
                     return $this->generateResponse(true, $message, $data);
                 }
             } catch (\Exception $ex) {
