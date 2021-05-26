@@ -16,6 +16,7 @@ class Conversation extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'sender_id',
         'receiver_id',
         'chat',

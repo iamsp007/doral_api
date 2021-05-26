@@ -76,6 +76,12 @@ class ConversationController extends Controller
             $input['receiver_id'] = $input['receiverId'];
             $input['parentID'] = $input['parentID'];
 
+            if ($input['senderType'] === 'patient') {
+                $input['user_id'] = $input['senderID'];
+            } elseif ($input['senderType'] === 'clinician') {
+                $input['user_id'] = $input['receiverId'];
+            }
+
             if($conversation->fill($input)->save()) {
                 return $this->generateResponse(true, $message, $conversation, 200);
             } else {
@@ -98,9 +104,7 @@ class ConversationController extends Controller
     {
         $input = $request->all();
       
-        $conversation = Conversation::with(['user'=>function($q) {
-            $q->select('id','first_name','last_name');
-        }])->where('parentID',$input['parentID'])->get();
+        $conversation = Conversation::with('user')->where('parentID',$input['parentID'])->get();
         if ($conversation){
           
             return $this->generateResponse(true,'Conversation List',$conversation,200);
