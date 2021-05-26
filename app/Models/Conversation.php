@@ -22,5 +22,23 @@ class Conversation extends Model
         'type',
     ];
 
+    /**
+     * The attributes that are casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'chat' => 'array'
+    ];
+
+    public function clinician()
+    {
+        return $this->hasOne(User::class,'id','user_id')->select('id','first_name','last_name');
+    }
+
+    public function patient()
+    {
+        return $this->hasOne(User::class,'id','user_id')->select('id','first_name','last_name');
+    }
     protected $dates = [ 'deleted_at' ];
 }

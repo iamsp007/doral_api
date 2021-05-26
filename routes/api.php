@@ -130,6 +130,7 @@ Route::group([
         Route::get('patient-list', 'App\Http\Controllers\ConversationController@index');
         Route::get('conversation/{id}', 'App\Http\Controllers\ConversationController@show');
         Route::delete('conversation/{id}', 'App\Http\Controllers\ConversationController@destroy');
+        Route::post('send-mesage', 'App\Http\Controllers\ConversationController@store');
 
         Route::get('get-applicant-details', 'App\Http\Controllers\ApplicantController@getApplicantDetails');
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');

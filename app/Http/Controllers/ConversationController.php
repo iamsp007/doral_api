@@ -18,7 +18,7 @@ class ConversationController extends Controller
      */
     public function index()
     {
-        $response = User::whereHas('conversation','roles', function($q) {
+        $response = User::whereHas('conversation',)->whereHas('roles', function($q) {
             $q->where('name','=', 'patient');
         })->get();
         if (count($response)>0){
@@ -45,7 +45,67 @@ class ConversationController extends Controller
      */
     public function store(Request $request)
     {
+        $input = $request->all();
       
+        $rules = [
+            'senderID' => 'required',
+            'receiverId' => 'required',
+            'message' => 'required',
+            'senderType' => 'required',
+        ];
+
+        $message = [
+            'senderID.required' => 'Please enter sender id.',
+            'receiverId.required' => 'Please enter receiver id.',
+            'message.required' => 'Please enter message.',
+            'senderType.required' => 'Please enter sender type.',
+        ];
+
+        $validator = Validator::make($input, $rules, $message);
+
+        if($validator->fails()){
+            return $this->generateResponse(false, $validator->errors()->first(), null, 200);
+        } 
+        try {
+            if (isset($input["conversation_id"])) {
+                $conversation = Conversation::find($input['conversation_id']);
+                $message = 'Conversation updated successfully.';
+
+                $chat = [
+                    $input['senderType'] => $input['message']
+                ];
+        
+                $input['message'] = $chat;
+                $input['message'] = array_push($conversation->chat, array($input['message']));
+            } else {
+                $conversation = new Conversation();
+                $message = 'Conversation added successfully!';
+
+                $chat = [
+                    $input['senderType'] => $input['message']
+                ];
+        
+                $input['message'] = $chat;
+            }
+
+            if ($input['senderType'] === 'patient') {
+                $input['user_id'] = $input['senderID'];
+                $input['supporter_id'] = $input['receiverId'];
+            } elseif ($input['senderType'] === 'clinician') {
+                $input['supporter_id'] = $input['senderID'];
+                $input['user_id'] = $input['receiverId'];
+            }
+
+            if($conversation->fill($input)->save()) {
+                return $this->generateResponse(true, $message, $conversation, 200);
+            } else {
+                return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
+            }
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            return $this->generateResponse($status, $message, null);
+        }
     }
 
     /**
@@ -54,9 +114,11 @@ class ConversationController extends Controller
      * @param  \App\Models\Conversation  $conversation
      * @return \Illuminate\Http\Response
      */
-    public function show(Conversation $conversation)
+    public function show($id)
     {
+        $conversation = Conversation::with('clinician','patient')->find($id);
         if ($conversation){
+          
             return $this->generateResponse(true,'Conversation List',$conversation,200);
         }
         return $this->generateResponse(false,'No Conversation Exists',null,200);
@@ -91,8 +153,9 @@ class ConversationController extends Controller
      * @param  \App\Models\Conversation  $conversation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Conversation $conversation)
+    public function destroy($id)
     {
+        $conversation = Conversation::find($id);
         if ($conversation) {
             $conversation->delete();
 
