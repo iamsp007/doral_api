@@ -26,10 +26,10 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+use App\Jobs\SendEmailJob;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
-
 
 class AuthController extends Controller
 {
@@ -270,6 +270,16 @@ class AuthController extends Controller
                 } else {
                     User::where('id', $userid)->update(['password' => Hash::make($input['new_password'])]);
                     $message = "Password updated successfully.";
+                    
+                    $details = [
+                        'name' => $user->first_name . ' ' . $user->last_name,
+                        'password' => $input['new_password'],
+                        'email' => $input['email'],
+                        'login_url' => route('login'),
+                    ];
+
+                    SendEmailJob::dispatch($input['email'],$details,'ChangePasswordNotification');
+
                     return $this->generateResponse(true, $message, $data);
                 }
             } catch (\Exception $ex) {

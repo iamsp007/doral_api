@@ -16,21 +16,18 @@ class Conversation extends Model
      * @var array
      */
     protected $fillable = [
-        'supporter_id',
         'user_id',
+        'sender_id',
+        'receiver_id',
         'chat',
         'type',
         'parentID',
     ];
 
-    public function clinician()
-    {
-        return $this->hasOne(User::class,'id','user_id')->select('id','first_name','last_name');
-    }
-
-    public function patient()
-    {
-        return $this->hasOne(User::class,'id','user_id')->select('id','first_name','last_name');
-    }
     protected $dates = [ 'deleted_at' ];
+
+    public function user()
+    {
+        return $this->hasOne(User::class,'id','sender_id');
+    }
 }
