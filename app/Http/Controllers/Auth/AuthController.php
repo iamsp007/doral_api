@@ -26,10 +26,11 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
-use App\Jobs\SendEmailJob;
+use App\Mail\ChangePasswordNotification;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -277,8 +278,8 @@ class AuthController extends Controller
                         'email' => $input['email'],
                         'login_url' => route('login'),
                     ];
-
-                    SendEmailJob::dispatch($input['email'],$details,'ChangePasswordNotification');
+                    
+                    Mail::to($input['email'])->send(new ChangePasswordNotification($details));
 
                     return $this->generateResponse(true, $message, $data);
                 }
