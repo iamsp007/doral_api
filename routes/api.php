@@ -71,7 +71,7 @@ Route::group([
     Route::post('employee-reports/{id}/store', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@store')->name('employee.reports.store');
     Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
     Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
-
+    Route::get('notification-history', 'App\Http\Controllers\NotificationHistoryController@index');
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
@@ -190,6 +190,7 @@ Route::group([
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
     Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
+  
 });
 
 // clincian API
