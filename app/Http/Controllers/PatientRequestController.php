@@ -90,7 +90,12 @@ class PatientRequestController extends Controller
                 $patientSecond->parent_id = $patient->id;
 
                 $patientSecond->save();
-              $parent_id=$patient->id;
+                $parent_id=$patient->id;
+                $data=PatientRequest::with('detail', 'patient')
+                ->where('id','=',$patientSecond->id)
+                ->first();
+                self::sendmail($patientSecond);
+
             } else {
                 $patientSecond = new PatientRequest();
 
@@ -119,6 +124,11 @@ class PatientRequestController extends Controller
             
                 $patientSecond->save();
                 $parent_id=$patientRequest->id;
+                
+                $data=PatientRequest::with('detail', 'patient')
+                ->where('id','=',$patientSecond->id)
+                ->first();
+                self::sendmail($data);
             }
             // If assign clinician
             $checkAssignId = '';
@@ -357,22 +367,22 @@ class PatientRequestController extends Controller
                 $roadlInformation->status = "start";
                 $roadlInformation->save();
 
-//                $assignAppointemntRoadl = AssignAppointmentRoadl::where([
-//                    'patient_request_id'=>$patient->id
-//                ])->first();
-//                if ($assignAppointemntRoadl){
-//                    $patient->clinician = AssignAppointmentRoadl::where([
-//                        'appointment_id'=>$assignAppointemntRoadl->appointment_id
-//                    ])->with('requests',function ($q){
-//                          $q->select('id','clincial_id','latitude','longitude','reason','is_active','dieses','symptoms','is_parking','status');
-//                        })
-//                        ->select('appointment_id','patient_request_id','referral_type')
-//                        ->get()->toArray();
-//                    $patient->type = 1;
-//                }else{
-//                    $patient->clinician = $users;
-//                    $patient->type = 0;
-//                }
+                //                $assignAppointemntRoadl = AssignAppointmentRoadl::where([
+                //                    'patient_request_id'=>$patient->id
+                //                ])->first();
+                //                if ($assignAppointemntRoadl){
+                //                    $patient->clinician = AssignAppointmentRoadl::where([
+                //                        'appointment_id'=>$assignAppointemntRoadl->appointment_id
+                //                    ])->with('requests',function ($q){
+                //                          $q->select('id','clincial_id','latitude','longitude','reason','is_active','dieses','symptoms','is_parking','status');
+                //                        })
+                //                        ->select('appointment_id','patient_request_id','referral_type')
+                //                        ->get()->toArray();
+                //                    $patient->type = 1;
+                //                }else{
+                //                    $patient->clinician = $users;
+                //                    $patient->type = 0;
+                //                }
                 $patient->clinician = $users;
                 event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id));
                 event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id));
@@ -445,9 +455,7 @@ class PatientRequestController extends Controller
         }else if(Auth::user()->hasRole('DME')) {
             $role = 12;
         }
-//        echo "<pre>";
-//        print_r(Auth::user()->is_available);
-//        exit();
+
         if (Auth::user()->hasRole('patient')){
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 // ->where(function ($q) use ($status){
@@ -463,9 +471,7 @@ class PatientRequestController extends Controller
                 ->get();
                
         }elseif (Auth::user()->is_available==='2'){
-//            echo "<pre>";
-//            print_r(11);
-//            exit();
+
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                 ->where('clincial_id','=',Auth::user()->id)
                 ->whereNotNull('parent_id')
@@ -505,108 +511,106 @@ class PatientRequestController extends Controller
                 ->orderBy('id','asc')
                 ->get();
             }
-            
-            
-//            $roles = Auth::user()->roles->pluck('id');
-//            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
-                // ->where(function ($q) use ($status){
-                //     if ($status!=='all'){
-                //         $q->where('status','=',$status);
-                //     }
-                // })
-//                ->whereIn('status',$status)
-//                ->whereNotNull('parent_id')
-                // ->where(function ($q){
-                //     $q->where('clincial_id','=',Auth::user()->id)
-                //         ->orWhere(function ($q){
-                //            $q->whereNull('clincial_id')
-                //                ->where('type_id','=',Auth::user()->designation_id);
-                //         });
-                // })
-//                ->groupBy('parent_id')
-//                ->orderBy('id','asc')
-//                ->get();
+            //            $roles = Auth::user()->roles->pluck('id');
+            //            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                            // ->where(function ($q) use ($status){
+                            //     if ($status!=='all'){
+                            //         $q->where('status','=',$status);
+                            //     }
+                            // })
+            //                ->whereIn('status',$status)
+            //                ->whereNotNull('parent_id')
+                            // ->where(function ($q){
+                            //     $q->where('clincial_id','=',Auth::user()->id)
+                            //         ->orWhere(function ($q){
+                            //            $q->whereNull('clincial_id')
+                            //                ->where('type_id','=',Auth::user()->designation_id);
+                            //         });
+                            // })
+            //                ->groupBy('parent_id')
+            //                ->orderBy('id','asc')
+            //                ->get();
         }
 
-       
-//        $referral = Referral::where('guard_name','=','partner')
-//            ->whereIn('name',Auth::user()->roles->pluck('name'))
-//            ->pluck('name');
-//        if (count($referral)>0){
-//            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
-//                ->whereHas('appointmentType',function ($q) use ($referral){
-//                    $q->whereIn('referral_type',$referral);
-//                })
-//                ->where(function ($q) use ($request){
-//                    if ($request->has('type') && $request->type==='pending'){
-//                        $q->whereNull('clincial_id');
-//                    }elseif ($request->has('type') && $request->type==='running'){
-//                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
-//                    }elseif ($request->has('type') && $request->type==='complete'){
-//                        $q->where('status','=','complete');
-//                    }elseif ($request->has('type') && $request->type==='latest'){
-//                        $q->where('created_at', '>',
-//                            Carbon::now()->subHours(1)->toDateTimeString()
-//                        );
-//                    }
-//                })
-//                ->orderBy('id','desc')
-//                ->get();
-//
-//        }elseif (Auth::user()->hasRole('patient')){
-//            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
-//                ->where(function ($q) use ($request){
-//                    if ($request->has('type') && $request->type==='pending'){
-//                        $q->whereNull('clincial_id');
-//                    }elseif ($request->has('type') && $request->type==='running'){
-//                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
-//                    }elseif ($request->has('type') && $request->type==='complete'){
-//                        $q->where('status','=','complete');
-//                    }elseif ($request->has('type') && $request->type==='latest'){
-//                        $q->where('created_at', '>',
-//                            Carbon::now()->subHours(3)->toDateTimeString()
-//                        );
-//                    }
-//                })
-//                ->where('user_id','=',Auth::user()->id)
-//                ->orderBy('id','desc')
-//                ->get();
-//        }elseif (Auth::user()->hasRole('cashier')){
-//            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
-//                ->where(function ($q) use ($request){
-//                    if ($request->has('type') && $request->type==='pending'){
-//                        $q->whereNull('clincial_id');
-//                    }elseif ($request->has('type') && $request->type==='running'){
-//                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
-//                    }elseif ($request->has('type') && $request->type==='complete'){
-//                        $q->where('status','=','complete');
-//                    }elseif ($request->has('type') && $request->type==='latest'){
-//                        $q->where('created_at', '>',
-//                            Carbon::now()->subHours(3)->toDateTimeString()
-//                        );
-//                    }
-//                })
-//                ->whereDoesntHave('appointmentType')
-//                ->orderBy('id','desc')
-//                ->get();
-//        } else{
-//            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
-//                ->where(function ($q) use ($request){
-//                    if ($request->has('type') && $request->type==='pending'){
-//                        $q->whereNull('clincial_id');
-//                    }elseif ($request->has('type') && $request->type==='running'){
-//                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
-//                    }elseif ($request->has('type') && $request->type==='complete'){
-//                        $q->where('status','=','complete');
-//                    }elseif ($request->has('type') && $request->type==='latest'){
-//                        $q->where('created_at', '>',
-//                            Carbon::now()->subHours(3)->toDateTimeString()
-//                        );
-//                    }
-//                })
-//                ->orderBy('id','desc')
-//                ->get();
-//        }
+            
+        //        $referral = Referral::where('guard_name','=','partner')
+        //            ->whereIn('name',Auth::user()->roles->pluck('name'))
+        //            ->pluck('name');
+        //        if (count($referral)>0){
+        //            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
+        //                ->whereHas('appointmentType',function ($q) use ($referral){
+        //                    $q->whereIn('referral_type',$referral);
+        //                })
+        //                ->where(function ($q) use ($request){
+        //                    if ($request->has('type') && $request->type==='pending'){
+        //                        $q->whereNull('clincial_id');
+        //                    }elseif ($request->has('type') && $request->type==='running'){
+        //                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
+        //                    }elseif ($request->has('type') && $request->type==='complete'){
+        //                        $q->where('status','=','complete');
+        //                    }elseif ($request->has('type') && $request->type==='latest'){
+        //                        $q->where('created_at', '>',
+        //                            Carbon::now()->subHours(1)->toDateTimeString()
+        //                        );
+        //                    }
+        //                })
+        //                ->orderBy('id','desc')
+        //                ->get();
+        //
+        //        }elseif (Auth::user()->hasRole('patient')){
+        //            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
+        //                ->where(function ($q) use ($request){
+        //                    if ($request->has('type') && $request->type==='pending'){
+        //                        $q->whereNull('clincial_id');
+        //                    }elseif ($request->has('type') && $request->type==='running'){
+        //                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
+        //                    }elseif ($request->has('type') && $request->type==='complete'){
+        //                        $q->where('status','=','complete');
+        //                    }elseif ($request->has('type') && $request->type==='latest'){
+        //                        $q->where('created_at', '>',
+        //                            Carbon::now()->subHours(3)->toDateTimeString()
+        //                        );
+        //                    }
+        //                })
+        //                ->where('user_id','=',Auth::user()->id)
+        //                ->orderBy('id','desc')
+        //                ->get();
+        //        }elseif (Auth::user()->hasRole('cashier')){
+        //            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
+        //                ->where(function ($q) use ($request){
+        //                    if ($request->has('type') && $request->type==='pending'){
+        //                        $q->whereNull('clincial_id');
+        //                    }elseif ($request->has('type') && $request->type==='running'){
+        //                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
+        //                    }elseif ($request->has('type') && $request->type==='complete'){
+        //                        $q->where('status','=','complete');
+        //                    }elseif ($request->has('type') && $request->type==='latest'){
+        //                        $q->where('created_at', '>',
+        //                            Carbon::now()->subHours(3)->toDateTimeString()
+        //                        );
+        //                    }
+        //                })
+        //                ->whereDoesntHave('appointmentType')
+        //                ->orderBy('id','desc')
+        //                ->get();
+        //        } else{
+        //            $patientRequestList = PatientRequest::with(['appointmentType','detail','patient','patientDetail','ccrm'])
+        //                ->where(function ($q) use ($request){
+        //                    if ($request->has('type') && $request->type==='pending'){
+        //                        $q->whereNull('clincial_id');
+        //                    }elseif ($request->has('type') && $request->type==='running'){
+        //                        $q->whereNotNull('clincial_id')->where('status','!=','complete');
+        //                    }elseif ($request->has('type') && $request->type==='complete'){
+        //                        $q->where('status','=','complete');
+        //                    }elseif ($request->has('type') && $request->type==='latest'){
+        //                        $q->where('created_at', '>',
+        //                            Carbon::now()->subHours(3)->toDateTimeString()
+        //                        );
+        //                    }
+        //                })
+        //                ->orderBy('id','desc')
+        //                ->get();
+        //        }
 
         if (count($patientRequestList)>0){
             return $this->generateResponse(true,'Patient Request List',$patientRequestList,200);
@@ -636,7 +640,7 @@ class PatientRequestController extends Controller
         curl_setopt( $res, CURLOPT_RETURNTRANSFER, TRUE ); // don't echo
         curl_setopt( $res, CURLOPT_SSL_VERIFYPEER, FALSE );
         curl_setopt( $res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
-//        curl_setopt( $res, CURLOPT_USERPWD, $auth ); // authenticate
+        //        curl_setopt( $res, CURLOPT_USERPWD, $auth ); // authenticate
         curl_setopt( $res, CURLOPT_POSTFIELDS, $fields );
         // send cURL
         $result = curl_exec( $res );
@@ -654,7 +658,7 @@ class PatientRequestController extends Controller
         }
         $from = "12089104598";
         $to = "5166000122";
-//        $to = "9173646218";
+        //        $to = "9173646218";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
@@ -673,7 +677,7 @@ class PatientRequestController extends Controller
         curl_setopt( $res, CURLOPT_RETURNTRANSFER, TRUE ); // don't echo
         curl_setopt( $res, CURLOPT_SSL_VERIFYPEER, FALSE );
         curl_setopt( $res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
-//        curl_setopt( $res, CURLOPT_USERPWD, $auth ); // authenticate
+        //        curl_setopt( $res, CURLOPT_USERPWD, $auth ); // authenticate
         curl_setopt( $res, CURLOPT_POSTFIELDS, $fields );
         // send cURL
         $result = curl_exec( $res );
@@ -681,12 +685,11 @@ class PatientRequestController extends Controller
         if($type == 2){
             return $this->sendNexmoMessageClinician($userDetails);
         }
-
     }
     public function sendNexmoMessageClinician($userDetails){
         $from = "12089104598";
         $to = "5166000122";
-//        $to = "9173646218";
+        //        $to = "9173646218";
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";
 
@@ -705,7 +708,7 @@ class PatientRequestController extends Controller
         curl_setopt( $res, CURLOPT_RETURNTRANSFER, TRUE ); // don't echo
         curl_setopt( $res, CURLOPT_SSL_VERIFYPEER, FALSE );
         curl_setopt( $res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
-//        curl_setopt( $res, CURLOPT_USERPWD, $auth ); // authenticate
+        //        curl_setopt( $res, CURLOPT_USERPWD, $auth ); // authenticate
         curl_setopt( $res, CURLOPT_POSTFIELDS, $fields );
         // send cURL
         $result = curl_exec( $res );
@@ -819,6 +822,36 @@ class PatientRequestController extends Controller
             return $this->generateResponse(true, 'Preparation time updated successfully', null, 200);
         } catch (\Exception $ex) {
             return $this->generateResponse(false, $ex->getMessage());
+        }
+    }
+
+    public static function sendmail($data)
+    {
+        // $roadlController = new RoadlController();
+        // $distance = $roadlController->calculateDistanceBetweenTwoAddresses($patient->latitude, $patient->longitude, $request->latitude,$request->longitude);
+        
+        if ($data->patient && $data->patient->email) {
+            $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
+            $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
+            $details = [
+                'first_name' => ($data->patient->first_name) ? $data->patient->first_name : '' ,
+                'last_name' => ($data->patient->last_name) ? $data->patient->last_name : '',
+                'status' => 'Accepted',
+                'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within minutes',
+            ];
+            Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
+        }
+
+        if ($data->detail && $data->detail->email) {
+            $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
+            $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
+            $details = [
+                'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
+                'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
+                'status' => 'Accepted',
+                'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within ' . $distance . ' minutes',
+            ];
+            Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
         }
     }
 }
