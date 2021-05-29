@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Helpers\Helper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Demographic extends Model
 {
@@ -35,6 +37,7 @@ class Demographic extends Model
         'type',
     ];
 
+    protected $appends = ['address_latlng'];
 
     /**
      * The attributes that are casted.
@@ -65,5 +68,36 @@ class Demographic extends Model
     public function user()
     {
         return $this->hasOne(User::class,'id','user_id');
+    }
+
+
+    /**
+     * Get the user's Date Of Birth.
+     *
+     * @return string
+     */
+    public function getAddressLatlngAttribute()
+    {
+        $address='';
+        if ($this->address['address1']){
+            $address.= $this->address['address1'];
+        }
+        if ($this->address['city']){
+            $address.= ', '.$this->address['city'];
+        }
+        if ($this->address['state']){
+            $address.= ', '.$this->address['state'];
+        }
+        if ($this->address['zip_code']){
+            $address.= ', '.$this->address['zip_code'];
+        }
+        
+        if ($address){
+            $helper = new Helper();
+            $response = $helper->getLatLngFromAddress($address);
+            if ($response->status==="OK"){
+                return $response->results[0]->geometry->location;
+            }
+        }
     }
 }

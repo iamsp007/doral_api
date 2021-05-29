@@ -15,10 +15,12 @@ use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
 use App\Mail\UpdateStatusNotification;
+use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class PatientRequestController extends Controller
@@ -91,11 +93,13 @@ class PatientRequestController extends Controller
 
                 $patientSecond->save();
                 $parent_id=$patient->id;
-                $data=PatientRequest::with('detail', 'patient')
-                ->where('id','=',$patientSecond->id)
-                ->first();
-                self::sendmail($patientSecond);
-
+                // $data=PatientRequest::with('detail', 'patient')
+                // ->where('id','=',$patientSecond->id)
+                // ->first();
+                // Log::info('email start');
+                // $mail = self::sendmail($data);
+                // log::info('email send success'.$mail);
+                // log::info('email end');
             } else {
                 $patientSecond = new PatientRequest();
 
@@ -125,16 +129,20 @@ class PatientRequestController extends Controller
                 $patientSecond->save();
                 $parent_id=$patientRequest->id;
                 
-                $data=PatientRequest::with('detail', 'patient')
-                ->where('id','=',$patientSecond->id)
-                ->first();
-                self::sendmail($data);
+                // $data=PatientRequest::with('detail', 'patient')
+                // ->where('id','=',$patientSecond->id)
+                // ->first();
+                // Log::info('email start');
+                // $mail = self::sendmail($data);
+                // log::info('email send success'.$mail);
+                // log::info('email end');
             }
             // If assign clinician
             $checkAssignId = '';
             if($request->clinician_list_id !='' && $request->clinician_list_id !=0) {
                 $checkAssignId = $request->clinician_list_id;
             }
+          
             if($checkAssignId == '') {
                 if($request->type_id == 4) {
                     $clinicianIds = User::with('roles')
@@ -160,6 +168,13 @@ class PatientRequestController extends Controller
                     ->where('id','=',$patientSecond->id)
                     ->first();
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+
+                NotificationHistory::create([
+                    'type' => 'RoadL Request',
+                    'sender_id' => $data->user_id,
+                    'request_id' => $data->id,
+                    'model_type' => 'PatientRequest',
+                ]);
                 return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
                 // if ($request->has('type')){
                 // foreach ($request->type as $value) {
@@ -175,6 +190,13 @@ class PatientRequestController extends Controller
                     ->where('id','=',$patientSecond->id)
                     ->first();
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+
+                NotificationHistory::create([
+                    'type' => 'RoadL Request',
+                    'sender_id' => $data->user_id,
+                    'request_id' => $data->id,
+                    'model_type' => 'PatientRequest',
+                ]);
                 return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
             }
             
@@ -455,9 +477,9 @@ class PatientRequestController extends Controller
         }else if(Auth::user()->hasRole('DME')) {
             $role = 12;
         }
-
+        
         if (Auth::user()->hasRole('patient')){
-            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                 // ->where(function ($q) use ($status){
                 //     if ($status!=='all'){
                 //         $q->where('status','=',$status);
@@ -470,9 +492,8 @@ class PatientRequestController extends Controller
                 ->orderBy('id','asc')
                 ->get();
                
-        }elseif (Auth::user()->is_available==='2'){
-
-            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+        } elseif (Auth::user()->is_available==='2'){
+            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                 ->where('clincial_id','=',Auth::user()->id)
                 ->whereNotNull('parent_id')
                 ->where('type_id',$role)
@@ -482,7 +503,7 @@ class PatientRequestController extends Controller
                 ->get();
         } else {
             if($status[0] == 1) {
-                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                     ->whereIn('status',$status)
                     ->whereNotNull('parent_id')
                     ->where('type_id',$role)
@@ -490,7 +511,7 @@ class PatientRequestController extends Controller
                     ->orderBy('id','asc')
                     ->get();
                 if($role == 4 && $designation !='') {
-                    $directClinicins = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                    $directClinicins = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                         ->whereIn('status',$status)
                         ->where('clincial_id','=',Auth::user()->id)
                         ->whereNotNull('parent_id')
@@ -503,7 +524,7 @@ class PatientRequestController extends Controller
                     }
                 }
             }else {
-                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                 ->where('clincial_id','=',Auth::user()->id)
                 ->whereNotNull('parent_id')
                 ->whereIn('status', ['2','3','6','7'])
@@ -831,6 +852,7 @@ class PatientRequestController extends Controller
         // $distance = $roadlController->calculateDistanceBetweenTwoAddresses($patient->latitude, $patient->longitude, $request->latitude,$request->longitude);
         
         if ($data->patient && $data->patient->email) {
+            log::info($data->patient->email);
             $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
             $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
             $details = [
@@ -843,13 +865,14 @@ class PatientRequestController extends Controller
         }
 
         if ($data->detail && $data->detail->email) {
+            log::info($data->detail->email);
             $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
             $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
             $details = [
                 'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
                 'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
                 'status' => 'Accepted',
-                'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within ' . $distance . ' minutes',
+                'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within minutes',
             ];
             Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
         }
