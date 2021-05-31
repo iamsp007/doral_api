@@ -24,8 +24,31 @@ class SendClinicianPatientRequestNotification
     public function __construct($data,$clinicianList)
     {
         foreach ($clinicianList as $item) {
-            $message="Patient RoadL Request ";
-            $title="Patient RoadL Request ";
+            $first_name = ($item->first_name) ? $item->first_name : '';
+            $last_name = ($item->first_name) ? $item->first_name : '';
+            $address='';
+            if($item->demographic && $item->demographic->address) {
+                
+                $addressData = $item->demographic->address;
+                if ($addressData['address1']){
+                    $address.= $addressData['address1'] . ',';
+                }
+                if ($addressData['city']){
+                    $address.=', '.$addressData['city'] . ',';
+                }
+                if ($addressData['state']){
+                    $address.=', '.$addressData['state'] . ',';
+                }
+                if ($addressData['zip_code']){
+                    $address.=', '.$addressData['zip_code'] . ',';
+                }
+                $message = '';
+                if ($address){
+                    $message="The road request came from this address " . $address;
+                }
+            }
+           
+            $title="You have been requested by " . $first_name . ' ' . $last_name;
             $token=$item->device_token;
             $web_token=$item->web_token;
             $helper = new Helper();
