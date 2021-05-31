@@ -19,7 +19,6 @@ use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -93,6 +92,16 @@ class PatientRequestController extends Controller
 
                 $patientSecond->save();
                 $parent_id=$patient->id;
+
+                $notificationHistory = new NotificationHistory();
+                $notificationHistory->type = 'RoadL Request';
+                $notificationHistory->sender_id = $request->user_id;
+                $notificationHistory->request_id = $patientSecond->id;
+                $notificationHistory->model_type = PatientRequest::class;
+                $notificationHistory->status = 'active';
+
+                $notificationHistory->save();
+               
                 // $data=PatientRequest::with('detail', 'patient')
                 // ->where('id','=',$patientSecond->id)
                 // ->first();
@@ -128,7 +137,16 @@ class PatientRequestController extends Controller
             
                 $patientSecond->save();
                 $parent_id=$patientRequest->id;
-                
+               
+                $notificationHistory = new NotificationHistory();
+                $notificationHistory->type = 'RoadL Request';
+                $notificationHistory->sender_id = $request->user_id;
+                $notificationHistory->request_id = $patientSecond->id;
+                $notificationHistory->model_type = PatientRequest::class;
+                $notificationHistory->status = 'active';
+
+                $notificationHistory->save();
+               
                 // $data=PatientRequest::with('detail', 'patient')
                 // ->where('id','=',$patientSecond->id)
                 // ->first();
@@ -161,20 +179,14 @@ class PatientRequestController extends Controller
                 })
                 // ->where('distance','<=',20)
                     ->pluck('id');
-                $clinicianList = User::with('demographic')->whereIn('id',$markers)->get();
+                $clinicianList = User::whereIn('id',$markers)->get();
                 // $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
 
-                $data=PatientRequest::with('detail')
+                $data=PatientRequest::with('detail','patient')
                     ->where('id','=',$patientSecond->id)
                     ->first();
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
 
-                NotificationHistory::create([
-                    'type' => 'RoadL Request',
-                    'sender_id' => $data->user_id,
-                    'request_id' => $data->id,
-                    'model_type' => 'PatientRequest',
-                ]);
                 return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
                 // if ($request->has('type')){
                 // foreach ($request->type as $value) {
@@ -185,18 +197,12 @@ class PatientRequestController extends Controller
                 // }
                 // return $response;
             }else {
-                $clinicianList = User::with('demographic')->where('id',$checkAssignId)->get();
-                $data=PatientRequest::with('detail')
+                $clinicianList = User::where('id',$checkAssignId)->get();
+                $data=PatientRequest::with('detail','patient')
                     ->where('id','=',$patientSecond->id)
                     ->first();
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
 
-                NotificationHistory::create([
-                    'type' => 'RoadL Request',
-                    'sender_id' => $data->user_id,
-                    'request_id' => $data->id,
-                    'model_type' => 'PatientRequest',
-                ]);
                 return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
             }
             
@@ -240,19 +246,19 @@ class PatientRequestController extends Controller
                 $assignAppointemntRoadl->referral_type = $type;
                 $assignAppointemntRoadl->save();
 
-                $clinicianList = User::with('demographic')->whereHas('roles',function ($q) use ($request,$type){
+                $clinicianList = User::whereHas('roles',function ($q) use ($request,$type){
                     $q->where('name','=',$type);
                 })->where('is_available','=','1')->get();
 
-                $data=PatientRequest::with('detail')
+                $data=PatientRequest::with('detail','patient')
                     ->where('id','=',$patient->id)
                     ->first();
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
             }else{
-                $clinicianList = User::with('demographic')->whereHas('roles',function ($q){
+                $clinicianList = User::whereHas('roles',function ($q){
                     $q->where('name','=','clinician');
                 })->where('is_available','=','1')->get();
-                $data=PatientRequest::with('detail')
+                $data=PatientRequest::with('detail','patient')
                     ->where('id','=',$patient->id)
                     ->first();
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
@@ -374,6 +380,12 @@ class PatientRequestController extends Controller
             $patient->updated_at=Carbon::now()->toDateTime();
             $patient->status='2';
             if ($patient->save()){
+
+                $notificationHistory = NotificationHistory::where($patient->id)->first();
+                $notificationHistory->receiver_id = $patient->clincial_id;
+                $notificationHistory->status = 'accept';
+                $notificationHistory->save();
+
                 $users = User::find($request->user_id);
                 $users->is_available = 2;
                 $users->latitude = $request->latitude;
@@ -799,7 +811,11 @@ class PatientRequestController extends Controller
             PatientRequest::find($request['patient_request_id'])->update([
                 'status' => '4'
             ]);
-        
+            $notificationHistory = NotificationHistory::where($request['patient_request_id'])->first();
+            $notificationHistory->receiver_id = $patientRequstModel->clincial_id;
+            $notificationHistory->status = 'complete';
+            $notificationHistory->save();
+
             $patientRequstModel->detail()->update([
                 'is_available' => 1,
             ]);
