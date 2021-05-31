@@ -161,7 +161,7 @@ class PatientRequestController extends Controller
                 })
                 // ->where('distance','<=',20)
                     ->pluck('id');
-                $clinicianList = User::whereIn('id',$markers)->get();
+                $clinicianList = User::with('demographic')->whereIn('id',$markers)->get();
                 // $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
 
                 $data=PatientRequest::with('detail')
@@ -185,7 +185,7 @@ class PatientRequestController extends Controller
                 // }
                 // return $response;
             }else {
-                $clinicianList = User::where('id',$checkAssignId)->get();
+                $clinicianList = User::with('demographic')->where('id',$checkAssignId)->get();
                 $data=PatientRequest::with('detail')
                     ->where('id','=',$patientSecond->id)
                     ->first();
@@ -240,7 +240,7 @@ class PatientRequestController extends Controller
                 $assignAppointemntRoadl->referral_type = $type;
                 $assignAppointemntRoadl->save();
 
-                $clinicianList = User::whereHas('roles',function ($q) use ($request,$type){
+                $clinicianList = User::with('demographic')->whereHas('roles',function ($q) use ($request,$type){
                     $q->where('name','=',$type);
                 })->where('is_available','=','1')->get();
 
@@ -249,7 +249,7 @@ class PatientRequestController extends Controller
                     ->first();
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
             }else{
-                $clinicianList = User::whereHas('roles',function ($q){
+                $clinicianList = User::with('demographic')->whereHas('roles',function ($q){
                     $q->where('name','=','clinician');
                 })->where('is_available','=','1')->get();
                 $data=PatientRequest::with('detail')
@@ -523,7 +523,16 @@ class PatientRequestController extends Controller
                         $patientRequestList = $directClinicins;
                     }
                 }
-            }else {
+             
+            } else if($status[0] == 4) {
+                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                   ->where('clincial_id','=',Auth::user()->id)
+                   ->whereNotNull('parent_id')
+                   ->whereIn('status', ['4'])
+                   ->groupBy('parent_id')
+                   ->orderBy('id','asc')
+                   ->get();
+            } else {
                 $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                 ->where('clincial_id','=',Auth::user()->id)
                 ->whereNotNull('parent_id')
