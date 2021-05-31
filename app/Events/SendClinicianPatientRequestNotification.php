@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SendClinicianPatientRequestNotification
 {
@@ -23,32 +24,34 @@ class SendClinicianPatientRequestNotification
      */
     public function __construct($data,$clinicianList)
     {
-        foreach ($clinicianList as $item) {
-            $first_name = ($item->first_name) ? $item->first_name : '';
-            $last_name = ($item->first_name) ? $item->first_name : '';
-            $address='';
-            if($item->demographic && $item->demographic->address) {
-                
-                $addressData = $item->demographic->address;
-                if ($addressData['address1']){
-                    $address.= $addressData['address1'] . ',';
-                }
-                if ($addressData['city']){
-                    $address.=', '.$addressData['city'] . ',';
-                }
-                if ($addressData['state']){
-                    $address.=', '.$addressData['state'] . ',';
-                }
-                if ($addressData['zip_code']){
-                    $address.=', '.$addressData['zip_code'] . ',';
-                }
-                $message = '';
-                if ($address){
-                    $message="The road request came from this address " . $address;
-                }
+        $first_name = ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '';
+        $last_name = ($data->patient && $data->patient->last_name) ? $data->patient->last_name : '';
+
+        $address = $message = '';
+        if($data->patient && $data->patient->demographic) {
+            $addressData = $data->patient->demographic->address;
+          
+            if ($addressData['address1']){
+                $address.= $addressData['address1'];
             }
-           
-            $title="You have been requested by " . $first_name . ' ' . $last_name;
+            if ($addressData['city']){
+                $address.=', '.$addressData['city'];
+            }
+            if ($addressData['state']){
+                $address.=', '.$addressData['state'];
+            }
+            if ($addressData['zip_code']){
+                $address.=', '.$addressData['zip_code'];
+            }
+            if ($address){
+                $message="The roadL request came from this address: " . $address;
+            }
+        }
+
+        foreach ($clinicianList as $item) {
+            $message = $message;
+            $title="RoadL request of " . $first_name . ' ' . $last_name;
+
             $token=$item->device_token;
             $web_token=$item->web_token;
             $helper = new Helper();
@@ -57,7 +60,7 @@ class SendClinicianPatientRequestNotification
             }
             if ($web_token){
                 $link=env('WEB_URL').'clinician/start-roadl/'.$data->id;
-                \Log::info($link);
+                Log::info($link);
                 $helper->sendWebNotification($web_token,$title,$message,$data,1,$link);
             }
         }
