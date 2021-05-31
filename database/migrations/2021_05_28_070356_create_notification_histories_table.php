@@ -20,6 +20,8 @@ class CreateNotificationHistoriesTable extends Migration
             $table->integer('receiver_id')->nullable();
             $table->integer('request_id')->nullable();
             $table->string('model_type');
+            $table->string('status');
+            $table->enum('is_read', [0, 1])->comment('0=unread,1=read')->default(0);
             $table->timestamps();
         });
     }
