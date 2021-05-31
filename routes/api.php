@@ -72,6 +72,8 @@ Route::group([
     Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
     Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
     Route::get('notification-history', 'App\Http\Controllers\NotificationHistoryController@index');
+    Route::get('read-notification/{id}', 'App\Http\Controllers\NotificationHistoryController@readNotification');
+    
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
