@@ -60,7 +60,6 @@ class SendClinicianPatientRequestNotification
             }
             if ($web_token){
                 $link=env('WEB_URL').'clinician/start-roadl/'.$data->id;
-                Log::info($link);
                 $helper->sendWebNotification($web_token,$title,$message,$data,1,$link);
             }
         }

@@ -31,12 +31,12 @@ class PatientRequest extends Model
 
     public function detail(){
 
-        return $this->belongsTo(User::class,'clincial_id','id')->select('id','latitude','longitude','first_name','last_name');
+        return $this->belongsTo(User::class,'clincial_id','id')->select('id','latitude','longitude','first_name','last_name','email');
     }
 
     public function patient(){
 
-        return $this->belongsTo(User::class,'user_id','id')->select('id','latitude','longitude','first_name','last_name');
+        return $this->belongsTo(User::class,'user_id','id')->select('id','latitude','longitude','first_name','last_name','email');
     }
     public function patientDetail(){
 
