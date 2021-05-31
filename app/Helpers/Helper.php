@@ -165,7 +165,7 @@ class Helper extends BaseController
             'data'=>$data,
             "messageType" => $notification_type
         );
-\Log::info($fields);
+
         $payload=json_encode($fields);
         $curl_session=curl_init();
         curl_setopt($curl_session,CURLOPT_URL,$path_to_fcm);
@@ -177,7 +177,7 @@ class Helper extends BaseController
         curl_setopt($curl_session,CURLOPT_POSTFIELDS,$payload);
 
         $result=curl_exec($curl_session);
-        \Log::info($result);
+       
         curl_close($curl_session);
     }
 
@@ -215,7 +215,7 @@ class Helper extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
 
         $response = curl_exec($ch);
-        \Log::info($response);
+        
     }
 
     public function sendLocationEmit($data){

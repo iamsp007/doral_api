@@ -87,6 +87,8 @@ class PatientRequestController extends Controller
               
                 if(isset($request->clinician_list_id) && $request->clinician_list_id !='' && $request->clinician_list_id !=0) {
                     $patientSecond->clincial_id = $request->clinician_list_id;
+
+                    
                 }
                 $patientSecond->parent_id = $patient->id;
 
@@ -101,14 +103,6 @@ class PatientRequestController extends Controller
                 $notificationHistory->status = 'active';
 
                 $notificationHistory->save();
-               
-                // $data=PatientRequest::with('detail', 'patient')
-                // ->where('id','=',$patientSecond->id)
-                // ->first();
-                // Log::info('email start');
-                // $mail = self::sendmail($data);
-                // log::info('email send success'.$mail);
-                // log::info('email end');
             } else {
                 $patientSecond = new PatientRequest();
 
@@ -146,15 +140,14 @@ class PatientRequestController extends Controller
                 $notificationHistory->status = 'active';
 
                 $notificationHistory->save();
-               
-                // $data=PatientRequest::with('detail', 'patient')
-                // ->where('id','=',$patientSecond->id)
-                // ->first();
-                // Log::info('email start');
-                // $mail = self::sendmail($data);
-                // log::info('email send success'.$mail);
-                // log::info('email end');
             }
+
+            $data=PatientRequest::with('detail','patient')
+            ->where('id','=',$patientSecond->id)
+            ->first();
+
+            self::sendmail($data);
+
             // If assign clinician
             $checkAssignId = '';
             if($request->clinician_list_id !='' && $request->clinician_list_id !=0) {
@@ -185,6 +178,7 @@ class PatientRequestController extends Controller
                 $data=PatientRequest::with('detail','patient')
                     ->where('id','=',$patientSecond->id)
                     ->first();
+            
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
 
                 return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
@@ -201,6 +195,7 @@ class PatientRequestController extends Controller
                 $data=PatientRequest::with('detail','patient')
                     ->where('id','=',$patientSecond->id)
                     ->first();
+
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
 
                 return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
@@ -424,7 +419,6 @@ class PatientRequestController extends Controller
                 $data=PatientRequest::with('detail', 'patient')
                     ->where('id','=',$request->request_id)
                     ->first();
-
 
                 $roadlController = new RoadlController();
                 $distance = $roadlController->calculateDistanceBetweenTwoAddresses($patient->latitude, $patient->longitude, $request->latitude,$request->longitude);
@@ -827,29 +821,29 @@ class PatientRequestController extends Controller
                 ]);
             };
 
-            // if ($patientRequstModel->patient && $patientRequstModel->patient->email) {
-            //     $clinicianFirstName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
-            //     $clinicianLastName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
-            //     $details = [
-            //         'first_name' => ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '' ,
-            //         'last_name' => ($patientRequstModel->patient->last_name) ? $patientRequstModel->patient->last_name : '',
-            //         'status' => 'Completed',
-            //         'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within 30 minutes',
-            //     ];
-            //     Mail::to($patientRequstModel->patient->email)->send(new UpdateStatusNotification($details));
-            // }
+            if ($patientRequstModel->patient && $patientRequstModel->patient->email) {
+                $clinicianFirstName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
+                $clinicianLastName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
+                $details = [
+                    'first_name' => ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '' ,
+                    'last_name' => ($patientRequstModel->patient->last_name) ? $patientRequstModel->patient->last_name : '',
+                    'status' => 'Completed',
+                    'message' => 'Your request has been completed by ' . $clinicianFirstName . ' ' . $clinicianLastName. '.',
+                ];
+                Mail::to($patientRequstModel->patient->email)->send(new UpdateStatusNotification($details));
+            }
 
-            // if ($patientRequstModel->detail && $patientRequstModel->detail->email) {
-            //     $patientFirstName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
-            //     $patientLastName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
-            //     $details = [
-            //         'first_name' => ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '' ,
-            //         'last_name' => ($patientRequstModel->detail->last_name) ? $patientRequstModel->detail->last_name : '',
-            //         'status' => 'Completed',
-            //         'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within 20 minutes',
-            //     ];
-            //     Mail::to($patientRequstModel->detail->email)->send(new UpdateStatusNotification($details));
-            // }
+            if ($patientRequstModel->detail && $patientRequstModel->detail->email) {
+                $patientFirstName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
+                $patientLastName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
+                $details = [
+                    'first_name' => ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '' ,
+                    'last_name' => ($patientRequstModel->detail->last_name) ? $patientRequstModel->detail->last_name : '',
+                    'status' => 'Completed',
+                    'message' => 'Your request has been completed of ' . $patientFirstName . ' ' . $patientLastName. '.',
+                ];
+                Mail::to($patientRequstModel->detail->email)->send(new UpdateStatusNotification($details));
+            }
 
             return $this->generateResponse(true, 'Status complated successfully', null, 200);
         } catch (\Exception $ex) {
@@ -873,31 +867,29 @@ class PatientRequestController extends Controller
 
     public static function sendmail($data)
     {
-        // $roadlController = new RoadlController();
-        // $distance = $roadlController->calculateDistanceBetweenTwoAddresses($patient->latitude, $patient->longitude, $request->latitude,$request->longitude);
-        
         if ($data->patient && $data->patient->email) {
-            log::info($data->patient->email);
+            log::info('Patient email is'.$data->patient->email);
             $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
             $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
             $details = [
                 'first_name' => ($data->patient->first_name) ? $data->patient->first_name : '' ,
                 'last_name' => ($data->patient->last_name) ? $data->patient->last_name : '',
                 'status' => 'Accepted',
-                'message' => 'Your request has been accepted by ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and will be arriving within minutes',
+                'message' => 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and By when will he reach you will get the details in the mail after . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' accepts the request.'
             ];
             Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
         }
 
         if ($data->detail && $data->detail->email) {
-            log::info($data->detail->email);
+            log::info('clinician email is:'.$data->detail->email);
             $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
             $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
             $details = [
                 'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
                 'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
-                'status' => 'Accepted',
-                'message' => 'You have accepted' . $patientFirstName . ' ' . $patientLastName .'RoadL request and you have to reach the patients house within minutes',
+                'status' => 'Request',
+                'message' => 'You got a roadL request by ' . $patientFirstName . ' ' . $patientLastName .'
+                 manisha You have sent roadL request to manisha You have requested' . $patientFirstName . ' ' . $patientLastName .' After accepting the request, at what time you have to reach the patient’s house, they will get you in the mail.',
             ];
             Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
         }
