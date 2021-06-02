@@ -34,7 +34,7 @@
                                                 <td height="20" style="font-size:1px; line-height:1px;">&nbsp;</td>
                                             </tr>
                                             <tr>
-                                                <td align="center" class="hc_txt_14" style="font-family:Montserrat, Arial, sans-serif; font-size:16px; line-height:22px; font-weight: 400; color:#707070;">Your account password was just changed by email {{ $details['email'] }}. You're getting this email to make sure that it was you.Your new password given below.</td>
+                                                <td align="center" class="hc_txt_14" style="font-family:Montserrat, Arial, sans-serif; font-size:16px; line-height:22px; font-weight: 400; color:#707070;">Thank you for Registration with <b>DORAL HEALTH CONNECT. </b>You can log in with the login details given below.</td>
                                             </tr>
                                             <tr>
                                                 <td height="30" class="hc_height">&nbsp;</td>

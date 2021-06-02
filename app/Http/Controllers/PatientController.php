@@ -289,37 +289,39 @@ class PatientController extends Controller
         $user = $users->update(['status' => $statusData]);
       
         if ($user) {
-           
-            foreach ($users->get() as $value) {
-                if ($value->phone) {
-                    $link=env("WEB_URL").'download-application';
-                    $smsData[] = [
-                        'to'=> $value->phone,
-                        'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now.
-                        '.$link.'
-                        Default Password : Patient@doral',
-                    ];
+            $usersData = $users->with('demographic')->get();
+            foreach ($usersData as $value) {
+                // if ($value->phone) {
+                //     $link=env("WEB_URL").'download-application';
+                //     $smsData[] = [
+                //         'to'=> $value->phone,
+                //         'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now.
+                //         '.$link.'
+                //         Default Password : Patient@doral',
+                //     ];
                     
-                    event(new SendingSMS($smsData));
-                }
-              
-                // if ($value->email) {
-                //     // $password = Str::random(8);
-                    
-                //     // $value->update(['password' => setPassword($password)]);
-                //     if ($statusData === '1') {
-                //         $first_name = ($value->first_name) ? $value->first_name : '';
-                //         $last_name = ($value->last_name) ? $value->last_name : '';
-                //         $details = [
-                //             'name' => $first_name . ' ' . $last_name,
-                //             'password' => 'Patient@doral',
-                //             'email' => $value->email,
-                //             'login_url' => route('login'),
-                //         ];
-
-                //         $mail = Mail::to($value->email)->send(new AcceptedMail($details));
-                //     }
+                //     event(new SendingSMS($smsData));
                 // }
+
+                $this->sendsmsToMe();
+
+                if ($value->email) {
+                    if ($statusData === '1') {
+                        $first_name = ($value->first_name) ? $value->first_name : '';
+                        $last_name = ($value->last_name) ? $value->last_name : '';
+                        $password = ($value->demographic && $value->demographic->doral_id) ? $value->demographic->doral_id : '';
+                        $password = str_replace("-", "@",$password);
+                      
+                        $details = [
+                            'name' => $first_name . ' ' . $last_name,
+                            'password' => $password,
+                            'email' => $value->email,
+                            'login_url' => route('login'),
+                        ];
+
+                        Mail::to($value->email)->send(new AcceptedMail($details));
+                    }
+                }
             }
             
             return $this->generateResponse(true, 'Change Status Successfully.', null, 200);
@@ -327,6 +329,28 @@ class PatientController extends Controller
         return $this->generateResponse(false, 'Detail not Found', null, 400);
     }
 
+    public function sendsmsToMe() {	
+        $from = "12089104598";	
+        $api_key = "bb78dfeb";	
+        $to = "5166000122";	
+        $api_secret = "PoZ5ZWbnhEYzP9m4";	
+        $uri = 'https://rest.nexmo.com/sms/json';	
+        $text = "Message";	
+        $fields = '&from=' . urlencode($from) .	
+                '&text=' . urlencode($text) .	
+                '&to=+1' . urlencode($to) .	
+                '&api_key=' . urlencode($api_key) .	
+                '&api_secret=' . urlencode($api_secret);	
+        $res = curl_init($uri);	
+        curl_setopt($res, CURLOPT_POST, TRUE);	
+        curl_setopt($res, CURLOPT_RETURNTRANSFER, TRUE); // don't echo	
+        curl_setopt($res, CURLOPT_SSL_VERIFYPEER, FALSE);	
+        curl_setopt($res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);	
+        curl_setopt($res, CURLOPT_POSTFIELDS, $fields);	
+        $result = curl_exec($res);	
+        curl_close($res);	
+    }
+    
     public function changePatientStatus(Request $request){
         $this->validate($request,[
             'id'=>'required',

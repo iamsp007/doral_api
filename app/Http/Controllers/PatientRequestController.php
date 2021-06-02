@@ -14,6 +14,7 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
+use App\Jobs\SendMailRoadlRequest;
 use App\Mail\UpdateStatusNotification;
 use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
@@ -146,7 +147,8 @@ class PatientRequestController extends Controller
             ->where('id','=',$patientSecond->id)
             ->first();
 
-            self::sendmail($data);
+            SendMailRoadlRequest::dispatch($data);
+
 
             // If assign clinician
             $checkAssignId = '';
@@ -376,7 +378,7 @@ class PatientRequestController extends Controller
             $patient->status='2';
             if ($patient->save()){
 
-                $notificationHistory = NotificationHistory::where($patient->id)->first();
+                $notificationHistory = NotificationHistory::where('request_id',$patient->id)->first();
                 $notificationHistory->receiver_id = $patient->clincial_id;
                 $notificationHistory->status = 'accept';
                 $notificationHistory->save();
@@ -805,7 +807,7 @@ class PatientRequestController extends Controller
             PatientRequest::find($request['patient_request_id'])->update([
                 'status' => '4'
             ]);
-            $notificationHistory = NotificationHistory::where($request['patient_request_id'])->first();
+            $notificationHistory = NotificationHistory::where('request_id',$request['patient_request_id'])->first();
             $notificationHistory->receiver_id = $patientRequstModel->clincial_id;
             $notificationHistory->status = 'complete';
             $notificationHistory->save();
@@ -869,11 +871,11 @@ class PatientRequestController extends Controller
     {
         if ($data->patient && $data->patient->email) {
             log::info('Patient email is'.$data->patient->email);
-            $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
-            $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
+            $clinicianFirstName = ($data->detail && $data->detail->first_name) ? $data->detail->first_name : '';
+            $clinicianLastName = ($data->detail && $data->detail->last_name) ? $data->detail->first_name : '';
             $details = [
-                'first_name' => ($data->patient->first_name) ? $data->patient->first_name : '' ,
-                'last_name' => ($data->patient->last_name) ? $data->patient->last_name : '',
+                'first_name' => ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '' ,
+                'last_name' => ($data->patient && $data->patient->last_name) ? $data->patient->last_name : '',
                 'status' => 'Accepted',
                 'message' => 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and By when will he reach you will get the details in the mail after . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' accepts the request.'
             ];
@@ -882,11 +884,11 @@ class PatientRequestController extends Controller
 
         if ($data->detail && $data->detail->email) {
             log::info('clinician email is:'.$data->detail->email);
-            $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
-            $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
+            $patientFirstName = ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '';
+            $patientLastName = ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '';
             $details = [
-                'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
-                'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
+                'first_name' => ($data->detail && $data->detail->first_name) ? $data->detail->first_name : '' ,
+                'last_name' => ($data->detail && $data->detail->last_name) ? $data->detail->last_name : '',
                 'status' => 'Request',
                 'message' => 'You got a roadL request by ' . $patientFirstName . ' ' . $patientLastName .'
                  manisha You have sent roadL request to manisha You have requested' . $patientFirstName . ' ' . $patientLastName .' After accepting the request, at what time you have to reach the patient’s house, they will get you in the mail.',
