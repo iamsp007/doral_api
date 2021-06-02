@@ -26,6 +26,7 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+use App\Jobs\SendEmailJob;
 use App\Mail\ChangePasswordNotification;
 use App\Models\Country;
 use App\Models\State;
@@ -102,6 +103,7 @@ class AuthController extends Controller
     public function register(RegistrationRequest $request)
     {
         try {
+
             $user = new User;
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
@@ -114,6 +116,7 @@ class AuthController extends Controller
             $user->designation_id = $request->designation_id;
             $user->assignRole($request->type)->syncPermissions(Permission::all());
             if ($user->save()) {
+                $password = $request->password;
                 $request = $request->toArray();
                 $id = $user->id;
                 if ($user->id) {
@@ -162,6 +165,16 @@ class AuthController extends Controller
                     }
                     $status = true;
                     $message = "Registration successful.";
+                    $first_name = ($user->first_name) ? $user->first_name : '';
+                    $last_name = ($user->last_name) ? $user->last_name : '';
+                    $full_name = $first_name . ' ' . $last_name;
+                    $details = [
+                        'name' => $full_name,
+                        'password' => $password,
+                        'email' => $user->email,
+                    ];
+                    SendEmailJob::dispatch($user->email,$details);
+
                     return $this->generateResponse(true, $message, $data, 200);
                 } else {
                     throw new \ErrorException('Error found');

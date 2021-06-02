@@ -25,16 +25,16 @@ class NotificationHistory extends Model
     ];
     public function sender(){
 
-        return $this->belongsTo(User::class,'sender_id','id')->select('id','first_name','last_name');
+        return $this->belongsTo(User::class,'sender_id','id');
     }
 
     public function receiver(){
 
-        return $this->belongsTo(User::class,'receiver_id','id')->select('id','first_name','last_name');
+        return $this->belongsTo(User::class,'receiver_id','id');
     }
 
     public function request(){
 
-        return $this->belongsTo(PatientRequest::class,'request_id','id')->select('id','test_name','reason');
+        return $this->belongsTo(PatientRequest::class,'request_id','id');
     }
 }
