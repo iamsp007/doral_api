@@ -299,12 +299,13 @@ class PatientController extends Controller
                     // Send Message Start
                     $link=env("WEB_URL").'download-application';
                     if($value->demographic->service_id == 6) {
-                        $message = 'This message is from Doral Health Connect. In order to track your nurse coming to your home for vaccination please click on the link below and download an app. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
+                        $message = 'This message is from Doral Health Connect. In order to track your nurse coming to your home for vaccination please click on the link below and download an app. '.$link . "  for login Username : ".$value->email." & Password : ".$password;
                     }else if($value->demographic->service_id == 3) {
-                        $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link;
+                        $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
+//                        $message = 'Congratulation! Your employer Radiology added you.'.$link. ' Username : xray@doral.com & Password : Xray@123';
                     }
                     $this->sendsmsToMe($message, $value->phone);
-                    $this->sendsmsToMe($message, '5166000122');
+//                    $this->sendsmsToMe($message, '5166000122');
                     // Send Message End
                 }
 
@@ -327,10 +328,11 @@ class PatientController extends Controller
         return $this->generateResponse(false, 'Detail not Found', null, 400);
     }
 
-    public function sendsmsToMe($message, $to) {	
+    public function sendsmsToMe($message, $to) {
+        $to = str_replace("-", "",$to);
+        $to = str_replace("-", "",$to);
         $from = "12089104598";	
-        $api_key = "bb78dfeb";	
-        $to = $to;	
+        $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";	
         $uri = 'https://rest.nexmo.com/sms/json';	
         $text = $message;	
