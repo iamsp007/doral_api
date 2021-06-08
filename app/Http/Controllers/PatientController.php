@@ -291,19 +291,11 @@ class PatientController extends Controller
         if ($user) {
             $usersData = $users->with('demographic')->get();
             foreach ($usersData as $value) {
-                // if ($value->phone) {
-                //     $link=env("WEB_URL").'download-application';
-                //     $smsData[] = [
-                //         'to'=> $value->phone,
-                //         'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now.
-                //         '.$link.'
-                //         Default Password : Patient@doral',
-                //     ];
-                    
-                //     event(new SendingSMS($smsData));
-                // }
-
-                $this->sendsmsToMe();
+                if ($value->phone) {
+                    $link=env("WEB_URL").'download-application';
+                    $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link;
+                    $this->sendsmsToMe($message, $value->phone);
+                }
 
                 if ($value->email) {
                     if ($statusData === '1') {
@@ -329,13 +321,13 @@ class PatientController extends Controller
         return $this->generateResponse(false, 'Detail not Found', null, 400);
     }
 
-    public function sendsmsToMe() {	
+    public function sendsmsToMe($message, $to) {	
         $from = "12089104598";	
         $api_key = "bb78dfeb";	
-        $to = "5166000122";	
+        $to = $to;	
         $api_secret = "PoZ5ZWbnhEYzP9m4";	
         $uri = 'https://rest.nexmo.com/sms/json';	
-        $text = "Message";	
+        $text = $message;	
         $fields = '&from=' . urlencode($from) .	
                 '&text=' . urlencode($text) .	
                 '&to=+1' . urlencode($to) .	
