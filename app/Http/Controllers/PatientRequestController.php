@@ -371,9 +371,9 @@ class PatientRequestController extends Controller
         
         $patient = PatientRequest::find($request->request_id);
         if ($patient){
-            if(null!==$patient->clincial_id){
-                return $this->generateResponse(false,'Request Already Accepted!',null,200);
-            }
+//            if(null!==$patient->clincial_id){
+//                return $this->generateResponse(false,'Request Already Accepted!',null,200);
+//            }
             $patient->clincial_id=$request->user_id;
             $patient->updated_at=Carbon::now()->toDateTime();
             $patient->status='2';

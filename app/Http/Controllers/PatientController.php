@@ -291,19 +291,24 @@ class PatientController extends Controller
         if ($user) {
             $usersData = $users->with('demographic')->get();
             foreach ($usersData as $value) {
+                $first_name = ($value->first_name) ? $value->first_name : '';
+                $last_name = ($value->last_name) ? $value->last_name : '';
+                $password = ($value->demographic && $value->demographic->doral_id) ? $value->demographic->doral_id : '';
+                $password = str_replace("-", "@",$password);
                 if ($value->phone) {
+                    // Send Message Start
                     $link=env("WEB_URL").'download-application';
-                    $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link;
+                    if($value->demographic->service_id == 6) {
+                        $message = 'This message is from Doral Health Connect. In order to track your nurse coming to your home for vaccination please click on the link below and download an app. '.$link . "  for login Username : ".$value->email." & Password : ".$password;
+                    }else if($value->demographic->service_id == 3) {
+                        $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
+                    }
                     $this->sendsmsToMe($message, $value->phone);
+                    // Send Message End
                 }
 
                 if ($value->email) {
                     if ($statusData === '1') {
-                        $first_name = ($value->first_name) ? $value->first_name : '';
-                        $last_name = ($value->last_name) ? $value->last_name : '';
-                        $password = ($value->demographic && $value->demographic->doral_id) ? $value->demographic->doral_id : '';
-                        $password = str_replace("-", "@",$password);
-                      
                         $details = [
                             'name' => $first_name . ' ' . $last_name,
                             'password' => $password,
@@ -321,10 +326,11 @@ class PatientController extends Controller
         return $this->generateResponse(false, 'Detail not Found', null, 400);
     }
 
-    public function sendsmsToMe($message, $to) {	
+    public function sendsmsToMe($message, $to) {
+        $to = str_replace("-", "",$to);
+        $to = str_replace("-", "",$to);
         $from = "12089104598";	
-        $api_key = "bb78dfeb";	
-        $to = $to;	
+        $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";	
         $uri = 'https://rest.nexmo.com/sms/json';	
         $text = $message;	
