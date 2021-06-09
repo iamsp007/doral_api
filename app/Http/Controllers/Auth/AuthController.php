@@ -113,7 +113,8 @@ class AuthController extends Controller
             $user->dob = dateFormat($request->dob);
             $user->gender = setGender($request->gender);
             $user->phone = $request->phone;
-            // $user->status = '1';
+            $user->service_id =  $request->service_id;
+            
             $user->designation_id = $request->designation_id;
             $user->assignRole($request->type)->syncPermissions(Permission::all());
             if ($user->save()) {
