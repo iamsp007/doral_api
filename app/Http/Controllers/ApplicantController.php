@@ -1109,6 +1109,7 @@ class ApplicantController extends Controller
         $applicant->$key = $request->$key;
         $applicant->phone = $request->phone ?? $applicant->phone;
         $applicant->home_phone = $request->home_phone ?? $applicant->home_phone;
+     
         $applicant->save();
 
         return $this->generateResponse(true, $key.' detail added.', $applicant, 200);

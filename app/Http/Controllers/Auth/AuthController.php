@@ -31,6 +31,7 @@ use App\Mail\ChangePasswordNotification;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -165,6 +166,7 @@ class AuthController extends Controller
                     }
                     $status = true;
                     $message = "Registration successful.";
+                   
                     $first_name = ($user->first_name) ? $user->first_name : '';
                     $last_name = ($user->last_name) ? $user->last_name : '';
                     $full_name = $first_name . ' ' . $last_name;
@@ -173,8 +175,9 @@ class AuthController extends Controller
                         'password' => $password,
                         'email' => $user->email,
                     ];
-                    SendEmailJob::dispatch($user->email,$details);
-
+                   
+                    SendEmailJob::dispatch($user->email, $details, 'WelcomeEmail');
+                   
                     return $this->generateResponse(true, $message, $data, 200);
                 } else {
                     throw new \ErrorException('Error found');

@@ -28,12 +28,6 @@
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tbody>
                       <tr>
-                        <td align="center" class="hc_txt_20" style="font-family:Montserrat, Arial, sans-serif; font-size:24px; font-weight:700; line-height:26px; color:#24272A;">RoadL Request {{ $details['status'] }}</td>
-                      </tr>
-                      <tr>
-                        <td height="20" style="font-size:1px; line-height:1px;">&nbsp;</td>
-                      </tr>
-                      <tr>
                         <td align="center" class="hc_txt_20" style="font-family:Montserrat, Arial, sans-serif; font-size:24px; font-weight:700; line-height:26px; color:#24272A;">Hi {{ $details['first_name'] }} {{ $details['last_name'] }},</td>
                       </tr>
                       <tr>

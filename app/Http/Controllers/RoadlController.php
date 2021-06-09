@@ -9,6 +9,7 @@ use App\Helpers\Helper;
 use App\Http\Requests\PatientRequestOtpVerifyRequest;
 use App\Http\Requests\RoadlInformationRequest;
 use App\Http\Requests\RoadlInformationShowRequest;
+use App\Jobs\SendEmailJob;
 use App\Models\AssignAppointmentRoadl;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
@@ -27,30 +28,29 @@ class RoadlController extends Controller
         if ($patientRequest){
             if ($request->status==="4"){
                 $patientRequest->status = $request->status;
-//                $patientRequest->otp=rand(1000,9999);
+                //                $patientRequest->otp=rand(1000,9999);
                 $patientRequest->save();
-                $allPatientRequest = PatientRequest::where('parent_id','=',$patientRequest->parent_id)
-                    ->get();
+                $allPatientRequest = PatientRequest::where('parent_id','=',$patientRequest->parent_id)->get();
                 $collection = collect($allPatientRequest)->whereIn('status',['4','5'])->count();
                 if ($collection===count($allPatientRequest)){
                     $patientRequestParent = PatientRequest::find($patientRequest->parent_id);
                     $patientRequestParent->status = '4';
                     $patientRequestParent->save();
                 }
-//                $user = User::find($request->user_id);
-//                if ($user){
-//                    $user->latitude = $request->latitude;
-//                    $user->longitude = $request->longitude;
-//                    $user->save();
-//                }
-//                $message="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
-//                $title="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
-//                $messages[]=array(
-//                    'to'=>User::find($patientRequest->user_id)->phone,
-//                    'message'=>$message
-//                );
-//                event(new SendingSMS($messages));
-//                event(new SendPatientNotificationMap($patientRequest,$patientRequest->user_id,$title,$message));
+                //                $user = User::find($request->user_id);
+                //                if ($user){
+                //                    $user->latitude = $request->latitude;
+                //                    $user->longitude = $request->longitude;
+                //                    $user->save();
+                //                }
+                //                $message="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
+                //                $title="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
+                //                $messages[]=array(
+                //                    'to'=>User::find($patientRequest->user_id)->phone,
+                //                    'message'=>$message
+                //                );
+                //                event(new SendingSMS($messages));
+                //                event(new SendPatientNotificationMap($patientRequest,$patientRequest->user_id,$title,$message));
                 return $this->generateResponse(true,'Request Status Update Successfully!',$patientRequest,200);
             }elseif ($request->status==="6"){
                 $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
@@ -65,6 +65,60 @@ class RoadlController extends Controller
                     $user->is_available = '1';
                 }
                 $user->save();
+            }
+            if ($patientRequest->patient && $patientRequest->patient->email) {
+                $clinicianFirstName = ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
+                $clinicianLastName = ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
+                $patientFirstName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
+                $patientLastName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
+                $address = '';
+                if ($patientRequest->patient->demographic && $patientRequest->patient->demographic->address) {
+                    $addressData = $patientRequest->patient->demographic->address;
+                 
+                    if ($addressData['address1']){
+                        $address.= $addressData['address1'];
+                    }
+                    if ($addressData['city']){
+                        $address.=', '.$addressData['city'];
+                    }
+                    if ($addressData['state']){
+                        $address.=', '.$addressData['state'];
+                    }
+                
+                    if ($addressData['zip_code']){
+                        $address.=', '.$addressData['zip_code'];
+                    }
+
+                    if ($address){
+                        $address = $address;
+                    }
+                }
+                $role_name = implode(',',$patientRequest->detail->roles->pluck('name')->toArray());
+              
+                $phone = ($patientRequest->patient->phone) ? $patientRequest->patient->phone : '';
+                $details = [
+                    'first_name' => ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '' ,
+                    'last_name' => ($patientRequest->patient->last_name) ? $patientRequest->patient->last_name : '',
+                    'message' => $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') arrived at ' . $patientFirstName . ' ' . $patientLastName . ' addrress: ' . $address . '. for RoadL request.',
+                    'phone' => $phone,
+                ];
+
+                SendEmailJob::dispatch($patientRequest->patient->email, $details, 'UpdateStatusNotification');
+            }
+
+            if ($patientRequest->detail && $patientRequest->detail->email) {
+                $patientFirstName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
+                $patientLastName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
+                $phone = ($patientRequest->detail->phone) ? $patientRequest->detail->phone : '';
+                $role_name = implode(',',$patientRequest->patient->roles->pluck('name')->toArray());
+             
+                $details = [
+                    'first_name' => ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '' ,
+                    'last_name' => ($patientRequest->detail->last_name) ? $patientRequest->detail->last_name : '',
+                    'message' => 'You have arrived RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
+                    'phone' => $phone,
+                ];
+                SendEmailJob::dispatch($patientRequest->detail->email, $details, 'UpdateStatusNotification');
             }
             return $this->generateResponse(true,'Your Roadl Status Update Successfully!',$patientRequest,200);
         }
