@@ -30,6 +30,6 @@ class WelcomeEmail extends Mailable
     public function build()
     {
         return $this->subject('Welcome to Doral Health Connect')
-        ->view('emails.welcome');
+        ->view('email.welcome');
     }
 }

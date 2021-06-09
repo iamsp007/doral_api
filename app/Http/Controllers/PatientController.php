@@ -302,10 +302,8 @@ class PatientController extends Controller
                         $message = 'This message is from Doral Health Connect. In order to track your nurse coming to your home for vaccination please click on the link below and download an app. '.$link . "  for login Username : ".$value->email." & Password : ".$password;
                     }else if($value->demographic->service_id == 3) {
                         $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
-//                        $message = 'Congratulation! Your employer Radiology added you.'.$link. ' Username : xray@doral.com & Password : Xray@123';
                     }
                     $this->sendsmsToMe($message, $value->phone);
-//                    $this->sendsmsToMe($message, '5166000122');
                     // Send Message End
                 }
 
