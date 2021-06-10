@@ -28,6 +28,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
 use App\Jobs\SendEmail;
 use App\Mail\ChangePasswordNotification;
+use App\Mail\WelcomeMailWithLoginDetail;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
@@ -177,8 +178,8 @@ class AuthController extends Controller
                         'email' => $user->email,
                     ];
                    
-                    SendEmail::dispatch($user->email, $details, 'WelcomeMailWithLoginDetail');
-                   
+                    // SendEmail::dispatch($user->email, $details, 'WelcomeMailWithLoginDetail');
+                    Mail::to($user->email)->send(new WelcomeMailWithLoginDetail($details));
                     return $this->generateResponse(true, $message, $data, 200);
                 } else {
                     throw new \ErrorException('Error found');
