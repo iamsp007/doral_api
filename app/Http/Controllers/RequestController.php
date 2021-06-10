@@ -38,16 +38,6 @@ class RequestController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -87,28 +77,6 @@ class RequestController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Support  $support
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Support $support)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Support  $support
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Support $support)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -136,16 +104,5 @@ class RequestController extends Controller
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Support  $support
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Support $support)
-    {
-        //
     }
 }

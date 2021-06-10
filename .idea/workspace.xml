@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientRequestController.php" afterDir="false" />
-    </list>
+    <list default="true" id="9cb02bc3-d0e8-482d-bc61-8dc742870f39" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -182,6 +179,9 @@
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-zendframework-bridge" />
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-diactoros" />
       <path value="$PROJECT_DIR$/vendor/predis/predis" />
+      <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/constant_time_encoding" />
+      <path value="$PROJECT_DIR$/vendor/aws/aws-sdk-php" />
     </include_path>
   </component>
   <component name="ProjectId" id="1jExH90K84QkoSjIviyVDY4aK6W" />
@@ -194,7 +194,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../doral_web" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -511,6 +511,39 @@
       <workItem from="1613058911774" duration="720000" />
       <workItem from="1613100218090" duration="2593000" />
       <workItem from="1613109716109" duration="1090000" />
+      <workItem from="1613581577885" duration="1116000" />
+      <workItem from="1613638487565" duration="4412000" />
+      <workItem from="1613653407718" duration="2127000" />
+      <workItem from="1613991575870" duration="542000" />
+      <workItem from="1614068660322" duration="801000" />
+      <workItem from="1614088025312" duration="607000" />
+      <workItem from="1615050387297" duration="692000" />
+      <workItem from="1615051458985" duration="1788000" />
+      <workItem from="1615093646327" duration="18000" />
+      <workItem from="1615094859954" duration="657000" />
+      <workItem from="1615468139787" duration="2813000" />
+      <workItem from="1615530174143" duration="754000" />
+      <workItem from="1615531422444" duration="604000" />
+      <workItem from="1615609269986" duration="2099000" />
+      <workItem from="1615611388982" duration="1793000" />
+      <workItem from="1615613203686" duration="2230000" />
+      <workItem from="1615615465571" duration="1786000" />
+      <workItem from="1615617400583" duration="576000" />
+      <workItem from="1615618849805" duration="277000" />
+      <workItem from="1615619582746" duration="477000" />
+      <workItem from="1615622334008" duration="7186000" />
+      <workItem from="1615635944092" duration="1624000" />
+      <workItem from="1615642854692" duration="1534000" />
+      <workItem from="1615824002424" duration="740000" />
+      <workItem from="1615825822523" duration="1036000" />
+      <workItem from="1615827846617" duration="599000" />
+      <workItem from="1615829280346" duration="596000" />
+      <workItem from="1615893811366" duration="23000" />
+      <workItem from="1615919410468" duration="986000" />
+      <workItem from="1615920472813" duration="133000" />
+      <workItem from="1616906531855" duration="35000" />
+      <workItem from="1617120083062" duration="2511000" />
+      <workItem from="1617532519380" duration="1864000" />
     </task>
     <servers />
   </component>

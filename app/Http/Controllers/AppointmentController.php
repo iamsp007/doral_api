@@ -28,7 +28,7 @@ class AppointmentController extends Controller
         $response = Appointment::with(['bookedDetails' => function ($q) {
             $q->select('first_name', 'last_name', 'id');
         }])
-            ->with(['patients', 'meeting', 'service', 'filetype'])
+            ->with(['patients', 'meeting', 'service', 'filetype', 'roadl.requests'])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
@@ -37,6 +37,8 @@ class AppointmentController extends Controller
             }])
             ->get();
         if (count($response)>0){
+        	$arr = [];
+        	
             return $this->generateResponse(true,'All Appointment List',$response,200);
         }
         return $this->generateResponse(false,'No Appointment Exists',null,200);

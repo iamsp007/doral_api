@@ -22,9 +22,9 @@ class CreatePatientAddressesTable extends Migration
             $table->string('cross_street')->nullable();
             $table->string('zip5')->nullable();
             $table->string('zip4')->nullable();
-            $table->foreignId('city_id')->index('city_id');
-            $table->foreignId('state_id')->index('state_id');
-            $table->foreignId('county_id')->index('county_id');
+            $table->foreignId('city_id')->index('city_id')->nullable();
+            $table->foreignId('state_id')->index('state_id')->nullable();
+            $table->foreignId('county_id')->index('county_id')->nullable();
             $table->boolean('is_primary_address')->nullable();
             $table->string('address_type')->nullable();
 

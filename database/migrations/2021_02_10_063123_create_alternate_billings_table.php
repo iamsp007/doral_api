@@ -16,6 +16,8 @@ class CreateAlternateBillingsTable extends Migration
         Schema::create('alternate_billings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->index('patient_id');
+            
+            $table->string('is_alternate_billing')->nullable();
             $table->string('first_name')->nullable();
             $table->string('middle_name')->nullable();
             $table->string('last_name')->nullable();
