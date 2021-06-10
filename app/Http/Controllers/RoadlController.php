@@ -15,6 +15,7 @@ use App\Models\PatientReferral;
 use App\Models\PatientRequest;
 use App\Models\RoadlInformation;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +57,7 @@ class RoadlController extends Controller
                 $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
             }
             $patientRequest->status = $request->status;
+            $patientRequest->arrived_time = Carbon::now()->toDateTime();
             $patientRequest->save();
             $user = User::find($request->user_id)->first();
             if ($user){
