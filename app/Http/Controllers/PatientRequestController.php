@@ -377,6 +377,9 @@ class PatientRequestController extends Controller
             $patient->clincial_id=$request->user_id;
             $patient->updated_at=Carbon::now()->toDateTime();
             $patient->status='2';
+            $patient->accepted_time = Carbon::now()->toDateTime();
+            $patient->distance = $request->distance;
+            $patient->travel_time = $request->travel_time;
             if ($patient->save()){
 
                 $notificationHistory = NotificationHistory::where('request_id',$patient->id)->first();
@@ -417,13 +420,11 @@ class PatientRequestController extends Controller
                 //                }
                 $patient->clinician = $users;
                 event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id));
-                event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id));
+                // event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id));
 
                 $data=PatientRequest::with('detail', 'patient')
                     ->where('id','=',$request->request_id)
                     ->first();
-               
-              
                
                 if ($data->patient && $data->patient->email) {
                     $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
@@ -841,7 +842,8 @@ class PatientRequestController extends Controller
           
             $patientRequstModel = PatientRequest::where('id',$request['patient_request_id'])->with('patient', 'detail')->first();
             PatientRequest::find($request['patient_request_id'])->update([
-                'status' => '4'
+                'status' => '4',
+                'complated_time' => Carbon::now()->toDateTime(),
             ]);
             $notificationHistory = NotificationHistory::where('request_id',$request['patient_request_id'])->first();
             $notificationHistory->receiver_id = $patientRequstModel->clincial_id;
