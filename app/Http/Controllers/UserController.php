@@ -251,8 +251,9 @@ class UserController extends Controller
     {
         $input = $request->all();
         if ($request->type==="1"){
-                $parts = explode('-',$input['dob']);
-                $yyyy_mm_dd = $parts[2] . '-' . $parts[0] . '-' . $parts[1];
+            $parts = explode('-',$input['dob']);
+            $yyyy_mm_dd = $parts[2] . '-' . $parts[0] . '-' . $parts[1];
+
             User::find($input['user_id'])->update([
                 'gender' => $input['gender'],
                 'first_name' => $input['first_name'],
@@ -290,15 +291,15 @@ class UserController extends Controller
             $phone1 = $input['phone1'];
             $phone2 = $input['phone2'];
             $relation = $input['relationship_name'];
-            $address = $input['address'];
-            // $emergencyAddress = [
-            //     'apt_building' => $input['emergencyAptBuilding'],
-            //     'address1' => $input['emergencyAddress1'],
-            //     'address2' => $input['emergencyAddress2'],
-            //     'city' => $input['emergencyAddress_city'],
-            //     'state' => $input['emergencyAddress_state'],
-            //     'zip_code' => $input['emergencyAddress_zip_code'],
-            // ] ;
+            // $address = $input['address'];
+            $emergencyAddress = [
+                'apt_building' => $input['emergencyAptBuilding'],
+                'address1' => $input['emergencyAddress1'],
+                'address2' => $input['emergencyAddress2'],
+                'city' => $input['emergencyAddress_city'],
+                'state' => $input['emergencyAddress_state'],
+                'zip_code' => $input['emergencyAddress_zip_code'],
+            ] ;
 
             PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
             
@@ -317,8 +318,8 @@ class UserController extends Controller
                     // 'state' => $input['emergencyAddress_state'],
                     // 'zip_code' => $input['emergencyAddress_zip_code'],
                     // ],
-                    'address_old' => ($address[$index]) ? $address[$index] : '',
-                    // 'address' => $emergencyAddress,
+                    // 'address_old' => ($address[$index]) ? $address[$index] : '',
+                    'address' => $emergencyAddress,
                 ]);
             }
 

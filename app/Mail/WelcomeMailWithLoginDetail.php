@@ -7,10 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeEmail extends Mailable
+class WelcomeMailWithLoginDetail extends Mailable
 {
     use Queueable, SerializesModels;
-   
+
     public $details;
     /**
      * Create a new message instance.
@@ -30,6 +30,6 @@ class WelcomeEmail extends Mailable
     public function build()
     {
         return $this->subject('Welcome to Doral Health Connect')
-        ->view('email.welcome');
+        ->view('email.welcomeWithLogin');
     }
 }
