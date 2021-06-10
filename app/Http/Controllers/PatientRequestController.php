@@ -14,7 +14,7 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
-use App\Jobs\SendEmailJob;
+use App\Jobs\SendEmail;
 use App\Jobs\SendMailRoadlRequest;
 use App\Mail\UpdateStatusNotification;
 use App\Models\NotificationHistory;
@@ -462,7 +462,7 @@ class PatientRequestController extends Controller
                         'phone' => $phone,
                     ];
 
-                    SendEmailJob::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
+                    SendEmail::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
                 }
 
                 if ($data->detail && $data->detail->email) {
@@ -478,7 +478,7 @@ class PatientRequestController extends Controller
                         'phone' => $phone,
                     ];
 
-                    SendEmailJob::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
+                    SendEmail::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
                 }
 
                 return $this->generateResponse(true,'Request Accepted!',$data,200);
@@ -896,7 +896,7 @@ class PatientRequestController extends Controller
                     'phone' => $phone,
                 ];
 
-                SendEmailJob::dispatch($patientRequstModel->patient->email, $details, 'UpdateStatusNotification');
+                SendEmail::dispatch($patientRequstModel->patient->email, $details, 'UpdateStatusNotification');
             }
 
             if ($patientRequstModel->detail && $patientRequstModel->detail->email) {
@@ -912,7 +912,7 @@ class PatientRequestController extends Controller
                     'phone' => $phone,
                 ];
 
-                SendEmailJob::dispatch($patientRequstModel->detail->email, $details, 'UpdateStatusNotification');
+                SendEmail::dispatch($patientRequstModel->detail->email, $details, 'UpdateStatusNotification');
             }
            
             return $this->generateResponse(true, 'Status complated successfully', null, 200);

@@ -9,7 +9,7 @@ use App\Helpers\Helper;
 use App\Http\Requests\PatientRequestOtpVerifyRequest;
 use App\Http\Requests\RoadlInformationRequest;
 use App\Http\Requests\RoadlInformationShowRequest;
-use App\Jobs\SendEmailJob;
+use App\Jobs\SendEmail;
 use App\Models\AssignAppointmentRoadl;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
@@ -103,7 +103,7 @@ class RoadlController extends Controller
                     'phone' => $phone,
                 ];
 
-                SendEmailJob::dispatch($patientRequest->patient->email, $details, 'UpdateStatusNotification');
+                SendEmail::dispatch($patientRequest->patient->email, $details, 'UpdateStatusNotification');
             }
 
             if ($patientRequest->detail && $patientRequest->detail->email) {
@@ -118,7 +118,7 @@ class RoadlController extends Controller
                     'message' => 'You have arrived RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
                     'phone' => $phone,
                 ];
-                SendEmailJob::dispatch($patientRequest->detail->email, $details, 'UpdateStatusNotification');
+                SendEmail::dispatch($patientRequest->detail->email, $details, 'UpdateStatusNotification');
             }
             return $this->generateResponse(true,'Your Roadl Status Update Successfully!',$patientRequest,200);
         }
