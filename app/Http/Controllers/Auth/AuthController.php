@@ -26,9 +26,9 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
-use App\Jobs\SendEmail;
+use App\Jobs\SendEmailJob;
 use App\Mail\ChangePasswordNotification;
-use App\Mail\WelcomeMailWithLoginDetail;
+use App\Mail\WelcomeEmail;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
@@ -178,8 +178,8 @@ class AuthController extends Controller
                         'email' => $user->email,
                     ];
                    
-                    // SendEmail::dispatch($user->email, $details, 'WelcomeMailWithLoginDetail');
-                    Mail::to($user->email)->send(new WelcomeMailWithLoginDetail($details));
+                    SendEmailJob::dispatch($user->email, $details, 'WelcomeEmail');
+                    // Mail::to($user->email)->send(new WelcomeEmail($details));
                     return $this->generateResponse(true, $message, $data, 200);
                 } else {
                     throw new \ErrorException('Error found');

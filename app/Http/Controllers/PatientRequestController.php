@@ -14,7 +14,7 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
-use App\Jobs\SendEmail;
+use App\Jobs\SendEmailJob;
 use App\Jobs\SendMailRoadlRequest;
 use App\Mail\UpdateStatusNotification;
 use App\Models\NotificationHistory;
@@ -378,8 +378,8 @@ class PatientRequestController extends Controller
             $patient->updated_at=Carbon::now()->toDateTime();
             $patient->status='2';
             $patient->accepted_time = Carbon::now()->toDateTime();
-            $patient->distance = $request->distance;
-            $patient->travel_time = $request->travel_time;
+            $patient->distance = isset($request->distance) ? $request->distance : '';
+            $patient->travel_time = isset($request->travel_time) ? $request->travel_time : '';
             if ($patient->save()){
 
                 $notificationHistory = NotificationHistory::where('request_id',$patient->id)->first();
@@ -419,8 +419,9 @@ class PatientRequestController extends Controller
                 //                    $patient->type = 0;
                 //                }
                 $patient->clinician = $users;
-                event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id));
-                // event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id));
+                    
+                event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id,$users));
+                // event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id,$users));
 
                 $data=PatientRequest::with('detail', 'patient')
                     ->where('id','=',$request->request_id)
@@ -462,8 +463,13 @@ class PatientRequestController extends Controller
                         'message' => $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has started RoadL request of ' . $patientFirstName . ' ' . $patientLastName . ' for patient address: ' . $address . '. You can track RoadL requests by RoadL id : ' . $parent_id,
                         'phone' => $phone,
                     ];
-
-                    SendEmail::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
+                    // Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
+                    // Log::info('message start');
+                    // Log::info($details['message']);
+                    // Log::info($details['phone']);
+                    // $this->sendsmsToMe($details['message'], $details['phone']);
+                    // Log::info('message end');
+                    SendEmailJob::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
                 }
 
                 if ($data->detail && $data->detail->email) {
@@ -479,7 +485,7 @@ class PatientRequestController extends Controller
                         'phone' => $phone,
                     ];
 
-                    SendEmail::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
+                    SendEmailJob::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
                 }
 
                 return $this->generateResponse(true,'Request Accepted!',$data,200);
@@ -898,7 +904,7 @@ class PatientRequestController extends Controller
                     'phone' => $phone,
                 ];
 
-                SendEmail::dispatch($patientRequstModel->patient->email, $details, 'UpdateStatusNotification');
+                SendEmailJob::dispatch($patientRequstModel->patient->email, $details, 'UpdateStatusNotification');
             }
 
             if ($patientRequstModel->detail && $patientRequstModel->detail->email) {
@@ -914,7 +920,7 @@ class PatientRequestController extends Controller
                     'phone' => $phone,
                 ];
 
-                SendEmail::dispatch($patientRequstModel->detail->email, $details, 'UpdateStatusNotification');
+                SendEmailJob::dispatch($patientRequstModel->detail->email, $details, 'UpdateStatusNotification');
             }
            
             return $this->generateResponse(true, 'Status complated successfully', null, 200);
