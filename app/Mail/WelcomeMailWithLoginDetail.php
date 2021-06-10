@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeMailWithLoginDetail extends Mailable
+class WelcomeEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,6 +30,6 @@ class WelcomeMailWithLoginDetail extends Mailable
     public function build()
     {
         return $this->subject('Welcome to Doral Health Connect')
-        ->view('email.welcomeWithLogin');
+        ->view('email.welcome');
     }
 }
