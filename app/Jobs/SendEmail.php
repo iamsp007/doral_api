@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\UpdateStatusNotification;
-use App\Mail\WelcomeMailWithLoginDetail;
+use App\Mail\WelcomeEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class SendEmail implements ShouldQueue
+class SendEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -39,8 +39,8 @@ class SendEmail implements ShouldQueue
      */
     public function handle()
     {
-        if ($this->mailType === 'WelcomeMailWithLoginDetail') {
-            Mail::to($this->email)->send(new WelcomeMailWithLoginDetail($this->detail));
+        if ($this->mailType === 'WelcomeEmail') {
+            Mail::to($this->email)->send(new WelcomeEmail($this->detail));
         } else if ($this->mailType === 'UpdateStatusNotification') {
             Mail::to($this->email)->send(new UpdateStatusNotification($this->detail));
             Log::info('message start');
