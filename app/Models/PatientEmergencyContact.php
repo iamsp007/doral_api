@@ -33,8 +33,7 @@ class PatientEmergencyContact extends Model
      * @var array
      */
     protected $casts = [
-        // 'address_old' => 'array',
-        'address',
+        'address' => 'array',
     ];
     /**
      * Get the user's Date Of Birth.

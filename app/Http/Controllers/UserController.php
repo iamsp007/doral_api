@@ -18,6 +18,7 @@ use App\Models\Company;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -292,33 +293,40 @@ class UserController extends Controller
             $phone2 = $input['phone2'];
             $relation = $input['relationship_name'];
             // $address = $input['address'];
-            $emergencyAddress = [
-                'apt_building' => $input['emergencyAptBuilding'],
-                'address1' => $input['emergencyAddress1'],
-                'address2' => $input['emergencyAddress2'],
-                'city' => $input['emergencyAddress_city'],
-                'state' => $input['emergencyAddress_state'],
-                'zip_code' => $input['emergencyAddress_zip_code'],
-            ] ;
+            // $emergencyAddress = [
+            //     'apt_building' => $input['emergencyAptBuilding'],
+            //     'address1' => $input['emergencyAddress1'],
+            //     'address2' => $input['emergencyAddress2'],
+            //     'city' => $input['emergencyAddress_city'],
+            //     'state' => $input['emergencyAddress_state'],
+            //     'zip_code' => $input['emergencyAddress_zip_code'],
+            // ] ;
 
+            $apt_building = $input['emergencyAptBuilding'];
+            $address1 = $input['emergencyAddress1'];
+            $address2 = $input['emergencyAddress2'];
+            $city = $input['emergencyAddress_city'];
+            $state = $input['emergencyAddress_state'];
+            $zip_code = $input['emergencyAddress_zip_code'];
+         
             PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
             
             foreach ($contactName as $index => $value) {
+                $emergencyAddress = [
+                    'apt_building' => ($apt_building[$index]) ? $apt_building[$index] : '',
+                    'address1' =>  ($address1[$index]) ? $address1[$index] : '',
+                    'address2' =>  ($address2[$index]) ? $address2[$index] : '',
+                    'city' => ($city[$index]) ? $city[$index] : '',
+                    'state' => ($state[$index]) ? $state[$index] : '',
+                    'zip_code' => ($zip_code[$index]) ? $zip_code[$index] : '',
+                ];
+               
                 PatientEmergencyContact::create([
                     'user_id' => $input['user_id'],
                     'name' => ($contactName[$index]) ? $contactName[$index] : '',
                     'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
-                   'relation' => ($relation[$index]) ? $relation[$index] : '',
-                    // 'address' => [
-                    // 'apt_building' => $input['emergencyAptBuilding'],
-                    // 'address1' => $input['emergencyAddress1'],
-                    // 'address2' => $input['emergencyAddress2'],
-                    // 'city' => $input['emergencyAddress_city'],
-                    // 'state' => $input['emergencyAddress_state'],
-                    // 'zip_code' => $input['emergencyAddress_zip_code'],
-                    // ],
-                    // 'address_old' => ($address[$index]) ? $address[$index] : '',
+                    'relation' => ($relation[$index]) ? $relation[$index] : '',
                     'address' => $emergencyAddress,
                 ]);
             }
