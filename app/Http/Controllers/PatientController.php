@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendingSMS;
-use App\Jobs\SendEmailJob;
 use App\Mail\AcceptedMail;
 use App\Models\Appointment;
 use App\Models\Demographic;

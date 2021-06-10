@@ -26,7 +26,7 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
-use App\Jobs\SendEmailJob;
+use App\Jobs\SendEmail;
 use App\Mail\ChangePasswordNotification;
 use App\Models\Country;
 use App\Models\State;
@@ -177,7 +177,7 @@ class AuthController extends Controller
                         'email' => $user->email,
                     ];
                    
-                    SendEmailJob::dispatch($user->email, $details, 'WelcomeEmail');
+                    SendEmail::dispatch($user->email, $details, 'WelcomeMailWithLoginDetail');
                    
                     return $this->generateResponse(true, $message, $data, 200);
                 } else {
