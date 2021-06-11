@@ -214,6 +214,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         if ($user->roles->first()->name == 'clinician') {
+            dd($user->roles->first()->name);
             $user['isApplicantStatus'] = $user->status;
             $user->isApplicant = isset($user->applicant) && !empty($user->applicant) ? true : false;
             $user->isEducation = isset($user->education) && !empty($user->education) ? true : false;

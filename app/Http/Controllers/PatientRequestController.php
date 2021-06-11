@@ -37,7 +37,7 @@ class PatientRequestController extends Controller
         	where('user_id', Auth::user()->id)
             ->whereNotNull('parent_id')
         	->whereDate('created_at', Carbon::today())
-        	// ->where('status','1')
+        	->whereIn('status',['2','3'])
             ->orderBy('id','desc')
             ->first();
         return $this->generateResponse(true,'Patient Request Status',$patientroadl,200);
@@ -470,7 +470,7 @@ class PatientRequestController extends Controller
                     // Log::info($details['phone']);
                     // $this->sendsmsToMe($details['message'], $details['phone']);
                     // Log::info('message end');
-                    SendEmailJob::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
+                    // SendEmailJob::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
                 }
 
                 if ($data->detail && $data->detail->email) {
@@ -486,7 +486,7 @@ class PatientRequestController extends Controller
                         'phone' => $phone,
                     ];
 
-                    SendEmailJob::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
+                    // SendEmailJob::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
                 }
 
                 return $this->generateResponse(true,'Request Accepted!',$data,200);
