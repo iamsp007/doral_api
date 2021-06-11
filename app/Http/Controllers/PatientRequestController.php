@@ -400,6 +400,7 @@ class PatientRequestController extends Controller
                 $roadlInformation->latitude = $request->latitude;
                 $roadlInformation->longitude = $request->longitude;
                 $roadlInformation->status = "start";
+                $roadlInformation->is_status = "2";
                 $roadlInformation->save();
 
                 //                $assignAppointemntRoadl = AssignAppointmentRoadl::where([
@@ -469,7 +470,7 @@ class PatientRequestController extends Controller
                     // Log::info($details['phone']);
                     // $this->sendsmsToMe($details['message'], $details['phone']);
                     // Log::info('message end');
-                    // SendEmailJob::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
+                    SendEmailJob::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
                 }
 
                 if ($data->detail && $data->detail->email) {
@@ -485,7 +486,7 @@ class PatientRequestController extends Controller
                         'phone' => $phone,
                     ];
 
-                    // SendEmailJob::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
+                    SendEmailJob::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
                 }
 
                 return $this->generateResponse(true,'Request Accepted!',$data,200);
@@ -543,15 +544,39 @@ class PatientRequestController extends Controller
                 ->orderBy('id','asc')
                 ->get();
                
+        } elseif ($status[0] == 4){
+            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
+                   ->where('clincial_id','=',Auth::user()->id)
+                   ->whereNotNull('parent_id')
+                   ->where('status', 4)
+                   ->groupBy('parent_id')
+                   ->orderBy('id','asc')
+                   ->get();
+        } elseif ($status[0] == 5){
+            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
+                   ->where('clincial_id','=',Auth::user()->id)
+                   ->whereNotNull('parent_id')
+                   ->where('status', 5)
+                   ->groupBy('parent_id')
+                   ->orderBy('id','asc')
+                   ->get();
         } elseif (Auth::user()->is_available==='2'){
+            if($status[0] == 2 || $status[0] == 3) {
+//                if($designation == 2) {
+//                    $role = 2;
+//                }
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                 ->where('clincial_id','=',Auth::user()->id)
                 ->whereNotNull('parent_id')
-                ->where('type_id',$role)
+//                    ->where('type_id',$role)
                 ->whereIn('status', $status)
                 ->groupBy('parent_id')
                 ->orderBy('id','asc')
                 ->get();
+            }else if($status[0] == 1) {
+                $patientRequestList = '';
+                return $this->generateResponse(false,'You have already accepted other visit so you should complete first.',$patientRequestList,200);
+            }
         } else {
             if($status[0] == 1) {
                 $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
