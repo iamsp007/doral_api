@@ -32,6 +32,7 @@ use App\Mail\WelcomeEmail;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
+use App\Models\PatientRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -178,8 +179,8 @@ class AuthController extends Controller
                         'email' => $user->email,
                     ];
                    
-                    // SendEmailJob::dispatch($user->email, $details, 'WelcomeEmail');
-                    Mail::to($user->email)->send(new WelcomeEmail($details));
+                    SendEmailJob::dispatch($user->email, $details, 'WelcomeEmail');
+                    // Mail::to($user->email)->send(new WelcomeEmail($details));
                     return $this->generateResponse(true, $message, $data, 200);
                 } else {
                     throw new \ErrorException('Error found');
@@ -214,7 +215,18 @@ class AuthController extends Controller
     {
         $user = $request->user();
         if ($user->roles->first()->name == 'clinician') {
-            dd($user->roles->first()->name);
+            $patientroadl = PatientRequest::
+        	where('clincial_id', Auth::user()->id)
+            ->whereNotNull('parent_id')
+        	->whereDate('created_at', Carbon::today())
+        	->whereIn('status',['2','3'])
+            ->orderBy('id','desc')
+            ->first();
+            if ($patientroadl) {
+                $user['patient_request_id'] = $patientroadl->id;
+                $user['parent_id'] = $patientroadl->parent_id;
+            }
+           
             $user['isApplicantStatus'] = $user->status;
             $user->isApplicant = isset($user->applicant) && !empty($user->applicant) ? true : false;
             $user->isEducation = isset($user->education) && !empty($user->education) ? true : false;
