@@ -53,6 +53,10 @@ class PatientRequest extends Model
     public function routes(){
         return $this->hasMany(RoadlInformation::class,'patient_requests_id','id')->with('user');
     }
+
+    public function roadlInformation(){
+        return $this->hasMany(RoadlInformation::class,'patient_requests_id','id');
+    }
     /**
      * Get Meeting Reasons
      */
