@@ -319,7 +319,9 @@ class RoadlController extends Controller
             return $this->generateResponse(false,$validator->errors()->first(),$validator->errors()->messages(),200);
         }
 
-        $patientRequest = PatientRequest::with('detail','patient','requestType')
+        $patientRequest = PatientRequest::with(['detail','patient','requestType','roadlInformation' => function($q){
+                $q->orderBy('id','DESC');
+            }])
             ->where(function ($q) use ($request){
                 if ($request->has('type_id')){
                     $q->where('type_id','=',$request->type_id);
@@ -333,13 +335,18 @@ class RoadlController extends Controller
             $arr = [];
 
             $clinicians = $patientRequest->map(function ( $lookup ) {
+                $latitude = $longitude = '';
+                if (isset($lookup->roadlInformation)) {
+                    $latitude = $lookup->roadlInformation->first()->latitude;
+                    $longitude = $lookup->roadlInformation->first()->longitude;
+                }
                 return [
                     'id' => isset($lookup->id) ? $lookup->id : null,
                     'user_id' => isset($lookup->user_id) ? $lookup->user_id : null,
                     'clincial_id' => isset($lookup->clincial_id) ? $lookup->clincial_id : null,
                     'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : 0,
-                    'latitude' => isset($lookup->detail->latitude) ? $lookup->detail->latitude : null,
-                    'longitude' => isset($lookup->detail->longitude) ? $lookup->detail->longitude : null,
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
                     'first_name' => isset($lookup->detail->first_name) ? $lookup->detail->first_name : null,
                     'last_name' => isset($lookup->detail->last_name) ? $lookup->detail->last_name : null,
                     'status' => isset($lookup->status) ? $lookup->status : null,
