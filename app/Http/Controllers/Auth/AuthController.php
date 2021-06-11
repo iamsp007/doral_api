@@ -178,8 +178,8 @@ class AuthController extends Controller
                         'email' => $user->email,
                     ];
                    
-                    SendEmailJob::dispatch($user->email, $details, 'WelcomeEmail');
-                    // Mail::to($user->email)->send(new WelcomeEmail($details));
+                    // SendEmailJob::dispatch($user->email, $details, 'WelcomeEmail');
+                    Mail::to($user->email)->send(new WelcomeEmail($details));
                     return $this->generateResponse(true, $message, $data, 200);
                 } else {
                     throw new \ErrorException('Error found');

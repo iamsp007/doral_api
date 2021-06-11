@@ -1,0 +1,6 @@
+[2021-06-11 05:44:31][849] Processing: App\Jobs\SendEmailJob
+[2021-06-11 05:44:31][849] Processed:  App\Jobs\SendEmailJob
+[2021-06-11 05:44:34][851] Processing: App\Jobs\SendEmailJob
+[2021-06-11 05:44:34][851] Processed:  App\Jobs\SendEmailJob
+[2021-06-11 05:44:35][852] Processing: App\Jobs\SendEmailJob
+[2021-06-11 05:44:35][852] Processed:  App\Jobs\SendEmailJob
