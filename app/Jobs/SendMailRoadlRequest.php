@@ -46,18 +46,18 @@ class SendMailRoadlRequest implements ShouldQueue
             Mail::to($this->data->patient->email)->send(new UpdateStatusNotification($details));
         }
 
-        // if ($this->data->detail && $this->data->detail->email) {
-        //     log::info('clinician email is:'.$this->data->detail->email);
-        //     $patientFirstName = ($this->data->patient && $this->data->patient->first_name) ? $this->data->patient->first_name : '';
-        //     $patientLastName = ($this->data->patient && $this->data->patient->first_name) ? $this->data->patient->first_name : '';
-        //     $details = [
-        //         'first_name' => ($this->data->detail && $this->data->detail->first_name) ? $this->data->detail->first_name : '' ,
-        //         'last_name' => ($this->data->detail && $this->data->detail->last_name) ? $this->data->detail->last_name : '',
-        //         'status' => 'Request',
-        //         'message' => 'You got a roadL request by ' . $patientFirstName . ' ' . $patientLastName .'
-        //          manisha You have sent roadL request to manisha You have requested' . $patientFirstName . ' ' . $patientLastName .' After accepting the request, at what time you have to reach the patient’s house, they will get you in the mail.',
-        //     ];
-        //     Mail::to($this->data->detail->email)->send(new UpdateStatusNotification($details));
-        // }
+        if ($this->data->detail && $this->data->detail->email) {
+            log::info('clinician email is:'.$this->data->detail->email);
+            $patientFirstName = ($this->data->patient && $this->data->patient->first_name) ? $this->data->patient->first_name : '';
+            $patientLastName = ($this->data->patient && $this->data->patient->first_name) ? $this->data->patient->first_name : '';
+            $details = [
+                'first_name' => ($this->data->detail && $this->data->detail->first_name) ? $this->data->detail->first_name : '' ,
+                'last_name' => ($this->data->detail && $this->data->detail->last_name) ? $this->data->detail->last_name : '',
+                'status' => 'Request',
+                'message' => 'You got a roadL request by ' . $patientFirstName . ' ' . $patientLastName .'
+                 manisha You have sent roadL request to manisha You have requested' . $patientFirstName . ' ' . $patientLastName .' After accepting the request, at what time you have to reach the patient’s house, they will get you in the mail.',
+            ];
+            Mail::to($this->data->detail->email)->send(new UpdateStatusNotification($details));
+        }
     }
 }
