@@ -647,7 +647,7 @@ class PatientRequestController extends Controller
                 }
              
             } else if($status[0] == 4) {
-                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
+                $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                    ->where('clincial_id','=',Auth::user()->id)
                    ->whereNotNull('parent_id')
                    ->whereIn('status', ['4'])
