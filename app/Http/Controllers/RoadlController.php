@@ -10,6 +10,7 @@ use App\Http\Requests\PatientRequestOtpVerifyRequest;
 use App\Http\Requests\RoadlInformationRequest;
 use App\Http\Requests\RoadlInformationShowRequest;
 use App\Jobs\SendEmailJob;
+use App\Mail\UpdateStatusNotification;
 use App\Models\AssignAppointmentRoadl;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
@@ -19,6 +20,8 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class RoadlController extends Controller
 {
@@ -78,7 +81,7 @@ class RoadlController extends Controller
                 $address = '';
                 if ($patientRequest->patient->demographic && $patientRequest->patient->demographic->address) {
                     $addressData = $patientRequest->patient->demographic->address;
-                 
+                    
                     if ($addressData['address1']){
                         $address.= $addressData['address1'];
                     }
@@ -92,13 +95,13 @@ class RoadlController extends Controller
                     if ($addressData['zip_code']){
                         $address.=', '.$addressData['zip_code'];
                     }
-
+            
                     if ($address){
                         $address = $address;
                     }
                 }
                 $role_name = implode(',',$patientRequest->detail->roles->pluck('name')->toArray());
-              
+                
                 $phone = ($patientRequest->patient->phone) ? $patientRequest->patient->phone : '';
                 $details = [
                     'first_name' => ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '' ,
@@ -106,23 +109,35 @@ class RoadlController extends Controller
                     'message' => $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') arrived at ' . $patientFirstName . ' ' . $patientLastName . ' addrress: ' . $address . '. for RoadL request.',
                     'phone' => $phone,
                 ]; 
-
-                SendEmailJob::dispatch($patientRequest->patient->email, $details, 'UpdateStatusNotification');
+            
+                Mail::to($patientRequest->patient->email)->send(new UpdateStatusNotification($details));
+                
+                Log::info('roadlrequest arrived');
+                Log::info($details['message']);
+                Log::info($details['phone']);
+                $this->sendsmsToMe($details['message'], '5166000122');
+                Log::info('roadlrequest end');
             }
-
+            
             if ($patientRequest->detail && $patientRequest->detail->email) {
                 $patientFirstName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
                 $patientLastName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
                 $phone = ($patientRequest->detail->phone) ? $patientRequest->detail->phone : '';
                 $role_name = implode(',',$patientRequest->patient->roles->pluck('name')->toArray());
-             
+                
                 $details = [
                     'first_name' => ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '' ,
                     'last_name' => ($patientRequest->detail->last_name) ? $patientRequest->detail->last_name : '',
                     'message' => 'You have arrived RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
                     'phone' => $phone,
                 ];
-                SendEmailJob::dispatch($patientRequest->detail->email, $details, 'UpdateStatusNotification');
+                Mail::to($patientRequest->detail->email)->send(new UpdateStatusNotification($details));
+                
+                Log::info('message start');
+                Log::info($details['message']);
+                Log::info($details['phone']);
+                $this->sendsmsToMe($details['message'], '5166000122');
+                Log::info('message end');
             }
             return $this->generateResponse(true,'Your RoadL Visit Updated Successfully!',$patientRequest,200);
         }
@@ -342,6 +357,7 @@ class RoadlController extends Controller
                     $latitude = $lookup->roadlInformation->first()->latitude;
                     $longitude = $lookup->roadlInformation->first()->longitude;
                 }
+              
                 return [
                     'id' => isset($lookup->id) ? $lookup->id : null,
                     'user_id' => isset($lookup->user_id) ? $lookup->user_id : null,
@@ -349,6 +365,8 @@ class RoadlController extends Controller
                     'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : 0,
                     'latitude' => $latitude,
                     'longitude' => $longitude,
+                    'latitude' =>  isset($lookup->detail->latitude) ? $lookup->detail->latitude : null,
+                    'longitude' => isset($lookup->detail->longitude) ? $lookup->detail->longitude : null,
                     'first_name' => isset($lookup->detail->first_name) ? $lookup->detail->first_name : null,
                     'last_name' => isset($lookup->detail->last_name) ? $lookup->detail->last_name : null,
                     'status' => isset($lookup->status) ? $lookup->status : null,
@@ -388,4 +406,25 @@ class RoadlController extends Controller
         return $this->generateResponse(true,'Your Reuest is done',$patientRequest);
     }
 
+    public function sendsmsToMe($message, $phone) {	
+        $from = "12089104598";	
+        $api_key = "bb78dfeb";	
+        $to = $phone;	
+        $api_secret = "PoZ5ZWbnhEYzP9m4";	
+        $uri = 'https://rest.nexmo.com/sms/json';	
+        $text = $message;	
+        $fields = '&from=' . urlencode($from) .	
+                '&text=' . urlencode($text) .	
+                '&to=+1' . urlencode($to) .	
+                '&api_key=' . urlencode($api_key) .	
+                '&api_secret=' . urlencode($api_secret);	
+        $res = curl_init($uri);	
+        curl_setopt($res, CURLOPT_POST, TRUE);	
+        curl_setopt($res, CURLOPT_RETURNTRANSFER, TRUE); // don't echo	
+        curl_setopt($res, CURLOPT_SSL_VERIFYPEER, FALSE);	
+        curl_setopt($res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);	
+        curl_setopt($res, CURLOPT_POSTFIELDS, $fields);	
+        $result = curl_exec($res);	
+        curl_close($res);	
+    }
 }
