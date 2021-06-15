@@ -170,7 +170,7 @@ class PatientRequestController extends Controller
             if ($data->detail && $data->detail->email) {
                 log::info('clinician email is:'.$data->detail->email);
                 $patientFirstName = ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '';
-                $patientLastName = ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '';
+                $patientLastName = ($data->patient && $data->patient->last_name) ? $data->patient->last_name : '';
                 $phone = ($data->detail->phone) ? $data->detail->phone : '';
                 $details = [
                     'first_name' => ($data->detail && $data->detail->first_name) ? $data->detail->first_name : '' ,
