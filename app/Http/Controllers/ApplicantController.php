@@ -833,7 +833,7 @@ class ApplicantController extends Controller
         try {
             $keys=array_keys($request->allFiles());
             foreach ($keys as $key) {
-            dd($key);
+          
                 $fileKeys =explode('_',$key);
                 $validator = \Validator::make($request->all(),[
                     $key=>'max:10000|mimes:pdf,xls,png,jpg,jpeg'

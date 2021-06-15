@@ -111,12 +111,8 @@ class RoadlController extends Controller
                 ]; 
             
                 Mail::to($patientRequest->patient->email)->send(new UpdateStatusNotification($details));
-                
-                Log::info('roadlrequest arrived');
-                Log::info($details['message']);
-                Log::info($details['phone']);
-                $this->sendsmsToMe($details['message'], '5166000122');
-                Log::info('roadlrequest end');
+                $smsController = new SmsController();
+                $smsController->sendsmsToMe($details['message'], $details['phone']);
             }
             
             if ($patientRequest->detail && $patientRequest->detail->email) {
@@ -132,12 +128,8 @@ class RoadlController extends Controller
                     'phone' => $phone,
                 ];
                 Mail::to($patientRequest->detail->email)->send(new UpdateStatusNotification($details));
-                
-                Log::info('message start');
-                Log::info($details['message']);
-                Log::info($details['phone']);
-                $this->sendsmsToMe($details['message'], '5166000122');
-                Log::info('message end');
+                $smsController = new SmsController();
+                $smsController->sendsmsToMe($details['message'], $details['phone']);
             }
             return $this->generateResponse(true,'Your RoadL Visit Updated Successfully!',$patientRequest,200);
         }
@@ -404,27 +396,5 @@ class RoadlController extends Controller
         $patientRequest->status='4';
         $patientRequest->save();
         return $this->generateResponse(true,'Your Reuest is done',$patientRequest);
-    }
-
-    public function sendsmsToMe($message, $phone) {	
-        $from = "12089104598";	
-        $api_key = "bb78dfeb";	
-        $to = $phone;	
-        $api_secret = "PoZ5ZWbnhEYzP9m4";	
-        $uri = 'https://rest.nexmo.com/sms/json';	
-        $text = $message;	
-        $fields = '&from=' . urlencode($from) .	
-                '&text=' . urlencode($text) .	
-                '&to=+1' . urlencode($to) .	
-                '&api_key=' . urlencode($api_key) .	
-                '&api_secret=' . urlencode($api_secret);	
-        $res = curl_init($uri);	
-        curl_setopt($res, CURLOPT_POST, TRUE);	
-        curl_setopt($res, CURLOPT_RETURNTRANSFER, TRUE); // don't echo	
-        curl_setopt($res, CURLOPT_SSL_VERIFYPEER, FALSE);	
-        curl_setopt($res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);	
-        curl_setopt($res, CURLOPT_POSTFIELDS, $fields);	
-        $result = curl_exec($res);	
-        curl_close($res);	
     }
 }
