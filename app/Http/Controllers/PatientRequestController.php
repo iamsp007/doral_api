@@ -163,11 +163,8 @@ class PatientRequestController extends Controller
                 ];
                 Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
     
-                Log::info('message start');
-                Log::info($details['message']);
-                Log::info($details['phone']);
-                $this->sendsmsToMe($details['message'], '5166000122');
-                Log::info('message end');
+                $smsController = new SmsController();
+                $smsController->sendsmsToMe($details['message'], $details['phone']);
             }
     
             if ($data->detail && $data->detail->email) {
@@ -183,12 +180,9 @@ class PatientRequestController extends Controller
                     'phone' => $phone
                 ];
                 Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
-    
-                Log::info('message start');
-                Log::info($details['message']);
-                Log::info($details['phone']);
-                $this->sendsmsToMe($details['message'], '5166000122');
-                Log::info('message end');
+
+                $smsController = new SmsController();
+                $smsController->sendsmsToMe($details['message'], $details['phone']);
             }
 
             // If assign clinician
@@ -506,12 +500,9 @@ class PatientRequestController extends Controller
                         'phone' => $phone,
                     ];
                     Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
-                    Log::info('message start');
-                    Log::info($details['message']);
-                    Log::info($details['phone']);
-                    $this->sendsmsToMe($details['message'], '5166000122');
-                    Log::info('message end');
-                    // SendEmailJob::dispatch($data->patient->email, $details, 'UpdateStatusNotification');
+
+                    $smsController = new SmsController();
+                    $smsController->sendsmsToMe($details['message'], $details['phone']);
                 }
 
                 if ($data->detail && $data->detail->email) {
@@ -527,12 +518,9 @@ class PatientRequestController extends Controller
                         'phone' => $phone,
                     ];
                     Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
-                    Log::info('message start');
-                    Log::info($details['message']);
-                    Log::info($details['phone']);
-                    $this->sendsmsToMe($details['message'], '5166000122');
-                    Log::info('message end');
-                    SendEmailJob::dispatch($data->detail->email, $details, 'UpdateStatusNotification');
+
+                    $smsController = new SmsController();
+                    $smsController->sendsmsToMe($details['message'], $details['phone']);
                 }
 
                 return $this->generateResponse(true,'Request Accepted!',$data,200);
@@ -975,12 +963,8 @@ class PatientRequestController extends Controller
                     'phone' => $phone,
                 ];
                 Mail::to($patientRequstModel->patient->email)->send(new UpdateStatusNotification($details));
-                Log::info('message start');
-                Log::info($details['message']);
-                Log::info($details['phone']);
-                $this->sendsmsToMe($details['message'], '5166000122');
-                Log::info('message end');
-                // SendEmailJob::dispatch($patientRequstModel->patient->email, $details, 'UpdateStatusNotification');
+                $smsController = new SmsController();
+                $smsController->sendsmsToMe($details['message'], $details['phone']);
             }
 
             if ($patientRequstModel->detail && $patientRequstModel->detail->email) {
@@ -996,12 +980,9 @@ class PatientRequestController extends Controller
                     'phone' => $phone,
                 ];
                 Mail::to($patientRequstModel->detail->email)->send(new UpdateStatusNotification($details));
-                Log::info('message start');
-                Log::info($details['message']);
-                Log::info($details['phone']);
-                $this->sendsmsToMe($details['message'], '5166000122');
-                Log::info('message end');
-                // SendEmailJob::dispatch($patientRequstModel->detail->email, $details, 'UpdateStatusNotification');
+                
+                $smsController = new SmsController();
+                $smsController->sendsmsToMe($details['message'], $details['phone']);
             }
            
             return $this->generateResponse(true, 'Status complated successfully', null, 200);
@@ -1022,27 +1003,5 @@ class PatientRequestController extends Controller
         } catch (\Exception $ex) {
             return $this->generateResponse(false, $ex->getMessage());
         }
-    }
-
-    public function sendsmsToMe($message, $phone) {	
-        $from = "12089104598";	
-        $api_key = "bb78dfeb";	
-        $to = $phone;	
-        $api_secret = "PoZ5ZWbnhEYzP9m4";	
-        $uri = 'https://rest.nexmo.com/sms/json';	
-        $text = $message;	
-        $fields = '&from=' . urlencode($from) .	
-                '&text=' . urlencode($text) .	
-                '&to=+1' . urlencode($to) .	
-                '&api_key=' . urlencode($api_key) .	
-                '&api_secret=' . urlencode($api_secret);	
-        $res = curl_init($uri);	
-        curl_setopt($res, CURLOPT_POST, TRUE);	
-        curl_setopt($res, CURLOPT_RETURNTRANSFER, TRUE); // don't echo	
-        curl_setopt($res, CURLOPT_SSL_VERIFYPEER, FALSE);	
-        curl_setopt($res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);	
-        curl_setopt($res, CURLOPT_POSTFIELDS, $fields);	
-        $result = curl_exec($res);	
-        curl_close($res);	
     }
 }
