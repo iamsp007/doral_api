@@ -304,11 +304,16 @@ class PatientController extends Controller
                         } else if($value->demographic->service_id == 3) {
                             $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
                         }
+                        
+                        $smsController = new SmsController();
+                        $smsController->sendsmsToMe($message, $value->phone);
                     } else {
                         $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
+
+                        $smsController = new SmsController();
+                        $smsController->sendsmsToMe($message, $value->phone);
                     }
-                    $smsController = new SmsController();
-                    $smsController->sendsmsToMe($message, $value->phone);
+                   
                     // Send Message End
                 }
 
