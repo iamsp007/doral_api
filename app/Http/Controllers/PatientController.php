@@ -303,10 +303,10 @@ class PatientController extends Controller
                             $message = 'This message is from Doral Health Connect. In order to track your nurse coming to your home for vaccination please click on the link below and download an app. '.$link . "  for login Username : ".$value->email." & Password : ".$password;
                         } else if($value->demographic->service_id == 3) {
                             $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
-
-                            $smsController = new SmsController();
-                            $smsController->sendsmsToMe($message, $value->phone);
                         }
+                        
+                        $smsController = new SmsController();
+                        $smsController->sendsmsToMe($message, $value->phone);
                     } else {
                         $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
 
