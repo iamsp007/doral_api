@@ -119,6 +119,12 @@ class UploadDocuments extends Model
                 $directory='chestXRay';
             }elseif ($this->type==="18"){
                 $directory='annualTubeScreening';
+            } elseif ($this->type === "19") {
+                $directory = 'w4document';
+            } elseif ($this->type === "20") {
+                $directory = 'idProofBack';
+            } elseif ($this->type === "21") {
+                $directory = 'socialSecurityBack';
             }
             return $directory;
         } else {

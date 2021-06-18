@@ -79,6 +79,7 @@ class AuthController extends Controller
             $user->isProfileVerified = $user->profile_verified_at ? true : false;
             $user->isMobileExist = $user->phone ? true : false;
             $user->roles = $user->roles ? $user->roles->first() : null;
+            $user->designation_name = $user->designation ? $user->designation->name : null;
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             if ($request->remember_me)
