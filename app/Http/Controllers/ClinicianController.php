@@ -38,8 +38,8 @@ class ClinicianController extends Controller
     {
         $input = $request->all();
         $user_id = Auth::user()->id;
-
-        $user = User::find($user_id)->update([
+        $user = User::find($user_id);
+        $user->update([
             "gender" => $input['gender'],
             "phone" => $input['phone'],
             "dob" => dateFormat($input['dob']),
@@ -47,7 +47,8 @@ class ClinicianController extends Controller
             "first_name" => $input['first_name'],
             "email" => $input['email'],
         ]);
-
+        
+        $user->designation_name = $user->designation ? $user->designation->name : null;
         if ($user) {
             return $this->generateResponse(true, 'Profile updated successfully!',$user);
         }
