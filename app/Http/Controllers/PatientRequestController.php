@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
+
 class PatientRequestController extends Controller
 {
     /**
@@ -207,8 +208,10 @@ class PatientRequestController extends Controller
                     $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
                     return $item;
                 })
+               
                 // ->where('distance','<=',20)
                     ->pluck('id');
+                      
                 $clinicianList = User::whereIn('id',$markers)->get();
                 // $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
 
@@ -406,9 +409,9 @@ class PatientRequestController extends Controller
         
         $patient = PatientRequest::find($request->request_id);
         if ($patient){
-//            if(null!==$patient->clincial_id){
-//                return $this->generateResponse(false,'Request Already Accepted!',null,200);
-//            }
+            if(null!==$patient->clincial_id){
+                return $this->generateResponse(false,'Request Already Accepted!',null,200);
+            }
             $patient->clincial_id=$request->user_id;
             $patient->updated_at=Carbon::now()->toDateTime();
             $patient->status='2';
@@ -437,23 +440,6 @@ class PatientRequestController extends Controller
                 $roadlInformation->status = "start";
                 $roadlInformation->is_status = "2";
                 $roadlInformation->save();
-
-                //                $assignAppointemntRoadl = AssignAppointmentRoadl::where([
-                //                    'patient_request_id'=>$patient->id
-                //                ])->first();
-                //                if ($assignAppointemntRoadl){
-                //                    $patient->clinician = AssignAppointmentRoadl::where([
-                //                        'appointment_id'=>$assignAppointemntRoadl->appointment_id
-                //                    ])->with('requests',function ($q){
-                //                          $q->select('id','clincial_id','latitude','longitude','reason','is_active','dieses','symptoms','is_parking','status');
-                //                        })
-                //                        ->select('appointment_id','patient_request_id','referral_type')
-                //                        ->get()->toArray();
-                //                    $patient->type = 1;
-                //                }else{
-                //                    $patient->clinician = $users;
-                //                    $patient->type = 0;
-                //                }
                 $patient->clinician = $users;
                     
                 event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id,$users));

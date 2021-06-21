@@ -99,6 +99,8 @@ class AuthController extends Controller
                 if ($users) {
                     $users->device_token = $request->device_token;
                     $users->device_type = $request->device_type;
+                    $users->latitude = isset($request->latitude) ? $request->latitude : null;
+                    $users->longitude = isset($request->longitude) ? $request->longitude : null;
                 }
             }
             // if ($users->is_available!==2){
