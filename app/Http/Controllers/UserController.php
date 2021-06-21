@@ -278,6 +278,7 @@ class UserController extends Controller
                 'address->city' => isset($input['city']) ? $input['city'] : '' ,
                 'address->state' => isset($input['state']) ? $input['state'] : '' ,
                 'address->zip_code' => isset($input['zip_code']) ? $input['zip_code'] : '' ,
+                'address->apt_building' => isset($input['apt_building']) ? $input['apt_building'] : '' ,
                 'ethnicity' => isset($input['ethnicity']) ? $input['ethnicity'] : '' ,
                 'country_of_birth' => isset($input['country_of_birth']) ? $input['country_of_birth'] : '' ,
                 'marital_status' => isset($input['marital_status']) ? $input['marital_status'] : '' ,
