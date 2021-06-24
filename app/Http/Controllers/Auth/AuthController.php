@@ -64,15 +64,7 @@ class AuthController extends Controller
 
             $user = $request->user();
 
-            if (isset($request->roles_name) && $request->roles_name === 'patient') {
-                if(! $user->hasRole('patient')) {
-                    return $this->generateResponse(false, 'You are not able login!', null);
-                }
-            } else if(isset($request->roles_name) &&$request->roles_name === 'clinician') {
-                if(! $user->hasRole('clinician')) {
-                    return $this->generateResponse(false, 'You are not able login!', null);
-                }
-            } 
+       
             
             $user->isEmailVerified = $user->email_verified_at ? true : false;
             $user->isMobileVerified = $user->phone_verified_at ? true : false;

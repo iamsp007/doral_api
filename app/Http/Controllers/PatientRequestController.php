@@ -200,9 +200,62 @@ class PatientRequestController extends Controller
                     })
                     ->where('is_available','=','1')->get();
                             
-                }else {
-                   $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get(); 
+                } else if($request->type_id == 6) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '18');
+                    })
+                    ->where('is_available','=','1')->get();
+                   
+                } else if($request->type_id == 7) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '19');
+                    })
+                    ->where('is_available','=','1')->get();
+                   
+                } else if($request->type_id == 8) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '20');
+                    })
+                    ->where('is_available','=','1')->get();
+                   
+                } else if($request->type_id == 9) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '21');
+                    })
+                    ->where('is_available','=','1')->get();
+                   
+                } else if($request->type_id == 10) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '22');
+                    })
+                    ->where('is_available','=','1')->get();
+                   
+                } else if($request->type_id == 11) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '23');
+                    })
+                    ->where('is_available','=','1')->get();
+                   
+                } else if($request->type_id == 12) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '24');
+                    })
+                    ->where('is_available','=','1')->get();
+                   
+                } else {
+                     // $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get(); 
                 }
+                
+                 Log::info('clinician list of other type start');
+                   Log::info($clinicianIds);
+                    Log::info('clinician list of other type end');
                 $markers = collect($clinicianIds)->map(function($item) use ($request){
                     $roadlController = new RoadlController();
                     $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
@@ -409,7 +462,7 @@ class PatientRequestController extends Controller
         
         $patient = PatientRequest::find($request->request_id);
         if ($patient){
-            if(null!==$patient->clincial_id){
+            if(null!==$patient->clincial_id && $patient->status !=1){
                 return $this->generateResponse(false,'Request Already Accepted!',null,200);
             }
             $patient->clincial_id=$request->user_id;
@@ -847,9 +900,9 @@ class PatientRequestController extends Controller
         $vendorList = Referral::where('guard_name','=','partner')
             ->where('status','=','active')
             ->get();
-        if ($request->has('patient_id')){
+        if ($request->has('parent_id')){
             $vendorList = collect($vendorList)->map(function ($row) use ($request){
-                $check = PatientRequest::where('user_id', $request->patient_id)
+                $check = PatientRequest::where('user_id', $request->parent_id)
                     ->whereNotNull('parent_id')
                     ->where('type_id','=',$row->role_id)
                     // ->where('status','!=','1')
@@ -879,6 +932,7 @@ class PatientRequestController extends Controller
             $parent = PatientRequest::select('parent_id')
                 ->where('user_id', $request->patient_id)
                 ->whereNotNull('parent_id')
+                ->orderBy('id','desc')
                 ->first();
 
             return $this->generateResponse(true, 'Fetched parent id', $parent, 200);

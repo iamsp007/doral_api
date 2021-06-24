@@ -345,9 +345,14 @@ class RoadlController extends Controller
 
             $clinicians = $patientRequest->map(function ( $lookup ) {
                 $latitude = $longitude = '';
-                if (isset($lookup->roadlInformation)) {
-                    $latitude = $lookup->roadlInformation->first()->latitude;
-                    $longitude = $lookup->roadlInformation->first()->longitude;
+                if ($lookup->status === '1') {
+                    $latitude = isset($lookup->patient->latitude) ? $lookup->patient->latitude : null;
+                    $latitude = isset($lookup->patient->latitude) ? $lookup->patient->latitude : null;
+                } else {
+                    if (isset($lookup->roadlInformation)) {
+                        $latitude = $lookup->roadlInformation->first()->latitude;
+                        $longitude = $lookup->roadlInformation->first()->longitude;
+                    }
                 }
               
                 return [
