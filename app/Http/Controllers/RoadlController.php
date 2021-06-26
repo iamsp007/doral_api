@@ -36,6 +36,7 @@ class RoadlController extends Controller
             if ($request->status==="4" || $request->status===4){
                 $patientRequest->status = $request->status;
                 $patientRequest->complated_time = Carbon::now()->toDateTime();
+                $patientRequest->notes = $request->notes;
                 //                $patientRequest->otp=rand(1000,9999);
                 $patientRequest->save();
                 $allPatientRequest = PatientRequest::where('parent_id','=',$patientRequest->parent_id)->get();
@@ -48,6 +49,11 @@ class RoadlController extends Controller
             }elseif ($request->status==="3"){
                 $patientRequest->status = $request->status;
                 $patientRequest->arrived_time = Carbon::now()->toDateTime();
+                $patientRequest->save();
+            }elseif ($request->status==="5"){
+                $patientRequest->status = $request->status;
+                $patientRequest->cancelled_time = Carbon::now()->toDateTime();
+                $patientRequest->notes = $request->notes;
                 $patientRequest->save();
             }elseif ($request->status==="6"){
                 $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
