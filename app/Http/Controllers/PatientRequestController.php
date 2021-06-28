@@ -902,7 +902,7 @@ class PatientRequestController extends Controller
             ->get();
         if ($request->has('parent_id')){
             $vendorList = collect($vendorList)->map(function ($row) use ($request){
-                $check = PatientRequest::where('user_id', $request->parent_id)
+                $check = PatientRequest::where('parent_id', $request->parent_id)
                     ->whereNotNull('parent_id')
                     ->where('type_id','=',$row->role_id)
                     // ->where('status','!=','1')

@@ -59,12 +59,21 @@ class RoadlController extends Controller
                 $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
             }
             // update is available field in user table start
+           
             $user = User::where('id',$patientRequest->clincial_id)->first();
+         
             if ($user){
                 $user->latitude = $request->latitude;
                 $user->longitude = $request->longitude;
                 if ($request->status==='4' || $request->status==='5'){
                     $user->is_available = '1';
+                    
+                    $patientRequestdata = PatientRequest::where([['parent_id', $patientRequest->parent_id],['status', '!=', 4],['status', '!=', 5]])->get();
+		     if(count($patientRequestdata) == 0) {
+			PatientRequest::find($patientRequest->parent_id)->update([
+				'status' => '4'
+			]);
+		     }
                 }
                 $user->save();
             }
