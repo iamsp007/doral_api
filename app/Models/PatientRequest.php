@@ -17,7 +17,7 @@ class PatientRequest extends Model
      */
     protected $fillable = [
         'user_id',
-        'request_id',
+        'requester_id',
         'clincial_id',
         'test_name',
         'type_id',
@@ -37,17 +37,17 @@ class PatientRequest extends Model
 
     public function detail(){
 
-        return $this->belongsTo(User::class,'clincial_id','id')->select('id','latitude','longitude','first_name','last_name','email');
+        return $this->belongsTo(User::class,'clincial_id','id')->select('id','latitude','longitude','first_name','last_name','email','phone');
     }
 
     public function patient(){
 
-        return $this->belongsTo(User::class,'user_id','id')->select('id','latitude','longitude','first_name','last_name','email');
+        return $this->belongsTo(User::class,'user_id','id')->select('id','latitude','longitude','first_name','last_name','email','phone');
     }
     
-    public function requester(){
+    public function request(){
 
-        return $this->belongsTo(User::class,'request_id','id')->select('id','latitude','longitude','first_name','last_name','email');
+        return $this->belongsTo(User::class,'requester_id','id')->select('id','latitude','longitude','first_name','last_name','email','phone');
     }
     
     public function patientDetail(){

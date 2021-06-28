@@ -14,7 +14,7 @@ class RemoveUniquePhone extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('phone')->nullable()->change();
+            $table->dropUnique('users_phone_unique');
         });
     }
 
