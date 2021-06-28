@@ -59,10 +59,13 @@ class PatientRequestController extends Controller
             if ($check>0){
                 return $this->generateResponse(false,'Already Create This Request',null,200);
             }
+
+            $request_id = Auth::user()->id;
             $patientRequest = PatientRequest::where('user_id', $request->patient_id)->whereNull('parent_id')->where('status', '1')->first();
             if(! $patientRequest) {
                 $patient = new PatientRequest();
                 $patient->user_id = $request->user_id;
+                $patient->requester_id = $request_id;
                 $patient->latitude = $request->latitude;
                 $patient->longitude = $request->longitude;
                 $patient->reason = $request->reason;
@@ -71,6 +74,7 @@ class PatientRequestController extends Controller
                 $patientSecond = new PatientRequest();
 
                 $patientSecond->user_id = $request->user_id;
+                $patientSecond->requester_id = $request_id;
                 $patientSecond->type_id = $request->type_id;
                 $patientSecond->latitude = $request->latitude;
                 $patientSecond->longitude = $request->longitude;
@@ -110,6 +114,7 @@ class PatientRequestController extends Controller
                 $patientSecond = new PatientRequest();
 
                 $patientSecond->user_id = $request->user_id;
+                $patientSecond->requester_id = $request_id;
                 $patientSecond->type_id = $request->type_id;
                 $patientSecond->latitude = $request->latitude;
                 $patientSecond->longitude = $request->longitude;
@@ -145,47 +150,13 @@ class PatientRequestController extends Controller
                 $notificationHistory->save();
             }
             
-            $data=PatientRequest::with('detail','patient')
+            $data = PatientRequest::with('detail','patient','request')
             ->where('id','=',$patientSecond->id)
             ->first();
-     
-            if ($data->patient && $data->patient->email) {
-                Log::info('Patient email is'.$data->patient->email);
-                $clinicianFirstName = ($data->detail && $data->detail->first_name) ? $data->detail->first_name : '';
-                $clinicianLastName = ($data->detail && $data->detail->last_name) ? $data->detail->last_name : '';
-                $phone = ($data->patient->phone) ? $data->patient->phone : '';
-
-                $details = [
-                    'first_name' => ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '' ,
-                    'last_name' => ($data->patient && $data->patient->last_name) ? $data->patient->last_name : '',
-                    'status' => 'Accepted',
-                    'message' => 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and By when will he reach you will get the details in the mail after . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' accepts the request.',
-                    'phone' => $phone,
-                ];
-                Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
-    
-                $smsController = new SmsController();
-                $smsController->sendsmsToMe($details['message'], $details['phone']);
-            }
-    
-            if ($data->detail && $data->detail->email) {
-                log::info('clinician email is:'.$data->detail->email);
-                $patientFirstName = ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '';
-                $patientLastName = ($data->patient && $data->patient->last_name) ? $data->patient->last_name : '';
-                $phone = ($data->detail->phone) ? $data->detail->phone : '';
-                $details = [
-                    'first_name' => ($data->detail && $data->detail->first_name) ? $data->detail->first_name : '' ,
-                    'last_name' => ($data->detail && $data->detail->last_name) ? $data->detail->last_name : '',
-                    'status' => 'Request',
-                    'message' => 'You got a roadL request by ' . $patientFirstName . ' ' . $patientLastName .' manisha You have sent roadL request to manisha You have requested' . $patientFirstName . ' ' . $patientLastName .' After accepting the request, at what time you have to reach the patient’s house, they will get you in the mail.',
-                    'phone' => $phone
-                ];
-                Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
-
-                $smsController = new SmsController();
-                $smsController->sendsmsToMe($details['message'], $details['phone']);
-            }
-
+           
+            $smsController = new SmsController();
+            $smsController->sendSms($data,'1');
+            
             // If assign clinician
             $checkAssignId = '';
             if($request->clinician_list_id !='' && $request->clinician_list_id !=0) {
@@ -249,13 +220,12 @@ class PatientRequestController extends Controller
                     })
                     ->where('is_available','=','1')->get();
                    
-                } else {
+                } 
+                //else {
                      // $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get(); 
-                }
+              //  }
                 
-                 Log::info('clinician list of other type start');
-                   Log::info($clinicianIds);
-                    Log::info('clinician list of other type end');
+                
                 $markers = collect($clinicianIds)->map(function($item) use ($request){
                     $roadlController = new RoadlController();
                     $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
@@ -498,69 +468,10 @@ class PatientRequestController extends Controller
                 event(new SendPatientNotificationMap($patient->toArray(),$patient->user_id,$users));
                 // event(new SendPatientNotificationMap($patient->toArray(),$patient->clincial_id,$users));
 
-                $data=PatientRequest::with('detail', 'patient')
-                    ->where('id','=',$request->request_id)
-                    ->first();
-                    Log::info('Clinician latitude'.$request->longitude);Log::info('Clinician longitude'.$request->longitude);
-                if ($data->patient && $data->patient->email) {
-                    $clinicianFirstName = ($data->detail->first_name) ? $data->detail->first_name : '';
-                    $clinicianLastName = ($data->detail->first_name) ? $data->detail->first_name : '';
-                    $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
-                    $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
-                    $address = '';
-                    if ($data->patient->demographic && $data->patient->demographic->address) {
-                        $addressData = $data->patient->demographic->address;
-                     
-                        if ($addressData['address1']){
-                            $address.= $addressData['address1'];
-                        }
-                        if ($addressData['city']){
-                            $address.=', '.$addressData['city'];
-                        }
-                        if ($addressData['state']){
-                            $address.=', '.$addressData['state'];
-                        }
-                    
-                        if ($addressData['zip_code']){
-                            $address.=', '.$addressData['zip_code'];
-                        }
-
-                        if ($address){
-                            $address = $address;
-                        }
-                    }
-                    $role_name = implode(',',$data->detail->roles->pluck('name')->toArray());
-                    $parent_id = $data->parent_id;
-                    $phone = ($data->patient->phone) ? $data->patient->phone : '';
-                    $details = [
-                        'first_name' => ($data->patient->first_name) ? $data->patient->first_name : '' ,
-                        'last_name' => ($data->patient->last_name) ? $data->patient->last_name : '',
-                        'message' => $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has started RoadL request of ' . $patientFirstName . ' ' . $patientLastName . ' for patient address: ' . $address . '. You can track RoadL requests by RoadL id : ' . $parent_id,
-                        'phone' => $phone,
-                    ];
-                    Mail::to($data->patient->email)->send(new UpdateStatusNotification($details));
-
-                    $smsController = new SmsController();
-                    $smsController->sendsmsToMe($details['message'], $details['phone']);
-                }
-
-                if ($data->detail && $data->detail->email) {
-                    $patientFirstName = ($data->patient->first_name) ? $data->patient->first_name : '';
-                    $patientLastName = ($data->patient->first_name) ? $data->patient->first_name : '';
-                    $phone = ($data->detail->phone) ? $data->detail->phone : '';
-                    $role_name = implode(',',$data->patient->roles->pluck('name')->toArray());
-                    $parent_id = $data->parent_id;
-                    $details = [
-                        'first_name' => ($data->detail->first_name) ? $data->detail->first_name : '' ,
-                        'last_name' => ($data->detail->last_name) ? $data->detail->last_name : '',
-                        'message' => 'You have accepted RoadL request of ' . $patientFirstName . ' ' . $patientLastName . '. You can track RoadL requests by RoadL id : ' . $parent_id,
-                        'phone' => $phone,
-                    ];
-                    Mail::to($data->detail->email)->send(new UpdateStatusNotification($details));
-
-                    $smsController = new SmsController();
-                    $smsController->sendsmsToMe($details['message'], $details['phone']);
-                }
+                $data = PatientRequest::with('detail', 'patient','request')->where('id','=',$request->request_id)->first();
+                 
+                $smsController = new SmsController();
+                $smsController->sendSms($data,'2');
 
                 return $this->generateResponse(true,'Request Accepted!',$data,200);
             }
@@ -941,95 +852,95 @@ class PatientRequestController extends Controller
         }
     }
 
-    public function updatePatientRequeststatus(Request $request)
-    {
-        try {
+    // public function updatePatientRequeststatus(Request $request)
+    // {
+    //     try {
           
-            $patientRequstModel = PatientRequest::where('id',$request['patient_request_id'])->with('patient', 'detail')->first();
-            PatientRequest::find($request['patient_request_id'])->update([
-                'status' => '4',
-                'complated_time' => Carbon::now()->toDateTime(),
-            ]);
-            $notificationHistory = NotificationHistory::where('request_id',$request['patient_request_id'])->first();
-            $notificationHistory->receiver_id = $patientRequstModel->clincial_id;
-            $notificationHistory->status = 'complete';
-            $notificationHistory->save();
+    //         $patientRequstModel = PatientRequest::where('id',$request['patient_request_id'])->with('patient', 'detail')->first();
+    //         PatientRequest::find($request['patient_request_id'])->update([
+    //             'status' => '4',
+    //             'complated_time' => Carbon::now()->toDateTime(),
+    //         ]);
+    //         $notificationHistory = NotificationHistory::where('request_id',$request['patient_request_id'])->first();
+    //         $notificationHistory->receiver_id = $patientRequstModel->clincial_id;
+    //         $notificationHistory->status = 'complete';
+    //         $notificationHistory->save();
 
-            $patientRequstModel->detail()->update([
-                'is_available' => 1,
-            ]);
+    //         $patientRequstModel->detail()->update([
+    //             'is_available' => 1,
+    //         ]);
 
-            $patientRequest = PatientRequest::where([['parent_id', $request['parent_id']],['status', '!=', 4]])->get();
-            if(count($patientRequest) == 0) {
-                PatientRequest::find($request['parent_id'])->update([
-                    'status' => '4'
-                ]);
-            };
+    //         $patientRequest = PatientRequest::where([['parent_id', $request['parent_id']],['status', '!=', 4]])->get();
+    //         if(count($patientRequest) == 0) {
+    //             PatientRequest::find($request['parent_id'])->update([
+    //                 'status' => '4'
+    //             ]);
+    //         };
 
-            if ($patientRequstModel->patient && $patientRequstModel->patient->email) {
-                $clinicianFirstName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
-                $clinicianLastName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
-                $patientFirstName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
-                $patientLastName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
-                $address = '';
-                if ($patientRequstModel->patient->demographic && $patientRequstModel->patient->demographic->address) {
-                    $addressData = $patientRequstModel->patient->demographic->address;
+    //         if ($patientRequstModel->patient && $patientRequstModel->patient->email) {
+    //             $clinicianFirstName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
+    //             $clinicianLastName = ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '';
+    //             $patientFirstName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
+    //             $patientLastName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
+    //             $address = '';
+    //             if ($patientRequstModel->patient->demographic && $patientRequstModel->patient->demographic->address) {
+    //                 $addressData = $patientRequstModel->patient->demographic->address;
                  
-                    if ($addressData['address1']){
-                        $address.= $addressData['address1'];
-                    }
-                    if ($addressData['city']){
-                        $address.=', '.$addressData['city'];
-                    }
-                    if ($addressData['state']){
-                        $address.=', '.$addressData['state'];
-                    }
+    //                 if ($addressData['address1']){
+    //                     $address.= $addressData['address1'];
+    //                 }
+    //                 if ($addressData['city']){
+    //                     $address.=', '.$addressData['city'];
+    //                 }
+    //                 if ($addressData['state']){
+    //                     $address.=', '.$addressData['state'];
+    //                 }
                 
-                    if ($addressData['zip_code']){
-                        $address.=', '.$addressData['zip_code'];
-                    }
+    //                 if ($addressData['zip_code']){
+    //                     $address.=', '.$addressData['zip_code'];
+    //                 }
 
-                    if ($address){
-                        $address = $address;
-                    }
-                }
-                $role_name = implode(',',$patientRequstModel->detail->roles->pluck('name')->toArray());
+    //                 if ($address){
+    //                     $address = $address;
+    //                 }
+    //             }
+    //             $role_name = implode(',',$patientRequstModel->detail->roles->pluck('name')->toArray());
               
-                $phone = ($patientRequstModel->patient->phone) ? $patientRequstModel->patient->phone : '';
-                $details = [
-                    'first_name' => ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '' ,
-                    'last_name' => ($patientRequstModel->patient->last_name) ? $patientRequstModel->patient->last_name : '',
-                    'message' => $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName . ' at addrress: ' . $address . '.',
-                    'phone' => $phone,
-                ];
-                Mail::to($patientRequstModel->patient->email)->send(new UpdateStatusNotification($details));
-                $smsController = new SmsController();
-                $smsController->sendsmsToMe($details['message'], $details['phone']);
-            }
+    //             $phone = ($patientRequstModel->patient->phone) ? $patientRequstModel->patient->phone : '';
+    //             $details = [
+    //                 'first_name' => ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '' ,
+    //                 'last_name' => ($patientRequstModel->patient->last_name) ? $patientRequstModel->patient->last_name : '',
+    //                 'message' => $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName . ' at addrress: ' . $address . '.',
+    //                 'phone' => $phone,
+    //             ];
+    //             Mail::to($patientRequstModel->patient->email)->send(new UpdateStatusNotification($details));
+    //             $smsController = new SmsController();
+    //             $smsController->sendsmsToMe($details['message'], $details['phone']);
+    //         }
 
-            if ($patientRequstModel->detail && $patientRequstModel->detail->email) {
-                $patientFirstName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
-                $patientLastName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
-                $phone = ($patientRequstModel->detail->phone) ? $patientRequstModel->detail->phone : '';
-                $role_name = implode(',',$patientRequstModel->patient->roles->pluck('name')->toArray());
+    //         if ($patientRequstModel->detail && $patientRequstModel->detail->email) {
+    //             $patientFirstName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
+    //             $patientLastName = ($patientRequstModel->patient->first_name) ? $patientRequstModel->patient->first_name : '';
+    //             $phone = ($patientRequstModel->detail->phone) ? $patientRequstModel->detail->phone : '';
+    //             $role_name = implode(',',$patientRequstModel->patient->roles->pluck('name')->toArray());
              
-                $details = [
-                    'first_name' => ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '' ,
-                    'last_name' => ($patientRequstModel->detail->last_name) ? $patientRequstModel->detail->last_name : '',
-                    'message' => 'You have completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
-                    'phone' => $phone,
-                ];
-                Mail::to($patientRequstModel->detail->email)->send(new UpdateStatusNotification($details));
+    //             $details = [
+    //                 'first_name' => ($patientRequstModel->detail->first_name) ? $patientRequstModel->detail->first_name : '' ,
+    //                 'last_name' => ($patientRequstModel->detail->last_name) ? $patientRequstModel->detail->last_name : '',
+    //                 'message' => 'You have completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
+    //                 'phone' => $phone,
+    //             ];
+    //             Mail::to($patientRequstModel->detail->email)->send(new UpdateStatusNotification($details));
                 
-                $smsController = new SmsController();
-                $smsController->sendsmsToMe($details['message'], $details['phone']);
-            }
+    //             $smsController = new SmsController();
+    //             $smsController->sendsmsToMe($details['message'], $details['phone']);
+    //         }
            
-            return $this->generateResponse(true, 'Status complated successfully', null, 200);
-        } catch (\Exception $ex) {
-            return $this->generateResponse(false, $ex->getMessage());
-        }
-    }
+    //         return $this->generateResponse(true, 'Status complated successfully', null, 200);
+    //     } catch (\Exception $ex) {
+    //         return $this->generateResponse(false, $ex->getMessage());
+    //     }
+    // }
 
     public function updatePreperationTime(Request $request)
     {

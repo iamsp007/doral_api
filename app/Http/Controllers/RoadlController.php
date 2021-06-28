@@ -50,6 +50,7 @@ class RoadlController extends Controller
                 $patientRequest->status = $request->status;
                 $patientRequest->arrived_time = Carbon::now()->toDateTime();
                 $patientRequest->save();
+
             }elseif ($request->status==="5"){
                 $patientRequest->status = $request->status;
                 $patientRequest->cancelled_time = Carbon::now()->toDateTime();
@@ -88,64 +89,9 @@ class RoadlController extends Controller
             $roadlInformation->save();
             // update is available field in user table end
             
-            if ($patientRequest->patient && $patientRequest->patient->email) {
-                $clinicianFirstName = ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
-                $clinicianLastName = ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
-                $patientFirstName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
-                $patientLastName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
-                $address = '';
-                if ($patientRequest->patient->demographic && $patientRequest->patient->demographic->address) {
-                    $addressData = $patientRequest->patient->demographic->address;
-                    
-                    if ($addressData['address1']){
-                        $address.= $addressData['address1'];
-                    }
-                    if ($addressData['city']){
-                        $address.=', '.$addressData['city'];
-                    }
-                    if ($addressData['state']){
-                        $address.=', '.$addressData['state'];
-                    }
-                
-                    if ($addressData['zip_code']){
-                        $address.=', '.$addressData['zip_code'];
-                    }
-            
-                    if ($address){
-                        $address = $address;
-                    }
-                }
-                $role_name = implode(',',$patientRequest->detail->roles->pluck('name')->toArray());
-                
-                $phone = ($patientRequest->patient->phone) ? $patientRequest->patient->phone : '';
-                $details = [
-                    'first_name' => ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '' ,
-                    'last_name' => ($patientRequest->patient->last_name) ? $patientRequest->patient->last_name : '',
-                    'message' => $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') arrived at ' . $patientFirstName . ' ' . $patientLastName . ' addrress: ' . $address . '. for RoadL request.',
-                    'phone' => $phone,
-                ]; 
-            
-                Mail::to($patientRequest->patient->email)->send(new UpdateStatusNotification($details));
-                $smsController = new SmsController();
-                $smsController->sendsmsToMe($details['message'], $details['phone']);
-            }
-            
-            if ($patientRequest->detail && $patientRequest->detail->email) {
-                $patientFirstName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
-                $patientLastName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
-                $phone = ($patientRequest->detail->phone) ? $patientRequest->detail->phone : '';
-                $role_name = implode(',',$patientRequest->patient->roles->pluck('name')->toArray());
-                
-                $details = [
-                    'first_name' => ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '' ,
-                    'last_name' => ($patientRequest->detail->last_name) ? $patientRequest->detail->last_name : '',
-                    'message' => 'You have arrived RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
-                    'phone' => $phone,
-                ];
-                Mail::to($patientRequest->detail->email)->send(new UpdateStatusNotification($details));
-                $smsController = new SmsController();
-                $smsController->sendsmsToMe($details['message'], $details['phone']);
-            }
+            $smsController = new SmsController();
+            $smsController->sendSms($patientRequest,$request->status);
+           
             return $this->generateResponse(true,'Your RoadL Visit Updated Successfully!',$patientRequest,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
