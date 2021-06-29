@@ -35,12 +35,15 @@ class SmsController extends Controller
 
     public function sendSms($patientRequest,$status)
     {
-        $clinicianFirstName = ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
-        $clinicianLastName = ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
-        $patientFirstName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
-        $patientLastName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
+        $clinicianFirstName = ($patientRequest->detail && $patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
+        $clinicianLastName = ($patientRequest->detail && $patientRequest->detail->last_name) ? $patientRequest->detail->last_name : '';
+        $patientFirstName = ($patientRequest->patient && $patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
+        $patientLastName = ($patientRequest->patient && $patientRequest->patient->last_name) ? $patientRequest->patient->last_name : '';
+	$role_name = '';
+        if ($patientRequest->detail) {
+        
         $role_name = implode(',',$patientRequest->detail->roles->pluck('name')->toArray());
-
+	}
         $address = '';
         if ($patientRequest->patient->demographic && $patientRequest->patient->demographic->address) {
             $addressData = $patientRequest->patient->demographic->address;
@@ -70,13 +73,13 @@ class SmsController extends Controller
 
             $clinicianMessage = 'You got a roadL request by ' . $patientFirstName . ' ' . $patientLastName .' After accepting the request, at what time you have to reach the patient’s house, they will get you in the mail.';
 
-            $requestMessage = 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. 'of' . $patientFirstName . ' ' . $patientLastName ;
+            $requestMessage = 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' of ' . $patientFirstName . ' ' . $patientLastName ;
         } else if ($status === "2") {
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has started RoadL request of ' . $patientFirstName . ' ' . $patientLastName . ' for patient address: ' . $address . '. You can track RoadL requests by RoadL id : ' . $patientRequest->parent_id;
 
             $clinicianMessage = 'You have accepted RoadL request of ' . $patientFirstName . ' ' . $patientLastName . '. You can track RoadL requests by RoadL id : ' . $patientRequest->parent_id;
 
-            $requestMessage = 'RoadL request of ' . $patientFirstName . ' ' . $patientLastName . 'accepted by'  . $clinicianLastName . '(' . $role_name . ')';
+            $requestMessage = 'RoadL request of ' . $patientFirstName . ' ' . $patientLastName . 'accepted by '  . $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ')';
         } elseif ($status === "3") {
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') arrived at ' . $patientFirstName . ' ' . $patientLastName . ' addrress: ' . $address . '. for RoadL request.';
 
@@ -90,7 +93,7 @@ class SmsController extends Controller
 
             $clinicianMessage = 'You have completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
 
-            $requestMessage = 'RoadL request of ' . $patientFirstName . ' ' . $patientLastName . 'completed by'  . $clinicianLastName . '(' . $role_name . ')';
+            $requestMessage = 'RoadL request of ' . $patientFirstName . ' ' . $patientLastName . 'completed by '  . $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ')';
         } elseif ($status === "5") {
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has cancel RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
 
@@ -115,7 +118,7 @@ class SmsController extends Controller
         
         if ($patientRequest->detail && $patientRequest->detail->email) {
             $patientFirstName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
-            $patientLastName = ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '';
+            $patientLastName = ($patientRequest->patient->last_name) ? $patientRequest->patient->last_name : '';
             $phone = ($patientRequest->detail->phone) ? $patientRequest->detail->phone : '';
             $role_name = implode(',',$patientRequest->patient->roles->pluck('name')->toArray());
             

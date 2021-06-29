@@ -827,7 +827,8 @@ class PatientRequestController extends Controller
 
     public function getClinicianList(Request $request){
 
-        $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1'], ['is_available','=','1']])->get();
+        $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1']])->get();
+//        $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1'], ['is_available','=','1']])->get();
         return $this->generateResponse(true,'Clinician List APi',$clinicianList,200);
     }
 
