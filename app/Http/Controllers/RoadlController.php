@@ -66,7 +66,7 @@ class RoadlController extends Controller
             if ($user){
                 $user->latitude = $request->latitude;
                 $user->longitude = $request->longitude;
-                if ($request->status==='4' || $request->status==='5' || $request->status===5){
+                if ($request->status==='4' || $request->status==='5'){
                     $user->is_available = '1';
                     
                     $patientRequestdata = PatientRequest::where([['parent_id', $patientRequest->parent_id],['status', '!=', 4],['status', '!=', 5]])->get();
@@ -310,11 +310,12 @@ class RoadlController extends Controller
                     $latitude = isset($lookup->patient->latitude) ? $lookup->patient->latitude : null;
                     $latitude = isset($lookup->patient->latitude) ? $lookup->patient->latitude : null;
                 } else {
-                    if (isset($lookup->roadlInformation)) {
-                        $roadlInfo = RoadlInformation::where([['patient_requests_id', '=', $lookup->id],['is_status','=',$lookup->status]])->first();
+                    $roadlInfo = RoadlInformation::where([['patient_requests_id', '=', $lookup->id],['is_status','=',$lookup->status]])->first();
+                    if($roadlInfo) {
                         $latitude = $roadlInfo->latitude;
                         $longitude = $roadlInfo->longitude;
                     }
+                        
                 }
               
                 return [
