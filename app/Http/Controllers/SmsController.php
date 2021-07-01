@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\SeneErrorEmail;
+use App\Mail\SendErrorEmail;
 use App\Mail\UpdateStatusNotification;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SmsController extends Controller
@@ -40,7 +38,7 @@ class SmsController extends Controller
                'message' => $error_msg,
             ];
 
-            Mail::to('shashikant@hcbspro.com')->send(new SeneErrorEmail($details));
+            Mail::to('shashikant@hcbspro.com')->send(new SendErrorEmail($details));
         }
         
     }
