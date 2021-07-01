@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendErrorEmail;
 use App\Mail\UpdateStatusNotification;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SmsController extends Controller
 {
     public function sendsmsToMe($message, $to) {
-       // $to = str_replace("-", "",$to);
-        //$to = str_replace("-", "",$to);
         $to = $to;
         $from = "12089104598";	
         $api_key = "bb78dfeb";
@@ -29,7 +26,8 @@ class SmsController extends Controller
         curl_setopt($res, CURLOPT_SSL_VERIFYPEER, FALSE);	
         curl_setopt($res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);	
         curl_setopt($res, CURLOPT_POSTFIELDS, $fields);	
-        $result = curl_exec($res);
+        curl_exec($res);
+
         if (curl_errno($res)) {
             $error_msg = curl_error($res);
         }
@@ -40,8 +38,9 @@ class SmsController extends Controller
                'message' => $error_msg,
             ];
 
-           // Mail::to('shashikant@hcbspro.com')->send(new SeneErrorEmail($details));
-        }	
+            Mail::to('shashikant@hcbspro.com')->send(new SendErrorEmail($details));
+        }
+        
     }
 
     public function sendSms($patientRequest,$status)
