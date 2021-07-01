@@ -310,16 +310,29 @@ class RoadlController extends Controller
                     $latitude = isset($lookup->patient->latitude) ? $lookup->patient->latitude : null;
                     $latitude = isset($lookup->patient->latitude) ? $lookup->patient->latitude : null;
                 } else {
-                    if (isset($lookup->roadlInformation)) {
-                        $latitude = $lookup->roadlInformation->first()->latitude;
-                        $longitude = $lookup->roadlInformation->first()->longitude;
-                    }
+                    //if (isset($lookup->roadlInformation)) {
+                      //  $latitude = $lookup->roadlInformation->where('is_status',$lookup->status)->first()->latitude;
+                      //  $longitude = $lookup->roadlInformation->where('is_status',$lookup->status)->first()->longitude;
+                    //}
+                     $roadlInfo = RoadlInformation::where([['patient_requests_id', '=', $lookup->id],['is_status','=',$lookup->status]])->first();
+                     if($roadlInfo) {
+                         $latitude = $roadlInfo->latitude;
+                         $longitude = $roadlInfo->longitude;
+                         Log::info('roadl information lat : '.$latitude);	
+                         Log::info('id'.$roadlInfo->id);
+                         Log::info('roadl information long : '.$longitude);	
+                     }
+                        
                 }
               
                 return [
                     'id' => isset($lookup->id) ? $lookup->id : null,
                     'user_id' => isset($lookup->user_id) ? $lookup->user_id : null,
                     'clincial_id' => isset($lookup->clincial_id) ? $lookup->clincial_id : null,
+                      'preparation_time' => isset($lookup->preparation_time) ? $lookup->preparation_time : null,
+                    'preparasion_date' => isset($lookup->preparasion_date) ? $lookup->preparasion_date : null,
+                    'accepted_time' => isset($lookup->accepted_time) ? $lookup->accepted_time : null,
+                    'travel_time' => isset($lookup->travel_time) ? $lookup->travel_time : null,
                     'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : 0,
                     'latitude' => $latitude,
                     'longitude' => $longitude,

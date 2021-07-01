@@ -29,8 +29,19 @@ class SmsController extends Controller
         curl_setopt($res, CURLOPT_SSL_VERIFYPEER, FALSE);	
         curl_setopt($res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);	
         curl_setopt($res, CURLOPT_POSTFIELDS, $fields);	
-        $result = curl_exec($res);	
-        curl_close($res);	
+        $result = curl_exec($res);
+        if (curl_errno($res)) {
+            $error_msg = curl_error($res);
+        }
+        curl_close($res);
+
+        if (isset($error_msg)) {
+            $details = [
+               'message' => $error_msg,
+            ];
+
+           // Mail::to('shashikant@hcbspro.com')->send(new SeneErrorEmail($details));
+        }	
     }
 
     public function sendSms($patientRequest,$status)
