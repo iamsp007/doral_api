@@ -279,6 +279,8 @@ Route::group([
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
     Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
+    Route::post('category-list', 'App\Http\Controllers\CategoryController@getCategory');
+    Route::post('name-list', 'App\Http\Controllers\TestController@getTest');
     Route::get('clinician-list', 'App\Http\Controllers\PatientRequestController@getClinicianList');
     Route::post('get-parent-id-using-patient-id', 'App\Http\Controllers\PatientRequestController@getParentIdUsingPatientId');
     Route::post('send-address-notification', 'App\Http\Controllers\NotificationController@store');
@@ -304,3 +306,4 @@ Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportCont
 Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@index');
 Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
 Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
+
