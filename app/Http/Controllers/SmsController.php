@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\SendErrorEmail;
 use App\Mail\UpdateStatusNotification;
 use Illuminate\Support\Facades\Mail;
-
+use Nexmo\Laravel\Facade\Nexmo;
 class SmsController extends Controller
 {
     public function sendsmsToMe($message, $to) {
@@ -42,7 +42,23 @@ class SmsController extends Controller
         }
         
     }
+    public function call() {
+        $currentHost = 'https://api.doralhealthconnect.com/';
+      
 
+        Nexmo::calls()->create([
+            'to' => [[
+                'type' => 'phone',
+                'number' => '8511380657'
+            ]],
+            'from' => [
+                'type' => 'phone',
+                'number' => '8511380657'
+            ],
+            'answer_url' => ['https://api.doralhealthconnect.com/webhook/answer'],
+            'event_url' => ['https://api.doralhealthconnect.com/webhook/event']
+        ]);
+    }
     public function sendSms($patientRequest,$status)
     {
         $clinicianFirstName = ($patientRequest->detail && $patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
@@ -76,7 +92,7 @@ class SmsController extends Controller
                 $address = $address;
             }
         }
-      
+      $patientMessage = $clinicianMessage = $requestMessage = '';
         if ($status === "1"){
             
             $patientMessage = 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and By when will he reach you will get the details in the mail after . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' accepts the request.';
@@ -123,7 +139,7 @@ class SmsController extends Controller
         
             Mail::to($patientRequest->patient->email)->send(new UpdateStatusNotification($details));
            
-            $this->sendsmsToMe($details['message'], setPhone($details['phone']));
+            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
         
         if ($patientRequest->detail && $patientRequest->detail->email) {
@@ -141,7 +157,7 @@ class SmsController extends Controller
             ];
             Mail::to($patientRequest->detail->email)->send(new UpdateStatusNotification($details));
             
-            $this->sendsmsToMe($details['message'], setPhone($details['phone']));
+            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
 
         if ($patientRequest->request && $patientRequest->request->email) {
@@ -159,7 +175,7 @@ class SmsController extends Controller
 
             Mail::to($patientRequest->request->email)->send(new UpdateStatusNotification($details));
            
-            $this->sendsmsToMe($details['message'], setPhone($details['phone']));
+            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
         
     }
