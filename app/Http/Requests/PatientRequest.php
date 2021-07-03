@@ -19,46 +19,46 @@ class PatientRequest extends FormRequest
     protected function prepareForValidation()
     {
         if ($this->patient_id){
-            $details = User::with('demographic')->find($this->patient_id);
+            // $details = User::with('demographic')->find($this->patient_id);
 
-            if (isset($details->demographic->address) && $details->demographic){
-                $addresses=$details->demographic->address;
-                $address='';
-                if (isset($addresses['address1'])){
-                    $address.=$addresses['address1'];
-                }
-                if (isset($addresses['address2'])){
-                    $address.=$addresses['address2'];
-                }
-                if (isset($addresses['city'])){
-                    $address.=','.$addresses['city'];
-                }
-                if (isset($addresses['state'])){
-                    $address.=','.$addresses['state'];
-                }
-                if (isset($addresses['country'])){
-                    $address.=','.$addresses['country'];
-                }
-                if (isset($addresses['zip'])){
-                    $address.=','.$addresses['zip'];
-                }
-                $helper = new Helper();
-                $response = $helper->getLatLngFromAddress($address);
-                if ($response->status==='REQUEST_DENIED'){
-                    $latitude=$details->latitude;
-                    $longitude=$details->longitude;
-                }else{
-                    $latitude=$response->results[0]->geometry->location->lat;
-                    $longitude=$response->results[0]->geometry->location->lng;
-                }
-            }else{
-                $latitude=$details->latitude;
-                $longitude=$details->longitude;
-            }
+            // if (isset($details->demographic->address) && $details->demographic){
+            //     $addresses=$details->demographic->address;
+            //     $address='';
+            //     if (isset($addresses['address1'])){
+            //         $address.=$addresses['address1'];
+            //     }
+            //     if (isset($addresses['address2'])){
+            //         $address.=$addresses['address2'];
+            //     }
+            //     if (isset($addresses['city'])){
+            //         $address.=','.$addresses['city'];
+            //     }
+            //     if (isset($addresses['state'])){
+            //         $address.=','.$addresses['state'];
+            //     }
+            //     if (isset($addresses['country'])){
+            //         $address.=','.$addresses['country'];
+            //     }
+            //     if (isset($addresses['zip'])){
+            //         $address.=','.$addresses['zip'];
+            //     }
+            //     $helper = new Helper();
+            //     $response = $helper->getLatLngFromAddress($address);
+            //     if ($response->status==='REQUEST_DENIED'){
+            //         $latitude=$details->latitude;
+            //         $longitude=$details->longitude;
+            //     }else{
+            //         $latitude=$response->results[0]->geometry->location->lat;
+            //         $longitude=$response->results[0]->geometry->location->lng;
+            //     }
+            // }else{
+            //     $latitude=$details->latitude;
+            //     $longitude=$details->longitude;
+            // }
 
             $this->merge([
-                'latitude' => $latitude,
-                'longitude'=>$longitude,
+                // 'latitude' => $latitude,
+                // 'longitude'=>$longitude,
                 'user_id' => $this->patient_id,
             ]);
         }else{
@@ -87,8 +87,8 @@ class PatientRequest extends FormRequest
     {
         return [
             'type_id'=>'required',
-            'latitude'=>'required',
-            'longitude'=>'required',
+            // 'latitude'=>'required',
+            // 'longitude'=>'required',
             // 'clinician_list_id'=>'required',
         ];
     }

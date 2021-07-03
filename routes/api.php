@@ -183,6 +183,7 @@ Route::group([
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('patient-request-multi', 'App\Http\Controllers\PatientRequestController@storeMulti');
     Route::post('patient-request-otp-verify', 'App\Http\Controllers\RoadlController@patientRequestOtpVerify');
     Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
     Route::post('newpatient-data', 'App\Http\Controllers\PatientController@newpatientData');
@@ -202,7 +203,7 @@ Route::group([
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
-    Route::post('update-patient-request-status', 'App\Http\Controllers\PatientRequestController@updatePatientRequeststatus');
+    //Route::post('update-patient-request-status', 'App\Http\Controllers\PatientRequestController@updatePatientRequeststatus');
     Route::post('update-preparation-time', 'App\Http\Controllers\PatientRequestController@updatePreperationTime');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
