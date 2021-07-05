@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'gender','dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token'
+        'first_name', 'last_name', 'gender','dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token', 'designation_id','service_id','latitude','longitude','is_available',
     ];
 
     /**
@@ -93,7 +93,7 @@ class User extends Authenticatable
         if (isset($this->image) && !empty($this->image)) {
             return env('WEB_URL').'assets/img/user/'. $this->image;
         } else {
-            return env('WEB_URL').'assets/img/user/01.png';
+            return env('WEB_URL').'assets/img/user/avatar.jpg';
         }
     }
 
@@ -175,6 +175,16 @@ class User extends Authenticatable
         return $user;
     }
 
+    public function designation()
+    {
+        return $this->hasOne(Designation::class,'id','designation_id');
+    }
+
+    public function conversation()
+    {
+        return $this->hasOne(Conversation::class,'user_id','id');
+    }
+    
     public function myRoom(){
         return $this->hasOne(VirtualRoom::class,'user_id','id');
     }

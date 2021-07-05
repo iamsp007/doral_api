@@ -50,40 +50,6 @@ class AssignClinicianToPatientController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\AssignClinicianToPatient  $assignClinicianToPatient
-     * @return \Illuminate\Http\Response
-     */
-    public function show(AssignClinicianToPatient $assignClinicianToPatient)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\AssignClinicianToPatient  $assignClinicianToPatient
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, AssignClinicianToPatient $assignClinicianToPatient)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\AssignClinicianToPatient  $assignClinicianToPatient
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(AssignClinicianToPatient $assignClinicianToPatient)
-    {
-        //
-    }
-
-    /**
      * Filter patient data using clinician
      *
      * @param  \Illuminate\Http\Request  $request

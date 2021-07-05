@@ -18,6 +18,7 @@ use App\Models\Company;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -251,8 +252,9 @@ class UserController extends Controller
     {
         $input = $request->all();
         if ($request->type==="1"){
-                $parts = explode('-',$input['dob']);
-                $yyyy_mm_dd = $parts[2] . '-' . $parts[0] . '-' . $parts[1];
+            $parts = explode('-',$input['dob']);
+            $yyyy_mm_dd = $parts[2] . '-' . $parts[0] . '-' . $parts[1];
+
             User::find($input['user_id'])->update([
                 'gender' => $input['gender'],
                 'first_name' => $input['first_name'],
@@ -261,6 +263,11 @@ class UserController extends Controller
                 'phone' => $input['home_phone'],
                 'email' => $input['email'],
             ]);
+            if (isset($input['notification']) && !empty($input['notification'])) {
+                $notification = implode(',',$input['notification']);
+            } else {
+                $notification = '';
+            }
             Demographic::where('user_id' ,$input['user_id'])->update([
                 'ssn' => isset($input['ssn']) ? $input['ssn'] : '' ,
                 'language' => isset($input['language']) ? $input['language'] : '' ,
@@ -269,31 +276,57 @@ class UserController extends Controller
                 'address->city' => isset($input['city']) ? $input['city'] : '' ,
                 'address->state' => isset($input['state']) ? $input['state'] : '' ,
                 'address->zip_code' => isset($input['zip_code']) ? $input['zip_code'] : '' ,
+                'address->apt_building' => isset($input['apt_building']) ? $input['apt_building'] : '' ,
                 'ethnicity' => isset($input['ethnicity']) ? $input['ethnicity'] : '' ,
                 'country_of_birth' => isset($input['country_of_birth']) ? $input['country_of_birth'] : '' ,
                 'marital_status' => isset($input['marital_status']) ? $input['marital_status'] : '' ,
-                'notification_preferences->email' => isset($input['email']) ? $input['email'] : '' ,
-                'notification_preferences->method_name' => isset($input['method_name']) ? $input['method_name'] : '' ,
-                'notification_preferences->mobile_or_sms' => isset($input['mobile_or_sms']) ? $input['mobile_or_sms'] : '' ,
-                'notification_preferences->voice_message' => isset($input['voice_message']) ? $input['voice_message'] : '' ,
+                // 'notification_preferences->email' => isset($input['email']) ? $input['email'] : '' ,
+                // 'notification_preferences->method_name' => isset($input['method_name']) ? $input['method_name'] : '' ,
+                // 'notification_preferences->mobile_or_sms' => isset($input['mobile_or_sms']) ? $input['mobile_or_sms'] : '' ,
+                // 'notification_preferences->voice_message' => isset($input['voice_message']) ? $input['voice_message'] : '' ,
+                'notification' => $notification,
             ]);
 
             $contactName = $input['contact_name'];
             $phone1 = $input['phone1'];
             $phone2 = $input['phone2'];
-            $address = $input['address'];
             $relation = $input['relationship_name'];
-            
-            PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
+            // $address = $input['address'];
+            // $emergencyAddress = [
+            //     'apt_building' => $input['emergencyAptBuilding'],
+            //     'address1' => $input['emergencyAddress1'],
+            //     'address2' => $input['emergencyAddress2'],
+            //     'city' => $input['emergencyAddress_city'],
+            //     'state' => $input['emergencyAddress_state'],
+            //     'zip_code' => $input['emergencyAddress_zip_code'],
+            // ] ;
 
+            $apt_building = $input['emergencyAptBuilding'];
+            $address1 = $input['emergencyAddress1'];
+            $address2 = $input['emergencyAddress2'];
+            $city = $input['emergencyAddress_city'];
+            $state = $input['emergencyAddress_state'];
+            $zip_code = $input['emergencyAddress_zip_code'];
+         
+            PatientEmergencyContact::where('user_id', $input['user_id'])->delete();
+            
             foreach ($contactName as $index => $value) {
+                $emergencyAddress = [
+                    'apt_building' => ($apt_building[$index]) ? $apt_building[$index] : '',
+                    'address1' =>  ($address1[$index]) ? $address1[$index] : '',
+                    'address2' =>  ($address2[$index]) ? $address2[$index] : '',
+                    'city' => ($city[$index]) ? $city[$index] : '',
+                    'state' => ($state[$index]) ? $state[$index] : '',
+                    'zip_code' => ($zip_code[$index]) ? $zip_code[$index] : '',
+                ];
+               
                 PatientEmergencyContact::create([
                     'user_id' => $input['user_id'],
                     'name' => ($contactName[$index]) ? $contactName[$index] : '',
                     'phone1' => ($phone1[$index]) ? $phone1[$index] : '',
                     'phone2' => ($phone2[$index]) ? $phone2[$index] : '',
-                    'address_old' => ($address[$index]) ? $address[$index] : '',
                     'relation' => ($relation[$index]) ? $relation[$index] : '',
+                    'address' => $emergencyAddress,
                 ]);
             }
 

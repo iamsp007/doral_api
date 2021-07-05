@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\SymptomsMaster;
-use Illuminate\Http\Request;
 
 class SymptomsMasterController extends Controller
 {
@@ -19,71 +18,5 @@ class SymptomsMasterController extends Controller
             return $this->generateResponse(true,'Symptoms Get Successfully!',$data,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\SymptomsMaster  $symptomsMaster
-     * @return \Illuminate\Http\Response
-     */
-    public function show(SymptomsMaster $symptomsMaster)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\SymptomsMaster  $symptomsMaster
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(SymptomsMaster $symptomsMaster)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SymptomsMaster  $symptomsMaster
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, SymptomsMaster $symptomsMaster)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\SymptomsMaster  $symptomsMaster
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(SymptomsMaster $symptomsMaster)
-    {
-        //
     }
 }

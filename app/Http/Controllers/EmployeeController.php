@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
-use App\Models\employee as ModelsEmployee;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -32,16 +31,6 @@ class EmployeeController extends Controller
             $message = $e->getMessage();
             return $this->generateResponse(false, $message, $data);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -170,29 +159,6 @@ class EmployeeController extends Controller
             $message = $e->getMessage() . " " . $e->getLine();
             return $this->generateResponse($status, $message, $data);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Employee $employee)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Employee $employee)
-    {
-        //
     }
 
     /**

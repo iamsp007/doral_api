@@ -5,67 +5,94 @@ namespace App\Http\Controllers;
 use App\Events\SendClinicianPatientRequestNotification;
 use App\Events\SendingSMS;
 use App\Events\SendPatientNotificationMap;
+use App\Helpers\Helper;
 use App\Http\Requests\PatientRequestOtpVerifyRequest;
 use App\Http\Requests\RoadlInformationRequest;
 use App\Http\Requests\RoadlInformationShowRequest;
+use App\Jobs\SendEmailJob;
+use App\Mail\UpdateStatusNotification;
 use App\Models\AssignAppointmentRoadl;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
 use App\Models\RoadlInformation;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class RoadlController extends Controller
 {
     //
     public function create(RoadlInformationRequest $request){
-
-        $patientRequest = PatientRequest::find($request->patient_requests_id);
+        if(isset($request->patient_request_id)) {
+            $patientRequest = PatientRequest::find($request->patient_request_id);
+        }else {
+            $patientRequest = PatientRequest::find($request->patient_requests_id); 
+        }
         if ($patientRequest){
-            if ($request->status==="4"){
+            if ($request->status==="4" || $request->status===4){
                 $patientRequest->status = $request->status;
-//                $patientRequest->otp=rand(1000,9999);
+                $patientRequest->complated_time = Carbon::now()->toDateTime();
+                $patientRequest->notes = $request->notes;
+                //                $patientRequest->otp=rand(1000,9999);
                 $patientRequest->save();
-                $allPatientRequest = PatientRequest::where('parent_id','=',$patientRequest->parent_id)
-                    ->get();
+                $allPatientRequest = PatientRequest::where('parent_id','=',$patientRequest->parent_id)->get();
                 $collection = collect($allPatientRequest)->whereIn('status',['4','5'])->count();
                 if ($collection===count($allPatientRequest)){
                     $patientRequestParent = PatientRequest::find($patientRequest->parent_id);
                     $patientRequestParent->status = '4';
                     $patientRequestParent->save();
                 }
-//                $user = User::find($request->user_id);
-//                if ($user){
-//                    $user->latitude = $request->latitude;
-//                    $user->longitude = $request->longitude;
-//                    $user->save();
-//                }
-//                $message="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
-//                $title="Your '.$user->first_name.' '.$user->last_name.' Request Otp is : ".$patientRequest->otp;
-//                $messages[]=array(
-//                    'to'=>User::find($patientRequest->user_id)->phone,
-//                    'message'=>$message
-//                );
-//                event(new SendingSMS($messages));
-//                event(new SendPatientNotificationMap($patientRequest,$patientRequest->user_id,$title,$message));
-                return $this->generateResponse(true,'Request Status Update Successfully!',$patientRequest,200);
+            }elseif ($request->status==="3"){
+                $patientRequest->status = $request->status;
+                $patientRequest->arrived_time = Carbon::now()->toDateTime();
+                $patientRequest->save();
+
+            }elseif ($request->status==="5"){
+                $patientRequest->status = $request->status;
+                $patientRequest->cancelled_time = Carbon::now()->toDateTime();
+                $patientRequest->notes = $request->notes;
+                $patientRequest->save();
             }elseif ($request->status==="6"){
                 $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
             }
-            $patientRequest->status = $request->status;
-            $patientRequest->save();
-            $user = User::find($request->user_id)->first();
+            // update is available field in user table start
+           
+            $user = User::where('id',$patientRequest->clincial_id)->first();
+         
             if ($user){
                 $user->latitude = $request->latitude;
                 $user->longitude = $request->longitude;
                 if ($request->status==='4' || $request->status==='5'){
                     $user->is_available = '1';
+                    
+                    $patientRequestdata = PatientRequest::where([['parent_id', $patientRequest->parent_id],['status', '!=', 4],['status', '!=', 5]])->get();
+		     if(count($patientRequestdata) == 0) {
+			PatientRequest::find($patientRequest->parent_id)->update([
+				'status' => '4'
+			]);
+		     }
                 }
                 $user->save();
             }
-            return $this->generateResponse(true,'Your Roadl Status Update Successfully!',$patientRequest,200);
+            $roadlInformation = new RoadlInformation();
+            $roadlInformation->user_id = $patientRequest->clincial_id;
+            $roadlInformation->patient_requests_id = $patientRequest->id;
+            $roadlInformation->client_id = $patientRequest->user_id;
+            $roadlInformation->latitude = $request->latitude;
+            $roadlInformation->longitude = $request->longitude;
+            $roadlInformation->status = "start";
+            $roadlInformation->is_status = $request->status;
+            $roadlInformation->save();
+            // update is available field in user table end
+            
+            $smsController = new SmsController();
+            $smsController->sendSms($patientRequest,$request->status);
+           
+            return $this->generateResponse(true,'Your RoadL Visit Updated Successfully!',$patientRequest,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
     }
@@ -262,7 +289,9 @@ class RoadlController extends Controller
             return $this->generateResponse(false,$validator->errors()->first(),$validator->errors()->messages(),200);
         }
 
-        $patientRequest = PatientRequest::with('detail','patient','requestType')
+        $patientRequest = PatientRequest::with(['detail','patient','requestType','roadlInformation' => function($q){
+                $q->orderBy('id','DESC');
+            }])
             ->where(function ($q) use ($request){
                 if ($request->has('type_id')){
                     $q->where('type_id','=',$request->type_id);
@@ -276,12 +305,31 @@ class RoadlController extends Controller
             $arr = [];
 
             $clinicians = $patientRequest->map(function ( $lookup ) {
+                $latitude = $longitude = '';
+                if ($lookup->status === '1') {
+                    $latitude = isset($lookup->patient->latitude) ? $lookup->patient->latitude : null;
+                    $latitude = isset($lookup->patient->latitude) ? $lookup->patient->latitude : null;
+                } else {
+                    $roadlInfo = RoadlInformation::where([['patient_requests_id', '=', $lookup->id],['is_status','=',$lookup->status]])->first();
+                    if($roadlInfo) {
+                        $latitude = $roadlInfo->latitude;
+                        $longitude = $roadlInfo->longitude;
+                    }
+                        
+                }
+              
                 return [
                     'id' => isset($lookup->id) ? $lookup->id : null,
                     'user_id' => isset($lookup->user_id) ? $lookup->user_id : null,
                     'clincial_id' => isset($lookup->clincial_id) ? $lookup->clincial_id : null,
+                    'preparation_time' => isset($lookup->preparation_time) ? $lookup->preparation_time : null,
+                    'preparasion_date' => isset($lookup->preparasion_date) ? $lookup->preparasion_date : null,
+                    'accepted_time' => isset($lookup->accepted_time) ? $lookup->accepted_time : null,
+                    'travel_time' => isset($lookup->travel_time) ? $lookup->travel_time : null,
                     'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : 0,
-                    'latitude' => isset($lookup->detail->latitude) ? $lookup->detail->latitude : null,
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'latitude' =>  isset($lookup->detail->latitude) ? $lookup->detail->latitude : null,
                     'longitude' => isset($lookup->detail->longitude) ? $lookup->detail->longitude : null,
                     'first_name' => isset($lookup->detail->first_name) ? $lookup->detail->first_name : null,
                     'last_name' => isset($lookup->detail->last_name) ? $lookup->detail->last_name : null,
@@ -294,10 +342,11 @@ class RoadlController extends Controller
             });
 
             $patient = $patientRequest->map(function ( $lookup ) {
+                
                 return [
                     'id' => isset($lookup->patient->id) ? $lookup->patient->id : null,
-                    'latitude' => isset($lookup->latitude) ? $lookup->latitude : null,
-                    'longitude' => isset($lookup->longitude) ? $lookup->longitude : null,
+                    'latitude' => $lookup->latitude,
+                    'longitude' => $lookup->longitude,
                     'first_name' => isset($lookup->patient->first_name) ? $lookup->patient->first_name : null,
                     'last_name' => isset($lookup->patient->last_name) ? $lookup->patient->last_name : null,
                 ];
@@ -320,5 +369,4 @@ class RoadlController extends Controller
         $patientRequest->save();
         return $this->generateResponse(true,'Your Reuest is done',$patientRequest);
     }
-
 }

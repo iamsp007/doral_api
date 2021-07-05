@@ -71,7 +71,9 @@ Route::group([
     Route::post('employee-reports/{id}/store', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@store')->name('employee.reports.store');
     Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
     Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
-
+    Route::get('notification-history', 'App\Http\Controllers\NotificationHistoryController@index');
+    Route::get('read-notification/{id}', 'App\Http\Controllers\NotificationHistoryController@readNotification');
+    
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
@@ -126,6 +128,11 @@ Route::group([
         Route::get('get-clinician-list/{status_id}', 'App\Http\Controllers\ApplicantController@getClinicianList');
         Route::post('get-clinician-data', 'App\Http\Controllers\ApplicantController@getClinicianData');
         Route::get('get-clinician-detail/{id}', 'App\Http\Controllers\ApplicantController@getClinicianDetail');
+        
+        Route::get('patient-list', 'App\Http\Controllers\ConversationController@index');
+        Route::post('conversation', 'App\Http\Controllers\ConversationController@getConversation');
+        Route::delete('conversation/{id}', 'App\Http\Controllers\ConversationController@destroy');
+        Route::post('send-mesage', 'App\Http\Controllers\ConversationController@store');
 
         Route::get('get-applicant-details', 'App\Http\Controllers\ApplicantController@getApplicantDetails');
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
@@ -164,14 +171,19 @@ Route::group([
         Route::post('store-applicant-detail', 'App\Http\Controllers\ApplicantController@storeApplicantDetail');
 
         Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
+        Route::post('clinician/store-signatures', 'App\Http\Controllers\ClinicianController@storeSignatures');
+
+        Route::post('user_update', 'App\Http\Controllers\ClinicianController@userUpdate');
     });
 });
 
 Route::group([
-    'middleware' => ['auth:api','role:patient|clinician'],
+    'middleware' => ['auth:api'],
+//    'middleware' => ['auth:api','role:patient|clinician'],
 ], function () {
 // Patient Road L API
     Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('patient-request-multi', 'App\Http\Controllers\PatientRequestController@storeMulti');
     Route::post('patient-request-otp-verify', 'App\Http\Controllers\RoadlController@patientRequestOtpVerify');
     Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
     Route::post('newpatient-data', 'App\Http\Controllers\PatientController@newpatientData');
@@ -181,15 +193,18 @@ Route::group([
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
     Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
+  
 });
 
 // clincian API
 Route::group([
-    'middleware' => ['auth:api','role:clinician|co-ordinator|patient'],
+    'middleware' => ['auth:api','role:clinician|co-ordinator|patient|LAB|Radiology|CHHA|Home Oxygen|Home Influsion|Wound Care|DME'],
 ], function () {
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
+    //Route::post('update-patient-request-status', 'App\Http\Controllers\PatientRequestController@updatePatientRequeststatus');
+    Route::post('update-preparation-time', 'App\Http\Controllers\PatientRequestController@updatePreperationTime');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
     Route::post('get-roadl-proccess-new', 'App\Http\Controllers\RoadlController@getRoadLProccessNew');
@@ -225,6 +240,8 @@ Route::group([
 
     Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
+
+   
 });
 
 // Co Ordinator
@@ -263,7 +280,11 @@ Route::group([
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
     Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
+    Route::post('category-list', 'App\Http\Controllers\CategoryController@getCategory');
+    Route::post('name-list', 'App\Http\Controllers\TestController@getTest');
+    Route::get('clinician-list', 'App\Http\Controllers\PatientRequestController@getClinicianList');
     Route::post('get-parent-id-using-patient-id', 'App\Http\Controllers\PatientRequestController@getParentIdUsingPatientId');
+    Route::post('send-address-notification', 'App\Http\Controllers\NotificationController@store');
 });
 
 // Get List of Medicines.
@@ -284,3 +305,6 @@ Route::post('/lab-report/store', 'App\Http\Controllers\PatientLabReportControlle
 Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportController@addNote')->name('lab-report-note.store');
 
 Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@index');
+Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
+Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
+

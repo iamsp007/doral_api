@@ -26,10 +26,15 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+use App\Jobs\SendEmailJob;
+use App\Mail\ChangePasswordNotification;
+use App\Mail\WelcomeEmail;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
-
+use App\Models\PatientRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -50,18 +55,23 @@ class AuthController extends Controller
             if (is_numeric($request->username)) {
                 $field = 'phone';
             }
-            //$credentials = [$field => $username, 'password' => $password];
-            $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
-            // print_r($credentials);die;
-            if (!Auth::attempt($credentials)) {
-                return $this->generateResponse(false, $field . ' or password are incorrect!', null);
+            $credentials = [$field => $username, 'password' => $password];
+            // $credentials = [$field => $username, 'password' => $password, 'status' => '1'];
+            
+            if (! Auth::attempt($credentials)) {
+                return $this->generateResponse(false, 'Email or password are incorrect!', null);
             }
+
             $user = $request->user();
+
+       
+            
             $user->isEmailVerified = $user->email_verified_at ? true : false;
             $user->isMobileVerified = $user->phone_verified_at ? true : false;
             $user->isProfileVerified = $user->profile_verified_at ? true : false;
             $user->isMobileExist = $user->phone ? true : false;
             $user->roles = $user->roles ? $user->roles->first() : null;
+            $user->designation_name = $user->designation ? $user->designation->name : null;
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             if ($request->remember_me)
@@ -81,12 +91,16 @@ class AuthController extends Controller
                 if ($users) {
                     $users->device_token = $request->device_token;
                     $users->device_type = $request->device_type;
+                    $users->latitude = isset($request->latitude) ? $request->latitude : null;
+                    $users->longitude = isset($request->longitude) ? $request->longitude : null;
                 }
             }
-            if ($users->is_available!==2){
-                $users->is_available = 1;
-            }
+            // if ($users->is_available!==2){
+            //     $users->is_available = 1;
+            // }
             $users->save();
+
+            
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
             $status = false;
@@ -98,17 +112,21 @@ class AuthController extends Controller
     public function register(RegistrationRequest $request)
     {
         try {
+
             $user = new User;
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
-            $user->dob = $request->dob;
+            $user->dob = dateFormat($request->dob);
+            $user->gender = setGender($request->gender);
             $user->phone = $request->phone;
-            $user->status = '1';
+            $user->service_id =  $request->service_id;
+            
             $user->designation_id = $request->designation_id;
             $user->assignRole($request->type)->syncPermissions(Permission::all());
             if ($user->save()) {
+                $password = $request->password;
                 $request = $request->toArray();
                 $id = $user->id;
                 if ($user->id) {
@@ -126,7 +144,7 @@ class AuthController extends Controller
                         throw new \ErrorException('Error in insert');
                     }
                     // BELOW FOR LOGIN
-                    $credentials = ['email' => $request['email'], 'password' => $request['password'], 'status' => '1'];
+                    $credentials = ['email' => $request['email'], 'password' => $request['password']];
                     if (!Auth::attempt($credentials)) {
                         return $this->generateResponse(false, 'Email or password are incorrect!');
                     }
@@ -157,6 +175,18 @@ class AuthController extends Controller
                     }
                     $status = true;
                     $message = "Registration successful.";
+                   
+                    $first_name = ($user->first_name) ? $user->first_name : '';
+                    $last_name = ($user->last_name) ? $user->last_name : '';
+                    $full_name = $first_name . ' ' . $last_name;
+                    $details = [
+                        'name' => $full_name,
+                        'password' => $password,
+                        'email' => $user->email,
+                    ];
+                   
+                    SendEmailJob::dispatch($user->email, $details, 'WelcomeEmail');
+                    // Mail::to($user->email)->send(new WelcomeEmail($details));
                     return $this->generateResponse(true, $message, $data, 200);
                 } else {
                     throw new \ErrorException('Error found');
@@ -191,6 +221,19 @@ class AuthController extends Controller
     {
         $user = $request->user();
         if ($user->roles->first()->name == 'clinician') {
+            $patientroadl = PatientRequest::
+        	where('clincial_id', Auth::user()->id)
+            ->whereNotNull('parent_id')
+        	->whereDate('created_at', Carbon::today())
+        	->whereIn('status',['2','3'])
+            ->orderBy('id','desc')
+            ->first();
+            if ($patientroadl) {
+                $user['patient_request_id'] = $patientroadl->id;
+                $user['parent_id'] = $patientroadl->parent_id;
+            }
+           
+            $user['isApplicantStatus'] = $user->status;
             $user->isApplicant = isset($user->applicant) && !empty($user->applicant) ? true : false;
             $user->isEducation = isset($user->education) && !empty($user->education) ? true : false;
             $user->isProfessional = isset($user->professional) && !empty($user->professional) ? true : false;
@@ -240,7 +283,7 @@ class AuthController extends Controller
         $input = $request->all();
         $data = array();
         $rules = array(
-            'old_password' => 'required',
+            // 'old_password' => 'required',
             'new_password' => 'required|min:6',
             'confirm_password' => 'required|same:new_password',
         );
@@ -255,15 +298,26 @@ class AuthController extends Controller
                     throw new Exception("Email not match with database");
                 }
                 $userid = $user->id;
-                if ((Hash::check(request('old_password'), $user->password)) == false) {
-                    $message = "Check your old password.";
-                    return $this->generateResponse(false, $message, $data);
-                } else if ((Hash::check(request('new_password'), $user->password)) == true) {
+                // if ((Hash::check(request('old_password'), $user->password)) == false) {
+                //     $message = "Check your old password.";
+                //     return $this->generateResponse(false, $message, $data);
+                // } else 
+                if ((Hash::check(request('new_password'), $user->password)) == true) {
                     $message = "Please enter a password which is not similar then current password.";
                     return $this->generateResponse(false, $message, $data);
                 } else {
                     User::where('id', $userid)->update(['password' => Hash::make($input['new_password'])]);
                     $message = "Password updated successfully.";
+                    
+                    $details = [
+                        'name' => $user->first_name . ' ' . $user->last_name,
+                        'password' => $input['new_password'],
+                        'email' => $input['email'],
+                        'login_url' => route('login'),
+                    ];
+                    
+                    Mail::to($input['email'])->send(new ChangePasswordNotification($details));
+                   
                     return $this->generateResponse(true, $message, $data);
                 }
             } catch (\Exception $ex) {
