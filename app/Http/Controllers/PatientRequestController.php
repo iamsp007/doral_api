@@ -65,8 +65,8 @@ class PatientRequestController extends Controller
            
             if ($request->patient_id) {
                 $latlong = $this->getLatlong($request->patient_id);
-                $request['latitude'] = $request->latitude;
-                $request['longitude'] = $request->longitude;
+                $request['latitude'] = $latlong['latitude'];
+                $request['longitude'] = $latlong['longitude'];
             }
             $request_id = Auth::user()->id;
             $patientRequest = PatientRequest::where('user_id', $request->patient_id)->whereNull('parent_id')->where('status', '1')->first();
@@ -91,6 +91,9 @@ class PatientRequestController extends Controller
                 $patientSecond->reason = $request->reason;
                 if($request->has('test_name')){
                     $patientSecond->test_name=$request->test_name;
+                }
+                if($request->has('sub_test_name')){
+                    $patientSecond->sub_test_name=$request->sub_test_name;
                 }
                 if($request->has('dieses')){
                     $patientSecond->dieses=$request->dieses;
@@ -129,6 +132,9 @@ class PatientRequestController extends Controller
                 $patientSecond->reason = $request->reason;
                 if($request->has('test_name')){
                     $patientSecond->test_name=$request->test_name;
+                }
+                if($request->has('sub_test_name')){
+                    $patientSecond->sub_test_name=$request->sub_test_name;
                 }
                 if($request->has('dieses')){
                     $patientSecond->dieses=$request->dieses;
