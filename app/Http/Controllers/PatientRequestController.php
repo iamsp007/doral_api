@@ -324,6 +324,7 @@ class PatientRequestController extends Controller
         if($request->has('test_name')){
             $patient->test_name=$request->test_name;
         }
+        
         if($request->has('dieses')){
             $patient->dieses=$request->dieses;
         }

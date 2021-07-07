@@ -46,12 +46,12 @@ class RegistrationRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            //$checkNumber = User::where('phone','=',$this->phone)->first();
-           // if ($checkNumber!==null) {
-                //$helper = new Helper();
-                //$response = $helper->generateResponse(false,'Your Phone Number Already Registered!');
-               // throw new \Illuminate\Validation\ValidationException($validator, $response);
-          //  }
+            // $checkNumber = User::where('phone','=',$this->phone)->first();
+            // if ($checkNumber!==null) {
+            //     $helper = new Helper();
+            //     $response = $helper->generateResponse(false,'Your Phone Number Already Registered!');
+            //     throw new \Illuminate\Validation\ValidationException($validator, $response);
+            // }
             $checkEmail = User::where('email','=',$this->email)->first();
             if ($checkEmail!==null) {
                 $helper = new Helper();
