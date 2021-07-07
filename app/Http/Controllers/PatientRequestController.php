@@ -15,16 +15,10 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
-use App\Jobs\SendEmailJob;
-use App\Jobs\SendMailRoadlRequest;
-use App\Mail\UpdateStatusNotification;
 use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-
 
 class PatientRequestController extends Controller
 {
@@ -232,14 +226,9 @@ class PatientRequestController extends Controller
                     ->whereHas('roles',function($q) use($request){
                         $q->where('id','=', '24');
                     })
-                    ->where('is_available','=','1')->get();
-                   
+                    ->where('is_available','=','1')->get();   
                 } 
-                //else {
-                     // $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get(); 
-              //  }
-                
-                
+              
                 $markers = collect($clinicianIds)->map(function($item) use ($request){
                     $roadlController = new RoadlController();
                     $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
@@ -251,16 +240,6 @@ class PatientRequestController extends Controller
                 $clinicianList = User::whereIn('id',$markers)->get();
                 // $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
 
-                $data=PatientRequest::with('detail','patient')
-                    ->where('id','=',$patientSecond->id)
-                    ->first();
-            
-                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
-                if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
-                    return $parent_id;
-                } else {
-                    return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
-                }
                
                 // if ($request->has('type')){
                 // foreach ($request->type as $value) {
@@ -272,20 +251,18 @@ class PatientRequestController extends Controller
                 // return $response;
             }else {
                 $clinicianList = User::where('id',$checkAssignId)->get();
-                $data = PatientRequest::with('detail','patient')
-                    ->where('id','=',$patientSecond->id)
-                    ->first();
+            }
 
-                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+            $smsController = new SmsController();
+            $smsController->sendNotificationBackground($data,$clinicianList);
 
-                if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
-                    return $parent_id;
-                } else {
-                    return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
-                }
+            if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
+                return $parent_id;
+            } else {
+                return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
             }
             
-        }catch (Exception $exception){
+        } catch (Exception $exception){
             return $this->generateResponse(false,$exception->getMessage());
         }
     }
@@ -901,8 +878,6 @@ class PatientRequestController extends Controller
     }
     public function getLatlong($patient_id)
     {
-        Log::info('patient id for lat long'.$patient_id);
-      
         $details = User::with('demographic')->find($patient_id);
 
         if (isset($details->demographic->address) && $details->demographic){

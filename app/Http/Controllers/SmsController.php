@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendEmailJob;
+use App\Jobs\SendNotificationJob;
 use App\Mail\SendErrorEmail;
 use Illuminate\Support\Facades\Mail;
 
@@ -118,12 +119,10 @@ class SmsController extends Controller
                 'first_name' => ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '' ,
                 'last_name' => ($patientRequest->patient->last_name) ? $patientRequest->patient->last_name : '',
                 'message' => $patientMessage,
-                'phone' => $phone,
+                'phone' =>  setPhone($phone),
             ]; 
         
-            //Mail::to($patientRequest->patient->email)->send(new UpdateStatusNotification($details));
             SendEmailJob::dispatch($patientRequest->patient->email, $details, 'UpdateStatusNotification');
-            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
         
         if ($patientRequest->detail && $patientRequest->detail->email) {
@@ -135,14 +134,11 @@ class SmsController extends Controller
             $details = [
                 'first_name' => ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '' ,
                 'last_name' => ($patientRequest->detail->last_name) ? $patientRequest->detail->last_name : '',
-                'message' => 'You have arrived RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
-               'message' => $clinicianMessage,
-                'phone' => $phone,
+                'message' => $clinicianMessage,
+                'phone' => setPhone($phone),
             ];
 
-            //Mail::to($patientRequest->detail->email)->send(new UpdateStatusNotification($details));
             SendEmailJob::dispatch($patientRequest->detail->email, $details, 'UpdateStatusNotification');
-            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
 
         if ($patientRequest->request && $patientRequest->request->email) {
@@ -153,16 +149,17 @@ class SmsController extends Controller
             $details = [
                 'first_name' => ($patientRequest->request->first_name) ? $patientRequest->request->first_name : '' ,
                 'last_name' => ($patientRequest->request->last_name) ? $patientRequest->request->last_name : '',
-                'message' => 'You have arrived RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
-               'message' => $requestMessage,
-                'phone' => $phone,
+                'message' => $requestMessage,
+                'phone' =>  setPhone($phone),
             ];
 
             SendEmailJob::dispatch($patientRequest->request->email, $details, 'UpdateStatusNotification');
-            //Mail::to($patientRequest->request->email)->send(new UpdateStatusNotification($details));
-           
-            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
         
+    }
+
+    public function sendNotificationBackground($data,$clinicianList)
+    {
+        SendNotificationJob::dispatch($data, $clinicianList);
     }
 }

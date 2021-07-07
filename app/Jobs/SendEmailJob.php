@@ -44,16 +44,13 @@ class SendEmailJob implements ShouldQueue
             Mail::to($this->email)->send(new WelcomeEmail($this->detail));
         } else if ($this->mailType === 'UpdateStatusNotification') {
             Mail::to($this->email)->send(new UpdateStatusNotification($this->detail));
-            Log::info('message start');
-            Log::info($this->detail['message']);
-            Log::info($this->detail['phone']);
+            
             $this->sendsmsToMe($this->detail['message'], $this->detail['phone']);
-            Log::info('message end');
         }
     }
 
     public function sendsmsToMe($message, $phone) {	
-        $to = $to;
+        $to = $phone;
         $from = "12089104598";	
         $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";	
