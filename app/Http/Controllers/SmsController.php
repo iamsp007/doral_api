@@ -77,21 +77,23 @@ class SmsController extends Controller
                 $address = $address;
             }
         }
-      $patientMessage = $clinicianMessage = $requestMessage = '';
+      $patientMessage = $clinicianMessage = $requestMessage = $subject = '';
         if ($status === "1"){
-            
+            $subject = 'RoadL request created.';
             $patientMessage = 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and By when will he reach you will get the details in the mail after . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' accepts the request.';
 
             $clinicianMessage = 'You got a roadL request by ' . $patientFirstName . ' ' . $patientLastName .' After accepting the request, at what time you have to reach the patient’s house, they will get you in the mail.';
 
             $requestMessage = 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' of ' . $patientFirstName . ' ' . $patientLastName ;
         } else if ($status === "2") {
+            $subject = 'RoadL request accepted';
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has started RoadL request of ' . $patientFirstName . ' ' . $patientLastName . ' for patient address: ' . $address . '. You can track RoadL requests by RoadL id : ' . $patientRequest->parent_id;
 
             $clinicianMessage = 'You have accepted RoadL request of ' . $patientFirstName . ' ' . $patientLastName . '. You can track RoadL requests by RoadL id : ' . $patientRequest->parent_id;
 
             $requestMessage = 'RoadL request of ' . $patientFirstName . ' ' . $patientLastName . 'accepted by '  . $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ')';
         } elseif ($status === "3") {
+            $subject = 'RoadL request arrived';
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') arrived at ' . $patientFirstName . ' ' . $patientLastName . ' addrress: ' . $address . '. for RoadL request.';
 
             $clinicianMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') arrived at ' . $patientFirstName . ' ' . $patientLastName . ' addrress: ' . $address . '. for RoadL request.';
@@ -100,12 +102,14 @@ class SmsController extends Controller
 
         } 
         elseif ($status === "4" || $status === 4) {
+            $subject = 'RoadL request completed';
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
 
             $clinicianMessage = 'You have completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
 
             $requestMessage = 'RoadL request of ' . $patientFirstName . ' ' . $patientLastName . 'completed by '  . $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ')';
         } elseif ($status === "5") {
+            $subject = 'RoadL request cancel';
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has cancel RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
 
             $clinicianMessage = 'You have cancel RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
