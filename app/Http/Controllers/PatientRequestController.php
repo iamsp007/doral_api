@@ -19,7 +19,6 @@ use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Exception;
 
 class PatientRequestController extends Controller
 {
@@ -234,20 +233,7 @@ class PatientRequestController extends Controller
                 $clinicianList = User::whereIn('id',$markers)->get();
                 // $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
 
-                $data = PatientRequest::with('detail','patient','request')
-                ->where('id','=',$patientSecond->id)
-                ->first();
-        
-                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
-
-                $smsController = new SmsController();
-                $smsController->sendSms($data,'1');
-
-                if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
-                    return $parent_id;
-                } else {
-                    return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
-                }
+               
                 // if ($request->has('type')){
                 // foreach ($request->type as $value) {
                 // $response = $this->createPatientRequest($request,$value);
@@ -258,24 +244,15 @@ class PatientRequestController extends Controller
                 // return $response;
             }else {
                 $clinicianList = User::where('id',$checkAssignId)->get();
-
-                $data = PatientRequest::with('detail','patient','request')
-                ->where('id','=',$patientSecond->id)
-                ->first();
-
-                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
-
-                $smsController = new SmsController();
-                $smsController->sendSms($data,'1');
-
-                if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
-                    return $parent_id;
-                } else {
-                    return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
-                }
             }
-          
-           // $smsController->sendNotificationBackground($data,$clinicianList);
+            $data = PatientRequest::with('detail','patient','request')
+            ->where('id','=',$patientSecond->id)
+            ->first();
+           
+            $smsController = new SmsController();
+            $smsController->sendSms($data,'1');
+
+            $smsController->sendNotificationBackground($data,$clinicianList);
 
             if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
                 return $parent_id;
