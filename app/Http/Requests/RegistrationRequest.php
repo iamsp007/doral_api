@@ -33,6 +33,7 @@ class RegistrationRequest extends FormRequest
             'password' => 'required|string',
             'dob' => 'required|date',
             'phone' => 'required|numeric',
+            //'phone' => 'required|numeric|unique:users,phone',
         ];
     }
 
