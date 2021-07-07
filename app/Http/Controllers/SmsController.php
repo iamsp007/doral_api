@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmailJob;
 use App\Mail\SendErrorEmail;
-use App\Mail\UpdateStatusNotification;
 use Illuminate\Support\Facades\Mail;
-use Nexmo\Laravel\Facade\Nexmo;
+
 class SmsController extends Controller
 {
     public function sendsmsToMe($message, $to) {
@@ -42,23 +42,7 @@ class SmsController extends Controller
         }
         
     }
-    public function call() {
-        $currentHost = 'https://api.doralhealthconnect.com/';
-      
 
-        Nexmo::calls()->create([
-            'to' => [[
-                'type' => 'phone',
-                'number' => '8511380657'
-            ]],
-            'from' => [
-                'type' => 'phone',
-                'number' => '8511380657'
-            ],
-            'answer_url' => ['https://api.doralhealthconnect.com/webhook/answer'],
-            'event_url' => ['https://api.doralhealthconnect.com/webhook/event']
-        ]);
-    }
     public function sendSms($patientRequest,$status)
     {
         $clinicianFirstName = ($patientRequest->detail && $patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
@@ -137,8 +121,8 @@ class SmsController extends Controller
                 'phone' => $phone,
             ]; 
         
-            Mail::to($patientRequest->patient->email)->send(new UpdateStatusNotification($details));
-           
+            //Mail::to($patientRequest->patient->email)->send(new UpdateStatusNotification($details));
+            SendEmailJob::dispatch($patientRequest->patient->email, $details, 'UpdateStatusNotification');
             //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
         
@@ -155,8 +139,9 @@ class SmsController extends Controller
                'message' => $clinicianMessage,
                 'phone' => $phone,
             ];
-            Mail::to($patientRequest->detail->email)->send(new UpdateStatusNotification($details));
-            
+
+            //Mail::to($patientRequest->detail->email)->send(new UpdateStatusNotification($details));
+            SendEmailJob::dispatch($patientRequest->detail->email, $details, 'UpdateStatusNotification');
             //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
 
@@ -173,7 +158,8 @@ class SmsController extends Controller
                 'phone' => $phone,
             ];
 
-            Mail::to($patientRequest->request->email)->send(new UpdateStatusNotification($details));
+            SendEmailJob::dispatch($patientRequest->request->email, $details, 'UpdateStatusNotification');
+            //Mail::to($patientRequest->request->email)->send(new UpdateStatusNotification($details));
            
             //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
         }
