@@ -158,13 +158,6 @@ class PatientRequestController extends Controller
                 $notificationHistory->save();
             }
             
-            $data = PatientRequest::with('detail','patient','request')
-            ->where('id','=',$patientSecond->id)
-            ->first();
-           
-            $smsController = new SmsController();
-            $smsController->sendSms($data,'1');
-            
             // If assign clinician
             $checkAssignId = '';
             if($request->clinician_list_id !='' && $request->clinician_list_id !=0) {
@@ -252,8 +245,13 @@ class PatientRequestController extends Controller
             }else {
                 $clinicianList = User::where('id',$checkAssignId)->get();
             }
-
+            $data = PatientRequest::with('detail','patient','request')
+            ->where('id','=',$patientSecond->id)
+            ->first();
+           
             $smsController = new SmsController();
+            $smsController->sendSms($data,'1');
+
             $smsController->sendNotificationBackground($data,$clinicianList);
 
             if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
