@@ -245,20 +245,20 @@ class PatientRequestController extends Controller
             }else {
                 $clinicianList = User::where('id',$checkAssignId)->get();
             }
-            $data = PatientRequest::with('detail','patient','request')
-            ->where('id','=',$patientSecond->id)
-            ->first();
-           
-            $smsController = new SmsController();
-            $smsController->sendSms($data,'1');
+             $data = PatientRequest::with('detail','patient','request')
+                ->where('id','=',$patientSecond->id)
+                ->first();
 
-            $smsController->sendNotificationBackground($data,$clinicianList);
+                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
 
-            if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
-                return $parent_id;
-            } else {
-                return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
-            }
+                $smsController = new SmsController();
+                $smsController->sendSms($data,'1');
+
+                if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
+                    return $parent_id;
+                } else {
+                    return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
+                }
             
         } catch (Exception $exception){
             return $this->generateResponse(false,$exception->getMessage());
