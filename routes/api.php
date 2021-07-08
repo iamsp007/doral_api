@@ -282,6 +282,7 @@ Route::group([
     Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
     Route::post('category-list', 'App\Http\Controllers\CategoryController@getCategory');
     Route::post('name-list', 'App\Http\Controllers\TestController@getTest');
+    Route::post('multi-name-list', 'App\Http\Controllers\TestController@getMultiTest');
     Route::get('clinician-list', 'App\Http\Controllers\PatientRequestController@getClinicianList');
     Route::post('get-parent-id-using-patient-id', 'App\Http\Controllers\PatientRequestController@getParentIdUsingPatientId');
     Route::post('send-address-notification', 'App\Http\Controllers\NotificationController@store');

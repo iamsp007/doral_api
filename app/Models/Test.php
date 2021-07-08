@@ -9,5 +9,10 @@ class Test extends Model
 {
     use HasFactory;
     
-     protected $table='sub_tests';
+    protected $table='sub_tests';
+
+    public function subTestName()
+    {
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
 }
