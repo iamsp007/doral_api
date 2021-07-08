@@ -15,6 +15,7 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
+use App\Models\Category;
 use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,7 +48,6 @@ class PatientRequestController extends Controller
      */
     public function store(PatientRequestValidation $request)
     {
-      
         try {
             $check = PatientRequest::where('user_id', $request->user_id)
                 ->where('type_id','=',$request->type_id)
@@ -850,8 +850,15 @@ class PatientRequestController extends Controller
     public function getClinicianList(Request $request){
 
         $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1']])->get();
-//        $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1'], ['is_available','=','1']])->get();
-        return $this->generateResponse(true,'Clinician List APi',$clinicianList,200);
+        // $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1'], ['is_available','=','1']])->get();
+
+        $categories = Category::where('type_id',$request->role_id)->where('status',"1")->get();
+        $data = [
+            'clinicianList' => $clinicianList,
+            'categories' => $categories
+        ];
+        
+        return $this->generateResponse(true,'Clinician List APi',$data,200);
     }
 
     /**
