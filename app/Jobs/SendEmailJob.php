@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Mail\SendErrorEmail;
 use App\Mail\UpdateStatusNotification;
 use App\Mail\WelcomeEmail;
 use Illuminate\Bus\Queueable;
@@ -43,18 +44,15 @@ class SendEmailJob implements ShouldQueue
             Mail::to($this->email)->send(new WelcomeEmail($this->detail));
         } else if ($this->mailType === 'UpdateStatusNotification') {
             Mail::to($this->email)->send(new UpdateStatusNotification($this->detail));
-            Log::info('message start');
-            Log::info($this->detail['message']);
-            Log::info($this->detail['phone']);
+            
             $this->sendsmsToMe($this->detail['message'], $this->detail['phone']);
-            Log::info('message end');
         }
     }
 
     public function sendsmsToMe($message, $phone) {	
+        $to = $phone;
         $from = "12089104598";	
-        $api_key = "bb78dfeb";	
-        $to = $phone;	
+        $api_key = "bb78dfeb";
         $api_secret = "PoZ5ZWbnhEYzP9m4";	
         $uri = 'https://rest.nexmo.com/sms/json';	
         $text = $message;	
@@ -69,7 +67,19 @@ class SendEmailJob implements ShouldQueue
         curl_setopt($res, CURLOPT_SSL_VERIFYPEER, FALSE);	
         curl_setopt($res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);	
         curl_setopt($res, CURLOPT_POSTFIELDS, $fields);	
-        $result = curl_exec($res);	
-        curl_close($res);	
+        curl_exec($res);
+
+        if (curl_errno($res)) {
+            $error_msg = curl_error($res);
+        }
+        curl_close($res);
+
+        if (isset($error_msg)) {
+            $details = [
+               'message' => $error_msg,
+            ];
+
+            Mail::to('shashikant@hcbspro.com')->send(new SendErrorEmail($details));
+        }
     }
 }

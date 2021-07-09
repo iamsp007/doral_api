@@ -16,8 +16,25 @@ class TestController extends Controller
     public function getTest(Request $request)
     {
         $input = $request->all();
-
+       
         $categories = Test::where('category_id',$input['category_id'])
+            ->where('status',"1")
+            ->get();
+       
+        return $this->generateResponse(true,'Test List',$categories,200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getMultiTest(Request $request)
+    {
+        $input = $request->all();
+       
+        $categories = Test::with('subTestName')->whereIn('category_id',$input['category_id'])
             ->where('status',"1")
             ->get();
        

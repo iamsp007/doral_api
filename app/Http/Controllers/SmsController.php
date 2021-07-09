@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmailJob;
+use App\Jobs\SendNotificationJob;
 use App\Mail\SendErrorEmail;
-use App\Mail\UpdateStatusNotification;
 use Illuminate\Support\Facades\Mail;
-use Nexmo\Laravel\Facade\Nexmo;
+
 class SmsController extends Controller
 {
     public function sendsmsToMe($message, $to) {
@@ -42,23 +43,7 @@ class SmsController extends Controller
         }
         
     }
-    public function call() {
-        $currentHost = 'https://api.doralhealthconnect.com/';
-      
 
-        Nexmo::calls()->create([
-            'to' => [[
-                'type' => 'phone',
-                'number' => '8511380657'
-            ]],
-            'from' => [
-                'type' => 'phone',
-                'number' => '8511380657'
-            ],
-            'answer_url' => ['https://api.doralhealthconnect.com/webhook/answer'],
-            'event_url' => ['https://api.doralhealthconnect.com/webhook/event']
-        ]);
-    }
     public function sendSms($patientRequest,$status)
     {
         $clinicianFirstName = ($patientRequest->detail && $patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '';
@@ -92,21 +77,23 @@ class SmsController extends Controller
                 $address = $address;
             }
         }
-      $patientMessage = $clinicianMessage = $requestMessage = '';
+      $patientMessage = $clinicianMessage = $requestMessage = $subject = '';
         if ($status === "1"){
-            
+            $subject = 'RoadL request created.';
             $patientMessage = 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ', and By when will he reach you will get the details in the mail after . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' accepts the request.';
 
             $clinicianMessage = 'You got a roadL request by ' . $patientFirstName . ' ' . $patientLastName .' After accepting the request, at what time you have to reach the patient’s house, they will get you in the mail.';
 
             $requestMessage = 'You have sent roadL request to . ' . $clinicianFirstName . ' ' . $clinicianLastName. ' of ' . $patientFirstName . ' ' . $patientLastName ;
         } else if ($status === "2") {
+            $subject = 'RoadL request accepted';
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has started RoadL request of ' . $patientFirstName . ' ' . $patientLastName . ' for patient address: ' . $address . '. You can track RoadL requests by RoadL id : ' . $patientRequest->parent_id;
 
             $clinicianMessage = 'You have accepted RoadL request of ' . $patientFirstName . ' ' . $patientLastName . '. You can track RoadL requests by RoadL id : ' . $patientRequest->parent_id;
 
             $requestMessage = 'RoadL request of ' . $patientFirstName . ' ' . $patientLastName . 'accepted by '  . $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ')';
         } elseif ($status === "3") {
+            $subject = 'RoadL request arrived';
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') arrived at ' . $patientFirstName . ' ' . $patientLastName . ' addrress: ' . $address . '. for RoadL request.';
 
             $clinicianMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') arrived at ' . $patientFirstName . ' ' . $patientLastName . ' addrress: ' . $address . '. for RoadL request.';
@@ -115,12 +102,14 @@ class SmsController extends Controller
 
         } 
         elseif ($status === "4" || $status === 4) {
+            $subject = 'RoadL request completed';
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
 
             $clinicianMessage = 'You have completed RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
 
             $requestMessage = 'RoadL request of ' . $patientFirstName . ' ' . $patientLastName . 'completed by '  . $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ')';
         } elseif ($status === "5") {
+            $subject = 'RoadL request cancel';
             $patientMessage = $clinicianFirstName . ' ' . $clinicianLastName . '(' . $role_name . ') has cancel RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
 
             $clinicianMessage = 'You have cancel RoadL request of ' . $patientFirstName . ' ' . $patientLastName;
@@ -134,12 +123,10 @@ class SmsController extends Controller
                 'first_name' => ($patientRequest->patient->first_name) ? $patientRequest->patient->first_name : '' ,
                 'last_name' => ($patientRequest->patient->last_name) ? $patientRequest->patient->last_name : '',
                 'message' => $patientMessage,
-                'phone' => $phone,
+                'phone' =>  setPhone($phone),
             ]; 
         
-            Mail::to($patientRequest->patient->email)->send(new UpdateStatusNotification($details));
-           
-            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
+            SendEmailJob::dispatch($patientRequest->patient->email, $details, 'UpdateStatusNotification');
         }
         
         if ($patientRequest->detail && $patientRequest->detail->email) {
@@ -151,13 +138,11 @@ class SmsController extends Controller
             $details = [
                 'first_name' => ($patientRequest->detail->first_name) ? $patientRequest->detail->first_name : '' ,
                 'last_name' => ($patientRequest->detail->last_name) ? $patientRequest->detail->last_name : '',
-                'message' => 'You have arrived RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
-               'message' => $clinicianMessage,
-                'phone' => $phone,
+                'message' => $clinicianMessage,
+                'phone' => setPhone($phone),
             ];
-            Mail::to($patientRequest->detail->email)->send(new UpdateStatusNotification($details));
-            
-            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
+
+            SendEmailJob::dispatch($patientRequest->detail->email, $details, 'UpdateStatusNotification');
         }
 
         if ($patientRequest->request && $patientRequest->request->email) {
@@ -168,15 +153,17 @@ class SmsController extends Controller
             $details = [
                 'first_name' => ($patientRequest->request->first_name) ? $patientRequest->request->first_name : '' ,
                 'last_name' => ($patientRequest->request->last_name) ? $patientRequest->request->last_name : '',
-                'message' => 'You have arrived RoadL request of ' . $patientFirstName . ' ' . $patientLastName,
-               'message' => $requestMessage,
-                'phone' => $phone,
+                'message' => $requestMessage,
+                'phone' =>  setPhone($phone),
             ];
 
-            Mail::to($patientRequest->request->email)->send(new UpdateStatusNotification($details));
-           
-            //$this->sendsmsToMe($details['message'], setPhone($details['phone']));
+            SendEmailJob::dispatch($patientRequest->request->email, $details, 'UpdateStatusNotification');
         }
         
+    }
+
+    public function sendNotificationBackground($data,$clinicianList)
+    {
+        SendNotificationJob::dispatch($data, $clinicianList);
     }
 }

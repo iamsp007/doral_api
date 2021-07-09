@@ -15,16 +15,11 @@ use App\Models\RoadlInformation;
 use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
-use App\Jobs\SendEmailJob;
-use App\Jobs\SendMailRoadlRequest;
-use App\Mail\UpdateStatusNotification;
+use App\Models\Category;
 use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-
 
 class PatientRequestController extends Controller
 {
@@ -53,7 +48,6 @@ class PatientRequestController extends Controller
      */
     public function store(PatientRequestValidation $request)
     {
-      
         try {
             $check = PatientRequest::where('user_id', $request->user_id)
                 ->where('type_id','=',$request->type_id)
@@ -65,8 +59,8 @@ class PatientRequestController extends Controller
            
             if ($request->patient_id) {
                 $latlong = $this->getLatlong($request->patient_id);
-                $request['latitude'] = $request->latitude;
-                $request['longitude'] = $request->longitude;
+                $request['latitude'] = $latlong['latitude'];
+                $request['longitude'] = $latlong['longitude'];
             }
             $request_id = Auth::user()->id;
             $patientRequest = PatientRequest::where('user_id', $request->patient_id)->whereNull('parent_id')->where('status', '1')->first();
@@ -91,6 +85,9 @@ class PatientRequestController extends Controller
                 $patientSecond->reason = $request->reason;
                 if($request->has('test_name')){
                     $patientSecond->test_name=$request->test_name;
+                }
+                if($request->has('sub_test_name')){
+                    $patientSecond->sub_test_name=$request->sub_test_name;
                 }
                 if($request->has('dieses')){
                     $patientSecond->dieses=$request->dieses;
@@ -130,6 +127,9 @@ class PatientRequestController extends Controller
                 if($request->has('test_name')){
                     $patientSecond->test_name=$request->test_name;
                 }
+                if($request->has('sub_test_name')){
+                    $patientSecond->sub_test_name=$request->sub_test_name;
+                }
                 if($request->has('dieses')){
                     $patientSecond->dieses=$request->dieses;
                 }
@@ -157,13 +157,6 @@ class PatientRequestController extends Controller
 
                 $notificationHistory->save();
             }
-            
-            $data = PatientRequest::with('detail','patient','request')
-            ->where('id','=',$patientSecond->id)
-            ->first();
-           
-            $smsController = new SmsController();
-            $smsController->sendSms($data,'1');
             
             // If assign clinician
             $checkAssignId = '';
@@ -226,14 +219,9 @@ class PatientRequestController extends Controller
                     ->whereHas('roles',function($q) use($request){
                         $q->where('id','=', '24');
                     })
-                    ->where('is_available','=','1')->get();
-                   
+                    ->where('is_available','=','1')->get();   
                 } 
-                //else {
-                     // $clinicianIds = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get(); 
-              //  }
-                
-                
+              
                 $markers = collect($clinicianIds)->map(function($item) use ($request){
                     $roadlController = new RoadlController();
                     $item['distance'] = $roadlController->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
@@ -245,16 +233,6 @@ class PatientRequestController extends Controller
                 $clinicianList = User::whereIn('id',$markers)->get();
                 // $clinicianList = User::where('designation_id','=',$request->type_id)->where('is_available','=','1')->get();
 
-                $data=PatientRequest::with('detail','patient')
-                    ->where('id','=',$patientSecond->id)
-                    ->first();
-            
-                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
-                if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
-                    return $parent_id;
-                } else {
-                    return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
-                }
                
                 // if ($request->has('type')){
                 // foreach ($request->type as $value) {
@@ -266,20 +244,23 @@ class PatientRequestController extends Controller
                 // return $response;
             }else {
                 $clinicianList = User::where('id',$checkAssignId)->get();
-                $data = PatientRequest::with('detail','patient')
-                    ->where('id','=',$patientSecond->id)
-                    ->first();
+            }
+             $data = PatientRequest::with('detail','patient','request')
+                ->where('id','=',$patientSecond->id)
+                ->first();
 
                 event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+
+                $smsController = new SmsController();
+                $smsController->sendSms($data,'1');
 
                 if (isset($request['roadlStatus']) && $request['roadlStatus'] == 'multipleRequest') {
                     return $parent_id;
                 } else {
                     return $this->generateResponse(true,'Add Request Successfully!',array('parent_id'=>$parent_id),200);
                 }
-            }
             
-        }catch (Exception $exception){
+        } catch (Exception $exception){
             return $this->generateResponse(false,$exception->getMessage());
         }
     }
@@ -318,6 +299,7 @@ class PatientRequestController extends Controller
         if($request->has('test_name')){
             $patient->test_name=$request->test_name;
         }
+        
         if($request->has('dieses')){
             $patient->dieses=$request->dieses;
         }
@@ -868,8 +850,15 @@ class PatientRequestController extends Controller
     public function getClinicianList(Request $request){
 
         $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1']])->get();
-//        $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1'], ['is_available','=','1']])->get();
-        return $this->generateResponse(true,'Clinician List APi',$clinicianList,200);
+        // $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1'], ['is_available','=','1']])->get();
+
+        $categories = Category::where('type_id',$request->role_id)->where('status',"1")->get();
+        $data = [
+            'clinicianList' => $clinicianList,
+            'categories' => $categories
+        ];
+        
+        return $this->generateResponse(true,'Clinician List APi',$data,200);
     }
 
     /**
@@ -894,8 +883,6 @@ class PatientRequestController extends Controller
     }
     public function getLatlong($patient_id)
     {
-        Log::info('patient id for lat long'.$patient_id);
-      
         $details = User::with('demographic')->find($patient_id);
 
         if (isset($details->demographic->address) && $details->demographic){
