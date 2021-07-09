@@ -33,10 +33,12 @@ class TestController extends Controller
     public function getMultiTest(Request $request)
     {
         $input = $request->all();
-       
-        $categories = Test::with('subTestName')->whereIn('category_id',$input['category_id'])
+        $categories = '';
+        if (isset($input['category_id'])) {
+            $categories = Test::with('subTestName')->whereIn('category_id',$input['category_id'])
             ->where('status',"1")
             ->get();
+        }
        
         return $this->generateResponse(true,'Test List',$categories,200);
     }
