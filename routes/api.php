@@ -309,3 +309,5 @@ Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@ind
 Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
 Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
 
+Route::get('/selection-list', 'App\Http\Controllers\SelectionController@index');
+
