@@ -96,6 +96,7 @@ class PatientRequest extends FormRequest
                 'type_id' => 'required',
             ];
         }
+       
     }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)

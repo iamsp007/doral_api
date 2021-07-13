@@ -495,3 +495,919 @@
 [2021-07-07 06:58:47][20] Processing: App\Jobs\SendEmailJob
 [2021-07-07 06:58:48][19] Processed:  App\Jobs\SendEmailJob
 [2021-07-07 06:58:49][20] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 07:17:22][24] Processing: App\Jobs\SendEmailJob
+[2021-07-07 07:17:22][25] Processing: App\Jobs\SendEmailJob
+[2021-07-07 07:17:24][24] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 07:17:24][25] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 07:17:49][26] Processing: App\Jobs\SendEmailJob
+[2021-07-07 07:17:51][26] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 07:33:40][32] Processing: App\Jobs\SendEmailJob
+[2021-07-07 07:33:40][33] Processing: App\Jobs\SendEmailJob
+[2021-07-07 07:33:42][32] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 07:33:42][33] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 07:44:31][41] Processing: App\Jobs\SendEmailJob
+[2021-07-07 07:44:31][42] Processing: App\Jobs\SendEmailJob
+[2021-07-07 07:44:32][41] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 07:44:33][42] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 12:52:23][44] Processing: App\Jobs\SendEmailJob
+[2021-07-07 12:52:23][45] Processing: App\Jobs\SendEmailJob
+[2021-07-07 12:52:25][45] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 12:52:25][44] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 12:55:04][52] Processing: App\Jobs\SendEmailJob
+[2021-07-07 12:55:06][52] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 12:57:45][61] Processing: App\Jobs\SendEmailJob
+[2021-07-07 12:57:47][61] Processed:  App\Jobs\SendEmailJob
+[2021-07-07 15:49:36][70] Processing: App\Jobs\SendEmailJob
+[2021-07-07 15:49:38][70] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 08:04:34][73] Processing: App\Jobs\SendEmailJob
+[2021-07-08 08:04:34][74] Processing: App\Jobs\SendEmailJob
+[2021-07-08 08:04:36][73] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 08:04:36][74] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 11:29:03][87] Processing: App\Jobs\SendEmailJob
+[2021-07-08 11:29:06][87] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 11:30:27][92] Processing: App\Jobs\SendEmailJob
+[2021-07-08 11:30:27][93] Processing: App\Jobs\SendEmailJob
+[2021-07-08 11:30:28][93] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 11:30:28][92] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:09:39][95] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:09:39][96] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:09:39][97] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:09:41][96] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:09:41][97] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:09:41][95] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:10:36][98] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:10:38][98] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:16:11][105] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:16:12][105] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:16:17][107] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:16:17][108] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:16:17][109] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:16:19][107] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:16:19][108] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:16:19][109] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:17:28][110] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:17:28][111] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:17:29][110] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:17:30][111] Processed:  App\Jobs\SendEmailJob
+[2021-07-08 12:22:52][113] Processing: App\Jobs\SendEmailJob
+[2021-07-08 12:22:53][113] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 00:26:11][116] Processing: App\Jobs\SendEmailJob
+[2021-07-09 00:26:13][116] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 00:28:10][123] Processing: App\Jobs\SendEmailJob
+[2021-07-09 00:28:12][123] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 00:50:04][128] Processing: App\Jobs\SendEmailJob
+[2021-07-09 00:50:04][129] Processing: App\Jobs\SendEmailJob
+[2021-07-09 00:50:06][129] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 00:50:06][128] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 00:52:11][134] Processing: App\Jobs\SendEmailJob
+[2021-07-09 00:52:11][135] Processing: App\Jobs\SendEmailJob
+[2021-07-09 00:52:13][134] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 00:52:13][135] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 01:49:42][148] Processing: App\Jobs\SendEmailJob
+[2021-07-09 01:49:44][148] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 03:08:32][158] Processing: App\Jobs\SendEmailJob
+[2021-07-09 03:08:34][158] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 04:28:20][161] Processing: App\Jobs\SendEmailJob
+[2021-07-09 04:28:22][161] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 04:51:16][169] Processing: App\Jobs\SendEmailJob
+[2021-07-09 04:51:16][170] Processing: App\Jobs\SendEmailJob
+[2021-07-09 04:51:18][169] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 04:51:18][170] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 06:21:31][172] Processing: App\Jobs\SendEmailJob
+[2021-07-09 06:21:31][173] Processing: App\Jobs\SendEmailJob
+[2021-07-09 06:21:33][172] Processed:  App\Jobs\SendEmailJob
+[2021-07-09 06:21:33][173] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-09 12:02:00][174] Processing: App\Jobs\SendEmailJob
+[2021-07-09 12:02:02][174] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-10 15:35:35][175] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:35:35][176] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:35:37][176] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:35:37][175] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:36:16][182] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:36:18][182] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:36:19][184] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:36:21][184] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:37:05][190] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:37:05][191] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:37:05][192] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:37:07][190] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:37:07][191] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:37:07][192] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:37:17][194] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:37:19][194] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:38:04][196] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:38:04][197] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:38:04][198] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:38:05][196] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:38:05][197] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:38:06][198] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:38:16][199] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:38:17][199] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 15:43:05][202] Processing: App\Jobs\SendEmailJob
+[2021-07-10 15:43:07][202] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-10 16:51:35][203] Processing: App\Jobs\SendEmailJob
+[2021-07-10 16:51:37][203] Processed:  App\Jobs\SendEmailJob
+[2021-07-10 16:59:56][206] Processing: App\Jobs\SendEmailJob
+[2021-07-10 16:59:57][206] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-12 04:55:57][215] Processing: App\Jobs\SendEmailJob
+[2021-07-12 04:55:59][215] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-12 09:10:04][224] Processing: App\Jobs\SendEmailJob
+[2021-07-12 09:10:06][224] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-12 10:55:03][231] Processing: App\Jobs\SendEmailJob
+[2021-07-12 10:55:03][233] Processing: App\Jobs\SendEmailJob
+[2021-07-12 10:55:05][233] Processed:  App\Jobs\SendEmailJob
+[2021-07-12 10:55:05][231] Processed:  App\Jobs\SendEmailJob
+[2021-07-12 10:55:24][240] Processing: App\Jobs\SendEmailJob
+[2021-07-12 10:55:26][240] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-12 18:01:39][254] Processing: App\Jobs\SendEmailJob
+[2021-07-12 18:01:41][254] Processed:  App\Jobs\SendEmailJob
+[2021-07-12 18:06:59][268] Processing: App\Jobs\SendEmailJob
+[2021-07-12 18:07:01][268] Processed:  App\Jobs\SendEmailJob
+[2021-07-12 18:09:41][271] Processing: App\Jobs\SendEmailJob
+[2021-07-12 18:09:42][273] Processing: App\Jobs\SendEmailJob
+[2021-07-12 18:09:43][271] Processed:  App\Jobs\SendEmailJob
+[2021-07-12 18:09:43][273] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-12 18:37:11][274] Processing: App\Jobs\SendEmailJob
+[2021-07-12 18:37:12][275] Processing: App\Jobs\SendEmailJob
+[2021-07-12 18:37:13][274] Processed:  App\Jobs\SendEmailJob
+[2021-07-12 18:37:13][275] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+[2021-07-13 05:33:20][281] Processing: App\Jobs\SendEmailJob
+[2021-07-13 05:33:20][282] Processing: App\Jobs\SendEmailJob
+[2021-07-13 05:33:22][282] Processed:  App\Jobs\SendEmailJob
+[2021-07-13 05:33:22][281] Processed:  App\Jobs\SendEmailJob
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
+PHP Notice:  date_default_timezone_set(): Timezone ID 'EDT' is invalid in /var/www/html/doral_api/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php on line 49
