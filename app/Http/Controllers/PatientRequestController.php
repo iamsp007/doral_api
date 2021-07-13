@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
 use App\Models\Category;
+use App\Models\DiesesMaster;
 use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -853,9 +854,12 @@ class PatientRequestController extends Controller
         // $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1'], ['is_available','=','1']])->get();
 
         $categories = Category::where('type_id',$request->role_id)->where('status',"1")->get();
+
+        $dieses = DiesesMaster::where('status','=',1)->get();
         $data = [
             'clinicianList' => $clinicianList,
-            'categories' => $categories
+            'categories' => $categories,
+            'dieses' => $dieses
         ];
         
         return $this->generateResponse(true,'Clinician List APi',$data,200);

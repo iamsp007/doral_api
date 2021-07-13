@@ -85,7 +85,7 @@ class PatientRequest extends FormRequest
      */
     public function rules()
     {
-     if ($this->patient_id){
+        if ($this->patient_id){
             return [
                 'type_id' => 'required',
                 'test_name' => 'required',
