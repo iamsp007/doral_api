@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\SymptomsMaster;
 use App\Models\Test;
 use Illuminate\Http\Request;
-use Illuminate\Log\Logger;
-use Illuminate\Support\Facades\Log;
 
 class TestController extends Controller
 {
