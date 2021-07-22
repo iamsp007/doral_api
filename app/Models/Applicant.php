@@ -50,7 +50,9 @@ class Applicant extends Model
         'emergency_address',
         'emergency_phone',
         'emergency_relationship',
-        'signature'
+        'signature',
+        'workHistory_detail',
+        'professional_detail',
     ];
 
     /**
@@ -71,6 +73,8 @@ class Applicant extends Model
         'skill_detail' => 'array',
         'emergency_detail' => 'array',
         'payroll_details' => 'array',
+        'workHistory_detail' => 'array',
+        'professional_detail' => 'array',
     ];
 
     protected $appends = ['signature_url','is_signature_added'];

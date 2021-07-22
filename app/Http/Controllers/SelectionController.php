@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Designation;
 use App\Models\Selection;
 use App\Models\State;
 use Illuminate\Http\Request;
@@ -24,6 +25,10 @@ class SelectionController extends Controller
         $states = State::orderBy('state','asc')->get();
 
         $cities = City::orderBy('city','asc')->get();
+        
+        $reason_for_leaving = $selection->where('name','Reason For Leaving')->orderBy('name','asc')->get();
+        
+        $designation = Designation::where('role_id',4)->get();
 
         $data = [
             'certifying_board' => $certifying_board,
@@ -33,6 +38,8 @@ class SelectionController extends Controller
             'legal_entity' => $legal_entity,
             'states' => $states,
             'cities' => $cities,
+            'designation' => $designation,
+            'reason_for_leaving' => $reason_for_leaving,
         ];
         
         return $this->generateResponse(true,'Selection list',$data,200);
