@@ -17,6 +17,7 @@ class CreateVisitorsTable extends Migration
             $table->id();
             $table->integer('visitor_id');
             $table->string('visit_date');
+            $table->string('is_missed_visit');
             $table->json('patient_detail')->nullable();
             $table->json('caregiver_detail')->nullable();
             $table->json('schedule_time_detail')->nullable();
