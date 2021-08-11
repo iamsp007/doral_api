@@ -68,6 +68,8 @@ class UploadDocuments extends Model
                 $directory = 'idProofBack';
             } elseif ($this->type === "21") {
                 $directory = 'socialSecurityBack';
+            } elseif ($this->type === "22") {
+                $directory = 'pdfDoc';
             }
             return url('storage/documents/'.$this->user_id.'/'.$directory.'/'.$this->file_name);
         } else {
@@ -125,6 +127,8 @@ class UploadDocuments extends Model
                 $directory = 'idProofBack';
             } elseif ($this->type === "21") {
                 $directory = 'socialSecurityBack';
+            } elseif ($this->type === "22") {
+                $directory = 'pdfDoc';
             }
             return $directory;
         } else {

@@ -89,7 +89,7 @@ class PatientRequest extends FormRequest
             return [
                 'type_id' => 'required',
                 'test_name' => 'required',
-                'sub_test_name' => 'required',
+                //'sub_test_name' => 'required',
             ];
         } else {
             return [
