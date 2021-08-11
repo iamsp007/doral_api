@@ -311,3 +311,4 @@ Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@reset
 
 Route::get('/selection-list', 'App\Http\Controllers\SelectionController@index');
 
+Route::post('user/add-device', 'App\Http\Controllers\Device\UserDeviceController@addDevice')->name('user.add-device');
