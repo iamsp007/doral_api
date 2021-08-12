@@ -16,6 +16,7 @@ class CreateApiKeysTable extends Migration
         Schema::create('api_keys', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->index('company_id');
+            $table->foreignId('service_id')->index('service_id');
             $table->string('name');
             $table->string('key');
             $table->string('secret');
