@@ -20,4 +20,12 @@ class UserDevice extends Model
         'device_type',
         'status',
     ];
+
+    /**
+     * Relation with user
+     */
+    public function demographic()
+    {
+        return $this->belongsTo('App\Models\Demographic', 'user_id', 'user_id');
+    }
 }
