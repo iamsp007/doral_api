@@ -70,7 +70,46 @@ class UploadDocuments extends Model
                 $directory = 'socialSecurityBack';
             } elseif ($this->type === "22") {
                 $directory = 'pdfDoc';
-            }
+            }  elseif ($this->type === "25") {
+                $directory = 'pictureIdentification';
+            }  elseif ($this->type === "26") {
+                $directory = 'currentCV';
+            } elseif ($this->type === "27") {
+                $directory = 'ProfessionalLicense';
+            } elseif ($this->type === "28") {
+                $directory = 'StateRegistrationCertificate';
+            } elseif ($this->type === "29") {
+                $directory = 'DEALicense';
+            } elseif ($this->type === "30") {
+                $directory = 'ControlledSubstanceStateLicense';
+            } elseif ($this->type === "31") {
+                $directory = 'MalpracticeCertificateOfInsurance';
+            } elseif ($this->type === "32") {
+                $directory = 'ExplanationOfAllMalpractice';
+            } elseif ($this->type === "33") {
+                $directory = 'MedicalSchoolDiploma';
+            } elseif ($this->type === "34") {
+                $directory = 'ResidencyCertificate';
+            } elseif ($this->type === "35") {
+                $directory = 'FellowshipCertificate';
+            } elseif ($this->type === "36") {
+                $directory = 'IntershipCertificate';
+            } elseif ($this->type === "37") {
+                $directory = 'ECFMGCertificate';
+            } elseif ($this->type === "38") {
+                $directory = 'BoardCertificate(c)';
+            } elseif ($this->type === "39") {
+                $directory = 'HospitalAffiliationLetter';
+            } elseif ($this->type === "40") {
+                $directory = 'SanctionsQueries';
+            } elseif ($this->type === "41") {
+                $directory = 'MedicalWelcomeLetter';
+            } elseif ($this->type === "42") {
+                $directory = 'SignedW9';
+            } elseif ($this->type === "43") {
+                $directory = 'SignedESignatureForm';
+            } 
+         
             return url('storage/documents/'.$this->user_id.'/'.$directory.'/'.$this->file_name);
         } else {
             return null;
@@ -129,7 +168,45 @@ class UploadDocuments extends Model
                 $directory = 'socialSecurityBack';
             } elseif ($this->type === "22") {
                 $directory = 'pdfDoc';
-            }
+            } elseif ($this->type === "25") {
+                $directory = 'pictureIdentification';
+            }  elseif ($this->type === "26") {
+                $directory = 'currentCV';
+            } elseif ($this->type === "27") {
+                $directory = 'ProfessionalLicense';
+            } elseif ($this->type === "28") {
+                $directory = 'StateRegistrationCertificate';
+            } elseif ($this->type === "29") {
+                $directory = 'DEALicense';
+            } elseif ($this->type === "30") {
+                $directory = 'ControlledSubstanceStateLicense';
+            } elseif ($this->type === "31") {
+                $directory = 'MalpracticeCertificateOfInsurance';
+            } elseif ($this->type === "32") {
+                $directory = 'ExplanationOfAllMalpractice';
+            } elseif ($this->type === "33") {
+                $directory = 'MedicalSchoolDiploma';
+            } elseif ($this->type === "34") {
+                $directory = 'ResidencyCertificate';
+            } elseif ($this->type === "35") {
+                $directory = 'FellowshipCertificate';
+            } elseif ($this->type === "36") {
+                $directory = 'IntershipCertificate';
+            } elseif ($this->type === "37") {
+                $directory = 'ECFMGCertificate';
+            } elseif ($this->type === "38") {
+                $directory = 'BoardCertificate(c)';
+            } elseif ($this->type === "39") {
+                $directory = 'HospitalAffiliationLetter';
+            } elseif ($this->type === "40") {
+                $directory = 'SanctionsQueries';
+            } elseif ($this->type === "41") {
+                $directory = 'MedicalWelcomeLetter';
+            } elseif ($this->type === "42") {
+                $directory = 'SignedW9';
+            } elseif ($this->type === "43") {
+                $directory = 'SignedESignatureForm';
+            } 
             return $directory;
         } else {
             return '';
