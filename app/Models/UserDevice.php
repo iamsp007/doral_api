@@ -28,4 +28,12 @@ class UserDevice extends Model
     {
         return $this->belongsTo('App\Models\Demographic', 'user_id', 'user_id');
     }
+
+    /**
+     * Relation with user
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'patient_id', 'id');
+    }
 }
