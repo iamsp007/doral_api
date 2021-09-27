@@ -193,7 +193,7 @@ Route::group([
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
     Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
-  Route::post('user/user-device-logs', 'App\Http\Controllers\Device\UserDeviceController@addDevice')->name('user.add-device');
+  
 });
 
 // clincian API
@@ -310,4 +310,6 @@ Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController
 Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
 
 Route::get('/selection-list', 'App\Http\Controllers\SelectionController@index');
+
+Route::post('user/user-device-logs', 'App\Http\Controllers\Device\UserDeviceController@addDevice')->name('user.add-device');
 
