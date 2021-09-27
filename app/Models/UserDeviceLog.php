@@ -21,4 +21,12 @@ class UserDeviceLog extends Model
         'level',
         'status',
     ];
+
+    /**
+     * Relation with user
+     */
+    public function userDevice()
+    {
+        return $this->belongsTo('App\Models\UserDevice', 'user_device_id', 'id');
+    }
 }

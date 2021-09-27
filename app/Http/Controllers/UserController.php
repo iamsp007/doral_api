@@ -15,6 +15,7 @@ use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
 use App\Models\Company;
+use App\Models\UserDeviceLog;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -448,14 +449,30 @@ class UserController extends Controller
     public function ccmReadingLevelHigh()
     {
         try {
-            $list = [];
-            $ccm = CCMReading::with('user')->get();
-            if ($ccm) {
-                foreach ($ccm as $key => $value) {
-                    $list[$value->reading_type][$value->reading_level][] = $value;
+            $hignData = [];
+           
+            $device_logs = UserDeviceLog::with('userDevice','userDevice.user');
+            $high = $device_logs->where('level','3')->get();
+            if ($high) {
+                foreach ($high as $key => $value) {
+                    $hignData[$value->userDevice->device_type][] = $value;
                 }
             }
-            return $this->generateResponse(true, 'CCM Readings!', $list, 200);
+
+            $lowMidiumData = [];
+            $low_midium = UserDeviceLog::with('userDevice','userDevice.user')->whereIn('level',['1','2'])->take(10)->get();
+            if ($low_midium) {
+                foreach ($low_midium as $key => $value) {
+                    $lowMidiumData[$value->userDevice->device_type][] = $value;
+                }
+            }
+
+            $data = [
+                'high' => $hignData,
+                'low_midium' => $lowMidiumData
+            ];
+
+            return $this->generateResponse(true, 'CCM Readings!', $data, 200);
         } catch (\Exception $ex) {
             return $this->generateResponse(false, $ex->getMessage(), null, 200);
         }
