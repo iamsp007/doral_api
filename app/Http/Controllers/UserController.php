@@ -452,7 +452,7 @@ class UserController extends Controller
             $hignData = [];
            
             $device_logs = UserDeviceLog::with('userDevice','userDevice.user');
-            $high = $device_logs->where('level','3')->get();
+            $high = $device_logs->where('level','3')->orderBy('id','desc')->get();
             if ($high) {
                 foreach ($high as $key => $value) {
                     $hignData[$value->userDevice->device_type][] = $value;
@@ -460,7 +460,7 @@ class UserController extends Controller
             }
 
             $lowMidiumData = [];
-            $low_midium = UserDeviceLog::with('userDevice','userDevice.user')->whereIn('level',['1','2'])->take(10)->get();
+            $low_midium = UserDeviceLog::with('userDevice','userDevice.user')->whereIn('level',['1','2'])->take(10)->orderBy('id','desc')->get();
             if ($low_midium) {
                 foreach ($low_midium as $key => $value) {
                     $lowMidiumData[$value->userDevice->device_type][] = $value;

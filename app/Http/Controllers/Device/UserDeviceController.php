@@ -50,10 +50,10 @@ class UserDeviceController extends Controller
                             $explodeValue = explode(":",$input['value']);
                         }
                         
-                        if($explodeValue[0] >= 140) {
+                        if($explodeValue[0] >= 140 || $explodeValue[1] >= 90) {
                             $readingLevel = 3;
                             $level_message = 'blood pressure is higher';
-                        } else if($explodeValue[0] <= 100) {
+                        } else if($explodeValue[0] <= 100 || $explodeValue[1] <= 60) {
                             $readingLevel = 3;
                             $level_message = 'blood pressure is lower';
                         }
@@ -84,10 +84,9 @@ class UserDeviceController extends Controller
                                 'from' => env('SMS_FROM'),
                                 'text' => $message
                             ]);
-                            Log::info('mesage send success');
-                            Log::info($data);
+                           
                         }catch (\Exception $exception){
-                            Log::info('mesage send error');
+                          
                             Log::info($exception);
                         }
                     }

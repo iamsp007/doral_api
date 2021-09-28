@@ -18,7 +18,7 @@ class SmsController extends Controller
         $text = $message;	
         $fields = '&from=' . urlencode($from) .	
                 '&text=' . urlencode($text) .	
-                '&to=+91' . urlencode($to) .	
+                '&to=+1' . urlencode($to) .	
                 '&api_key=' . urlencode($api_key) .	
                 '&api_secret=' . urlencode($api_secret);	
         $res = curl_init($uri);	
