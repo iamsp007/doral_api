@@ -19,6 +19,7 @@ class UserDevice extends Model
         'device_id',
         'device_type',
         'status',
+        'patient_id'
     ];
 
     /**
@@ -26,7 +27,7 @@ class UserDevice extends Model
      */
     public function demographic()
     {
-        return $this->belongsTo('App\Models\Demographic', 'user_id', 'user_id');
+        return $this->belongsTo('App\Models\Demographic', 'patient_id', 'user_id');
     }
 
     /**
