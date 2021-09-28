@@ -386,8 +386,8 @@ class PatientRequestController extends Controller
                 }
                 $ccmReadingModel->reading_level = $readingLevel;
             }
-
-            if ($request->reading_type == 0) {
+            $reading_type = 1;
+            if ($reading_type == 0) {
 
                 $messages = array();
 
@@ -405,7 +405,7 @@ class PatientRequestController extends Controller
                 }
                 // event(new SendingSMS($messages));
 
-            } elseif ($request->reading_type == 1) {
+            } elseif ($reading_type == 1) {
 
                 $messages = array();
 
@@ -413,16 +413,18 @@ class PatientRequestController extends Controller
                     $messages[] =array(
                         'to'=>env('SMS_TO'),
                         'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood sugar is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+//                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
                     );
                 } else {
                     $messages[] =array(
                         'to'=>env('SMS_TO'),
                         'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood sugar is slightly higher than regular. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+//                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
                     );
                 }
                 event(new SendingSMS($messages));
 
-            } elseif ($request->reading_type == 2) {
+            } elseif ($reading_type == 2) {
 
                 $messages = array();
 

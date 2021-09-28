@@ -845,7 +845,9 @@ class ApplicantController extends Controller
                 }
 
                 $type=$fileKeys[1];
+                 
                 if (is_numeric($type)){
+                
                     $file=$request->file($key);
                     $uploadFolder = 'documents/'.auth()->user()->id.'/'.$fileKeys[count($fileKeys)-1];
                     $file_uploaded_path = $file->store($uploadFolder, 'public');
