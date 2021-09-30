@@ -7,10 +7,12 @@ use App\Http\Controllers\SmsController;
 use App\Models\ApiKey;
 use App\Models\UserDevice;
 use App\Models\UserDeviceLog;
+use App\Models\UserLatestDeviceLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Nexmo\Laravel\Facade\Nexmo;
+use DB;
 
 class UserDeviceController extends Controller
 {
@@ -18,13 +20,13 @@ class UserDeviceController extends Controller
     {
         try {
             $input = $request->all();
-
+            $readingval = $input["value"];
             $apiKey = ApiKey::where([['name', '=', $input['AppName']],['key', '=', $input['AppKey']],['secret', '=', $input['AppSecret']]])->first();
             if ($apiKey) {
                 $userDevice = UserDevice::with(['user','demographic' => function ($q) use($apiKey) {
                     $q->where('company_id', $apiKey->company_id);
                 }])->where([['user_id', '=', $input['user_id']],['device_type', '=', $input['device_type']]])->first();
-               
+                
                 if(! $userDevice) {
                     $userDevice = new UserDevice();
                     $userDevice->user_id = $input['user_id'];
@@ -32,7 +34,7 @@ class UserDeviceController extends Controller
                     $userDevice->patient_id = '11979';
                     $userDevice->save();
                 }
-
+                
                 if ($userDevice->demographic != '') {
                     $userDeviceLog = new UserDeviceLog();
                     $userDeviceLog->user_device_id = $userDevice->id;
@@ -72,6 +74,27 @@ class UserDeviceController extends Controller
                     $userDeviceLog->level = $readingLevel;
 
                     $userDeviceLog->save();
+                    
+                    // Latest Device Reading Start
+                    $userLatestDevice = UserLatestDeviceLog::where([['patient_id', '=', $userDevice->patient_id],['device_type', '=', $input['device_type']]])->first();
+                        if(! $userLatestDevice) {
+                            $userDeviceLatest = new UserLatestDeviceLog();
+                            $userDeviceLatest->patient_id = $userDevice->patient_id;
+                            $userDeviceLatest->user_device_id = $userDevice->id;
+                            $userDeviceLatest->device_type = $input['device_type'];
+                            $userDeviceLatest->level = $readingLevel;
+                            $userDeviceLatest->value = $input['value'];
+                            $userDeviceLatest->reading_time = $input['datetime'];
+                            $userDeviceLatest->save();
+                        }else {
+                            $userDeviceLatest = DB::table('user_latest_device_logs')
+                            ->where(['patient_id' =>$userDevice->patient_id,'device_type' => $input['device_type']])
+                            ->update(['user_device_id' => $userDevice->id, 'level' => $readingLevel, 'value' => $readingval, 'reading_time' => $input['datetime']]);
+                        }
+                    
+                    
+                    // Latest Device Reading End
+                    
 
                     if ($readingLevel == 3) {
                       
