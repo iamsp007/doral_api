@@ -193,7 +193,7 @@ Route::group([
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
     Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
-  
+    Route::post('update-profile', 'App\Http\Controllers\ProfileController@store');
 });
 
 // clincian API
