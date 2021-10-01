@@ -100,7 +100,7 @@ class UserDeviceController extends Controller
                       
                         $patient_name = $userDevice->user->first_name . ' ' . $userDevice->user->last_name;
                     
-                        $message = 'Doral Health Connect | Your patient ' . $patient_name . ' ' . $level_message . ' than regular. Need immediate attention. http://app.doralhealthconnect.com/ccm/'.$userDeviceLog->id;
+                        $message = 'Doral Health Connect | Your family member - ' . $patient_name . ' ' . $level_message . ' than regular. Need immediate attention. http://app.doralhealthconnect.com/ccm/'.$userDeviceLog->id;
                         try {
                             $data = Nexmo::message()->send([
                                 'to'   =>'+1'.env('SEND_SMS'),
