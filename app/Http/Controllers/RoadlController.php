@@ -46,6 +46,11 @@ class RoadlController extends Controller
                     $patientRequestParent->status = '4';
                     $patientRequestParent->save();
                 }
+            }elseif ($request->status==="1"){
+                $patientRequest->status = $request->status;
+                $patientRequest->cancelled_time = Carbon::now()->toDateTime();
+                $patientRequest->notes = $request->notes;
+                $patientRequest->save();
             }elseif ($request->status==="3"){
                 $patientRequest->status = $request->status;
                 $patientRequest->arrived_time = Carbon::now()->toDateTime();
