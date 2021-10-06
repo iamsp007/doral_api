@@ -60,12 +60,12 @@ class RegistrationRequest extends FormRequest
             }
         });
     }
-
-
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
-        $helper = new Helper();
-        $response = $helper->generateResponse(false,'The given data is invalid',null,200);
-        throw new \Illuminate\Validation\ValidationException($validator, $response);
+        if ($validator->fails()) {
+            $helper = new Helper();
+            $response = $helper->generateResponse(false,$validator->errors()->first(),null,400);
+            throw new \Illuminate\Validation\ValidationException($validator, $response);
+        }
     }
 }
