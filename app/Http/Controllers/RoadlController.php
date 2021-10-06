@@ -332,6 +332,7 @@ class RoadlController extends Controller
                     'accepted_time' => isset($lookup->accepted_time) ? $lookup->accepted_time : null,
                     'travel_time' => isset($lookup->travel_time) ? $lookup->travel_time : null,
                     'parent_id' => isset($lookup->parent_id) ? $lookup->parent_id : 0,
+                    'driving_mode' => isset($lookup->driving_mode) ? $lookup->driving_mode : null,
                     'latitude' => $latitude,
                     'longitude' => $longitude,
                     'latitude' =>  isset($lookup->detail->latitude) ? $lookup->detail->latitude : null,
