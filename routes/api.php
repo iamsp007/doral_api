@@ -35,6 +35,10 @@ Route::group([
 
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
+    Route::post('passcode-register', 'App\Http\Controllers\Auth\AuthController@passcodeRegister');
+    Route::post('finger-print-register', 'App\Http\Controllers\Auth\AuthController@fingerprintRegister');
+    Route::post('finger-print-login', 'App\Http\Controllers\Auth\AuthController@passcodeandfingerlogin');
+    
     Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
     Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
