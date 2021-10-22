@@ -26,6 +26,9 @@ use OpenTok\OpenTok;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
+use App\Http\Requests\FingerPrintRegistrationRequest;
+use App\Http\Requests\PasscodeandfingerLoginRequest;
+use App\Http\Requests\PasscodeRegistrationRequest;
 use App\Jobs\SendEmailJob;
 use App\Mail\ChangePasswordNotification;
 use App\Mail\WelcomeEmail;
@@ -63,8 +66,6 @@ class AuthController extends Controller
             }
 
             $user = $request->user();
-
-       
             
             $user->isEmailVerified = $user->email_verified_at ? true : false;
             $user->isMobileVerified = $user->phone_verified_at ? true : false;
@@ -207,9 +208,9 @@ class AuthController extends Controller
     {
         $users = User::find($request->user()->id);
         if ($users) {
-//            if ($users->is_available!==2){
-//                $users->is_available = 0;
-//            }
+            //            if ($users->is_available!==2){
+            //                $users->is_available = 0;
+            //            }
             $users->save();
         }
         $request->user()->token()->revoke();
@@ -526,5 +527,118 @@ class AuthController extends Controller
         $user->device_type=$request->device_type;
         $user->save();
         return $this->generateResponse(true,'Device Token Update Successfully!',null,200);
+    }
+
+    public function passcodeRegister(PasscodeRegistrationRequest $request)
+    {
+        try {
+            $user = new User;
+            $user->passcode = $request->passcode;
+            $user->email = $request->email;
+            $user->device_token = $request->device_token;
+            $user->device_type = $request->device_type;
+
+            $user->assignRole($request->type)->syncPermissions(Permission::all());
+            if ($user->save()) {
+                $tokenResult = $user->createToken('Personal Access Token');
+                $token = $tokenResult->token;
+                $token->save();
+                $data = [
+                    'access_token' => $tokenResult->accessToken,
+                    'token_type' => 'Bearer',
+                    'user' => $user,
+                    'expires_at' => Carbon::parse(
+                        $tokenResult->token->expires_at
+                    )->toDateTimeString()
+                ];
+             
+                $message = "Registration successful.";
+                              
+                return $this->generateResponse(true, $message, $data, 200);
+            }
+            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    public function fingerprintRegister(FingerPrintRegistrationRequest $request)
+    {
+        try {
+            $user = new User;
+            $user->finger_print = $request->finger_print;
+            $user->email = $request->email;
+            $user->device_token = $request->device_token;
+            $user->device_type = $request->device_type;
+
+            $user->assignRole($request->type)->syncPermissions(Permission::all());
+            if ($user->save()) {
+                $tokenResult = $user->createToken('Personal Access Token');
+                $token = $tokenResult->token;
+                $token->save();
+                $data = [
+                    'access_token' => $tokenResult->accessToken,
+                    'token_type' => 'Bearer',
+                    'user' => $user,
+                    'expires_at' => Carbon::parse(
+                        $tokenResult->token->expires_at
+                    )->toDateTimeString()
+                ];
+             
+                $message = "Registration successful.";
+                              
+                return $this->generateResponse(true, $message, $data, 200);
+            }
+            return $this->generateResponse(false, 'Something Went Wrong!', [], 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, null);
+        }
+    }
+
+    public function passcodeandfingerlogin(PasscodeandfingerLoginRequest $request)
+    {
+        try {
+            if ($request->login_type == 'passcode') {
+                $user = User::where([['device_token', '=', $request->device_token],['passcode', '=',$request->passcode]])->first();
+            } elseif ($request->login_type == 'fingerPrint') {
+                $user = User::where([['device_token', '=', $request->device_token],['finger_print', '=',$request->finger_print]])->first();
+            }
+            
+            if (! $user) {
+                return $this->generateResponse(false, $request->login_type .' incorrect!', null);
+            }
+          
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->token;
+            if ($request->remember_me)
+                $token->expires_at = Carbon::now()->addMinute(1);
+            $token->save();
+            $data = [
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'user' => $user,
+                'expires_at' => Carbon::parse(
+                    $tokenResult->token->expires_at
+                )->toDateTimeString()
+            ];
+
+            // update device token and type
+            $user->device_token = $request->device_token;
+            $user->device_type = $request->device_type;
+            $user->latitude = isset($request->latitude) ? $request->latitude : null;
+            $user->longitude = isset($request->longitude) ? $request->longitude : null;
+          
+            $user->save();
+            
+            return $this->generateResponse(true, 'Login Successfully!', $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage() . " " . $e->getLine();
+            return $this->generateResponse($status, $message, null);
+        }
     }
 }

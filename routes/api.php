@@ -35,6 +35,10 @@ Route::group([
 
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
+    Route::post('passcode-register', 'App\Http\Controllers\Auth\AuthController@passcodeRegister');
+    Route::post('finger-print-register', 'App\Http\Controllers\Auth\AuthController@fingerprintRegister');
+    Route::post('finger-print-login', 'App\Http\Controllers\Auth\AuthController@passcodeandfingerlogin');
+    
     Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
     Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
@@ -71,7 +75,7 @@ Route::group([
     Route::post('employee-reports/{id}/store', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@store')->name('employee.reports.store');
     Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
     Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
-    Route::get('notification-history', 'App\Http\Controllers\NotificationHistoryController@index');
+    Route::post('notification-history', 'App\Http\Controllers\NotificationHistoryController@index');
     Route::get('read-notification/{id}', 'App\Http\Controllers\NotificationHistoryController@readNotification');
     
     Route::group([
@@ -193,7 +197,7 @@ Route::group([
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
     Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
-  
+    Route::post('update-profile', 'App\Http\Controllers\ProfileController@store');
 });
 
 // clincian API
@@ -308,4 +312,8 @@ Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportCont
 Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@index');
 Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
 Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
+
+Route::get('/selection-list', 'App\Http\Controllers\SelectionController@index');
+
+Route::post('user/user-device-logs', 'App\Http\Controllers\Device\UserDeviceController@addDevice')->name('user.add-device');
 

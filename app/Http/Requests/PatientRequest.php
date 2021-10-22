@@ -61,7 +61,7 @@ class PatientRequest extends FormRequest
                 // 'longitude'=>$longitude,
                 'user_id' => $this->patient_id,
             ]);
-        }else{
+        } else{
             $this->merge([
                 'user_id' => Auth::user()->id,
             ]);
@@ -85,12 +85,18 @@ class PatientRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'type_id'=>'required',
-            // 'latitude'=>'required',
-            // 'longitude'=>'required',
-            // 'clinician_list_id'=>'required',
-        ];
+        if ($this->patient_id){
+            return [
+                'type_id' => 'required',
+                'test_name' => 'required',
+                //'sub_test_name' => 'required',
+            ];
+        } else {
+            return [
+                'type_id' => 'required',
+            ];
+        }
+       
     }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)

@@ -18,7 +18,7 @@ class DesignationController extends Controller
         $data = array();
         try {
             
-            $designation = Designation::where('role_id',4)->get();
+            $designation = Designation::where([['role_id', '=',4],['name','!=','Field Visitor']])->get();
           
             if (!$designation) {
                 throw new Exception("No designation are registered");

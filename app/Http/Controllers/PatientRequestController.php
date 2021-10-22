@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\PatientRequest;
 use App\Http\Requests\PatientRequest as PatientRequestValidation;
 use App\Models\Category;
+use App\Models\DiesesMaster;
 use App\Models\NotificationHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -385,8 +386,8 @@ class PatientRequestController extends Controller
                 }
                 $ccmReadingModel->reading_level = $readingLevel;
             }
-
-            if ($request->reading_type == 0) {
+            $reading_type = 1;
+            if ($reading_type == 0) {
 
                 $messages = array();
 
@@ -404,7 +405,7 @@ class PatientRequestController extends Controller
                 }
                 // event(new SendingSMS($messages));
 
-            } elseif ($request->reading_type == 1) {
+            } elseif ($reading_type == 1) {
 
                 $messages = array();
 
@@ -412,16 +413,18 @@ class PatientRequestController extends Controller
                     $messages[] =array(
                         'to'=>env('SMS_TO'),
                         'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood sugar is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+//                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
                     );
                 } else {
                     $messages[] =array(
                         'to'=>env('SMS_TO'),
                         'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood sugar is slightly higher than regular. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
+//                        'message'=>'Doral Health Connect | Your patient '.$userDetails->first_name.' blood pressure is higher than regular. Need immediate attention. http://app.doralhealthconnect.com/caregiver/'.$readingLevel
                     );
                 }
                 event(new SendingSMS($messages));
 
-            } elseif ($request->reading_type == 2) {
+            } elseif ($reading_type == 2) {
 
                 $messages = array();
 
@@ -853,9 +856,12 @@ class PatientRequestController extends Controller
         // $clinicianList = User::where([['designation_id','=',$request->role_id], ['status','=','1'], ['is_available','=','1']])->get();
 
         $categories = Category::where('type_id',$request->role_id)->where('status',"1")->get();
+
+        $dieses = DiesesMaster::where('status','=',1)->get();
         $data = [
             'clinicianList' => $clinicianList,
-            'categories' => $categories
+            'categories' => $categories,
+            'dieses' => $dieses
         ];
         
         return $this->generateResponse(true,'Clinician List APi',$data,200);

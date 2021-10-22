@@ -7,9 +7,14 @@ use Illuminate\Http\Request;
 
 class NotificationHistoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $notificationHistory = NotificationHistory::where('is_read', '0')->with('sender','receiver','request')->get();
+        $notificationHistory = NotificationHistory::where('is_read', '0');
+            if ($request['type'] != 'all') {
+                $notificationHistory->where('type',$request['type']);
+            }
+
+            $notificationHistory->with('sender','receiver','request')->get();
 
         return $this->generateResponse(true, 'Notification history!', $notificationHistory);
     }

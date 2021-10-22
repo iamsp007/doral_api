@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 
 class ApplicantController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *
@@ -836,7 +837,7 @@ class ApplicantController extends Controller
           
                 $fileKeys =explode('_',$key);
                 $validator = \Validator::make($request->all(),[
-                    $key=>'max:10000|mimes:pdf,xls,png,jpg,jpeg'
+                    $key=>'max:10000|mimes:pdf,xls,xlsx,png,jpg,jpeg'
                 ]);
 
                 if ($validator->fails()){
@@ -844,7 +845,9 @@ class ApplicantController extends Controller
                 }
 
                 $type=$fileKeys[1];
+                 
                 if (is_numeric($type)){
+                
                     $file=$request->file($key);
                     $uploadFolder = 'documents/'.auth()->user()->id.'/'.$fileKeys[count($fileKeys)-1];
                     $file_uploaded_path = $file->store($uploadFolder, 'public');
