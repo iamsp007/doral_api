@@ -35,6 +35,8 @@ Route::group([
 
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
+    Route::post('verify', 'App\Http\Controllers\Auth\VerificationController@verify');
+    
     Route::post('passcode-register', 'App\Http\Controllers\Auth\AuthController@passcodeRegister');
     Route::post('finger-print-register', 'App\Http\Controllers\Auth\AuthController@fingerprintRegister');
     Route::post('finger-print-login', 'App\Http\Controllers\Auth\AuthController@passcodeandfingerlogin');
