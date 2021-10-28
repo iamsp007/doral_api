@@ -78,6 +78,10 @@ class AuthController extends Controller
             if ($request->remember_me)
                 $token->expires_at = Carbon::now()->addMinute(1);
             $token->save();
+             $user->setpasscode = false;
+              if ($user->passcode) {
+                $user->setpasscode = true;
+            }
             $data = [
                 'access_token' => $tokenResult->accessToken,
                 'token_type' => 'Bearer',
@@ -85,6 +89,7 @@ class AuthController extends Controller
                 'expires_at' => Carbon::parse(
                     $tokenResult->token->expires_at
                 )->toDateTimeString()
+               
             ];
             // update device token and type
             $users = User::find($user->id);
@@ -532,9 +537,9 @@ class AuthController extends Controller
     public function passcodeRegister(PasscodeRegistrationRequest $request)
     {
         try {
-            $user = new User;
+            $user = User::where('email',$request->email)->first();
+           
             $user->passcode = $request->passcode;
-            $user->email = $request->email;
             $user->device_token = $request->device_token;
             $user->device_type = $request->device_type;
 
@@ -567,9 +572,9 @@ class AuthController extends Controller
     public function fingerprintRegister(FingerPrintRegistrationRequest $request)
     {
         try {
-            $user = new User;
+            $user = User::where('email',$request->email)->first();
+            
             $user->finger_print = $request->finger_print;
-            $user->email = $request->email;
             $user->device_token = $request->device_token;
             $user->device_type = $request->device_type;
 

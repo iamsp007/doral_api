@@ -27,7 +27,7 @@ class FingerPrintRegistrationRequest extends FormRequest
     {
         return [
             'finger_print' => 'required',
-            'email' => ['required','email',Rule::unique('users','email')->ignore($this->user)],
+            'email' => ['required','email'],
         ];
     }
 
