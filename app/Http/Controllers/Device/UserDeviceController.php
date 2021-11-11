@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Device;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SmsController;
 use App\Models\ApiKey;
+use App\Models\Demographic;
 use App\Models\UserDevice;
 use App\Models\UserDeviceLog;
 use App\Models\UserLatestDeviceLog;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -102,13 +104,15 @@ class UserDeviceController extends Controller
                     
                         $message = 'Doral Health Connect | Your family member - ' . $patient_name . ' ' . $level_message . ' than regular. Need immediate attention. http://app.doralhealthconnect.com/ccm/'.$userDeviceLog->id;
                         try {
-                            $data = Nexmo::message()->send([
+                            Nexmo::message()->send([
                                 'to'   =>'+1'.env('SEND_SMS'),
                                 'from' => env('SMS_FROM'),
                                 'text' => $message
                             ]);
-                           
-                        }catch (\Exception $exception){
+
+                            $this->sendEmailToVisitor('826323',$message);
+
+                        } catch (\Exception $exception){
                           
                             Log::info($exception);
                         }
@@ -125,5 +129,60 @@ class UserDeviceController extends Controller
         }catch (\Exception $exception){
             return $this->generateResponse(false,$exception->getMessage(),null,200);
         }
+    }
+
+    public function sendEmailToVisitor($patient_id,$message)
+    {
+        $date = Carbon::now();// will get you the current date, time
+        $today = $date->format("Y-m-d");
+        $data = '<?xml version="1.0" encoding="utf-8"?><SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SearchVisits xmlns="https://www.hhaexchange.com/apis/hhaws.integration"><Authentication><AppName>HCHS257</AppName><AppSecret>99473456-2939-459c-a5e7-f2ab47a5db2f</AppSecret><AppKey>MQAwADcAMwAxADMALQAzADEAQwBDADIAQQA4ADUAOQA3AEEARgBDAEYAMwA1AEIARQA0ADQANQAyAEEANQBFADIAQgBDADEAOAA=</AppKey></Authentication><SearchFilters><StartDate>' . $today .'</StartDate><EndDate>' . $today . '</EndDate><PatientID>' . $patient_id . '</PatientID></SearchFilters></SearchVisits></SOAP-ENV:Body></SOAP-ENV:Envelope>';
+        $method = 'POST';
+        $curlFunc = $this->curlCall($data, $method);
+        if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
+            $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
+          
+            foreach ($visitID as $viId) {
+                $vid = $viId;
+                $scheduleInfo = $this->getScheduleInfo($viId);
+                $getScheduleInfo = $scheduleInfo['soapBody']['GetScheduleInfoResponse']['GetScheduleInfoResult']['ScheduleInfo'];
+
+                $caregiver_id = ($getScheduleInfo['Caregiver']['ID']) ? $getScheduleInfo['Caregiver']['ID'] : '' ;
+                $demographic = Demographic::select('id','user_id','patient_id')->where('patient_id', $caregiver_id)->with(['user' => function($q) {
+                    $q->select('id', 'email', 'phone');
+                }])->first();
+
+                $data = Nexmo::message()->send([
+                    // 'to'   =>'+1'.$demographic->phone,
+                    'to'   =>'+1'.env('SEND_SMS'),
+                    'from' => env('SMS_FROM'),
+                    'text' => $message
+                ]);
+
+            }
+        }
+    }
+
+    public function curlCall($data, $method)
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => config('patientDetailAuthentication.AppUrl'),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => array(
+               'Content-Type: text/xml'
+            ),
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $response);
+        $xml = new \SimpleXMLElement($response);
+        return json_decode(json_encode((array)$xml), TRUE);
     }
 }
