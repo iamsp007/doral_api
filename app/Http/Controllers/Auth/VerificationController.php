@@ -24,7 +24,12 @@ class VerificationController extends Controller
             $isRegistered = true;
             $message = 'This ' . $field . ' number already registered!';
         }
+        
+        $data = [
+        	'key' => $field,
+        	'isRegistered' => $isRegistered,
+        ];
 
-        return $this->generateResponse(true, $message, $isRegistered);
+        return $this->generateResponse(true, $message, $data);
     }
 }
