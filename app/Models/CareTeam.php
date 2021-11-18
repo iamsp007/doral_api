@@ -16,8 +16,6 @@ class CareTeam extends Model
      * @var array
      */
     protected $casts = [
-        'family_detail' => 'array',
-        'physician_detail' => 'array',
-       'pharmacy_detail' => 'array',
+        'detail' => 'array',
     ];
 }

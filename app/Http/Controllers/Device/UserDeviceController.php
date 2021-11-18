@@ -150,42 +150,24 @@ class UserDeviceController extends Controller
                 $scheduleInfo = getScheduleInfo($viId);
                 $getScheduleInfo = $scheduleInfo['soapBody']['GetScheduleInfoResponse']['GetScheduleInfoResult']['ScheduleInfo'];
                 $caregiver_id = ($getScheduleInfo['Caregiver']['ID']) ? $getScheduleInfo['Caregiver']['ID'] : '' ;
+                $demographicModal = Demographic::where('patient_id',$caregiver_id)->with('user', function($q){
+                    $q->select('id','phone');
+                })->first();
+                if ($demographicModal && $demographicModal->user->phone != '') {
+                    $phoneNumber = $demographicModal->user->phone;
+                } else {
+                    $getdemographicDetails = getCaregiverDemographics($caregiver_id);
+                    $demographics = $getdemographicDetails['soapBody']['GetCaregiverDemographicsResponse']['GetCaregiverDemographicsResult']['CaregiverInfo'];
+    
+                    $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
+                }
 
-                $getdemographicDetails = getCaregiverDemographics($caregiver_id);
-                $demographics = $getdemographicDetails['soapBody']['GetCaregiverDemographicsResponse']['GetCaregiverDemographicsResult']['CaregiverInfo'];
-
-                $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
-                $scheduleStartTime = ($getScheduleInfo['ScheduleStartTime']) ? $getScheduleInfo['ScheduleStartTime'] : '' ;
-                $scheduleEndTime = ($getScheduleInfo['ScheduleEndTime']) ? $getScheduleInfo['ScheduleEndTime'] : '' ;
-                $firstName = ($getScheduleInfo['Caregiver']['FirstName']) ? $getScheduleInfo['Caregiver']['FirstName'] : '' ;
-                $lastName = ($getScheduleInfo['Caregiver']['LastName']) ? $getScheduleInfo['Caregiver']['LastName'] : '' ;
-
-                $data = [
-                    'phoneNumber' => $phoneNumber,
-                    'scheduleStartTime' => $scheduleStartTime,
-                    'scheduleEndTime' => $scheduleEndTime,
-                    'name' => $firstName . ' ' . $lastName,
-                ];
-
-                $doral_id = createDoralId();
-
-                $user_id = storeUser($demographics, $doral_id);
-                $company_id = '9';
-                
                 Nexmo::message()->send([
                     'to'   =>'+1'.setPhone($phoneNumber),
                     'from' => env('SMS_FROM'),
                     'text' => $message
                 ]);
-
-                if ($user_id) {
-                    
-                    storeDemographic($demographics, $user_id, $company_id, $doral_id,'caregiver-check');
-
-                    storeEmergencyContact($demographics, $user_id);
-                }
             }
-            $arr = array('status' => 200, 'message' => 'Get current caregiver', 'data' => $data);
         }
 
         $careTeam = CareTeam::where('patient_id', $patient_id)->first();

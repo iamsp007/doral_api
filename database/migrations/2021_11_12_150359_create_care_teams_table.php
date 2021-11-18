@@ -16,9 +16,8 @@ class CreateCareTeamsTable extends Migration
         Schema::create('care_teams', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->index('patient_id');
-            $table->json('family_detail')->nullable();
-            $table->json('physician_detail')->nullable();
-            $table->json('pharmacy_detail')->nullable();
+            $table->json('detail')->nullable();
+            $table->enum('type', ['1', '2','3'])->comment('1=family,2=physician,3=pharmacy');
             $table->timestamps();
         });
     }
