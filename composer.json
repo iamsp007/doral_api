@@ -54,7 +54,8 @@
             "Tests\\": "tests/"
         },
         "files": [
-            "app/Helpers/format.php"
+            "app/Helpers/format.php",
+            "app/Helpers/hhaexchange.php"
         ]
     },
     "minimum-stability": "dev",

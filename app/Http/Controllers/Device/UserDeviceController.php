@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Device;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SmsController;
 use App\Models\ApiKey;
+use App\Models\CareTeam;
 use App\Models\Demographic;
 use App\Models\UserDevice;
 use App\Models\UserDeviceLog;
@@ -133,33 +134,64 @@ class UserDeviceController extends Controller
 
     public function sendEmailToVisitor($patient_id,$message)
     {
+        $input['patient_id'] = $patient_id;
         $date = Carbon::now();// will get you the current date, time
         $today = $date->format("Y-m-d");
-        $data = '<?xml version="1.0" encoding="utf-8"?><SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SearchVisits xmlns="https://www.hhaexchange.com/apis/hhaws.integration"><Authentication><AppName>HCHS257</AppName><AppSecret>99473456-2939-459c-a5e7-f2ab47a5db2f</AppSecret><AppKey>MQAwADcAMwAxADMALQAzADEAQwBDADIAQQA4ADUAOQA3AEEARgBDAEYAMwA1AEIARQA0ADQANQAyAEEANQBFADIAQgBDADEAOAA=</AppKey></Authentication><SearchFilters><StartDate>' . $today .'</StartDate><EndDate>' . $today . '</EndDate><PatientID>' . $patient_id . '</PatientID></SearchFilters></SearchVisits></SOAP-ENV:Body></SOAP-ENV:Envelope>';
-        $method = 'POST';
-        $curlFunc = $this->curlCall($data, $method);
+
+        $input['from_date'] = $today;
+        $input['to_date'] = $today;
+
+        $curlFunc = searchVisits($input);
+
         if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
             $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
           
             foreach ($visitID as $viId) {
-                $vid = $viId;
-                $scheduleInfo = $this->getScheduleInfo($viId);
+                $scheduleInfo = getScheduleInfo($viId);
                 $getScheduleInfo = $scheduleInfo['soapBody']['GetScheduleInfoResponse']['GetScheduleInfoResult']['ScheduleInfo'];
-
                 $caregiver_id = ($getScheduleInfo['Caregiver']['ID']) ? $getScheduleInfo['Caregiver']['ID'] : '' ;
-                $demographic = Demographic::select('id','user_id','patient_id')->where('patient_id', $caregiver_id)->with(['user' => function($q) {
-                    $q->select('id', 'email', 'phone');
-                }])->first();
+                $demographicModal = Demographic::where('patient_id',$caregiver_id)->with('user', function($q){
+                    $q->select('id','phone');
+                })->first();
+                if ($demographicModal && $demographicModal->user->phone != '') {
+                    $phoneNumber = $demographicModal->user->phone;
+                } else {
+                    $getdemographicDetails = getCaregiverDemographics($caregiver_id);
+                    $demographics = $getdemographicDetails['soapBody']['GetCaregiverDemographicsResponse']['GetCaregiverDemographicsResult']['CaregiverInfo'];
+    
+                    $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
+                }
 
-                $data = Nexmo::message()->send([
-                    // 'to'   =>'+1'.$demographic->phone,
-                    'to'   =>'+1'.env('SEND_SMS'),
+                Nexmo::message()->send([
+                    'to'   =>'+1'.setPhone($phoneNumber),
                     'from' => env('SMS_FROM'),
                     'text' => $message
                 ]);
-
             }
         }
+
+        $careTeam = CareTeam::where('patient_id', $patient_id)->first();
+        $familyPhone = $careTeam->family_detail['phone'];
+        $physicianPhone = $careTeam->physician_detail['phone'];
+        $pharmacyPhone = $careTeam->pharmacy_detail['phone'];
+
+        Nexmo::message()->send([
+            'to'   =>'+1'.setPhone($familyPhone),
+            'from' => env('SMS_FROM'),
+            'text' => $message
+        ]);
+
+        Nexmo::message()->send([
+            'to'   =>'+1'.setPhone($physicianPhone),
+            'from' => env('SMS_FROM'),
+            'text' => $message
+        ]);
+
+        Nexmo::message()->send([
+            'to'   =>'+1'.setPhone($pharmacyPhone),
+            'from' => env('SMS_FROM'),
+            'text' => $message
+        ]);
     }
 
     public function curlCall($data, $method)
