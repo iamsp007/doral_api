@@ -14,7 +14,7 @@ class AddedFlagDemographicsTable extends Migration
     public function up()
     {
         Schema::table('demographics', function (Blueprint $table) {
-            //
+            $table->enum('flag', ['1', '2'])->default('1')->comment('1=patient,2=caregiver')->after('company_id');
         });
     }
 
@@ -26,7 +26,7 @@ class AddedFlagDemographicsTable extends Migration
     public function down()
     {
         Schema::table('demographics', function (Blueprint $table) {
-            $table->enum('flag', ['1', '2'])->default('1')->comment('1=patient,2=caregiver')->after('company_id');
+            
         });
     }
 }
