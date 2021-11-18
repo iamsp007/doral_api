@@ -152,8 +152,8 @@ class UserDeviceController extends Controller
                 }])->first();
 
                 $data = Nexmo::message()->send([
-                    // 'to'   =>'+1'.$demographic->phone,
-                    'to'   =>'+1'.env('SEND_SMS'),
+                    'to'   =>'+1'.$demographic->phone,
+                    //'to'   =>'+1'.env('SEND_SMS'),
                     'from' => env('SMS_FROM'),
                     'text' => $message
                 ]);
