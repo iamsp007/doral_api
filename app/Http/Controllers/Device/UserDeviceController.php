@@ -99,7 +99,8 @@ class UserDeviceController extends Controller
 
                         $details = [
                             'message' => $message,
-                            'phone' => env('SEND_SMS'),
+                            // 'phone' => env('SEND_SMS'),
+                            'phone' => '9293989855',
                         ];
                         SendAlertSMS::dispatch($details);
                     }

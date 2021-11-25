@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Mail\SendErrorEmail;
 use App\Models\CareTeam;
+use App\Models\CaseManagement;
 use App\Models\Demographic;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -12,6 +14,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Nexmo\Laravel\Facade\Nexmo;
 
 class SendAlertSMS implements ShouldQueue
@@ -36,19 +39,13 @@ class SendAlertSMS implements ShouldQueue
      */
     public function handle()
     {
-      
         Log::info('doral message send start');
-        Nexmo::message()->send([
-            //'to'   =>'+1'.env('SEND_SMS'),
-            'to'   =>'+1'.$this->detail['phone'],
-            'from' => env('SMS_FROM'),
-            'text' => $this->message
-        ]); 
+        $this->sendsmsToMe($this->detail['message'], $this->detail['phone']);
         Log::info('doral message send end');
-        $this->sendEmailToVisitor('9170',$this->detail['message']);
+        $this->sendEmailToVisitor('9170',$this->detail['message'],$this->detail['phone']);
     }
 
-    public function sendEmailToVisitor($patient_id,$message)
+    public function sendEmailToVisitor($patient_id,$message,$phone)
     {
         $demographic = Demographic::where('user_id',$patient_id)->select('patient_id')->first();
         $input['patientId'] = $demographic->patient_id;
@@ -80,26 +77,61 @@ class SendAlertSMS implements ShouldQueue
                     $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
                 }
 		        Log::info('patient message send start');
-                Nexmo::message()->send([
-                    'to'   =>'+1'.setPhone($phoneNumber),
-                    'from' => env('SMS_FROM'),
-                    'text' => $message
-                ]);
+                // $this->sendsmsToMe($message, $phoneNumber);
+                $this->sendsmsToMe($message, $phone);
                 Log::info('patient message send end');
             //}
         }
  
+        $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id],['texed', '=', '1']])->get();
+        foreach ($caseManagers as $key => $caseManager) {
+            Log::info('case manager message send start');
+            // $this->sendsmsToMe($message, $caseManager->clinician->phone);
+            $this->sendsmsToMe($message, $phone);
+            Log::info('case manager message send end');
+        }
+
         $familyPhone = CareTeam::where([['patient_id', '=' ,$patient_id],['detail->texed', '=', 'on']])->whereIn('type',['1','2'])->get();
       	
         foreach ($familyPhone as $key => $value) {
             Log::info('care team message send start');
-            Nexmo::message()->send([
-                //'to'   =>'+1'.setPhone($value->detail['phone']),
-                'to'   =>'+918511380657',
-                'from' => env('SMS_FROM'),
-                'text' => $message
-            ]);
+            //$this->sendsmsToMe($message, $value->detail['phone']);
+            $this->sendsmsToMe($message, $phone);
             Log::info('care team message send end');
+        }
+    }
+
+    public function sendsmsToMe($message, $phone) {	
+        $to = $phone;
+        $from = "12089104598";	
+        $api_key = "bb78dfeb";
+        $api_secret = "PoZ5ZWbnhEYzP9m4";	
+        $uri = 'https://rest.nexmo.com/sms/json';	
+        $text = $message;	
+        $fields = '&from=' . urlencode($from) .	
+                '&text=' . urlencode($text) .	
+                '&to=+1' . urlencode($to) .	
+                '&api_key=' . urlencode($api_key) .	
+                '&api_secret=' . urlencode($api_secret);	
+        $res = curl_init($uri);	
+        curl_setopt($res, CURLOPT_POST, TRUE);	
+        curl_setopt($res, CURLOPT_RETURNTRANSFER, TRUE); // don't echo	
+        curl_setopt($res, CURLOPT_SSL_VERIFYPEER, FALSE);	
+        curl_setopt($res, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);	
+        curl_setopt($res, CURLOPT_POSTFIELDS, $fields);	
+        curl_exec($res);
+
+        if (curl_errno($res)) {
+            $error_msg = curl_error($res);
+        }
+        curl_close($res);
+
+        if (isset($error_msg)) {
+            $details = [
+               'message' => $error_msg,
+            ];
+
+            Mail::to('shashikant@hcbspro.com')->send(new SendErrorEmail($details));
         }
     }
 

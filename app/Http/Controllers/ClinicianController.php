@@ -49,8 +49,15 @@ class ClinicianController extends Controller
         ]);
         
         $user->designation_name = $user->designation ? $user->designation->name : null;
-        if ($user) {
-            return $this->generateResponse(true, 'Profile updated successfully!',$user);
+
+        $user->roles = $user->roles ? $user->roles->first() : null;
+
+        $data = [
+            'user' => $user,
+        ];
+
+        if ($data) {
+            return $this->generateResponse(true, 'Profile updated successfully!',$data);
         }
 
         return $this->generateResponse(false, 'Something went wrong', null);

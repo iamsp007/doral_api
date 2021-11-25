@@ -29,7 +29,9 @@ class SelectionController extends Controller
         $reason_for_leaving = $selection->where('name','Reason For Leaving')->orderBy('name','asc')->get();
         
         $designation = Designation::where('role_id',4)->get();
-
+        
+	    $state_license_category = $selection->where('name','State License Category')->orderBy('name','asc')->get();
+        
         $data = [
             'certifying_board' => $certifying_board,
             'application_status' => $application_status,
@@ -40,6 +42,7 @@ class SelectionController extends Controller
             'cities' => $cities,
             'designation' => $designation,
             'reason_for_leaving' => $reason_for_leaving,
+            'state_license_category' => $state_license_category,
         ];
         
         return $this->generateResponse(true,'Selection list',$data,200);
