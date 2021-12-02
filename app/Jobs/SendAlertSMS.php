@@ -47,7 +47,9 @@ class SendAlertSMS implements ShouldQueue
 
     public function sendEmailToVisitor($patient_id,$message,$phone)
     {
-        $demographic = Demographic::where('user_id',$patient_id)->select('patient_id')->first();
+        $demographic = Demographic::with(['user'=> function($q){
+            $q->select('id','first_name', 'last_name');
+        }])->where('user_id',$patient_id)->select('id', 'user_id', 'patient_id')->first();
         $input['patientId'] = $demographic->patient_id;
         $date = Carbon::now();// will get you the current date, time
         $today = $date->format("Y-m-d");
@@ -55,8 +57,8 @@ class SendAlertSMS implements ShouldQueue
         $input['from_date'] = $today;
         $input['to_date'] = $today;
 	
-        $curlFunc = searchVisits($input);
-
+        $curlFunc = searchVisits($input);   
+        
         if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
             $viId = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
           	
@@ -65,9 +67,10 @@ class SendAlertSMS implements ShouldQueue
                 $getScheduleInfo = $scheduleInfo['soapBody']['GetScheduleInfoResponse']['GetScheduleInfoResult']['ScheduleInfo'];
                 $caregiver_id = ($getScheduleInfo['Caregiver']['ID']) ? $getScheduleInfo['Caregiver']['ID'] : '' ;
                 
-                $demographicModal = Demographic::where('patient_id',$caregiver_id)->with('user', function($q){
-                    $q->select('id','phone');
-                })->first();
+                $demographicModal = Demographic::select('id','user_id','patient_id')->where('patient_id', $caregiver_id)->with(['user' => function($q) {
+                    $q->select('id', 'email', 'phone');
+                }])->first();
+                
                 if ($demographicModal && $demographicModal->user->phone != '') {
                     $phoneNumber = $demographicModal->user->phone;
                 } else {
@@ -77,8 +80,8 @@ class SendAlertSMS implements ShouldQueue
                     $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
                 }
 		        Log::info('patient message send start');
-                // $this->sendsmsToMe($message, $phoneNumber);
-                $this->sendsmsToMe($message, $phone);
+                $this->sendsmsToMe($message, $phoneNumber);
+                //$this->sendsmsToMe($message, $phone);
                 Log::info('patient message send end');
             //}
         }
@@ -86,17 +89,17 @@ class SendAlertSMS implements ShouldQueue
         $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id],['texed', '=', '1']])->get();
         foreach ($caseManagers as $key => $caseManager) {
             Log::info('case manager message send start');
-            // $this->sendsmsToMe($message, $caseManager->clinician->phone);
-            $this->sendsmsToMe($message, $phone);
+            $this->sendsmsToMe($message, $caseManager->clinician->phone);
+            //$this->sendsmsToMe($message, $phone);
             Log::info('case manager message send end');
         }
 
-        $familyPhone = CareTeam::where([['patient_id', '=' ,$patient_id],['detail->texed', '=', 'on']])->whereIn('type',['1','2'])->get();
+        $careTeams = CareTeam::where([['patient_id', '=' ,$patient_id],['detail->texed', '=', 'on']])->whereIn('type',['1','2'])->get();
       	
-        foreach ($familyPhone as $key => $value) {
+        foreach ($careTeams as $key => $value) {
             Log::info('care team message send start');
-            //$this->sendsmsToMe($message, $value->detail['phone']);
-            $this->sendsmsToMe($message, $phone);
+            $this->sendsmsToMe($message, $value->detail['phone']);
+            //$this->sendsmsToMe($message, $phone);
             Log::info('care team message send end');
         }
     }
