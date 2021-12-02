@@ -98,7 +98,7 @@ class SendAlertSMS implements ShouldQueue
       	
         foreach ($careTeams as $key => $value) {
             Log::info('care team message send start');
-            $this->sendsmsToMe($message, $value->detail['phone']);
+            $this->sendsmsToMe($message, setPhone($value->detail['phone']));
             //$this->sendsmsToMe($message, $phone);
             Log::info('care team message send end');
         }
