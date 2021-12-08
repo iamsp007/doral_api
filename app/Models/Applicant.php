@@ -53,6 +53,10 @@ class Applicant extends Model
         'signature',
         'workHistory_detail',
         'professional_detail',
+        'fedExpiredMonthYear',
+        'npiNumber',
+        'npiType',
+        'npiOrgName',
     ];
 
     /**

@@ -15,6 +15,7 @@ use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
 use App\Models\Company;
+use App\Models\UserDevice;
 use App\Models\UserDeviceLog;
 use App\Models\UserLatestDeviceLog;
 use Exception;
@@ -253,6 +254,7 @@ class UserController extends Controller
     public function demographyDataUpdate(Request $request)
     {
         $input = $request->all();
+        
         if ($request->type==="1"){
             $parts = explode('-',$input['dob']);
             $yyyy_mm_dd = $parts[2] . '-' . $parts[0] . '-' . $parts[1];
@@ -363,9 +365,24 @@ class UserController extends Controller
                 'services' => implode(",",$input['services'])
             ]);
             return $this->generateResponse(true, 'Update Details Success', null, 200);
+        } else if($request->type === "4") {
+            $user_ids = $input['user_id'];
+            $device_id = $input['device_id'];
+          
+            foreach ($user_ids as $index => $value) {
+                $ud = UserDevice::where([['user_id', '=', $user_ids[$index]],['device_type', '=', $device_id[$index]]])->first();
+               
+                if (!$ud) {
+                    UserDevice::create([
+                        'user_id' => $input['user_id'],
+                        'device_type' => ($device_id[$index]) ? $device_id[$index] : '',
+                    ]);
+                }
+            } 
+            return $this->generateResponse(true, 'Update Details Success', null, 200);
         }
 
-        return $this->generateResponse(false, 'Something Went Wrong', $request->type, 200);
+        return $this->generateResponse(false, 'Something Went Wrong', null, 200);
     }
 //     public function demographyDataUpdate(Request $request)
 //     {

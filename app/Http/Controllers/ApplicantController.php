@@ -1060,7 +1060,7 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicant detail not available.";
         try {
-            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents','designation'])->findOrFail($userId);
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents','designation','applicant'])->findOrFail($userId);
             if (!$response) {
                 throw new Exception($message);
             }
@@ -1109,10 +1109,14 @@ class ApplicantController extends Controller
         }
 
         $key = $request->key;
-
+        
         $applicant->$key = $request->$key;
         $applicant->phone = $request->phone ?? $applicant->phone;
         $applicant->home_phone = $request->home_phone ?? $applicant->home_phone;
+        // $applicant->fedExpiredMonthYear = $request->fedExpiredMonthYear ?? $applicant->fedExpiredMonthYear;
+        // $applicant->npiNumber = $request->npiNumber ?? $applicant->npiNumber;
+        // $applicant->npiType = $request->npiType ?? $applicant->npiType;
+        // $applicant->npiOrgName = $request->npiOrgName ?? $applicant->npiOrgName;
      
         $applicant->save();
 
