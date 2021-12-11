@@ -366,20 +366,27 @@ class UserController extends Controller
             ]);
             return $this->generateResponse(true, 'Update Details Success', null, 200);
         } else if($request->type === "4") {
-            $user_ids = $input['user_id'];
+            $user_ids = $input['doc_id'];
             $device_id = $input['device_id'];
-          
-            foreach ($user_ids as $index => $value) {
-                $ud = UserDevice::where([['user_id', '=', $user_ids[$index]],['device_type', '=', $device_id[$index]]])->first();
-               
-                if (!$ud) {
-                    UserDevice::create([
-                        'user_id' => $input['user_id'],
+            $ids = [];
+             foreach ($user_ids as $index => $value) {
+                $ud = UserDevice::where([['user_id', '=', $user_ids[$index]],['device_type', '=', $device_id[$index]],['patient_id', '=', $input['patient_id']]])->first();
+              
+                if ($ud){
+                    $ud->update([
+                   	'user_id' => $user_ids[$index],
                         'device_type' => ($device_id[$index]) ? $device_id[$index] : '',
-                    ]);
+                        'patient_id' => $input['patient_id'],
+                   ]);
+                } else {
+                    $ud = new UserDevice();
+       	            $ud->user_id = $user_ids[$index];
+                    $ud->device_type = $device_id[$index];
+                    $ud->patient_id = $input['patient_id'];
+                    $ud->save();
                 }
             } 
-            return $this->generateResponse(true, 'Update Details Success', null, 200);
+            return $this->generateResponse(true, 'Update Details Success', $ud, 200);
         }
 
         return $this->generateResponse(false, 'Something Went Wrong', null, 200);
