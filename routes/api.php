@@ -315,7 +315,7 @@ Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@ind
 Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
 Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
 
-Route::get('/selection-list/{id?}', 'App\Http\Controllers\SelectionController@index');
+Route::get('/selection-list', 'App\Http\Controllers\SelectionController@index');
 
 Route::post('user/user-device-logs', 'App\Http\Controllers\Device\UserDeviceController@addDevice')->name('user.add-device');
 

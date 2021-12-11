@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class SelectionController extends Controller
 {
-    public function index($id ='' ,Selection $selection)
+    public function index(Selection $selection)
     {
         $certifying_board = $selection->where('name','Certifying Board')->orderBy('name','asc')->get();
 
@@ -32,11 +32,7 @@ class SelectionController extends Controller
         
         $designation = Designation::where('role_id',4)->get();
 
-        $banks = Bank::orderBy('name','asc')->get();
-
-        if ($id != '') {
-            $bankrouting = BankRouting::where('bank_id',$id)->orderBy('name','asc')->get();
-        }       
+        $banks = Bank::with('bankRouting')->orderBy('name','asc')->get();
         
 	    $state_license_category = $selection->where('name','State License Category')->orderBy('name','asc')->get();
         
@@ -52,7 +48,6 @@ class SelectionController extends Controller
             'reason_for_leaving' => $reason_for_leaving,
             'state_license_category' => $state_license_category,
             'banks' => $banks,
-            'bankrouting' => $bankrouting,
         ];
         
         return $this->generateResponse(true,'Selection list',$data,200);
