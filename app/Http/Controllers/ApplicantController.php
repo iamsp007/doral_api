@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ScrapingData;
 use App\Models\Applicant;
 use App\Models\ApplicantReference;
 use App\Models\Education;
@@ -9,10 +10,12 @@ use App\Models\WorkHistory;
 use App\Models\Attestation;
 use App\Models\BankAccount;
 use App\Models\Security;
+use App\Models\State;
 use App\Models\UploadDocuments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ApplicantController extends Controller
@@ -1119,7 +1122,52 @@ class ApplicantController extends Controller
         // $applicant->npiOrgName = $request->npiOrgName ?? $applicant->npiOrgName;
      
         $applicant->save();
+        $input = [];
+        if ($key === 'address_detail') {
+            $user = Auth::user();
+            $input = [
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'ssn' => $request['address_detail']['info']['ssn'],
+                'dob' => $user->dob,
+                'email' => $user->email,
+            ];
+        } else if ($key === 'professional_detail') {
+            $state = State::find($applicant['address_detail']['address']['state_id'])->state;
+          
+            $user = Auth::user();
+            $roleName = Auth::user()->roles->pluck('name')[0];
+            $fedExpiredMonthYear = explode(" ",$request['professional_detail']['fedExpiredMonthYear']);
 
+            $month = $year = '';
+            if(isset($fedExpiredMonthYear[0])) {
+                $month = $fedExpiredMonthYear[0];
+            }
+            if(isset($fedExpiredMonthYear[1])) {
+                $year = $fedExpiredMonthYear[1];
+            }
+            $input = [
+                'role' => $roleName,
+                'DEANumber' => $request['professional_detail']['federal_DEA_id'],
+                'last_name' => $user->last_name,
+                'ssn' => $request['address_detail']['info']['ssn'],
+                'zipCode' => $request['professional_detail']['npa_zipCode'],
+                'expiredMonth' => $month,
+                'expiredYear' => $year,
+                'dob' => $user->dob,
+                'profession' => $user->designation->name,
+                'licenseNumber' => $request['professional_detail']['stateLicense']['Number'],
+                'state' => $state,
+                'country' => 'USA',
+                'npiNumber' =>  $request['professional_detail']['npiNumber'],
+                'nccpa_id' =>  $request['professional_detail']['boardCertificate']['nccpa_id'],
+                'nccpa_certificate_number' =>  $request['professional_detail']['boardCertificate']['nccpa_certificate_number'],
+            ];
+        }
+
+        if ($key === 'address_detail' || $key === 'professional_detail') {
+            ScrapingData::dispatch($input);
+        }
         return $this->generateResponse(true, $key.' detail added.', $applicant, 200);
     }
 

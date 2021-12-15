@@ -35,7 +35,8 @@ class DatabaseSeeder extends Seeder
             // PreferredPharmacyMasterSeeder::class,
             // LabReportTypeSeeder::class,
             // PartnerUser::class,
-            SelectionTableSeeder::class
+            //SelectionTableSeeder::class
+            MalpracticeSeeder::class
         ]);
     }
 }
