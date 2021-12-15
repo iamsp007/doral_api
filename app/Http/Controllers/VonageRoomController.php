@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\VirtualRoom;
 use App\Models\VonageRoom;
 use Illuminate\Http\Request;
 use OpenTok\MediaMode;
@@ -11,16 +10,6 @@ use OpenTok\OpenTok;
 
 class VonageRoomController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -50,61 +39,5 @@ class VonageRoomController extends Controller
         }catch (\Exception $exception){
 
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\VonageRoom  $vonageRoom
-     * @return \Illuminate\Http\Response
-     */
-    public function show(VonageRoom $vonageRoom)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\VonageRoom  $vonageRoom
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(VonageRoom $vonageRoom)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\VonageRoom  $vonageRoom
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, VonageRoom $vonageRoom)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\VonageRoom  $vonageRoom
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(VonageRoom $vonageRoom)
-    {
-        //
     }
 }

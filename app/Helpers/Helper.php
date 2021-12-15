@@ -177,7 +177,7 @@ class Helper extends BaseController
         curl_setopt($curl_session,CURLOPT_POSTFIELDS,$payload);
 
         $result=curl_exec($curl_session);
-        \Log::info($result);
+       
         curl_close($curl_session);
     }
 
@@ -215,6 +215,25 @@ class Helper extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
 
         $response = curl_exec($ch);
-        \Log::info($response);
+        
+    }
+
+    public function sendLocationEmit($data){
+        try {
+            $client = new Client();
+            $uri = env('WEB_URL') . 'send-location';
+           return $response =  $client->request('GET', $uri, [
+               'json'=>$data,
+               'headers' => [
+                   'Accept' => 'application/json',
+                   'Content-Type' => 'application/json',
+                   'X-Requested-With' => 'XMLHttpRequest',
+               ]
+           ]);
+        }catch (ClientException $exception){
+            return $exception->getResponse();
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
     }
 }

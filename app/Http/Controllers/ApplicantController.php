@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ScrapingData;
 use App\Models\Applicant;
 use App\Models\ApplicantReference;
 use App\Models\Education;
@@ -9,13 +10,17 @@ use App\Models\WorkHistory;
 use App\Models\Attestation;
 use App\Models\BankAccount;
 use App\Models\Security;
+use App\Models\State;
 use App\Models\UploadDocuments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ApplicantController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *
@@ -829,85 +834,169 @@ class ApplicantController extends Controller
 
     public function documentVerification(Request $request)
     {
-        $validator = \Validator::make($request->all(),[
-            'document.*.id_proof'=>'max:10000|mimes:pdf,xls,png,jpg,jpeg',
-            'document.*.degree_proof'=>'max:10000|mimes:pdf,xls,png,jpg,jpeg',
-            'document.*.medical_report'=>'max:10000|mimes:pdf,xls,png,jpg,jpeg',
-            'document.*.insurance_report'=>'max:10000|mimes:pdf,xls,png,jpg,jpeg',
-        ]);
+        try {
+            $keys=array_keys($request->allFiles());
+            foreach ($keys as $key) {
+          
+                $fileKeys =explode('_',$key);
+                $validator = \Validator::make($request->all(),[
+                    $key=>'max:10000|mimes:pdf,xls,xlsx,png,jpg,jpeg'
+                ]);
 
-        if ($validator->fails()){
-            return $this->generateResponse(false,'Invalid Parameter!',$validator->errors(),200);
+                if ($validator->fails()){
+                    return $this->generateResponse(false,$validator->errors()->first(),$validator->errors()->messages(),200);
+                }
+
+                $type=$fileKeys[1];
+                 
+                if (is_numeric($type)){
+                
+                    $file=$request->file($key);
+                    $uploadFolder = 'documents/'.auth()->user()->id.'/'.$fileKeys[count($fileKeys)-1];
+                    $file_uploaded_path = $file->store($uploadFolder, 'public');
+                    $uploadedFileResponse = [
+                        "file_name" => basename($file_uploaded_path),
+                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+                        "mime" => $file->getClientMimeType()
+                    ];
+                    $documents = UploadDocuments::where('user_id', auth()->user()->id)
+                        ->where('type','=',$type)->first();
+                    if ($documents===null){
+                        $documents = new UploadDocuments();
+                    }
+                    $documents->user_id = auth()->user()->id;
+                    $documents->file_name = $uploadedFileResponse['file_name'];
+                    $documents->type = $type;
+                    $documents->save();
+                }
+            }
+            $documents = UploadDocuments::where('user_id', auth()->user()->id)->get();
+
+            return $this->generateResponse(true,'Documents uploaded',$documents,200);
+        }catch (\Exception $exception){
+            return $this->generateResponse(false,$exception->getMessage(),null,200);
         }
 
         try {
-            if($request->file('document.*.id_proof')){
-                foreach (array_filter($request->file('document.*.id_proof')) as $file) {
-                    $uploadFolder = 'documents/'.auth()->user()->id.'/id_proof';
-                    $file_uploaded_path = $file->store($uploadFolder, 'public');
-                    $uploadedFileResponse = [
-                        "file_name" => basename($file_uploaded_path),
-                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
-                        "mime" => $file->getClientMimeType()
-                    ];
-                    $documents = new UploadDocuments();
-                    $documents->user_id = auth()->user()->id;
-                    $documents->file_name = $uploadedFileResponse['file_name'];
-                    $documents->type = '1';
-                    $documents->save();
-                }
-            }
 
-            if($request->file('document.*.degree_proof')){
-                foreach (array_filter($request->file('document.*.degree_proof')) as $file) {
-                    $uploadFolder = 'documents/'.auth()->user()->id.'/degree_proof';
-                    $file_uploaded_path = $file->store($uploadFolder, 'public');
-                    $uploadedFileResponse = [
-                        "file_name" => basename($file_uploaded_path),
-                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
-                        "mime" => $file->getClientMimeType()
-                    ];
-                    $documents = new UploadDocuments();
-                    $documents->user_id = auth()->user()->id;
-                    $documents->file_name = $uploadedFileResponse['file_name'];
-                    $documents->type = '2';
-                    $documents->save();
-                }
-            }
-
-            if($request->file('document.*.medical_report')){
-                foreach (array_filter($request->file('document.*.medical_report')) as $file) {
-                    $uploadFolder = 'documents/'.auth()->user()->id.'/medical_report';
-                    $file_uploaded_path = $file->store($uploadFolder, 'public');
-                    $uploadedFileResponse = [
-                        "file_name" => basename($file_uploaded_path),
-                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
-                        "mime" => $file->getClientMimeType()
-                    ];
-                    $documents = new UploadDocuments();
-                    $documents->user_id = auth()->user()->id;
-                    $documents->file_name = $uploadedFileResponse['file_name'];
-                    $documents->type = '3';
-                    $documents->save();
-                }
-            }
-
-            if($request->file('document.*.insurance_report')){
-                foreach (array_filter($request->file('document.*.insurance_report')) as $file) {
-                    $uploadFolder = 'documents/'.auth()->user()->id.'/insurance_report';
-                    $file_uploaded_path = $file->store($uploadFolder, 'public');
-                    $uploadedFileResponse = [
-                        "file_name" => basename($file_uploaded_path),
-                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
-                        "mime" => $file->getClientMimeType()
-                    ];
-                    $documents = new UploadDocuments();
-                    $documents->user_id = auth()->user()->id;
-                    $documents->file_name = $uploadedFileResponse['file_name'];
-                    $documents->type = '4';
-                    $documents->save();
-                }
-            }
+//            if($request->file('document.*.id_proof')){
+//                foreach (array_filter($request->file('document.*.id_proof')) as $file) {
+//                    $uploadFolder = 'documents/'.auth()->user()->id.'/id_proof';
+//                    $file_uploaded_path = $file->store($uploadFolder, 'public');
+//                    $uploadedFileResponse = [
+//                        "file_name" => basename($file_uploaded_path),
+//                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+//                        "mime" => $file->getClientMimeType()
+//                    ];
+//                    $documents = new UploadDocuments();
+//                    $documents->user_id = auth()->user()->id;
+//                    $documents->file_name = $uploadedFileResponse['file_name'];
+//                    $documents->type = '1';
+//                    $documents->save();
+//                }
+//            }
+//
+//            if($request->file('document.*.degree_proof')){
+//                foreach (array_filter($request->file('document.*.degree_proof')) as $file) {
+//                    $uploadFolder = 'documents/'.auth()->user()->id.'/degree_proof';
+//                    $file_uploaded_path = $file->store($uploadFolder, 'public');
+//                    $uploadedFileResponse = [
+//                        "file_name" => basename($file_uploaded_path),
+//                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+//                        "mime" => $file->getClientMimeType()
+//                    ];
+//                    $documents = new UploadDocuments();
+//                    $documents->user_id = auth()->user()->id;
+//                    $documents->file_name = $uploadedFileResponse['file_name'];
+//                    $documents->type = '2';
+//                    $documents->save();
+//                }
+//            }
+//
+//            if($request->file('document.*.medical_report')){
+//                foreach (array_filter($request->file('document.*.medical_report')) as $file) {
+//                    $uploadFolder = 'documents/'.auth()->user()->id.'/medical_report';
+//                    $file_uploaded_path = $file->store($uploadFolder, 'public');
+//                    $uploadedFileResponse = [
+//                        "file_name" => basename($file_uploaded_path),
+//                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+//                        "mime" => $file->getClientMimeType()
+//                    ];
+//                    $documents = new UploadDocuments();
+//                    $documents->user_id = auth()->user()->id;
+//                    $documents->file_name = $uploadedFileResponse['file_name'];
+//                    $documents->type = '3';
+//                    $documents->save();
+//                }
+//            }
+//
+//            if($request->file('document.*.insurance_report')){
+//                foreach (array_filter($request->file('document.*.insurance_report')) as $file) {
+//                    $uploadFolder = 'documents/'.auth()->user()->id.'/insurance_report';
+//                    $file_uploaded_path = $file->store($uploadFolder, 'public');
+//                    $uploadedFileResponse = [
+//                        "file_name" => basename($file_uploaded_path),
+//                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+//                        "mime" => $file->getClientMimeType()
+//                    ];
+//                    $documents = new UploadDocuments();
+//                    $documents->user_id = auth()->user()->id;
+//                    $documents->file_name = $uploadedFileResponse['file_name'];
+//                    $documents->type = '4';
+//                    $documents->save();
+//                }
+//            }
+//
+//            if($request->file('document.*.social_security')){
+//                foreach (array_filter($request->file('document.*.social_security')) as $file) {
+//                    $uploadFolder = 'documents/'.auth()->user()->id.'/social_security';
+//                    $file_uploaded_path = $file->store($uploadFolder, 'public');
+//                    $uploadedFileResponse = [
+//                        "file_name" => basename($file_uploaded_path),
+//                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+//                        "mime" => $file->getClientMimeType()
+//                    ];
+//                    $documents = new UploadDocuments();
+//                    $documents->user_id = auth()->user()->id;
+//                    $documents->file_name = $uploadedFileResponse['file_name'];
+//                    $documents->type = '5';
+//                    $documents->save();
+//                }
+//            }
+//
+//            if($request->file('document.*.professional_referrance')){
+//                foreach (array_filter($request->file('document.*.professional_referrance')) as $file) {
+//                    $uploadFolder = 'documents/'.auth()->user()->id.'/professional_referrance';
+//                    $file_uploaded_path = $file->store($uploadFolder, 'public');
+//                    $uploadedFileResponse = [
+//                        "file_name" => basename($file_uploaded_path),
+//                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+//                        "mime" => $file->getClientMimeType()
+//                    ];
+//                    $documents = new UploadDocuments();
+//                    $documents->user_id = auth()->user()->id;
+//                    $documents->file_name = $uploadedFileResponse['file_name'];
+//                    $documents->type = '6';
+//                    $documents->save();
+//                }
+//            }
+//
+//            if($request->file('document.*.nyc_nurse_certificate')){
+//                foreach (array_filter($request->file('document.*.nyc_nurse_certificate')) as $file) {
+//                    $uploadFolder = 'documents/'.auth()->user()->id.'/nyc_nurse_certificate';
+//                    $file_uploaded_path = $file->store($uploadFolder, 'public');
+//                    $uploadedFileResponse = [
+//                        "file_name" => basename($file_uploaded_path),
+//                        "file_url" => \Storage::disk('public')->url($file_uploaded_path),
+//                        "mime" => $file->getClientMimeType()
+//                    ];
+//                    $documents = new UploadDocuments();
+//                    $documents->user_id = auth()->user()->id;
+//                    $documents->file_name = $uploadedFileResponse['file_name'];
+//                    $documents->type = '7';
+//                    $documents->save();
+//                }
+//            }
 
             $documents = UploadDocuments::where('user_id', auth()->user()->id)->get();
 
@@ -946,13 +1035,13 @@ class ApplicantController extends Controller
         }
     }
 
-    public function getClinicianList()
+    public function getClinicianList($status_id = 0)
     {
         $status = false;
         $data = [];
         $message = "Applicants are not available.";
         try {
-            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->whereHas('roles', function($q) {
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents','designation'])->where('status','=',$status_id)->whereHas('roles', function($q) {
                     $q->where('name','=', 'clinician');
                 })->get();
             if (!$response) {
@@ -974,12 +1063,126 @@ class ApplicantController extends Controller
         $data = [];
         $message = "Applicant detail not available.";
         try {
-            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->findOrFail($userId);
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents','designation','applicant'])->findOrFail($userId);
             if (!$response) {
                 throw new Exception($message);
             }
             $status = true;
             $message = "All Applicants.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    public function getClinicianData(Request $request) {
+        $requestData = $request->all();
+        $status = false;
+        $data = [];
+        $message = "Applicants are not available.";
+        try {
+            $response = User::with(['applicant.references', 'applicant.state', 'applicant.city', 'education.medicalInstituteState', 'education.medicalInstituteCity', 'education.residencyInstituteState', 'education.residencyInstituteCity', 'education.fellowshipInstituteState', 'education.fellowshipInstituteCity', 'professional.medicareState', 'professional.medicaidState', 'professional.ageRanges', 'professional.stateLicenses.licenseState', 'professional.boardCertificates', 'attestation', 'background.country', 'background.state', 'background.city', 'deposit.state', 'deposit.city', 'documents'])->where('status','=',$requestData['status'])->whereHas('roles', function($q) {
+                    $q->where('name','=', 'clinician');
+                })
+                ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+                ->get();
+
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "All Applicants.";
+            return $this->generateResponse($status, $message, $response, 200);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = $e->getMessage()." ".$e->getLine();
+            return $this->generateResponse($status, $message, $data, 200);
+        }
+    }
+
+    public function storeApplicantDetail(Request $request)
+    {
+        $applicant = Applicant::where('user_id', $request->user()->id)->first();
+
+        if (!$applicant) {
+            $applicant = new Applicant();
+            $applicant->user_id = $request->user()->id;
+        }
+
+        $key = $request->key;
+        
+        $applicant->$key = $request->$key;
+        $applicant->phone = $request->phone ?? $applicant->phone;
+        $applicant->home_phone = $request->home_phone ?? $applicant->home_phone;
+        // $applicant->fedExpiredMonthYear = $request->fedExpiredMonthYear ?? $applicant->fedExpiredMonthYear;
+        // $applicant->npiNumber = $request->npiNumber ?? $applicant->npiNumber;
+        // $applicant->npiType = $request->npiType ?? $applicant->npiType;
+        // $applicant->npiOrgName = $request->npiOrgName ?? $applicant->npiOrgName;
+     
+        $applicant->save();
+        $input = [];
+        if ($key === 'address_detail') {
+            $user = Auth::user();
+            $input = [
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'ssn' => $request['address_detail']['info']['ssn'],
+                'dob' => $user->dob,
+                'email' => $user->email,
+            ];
+        } else if ($key === 'professional_detail') {
+            $state = State::find($applicant['address_detail']['address']['state_id'])->state;
+          
+            $user = Auth::user();
+            $roleName = Auth::user()->roles->pluck('name')[0];
+            $fedExpiredMonthYear = explode(" ",$request['professional_detail']['fedExpiredMonthYear']);
+
+            $month = $year = '';
+            if(isset($fedExpiredMonthYear[0])) {
+                $month = $fedExpiredMonthYear[0];
+            }
+            if(isset($fedExpiredMonthYear[1])) {
+                $year = $fedExpiredMonthYear[1];
+            }
+            $input = [
+                'role' => $roleName,
+                'DEANumber' => $request['professional_detail']['federal_DEA_id'],
+                'last_name' => $user->last_name,
+                'ssn' => $request['address_detail']['info']['ssn'],
+                'zipCode' => $request['professional_detail']['npa_zipCode'],
+                'expiredMonth' => $month,
+                'expiredYear' => $year,
+                'dob' => $user->dob,
+                'profession' => $user->designation->name,
+                'licenseNumber' => $request['professional_detail']['stateLicense']['Number'],
+                'state' => $state,
+                'country' => 'USA',
+                'npiNumber' =>  $request['professional_detail']['npiNumber'],
+                'nccpa_id' =>  $request['professional_detail']['boardCertificate']['nccpa_id'],
+                'nccpa_certificate_number' =>  $request['professional_detail']['boardCertificate']['nccpa_certificate_number'],
+            ];
+        }
+
+        if ($key === 'address_detail' || $key === 'professional_detail') {
+            ScrapingData::dispatch($input);
+        }
+        return $this->generateResponse(true, $key.' detail added.', $applicant, 200);
+    }
+
+    public function getApplicantDetails()
+    {
+        $status = false;
+        $data = [];
+        $message = "Applicant is not available.";
+        try {
+            $response = Applicant::with('documents')->where('user_id', auth()->user()->id)->first();
+            if (!$response) {
+                throw new Exception($message);
+            }
+            $status = true;
+            $message = "Applicant details.";
             return $this->generateResponse($status, $message, $response, 200);
         } catch (\Exception $e) {
             $status = false;

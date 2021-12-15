@@ -6,13 +6,11 @@ use App\Models\PatientReferral;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Validators\ValidationException;
-use Spatie\Permission\Models\Permission;
 use Excel;
-use App\Imports\BulkImport;
 use App\Imports\BulkCertImport;
+use App\Jobs\PatientImportSheet;
 use App\Models\PatientAssistant;
+use App\Models\FailRecodeImport;
 
 class PatientReferralController extends Controller
 {
@@ -44,16 +42,6 @@ class PatientReferralController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -61,51 +49,64 @@ class PatientReferralController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'file_name'=>'required',
-            'file_type'=>'required',
-            'referral_id'=>'required',
-            'service_id'=>'required',
-        ]);
-        try {
+         $this->validate($request, ['file_name' => 'required', 'file_type' => 'required', 'referral_id' => 'required', 'service_id' => 'required', ]);
+
+        try
+        {
 
             $folder = 'csv';
-            if ($request->file_type===1){
+            if ($request->file_type === 1)
+            {
                 $folder = "demographic";
-            }elseif ($request->file_type===2){
+            }
+            elseif ($request->file_type === 2)
+            {
                 $folder = "clinical";
-            }elseif ($request->file_type===3){
+            }
+            elseif ($request->file_type === 3)
+            {
                 $folder = "compliance_due";
-            }elseif ($request->file_type===4){
+            }
+            elseif ($request->file_type === 4)
+            {
                 $folder = "previous_md";
             }
 
             // upload file
-            if ($request->hasFile('file_name')) {
-                $filenameWithExt = $request->file('file_name')->getClientOriginalName();
-                $filename =  preg_replace("/[^a-z0-9\_\-\.]/i", '_',pathinfo($filenameWithExt, PATHINFO_FILENAME));
-                $extension = $request->file('file_name')->getClientOriginalExtension();
+            if ($request->hasFile('file_name'))
+            {
+                $filenameWithExt = $request->file('file_name')
+                    ->getClientOriginalName();
+                $filename = preg_replace("/[^a-z0-9\_\-\.]/i", '_', pathinfo($filenameWithExt, PATHINFO_FILENAME));
+                $extension = $request->file('file_name')
+                    ->getClientOriginalExtension();
                 $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-                $path = $request->file('file_name')->storeAs($folder, $fileNameToStore);
+                $path = $request->file('file_name')
+                    ->storeAs($folder, $fileNameToStore);
 
-                $filePath = storage_path('app/'.$path);
+                $filePath = storage_path('app/' . $path);
 
-                $data = Excel::import(new BulkImport(
-                    $request->referral_id,
-                    $request->service_id,
-                    $request->file_type,
-                    $request->form_id
-                ), $request->file('file_name'));
-                return $this->generateResponse(true,'CSV Uploaded successfully',$data,200);
+                // $import = new BulkImport($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt);
+                $company_id = 9;
+                // if(Auth::guard('referral')) {
+                //     $company_id = Auth::guard('referral')->user()->id;
+                // }
+                $import = PatientImportSheet::dispatch($request->referral_id, $request->service_id, $request->file_type, $request->form_id, $filenameWithExt, $filePath);
+               
+
+                return $this->generateResponse(true, 'CSV Uploaded successfully', $import, 200);
             }
 
-            return $this->generateResponse(false,'Something Went Wrong!',null,200);
-        }catch (\Exception $exception){
+            return $this->generateResponse(false, 'Something Went Wrong!', null, 200);
+
+        }
+        catch(\Exception $exception)
+        {
             \Log::info($exception->getMessage());
-            return $this->generateResponse(false,$exception->getMessage(),null,200);
+            return $this->generateResponse(false, $exception->getMessage() , null, 200);
         }
 
-        return $this->generateResponse(false,'something Went Wrong!',null,200);
+        return $this->generateResponse(false, 'something Went Wrong!', null, 200);
     }
 
     /**
@@ -172,53 +173,6 @@ class PatientReferralController extends Controller
         ];
 
         return response()->json($response, 201);
-    }
-
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\PatientReferral  $PatientReferral
-     * @return \Illuminate\Http\Response
-     */
-    public function show(PatientReferral $PatientReferral)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\PatientReferral  $PatientReferral
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(PatientReferral $PatientReferral)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\PatientReferral  $PatientReferral
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, PatientReferral $PatientReferral)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\PatientReferral  $PatientReferral
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(PatientReferral $PatientReferral)
-    {
-        //
     }
 
     public function storePatient(Request $request)
@@ -297,6 +251,53 @@ class PatientReferralController extends Controller
         }catch (\Exception $exception){
             \Log::info($exception->getMessage());
             return $this->generateResponse(false,$exception->getMessage(),null,200);
+        }
+    }
+
+    public function faileRecode(Request $request) {
+       $data = array();
+       $id = $request->id;
+        try {
+            $faileRecode = FailRecodeImport::where('service_id', $id)
+            ->select('id','row','file_name','attribute','errors')
+            ->get();
+            if (!$faileRecode) {
+                throw new Exception("No Referance Patients are registered");
+            }
+            $data = [
+                'faileRecode' => $faileRecode
+            ];
+            //return $this->generateResponse(true, 'Referance Patients!', $data);
+            return $this->generateResponse(true,'Failedrecode!',$faileRecode,200);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
+        }
+    }
+
+    public function viewfaileRecode(Request $request) {
+       $data = array();
+       $id = $request->id;
+        try {
+            $faileRecode = FailRecodeImport::where('id', $id)
+            ->select('values')
+            ->first();
+            $data = array();
+
+            $data_send = json_decode($faileRecode->values);
+             array_push($data,$data_send);
+
+            if (!$faileRecode) {
+                throw new Exception("No Referance Patients are registered");
+            }
+            // $data = [
+            //     'faileRecode' => $data_send
+            // ];
+            //return $this->generateResponse(true, 'Referance Patients!', $data);
+            return $this->generateResponse(true,'Failedrecode!',$data,200);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return $this->generateResponse(false, $message, $data);
         }
     }
 }

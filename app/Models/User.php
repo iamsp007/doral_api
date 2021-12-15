@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token'
+        'first_name', 'last_name', 'gender','dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token', 'designation_id','service_id','latitude','longitude','is_available','avatar',
     ];
 
     /**
@@ -34,7 +34,6 @@ class User extends Authenticatable
     ];
     protected $appends = ['gender_name','avatar_image','phone_format'];
 
-////
 //    protected $dates = [ 'created_at', 'updated_at'];
 
     /**
@@ -55,9 +54,13 @@ class User extends Authenticatable
     {
         $value=$this->phone;
         if ($value){
-            $cleaned = preg_replace('/[^[:digit:]]/', '', $value);
-            preg_match('/(\d{3})(\d{3})(\d{4})/', $cleaned, $matches);
-            return "({$matches[1]}) {$matches[2]}-{$matches[3]}";
+            try {
+                $cleaned = preg_replace('/[^[:digit:]]/', '', $value);
+                preg_match('/(\d{3})(\d{3})(\d{4})/', $cleaned, $matches);
+                return "({$matches[1]}) {$matches[2]}-{$matches[3]}";
+            }catch (\Exception $exception){
+
+            }
         }
     }
     /**
@@ -90,7 +93,7 @@ class User extends Authenticatable
         if (isset($this->image) && !empty($this->image)) {
             return env('WEB_URL').'assets/img/user/'. $this->image;
         } else {
-            return env('WEB_URL').'assets/img/user/01.png';
+            return env('WEB_URL').'assets/img/user/avatar.jpg';
         }
     }
 
@@ -172,6 +175,16 @@ class User extends Authenticatable
         return $user;
     }
 
+    public function designation()
+    {
+        return $this->hasOne(Designation::class,'id','designation_id');
+    }
+
+    public function conversation()
+    {
+        return $this->hasOne(Conversation::class,'user_id','id');
+    }
+    
     public function myRoom(){
         return $this->hasOne(VirtualRoom::class,'user_id','id');
     }
@@ -289,5 +302,17 @@ class User extends Authenticatable
     public function caregivers()
     {
         return $this->hasOne(Caregivers::class, 'patient_id', 'id')->orderBy('id','desc');
+    }
+
+     public function patientDetail(){
+        return $this->hasOne(PatientReferral::class,'user_id','id')->with(['service','filetype']);
+    }
+    public function caregiverInfo()
+    {
+        return $this->hasOne(CaregiverInfo::class,'user_id','id');
+    }
+    public function demographic()
+    {
+        return $this->hasOne(Demographic::class,'user_id','id');
     }
 }

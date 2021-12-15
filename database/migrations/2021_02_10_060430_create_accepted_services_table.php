@@ -15,8 +15,9 @@ class CreateAcceptedServicesTable extends Migration
     {
         Schema::create('accepted_services', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_id')->index('patient_id');
             $table->string('type')->nullable();
-            $table->string('name')->nullable();
+            $table->json('value')->nullable();
             $table->timestamps();
         });
     }

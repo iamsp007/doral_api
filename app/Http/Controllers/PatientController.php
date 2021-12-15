@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendingSMS;
-use App\Http\Requests\RoadlSelectedDiesesRequest;
+use App\Mail\AcceptedMail;
 use App\Models\Appointment;
+use App\Models\Demographic;
 use App\Models\Patient;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
@@ -12,20 +13,13 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class PatientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Search patient by name / Email / phone
      *
@@ -160,52 +154,6 @@ class PatientController extends Controller
         }
     }
 
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Patient $patient)
-    {
-        //
-    }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -219,7 +167,7 @@ class PatientController extends Controller
             $patientRequest->dieses=$request->dieses;
             $patientRequest->symptoms=$request->symptoms;
             $patientRequest->is_parking=$request->is_parking;
-            $patientRequest->status='active';
+            
             $patientRequest->save();
             return $this->generateResponse(true, 'Detail Update Successfully!', $patientRequest,200);
         }
@@ -299,6 +247,95 @@ class PatientController extends Controller
         return $this->generateResponse(true,'get new patient list',$patientList,200);
     }
 
+    public function updatePatientPhone(Request $request)
+    {
+        $input = $request->all();
+        $users = User::whereNotNull('phone')->where('phone', $request['phone'])->first();
+
+        if ($users) {
+            return $this->generateResponse(false, 'Phone number must unique', null, 400);
+        }
+
+        $user = User::where('id',$request['id'])->update([
+            'status' => '0',
+            'phone' => $request['phone'],
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
+        ]);
+        if ($user) {
+            $user_id = DB::getPdo()->lastInsertId();
+            $ssn = str_replace("-","",$input['ssn']);
+            Demographic::where('user_id' ,$user_id)->update([
+                'ssn' => $ssn,
+                // 'address->City' => $request['city'],
+                // 'address->State' => $request['state'],
+            ]);
+            return $this->generateResponse(true, 'Change Patient phone Successfully.', null, 200);
+        }
+        return $this->generateResponse(false, 'Patient Not Found', null, 400);
+    }
+    public function updatePatientStatus(Request $request)
+    {
+        $input = $request->all();
+        $status = $input['status'];
+        $ids = $input['id'];
+
+        $statusData = '1';
+        if ($status === '3') {
+            $statusData = '3' ;
+        }
+        $users = User::whereIn('id',$ids);
+        $user = $users->update(['status' => $statusData]);
+      
+        if ($user) {
+            $usersData = $users->with('demographic')->get();
+            foreach ($usersData as $value) {
+                $first_name = ($value->first_name) ? $value->first_name : '';
+                $last_name = ($value->last_name) ? $value->last_name : '';
+                $password = ($value->demographic && $value->demographic->doral_id) ? $value->demographic->doral_id : '';
+                $password = str_replace("-", "@",$password);
+                if ($value->phone) {
+                    // Send Message Start
+                    $link=env("WEB_URL").'download-application';
+                  
+                    if ($value->demographic) {
+                        if($value->demographic->service_id == 6) {
+                            $message = 'This message is from Doral Health Connect. In order to track your nurse coming to your home for vaccination please click on the link below and download an app. '.$link . "  for login Username : ".$value->email." & Password : ".$password;
+                        } else if($value->demographic->service_id == 3) {
+                            $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
+                        }
+                        
+                        $smsController = new SmsController();
+                        $smsController->sendsmsToMe($message, setPhone($value->phone));
+                    } else {
+                        $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
+
+                        $smsController = new SmsController();
+                        $smsController->sendsmsToMe($message, setPhone($value->phone));
+                    }
+                   
+                    // Send Message End
+                }
+
+                if ($value->email) {
+                    if ($statusData === '1') {
+                        $details = [
+                            'name' => $first_name . ' ' . $last_name,
+                            'password' => $password,
+                            'email' => $value->email,
+                            'login_url' => route('login'),
+                        ];
+
+                        Mail::to($value->email)->send(new AcceptedMail($details));
+                    }
+                }
+            }
+            
+            return $this->generateResponse(true, 'Change Status Successfully.', null, 200);
+        }
+        return $this->generateResponse(false, 'Detail not Found', null, 400);
+    }
+    
     public function changePatientStatus(Request $request){
         $this->validate($request,[
             'id'=>'required',
@@ -319,13 +356,12 @@ class PatientController extends Controller
                     if ($users){
                         $users->status = '1';
                         $users->save();
-
+                        $link=env("WEB_URL").'download-application';
                         $smsData[]=array(
                             'to'=>$users->phone,
-                            'message'=>'Welcome To Doral Health Connect.
-Please click below application link and download.
-'.url("application/android/patientDoral.apk").'
-Default Password : doral@123',
+                            'message'=>'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities.
+                            If you have any medical concern or need annual physical please click on the link below and book your appointment now.'.$link.'
+Default Password : Patient@doral',
                         );
                     }
                 }
@@ -341,4 +377,88 @@ Default Password : doral@123',
         }
         return $this->generateResponse(false,'No Patient Referral Ids Found',null,422);
     }
+
+    public function newpatientData(Request $request) {
+
+         $requestData = $request->all();
+
+         $patientList = User::with('patientDetail','roles')
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','patient');
+            })
+            ->whereHas('patientDetail',function ($q){
+                $q->where('status','=','pending')->whereNotNull('first_name');
+            })
+            ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+            ->get();
+        return $this->generateResponse(true,'get new patient list',$patientList,200);
+    }
+
+    public function patientData(Request $request) {
+         $requestData = $request->all();
+          $patientList = User::with('patientDetail','roles')
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','patient');
+            })
+            ->where('status','=','1')
+             ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+            ->get();
+        return $this->generateResponse(true,'get new patient list',$patientList,200);
+
+    }
+
+     public function scheduleAppoimentListData(Request $request){
+        // patient referral pending status patient list
+        $requestData = $request->all();
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['meeting','service','filetype','roadl'])
+            ->with(['patients' => function ($q) use($requestData) {
+                $q->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%');
+            }])
+
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
+            ->orderBy('start_datetime','asc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+    }
+
+      public function cancelAppoimentListData(Request $request){
+        // patient referral pending status patient list
+         $requestData = $request->all();
+        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
+                    $q->select('first_name', 'last_name', 'id');
+                }])
+            ->with(['cancelAppointmentReasons','service','filetype','cancelByUser'])
+             ->with(['patients' => function ($q) use($requestData) {
+                $q->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%');
+            }])
+            ->with(['provider1Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->with(['provider2Details' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
+            ->where('status','=','cancel')
+            ->orderBy('start_datetime','desc')
+            ->get()->toArray();
+        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+    }
+
+    public function calendarAppoimentListData(){
+            // patient referral pending status patient list
+            return $appointmentList = Appointment::select(DB::raw('count(*) as total'),DB::raw('DATE_FORMAT(start_datetime, "%Y-%m-%d") as start_datetime'),DB::raw('DATE_FORMAT(end_datetime, "%Y-%m-%d") as end_datetime'))->with(['bookedDetails' => function ($q) {
+                    }])
+                ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
+                ->groupby('start_datetime','end_datetime')
+                ->orderBy('start_datetime','asc')
+                ->get()->toArray();
+        }
 }

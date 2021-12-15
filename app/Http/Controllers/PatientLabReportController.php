@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PatientLabReportRequest;
+use App\Models\LabReportType;
 use App\Models\PatientLabReport;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PatientLabReportController extends Controller
 {
@@ -40,14 +43,14 @@ class PatientLabReportController extends Controller
         $input = $request->all();
         $patientLabReport = new PatientLabReport();
         $patientLabReport->lab_report_type_id = $input['lab_report_type_id'];
-        $patientLabReport->patient_referral_id = $input['patient_referral_id'];
+        $patientLabReport->user_id = $input['patient_referral_id'];
         if (isset($input['lab_perform_date'])) {
             $patientLabReport->perform_date = date('Y-m-d', strtotime($input['lab_perform_date']));
         }
         if (isset($input['titer'])) {
             $patientLabReport->titer = $input['titer'];
         }
-        
+
         $patientLabReport->due_date = date('Y-m-d', strtotime($input['lab_due_date']));
         $patientLabReport->expiry_date = date('Y-m-d', strtotime($input['lab_expiry_date']));
         $patientLabReport->result = $input['result'];
