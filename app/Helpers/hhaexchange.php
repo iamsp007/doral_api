@@ -1,13 +1,5 @@
 <?php
 
-use App\Helpers\Helper;
-use App\Jobs\SendEmailJob;
-use App\Models\Demographic;
-use App\Models\PatientEmergencyContact;
-use App\Models\User;
-use Carbon\Carbon;
-use Spatie\Permission\Models\Permission;
-
 if (!function_exists('curlCall')) {
         function curlCall($data, $method)
         {
