@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Device;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\AlertNotification;
 use App\Jobs\SendAlertSMS;
 use App\Models\ApiKey;
 use App\Models\UserDevice;
 use App\Models\UserDeviceLog;
 use App\Models\UserLatestDeviceLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use DB;
 
 class UserDeviceController extends Controller
 {
@@ -31,8 +32,8 @@ class UserDeviceController extends Controller
                     $userDevice->device_type = $input['device_type'];
                     $userDevice->patient_id = '9170';
                     $userDevice->save();
-                }
-                
+                }                
+            
                 if ($userDevice->demographic != '') {
                     $userDeviceLog = new UserDeviceLog();
                     $userDeviceLog->user_device_id = $userDevice->id;
@@ -49,7 +50,7 @@ class UserDeviceController extends Controller
                         } else if (Str::contains($input['value'], [':'])) {
                             $explodeValue = explode(":",$input['value']);
                         }
-                        
+                         
                         if($explodeValue[0] >= 140 || $explodeValue[1] >= 90) {
                             $readingLevel = 3;
                             $level_message = 'blood pressure is higher';
@@ -68,6 +69,8 @@ class UserDeviceController extends Controller
                             $level_message = 'blood sugar is lower';
                         }
                     } 
+                    
+               
                   
                     $userDeviceLog->level = $readingLevel;
 
@@ -92,7 +95,7 @@ class UserDeviceController extends Controller
                     // Latest Device Reading End
 
                     if ($readingLevel == 3) {
-                      
+                                          
                         $patient_name = $userDevice->user->first_name . ' ' . $userDevice->user->last_name;
                     
                         $message = 'Doral Health Connect | Your family member - ' . $patient_name . ' ' . $level_message . ' than regular. Need immediate attention. http://app.doralhealthconnect.com/ccm/'.$userDeviceLog->id;
@@ -101,8 +104,10 @@ class UserDeviceController extends Controller
                             'message' => $message,
                             'phone' => env('SEND_SMS'),
                             //'phone' => '9293989855',
-                        ];
-                        SendAlertSMS::dispatch($details);
+                            'patient_id' => $userDevice->patient_id,
+                        ];                        
+                
+                        AlertNotification::dispatch($details);
                     }
 
                     return $this->generateResponse(true,'User device log added successfully.',$userDeviceLog,200);

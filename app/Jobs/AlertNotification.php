@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+
 use App\Mail\SendErrorEmail;
 use App\Models\CareTeam;
 use App\Models\CaseManagement;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Nexmo\Laravel\Facade\Nexmo;
 
-class SendAlertSMS implements ShouldQueue
+class AlertNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -39,15 +40,15 @@ class SendAlertSMS implements ShouldQueue
      */
     public function handle()
     {
-       // Log::info('doral message send start');
-        //$this->sendsmsToMe($this->detail['message'], $this->detail['phone']);
-       // Log::info('doral message send end');
-        $this->sendEmailToVisitor($this->detail['patient_id'],$this->detail['message'],$this->detail['phone']);
+        Log::info('doral message send start');
+        $this->sendsmsToMe($this->detail['message'], $this->detail['phone']);
+        Log::info('doral message send end');
+       //$this->sendEmailToVisitor($this->detail['patient_id'],$this->detail['message'],$this->detail['phone']);
     }
 
     public function sendEmailToVisitor($patient_id,$message,$phone)
     {
-     Log::info('doral message send start');
+        Log::info('doral message send start');
         $demographic = Demographic::with(['user'=> function($q){
             $q->select('id','first_name', 'last_name');
         }])->where('user_id',$patient_id)->select('id', 'user_id', 'patient_id')->first();
@@ -61,12 +62,34 @@ class SendAlertSMS implements ShouldQueue
         $curlFunc = searchVisits($input);   
         
         if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
-            $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
-	     if(count($visitID) > 1) {
-	    
-	     	foreach ($visitID as $viId) {
-	     	
-	     	  $scheduleInfo = getScheduleInfo($viId);
+        $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
+	        if(count($visitID) > 1) {
+                foreach ($visitID as $viId) {
+                    $scheduleInfo = getScheduleInfo($viId);
+                    $getScheduleInfo = $scheduleInfo['soapBody']['GetScheduleInfoResponse']['GetScheduleInfoResult']['ScheduleInfo'];
+                    $caregiver_id = ($getScheduleInfo['Caregiver']['ID']) ? $getScheduleInfo['Caregiver']['ID'] : '' ;
+                    
+                    $demographicModal = Demographic::select('id','user_id','patient_id')->where('patient_id', $caregiver_id)->with(['user' => function($q) {
+                        $q->select('id', 'email', 'phone');
+                    }])->first();
+                    
+                    if ($demographicModal && $demographicModal->user->phone != '') {
+                        $phoneNumber = $demographicModal->user->phone;
+                    } else {
+                        $getdemographicDetails = getCaregiverDemographics($caregiver_id);
+                        $demographics = $getdemographicDetails['soapBody']['GetCaregiverDemographicsResponse']['GetCaregiverDemographicsResult']['CaregiverInfo'];
+        
+                        $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
+                    }
+                    Log::info('patient message send start');
+                    //$this->sendsmsToMe($message, $phoneNumber);
+                    $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
+                    Log::info('patient message send end');
+                }
+            } else {
+                $viId = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
+            
+                $scheduleInfo = getScheduleInfo($viId);
                 $getScheduleInfo = $scheduleInfo['soapBody']['GetScheduleInfoResponse']['GetScheduleInfoResult']['ScheduleInfo'];
                 $caregiver_id = ($getScheduleInfo['Caregiver']['ID']) ? $getScheduleInfo['Caregiver']['ID'] : '' ;
                 
@@ -79,43 +102,14 @@ class SendAlertSMS implements ShouldQueue
                 } else {
                     $getdemographicDetails = getCaregiverDemographics($caregiver_id);
                     $demographics = $getdemographicDetails['soapBody']['GetCaregiverDemographicsResponse']['GetCaregiverDemographicsResult']['CaregiverInfo'];
-    
+
                     $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
                 }
-		        Log::info('patient message send start');
+                Log::info('patient message send start');
                 //$this->sendsmsToMe($message, $phoneNumber);
                 $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
                 Log::info('patient message send end');
-	     	}
-	     } else {
-	      $viId = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
-	      
-	       $scheduleInfo = getScheduleInfo($viId);
-                $getScheduleInfo = $scheduleInfo['soapBody']['GetScheduleInfoResponse']['GetScheduleInfoResult']['ScheduleInfo'];
-                $caregiver_id = ($getScheduleInfo['Caregiver']['ID']) ? $getScheduleInfo['Caregiver']['ID'] : '' ;
-                
-                $demographicModal = Demographic::select('id','user_id','patient_id')->where('patient_id', $caregiver_id)->with(['user' => function($q) {
-                    $q->select('id', 'email', 'phone');
-                }])->first();
-                
-                if ($demographicModal && $demographicModal->user->phone != '') {
-                    $phoneNumber = $demographicModal->user->phone;
-                } else {
-                    $getdemographicDetails = getCaregiverDemographics($caregiver_id);
-                    $demographics = $getdemographicDetails['soapBody']['GetCaregiverDemographicsResponse']['GetCaregiverDemographicsResult']['CaregiverInfo'];
-    
-                    $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
-                }
-		        Log::info('patient message send start');
-                //$this->sendsmsToMe($message, $phoneNumber);
-                $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
-                Log::info('patient message send end');
-	     }
-           
-          	
-          
-              
-           
+            }
         }
  
         $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id],['texed', '=', '1']])->get();
