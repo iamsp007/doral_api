@@ -1136,7 +1136,9 @@ class ApplicantController extends Controller
             $state = State::find($applicant['address_detail']['address']['state_id'])->state;
           
             $user = Auth::user();
-            $roleName = Auth::user()->roles->pluck('name')[0];
+            $designation_id = $user->designation_id;
+
+            $roleName = $user->roles->pluck('name')[0];
             $fedExpiredMonthYear = explode(" ",$request['professional_detail']['fedExpiredMonthYear']);
 
             $month = $year = '';
@@ -1148,7 +1150,9 @@ class ApplicantController extends Controller
             }
             $input = [
                 'role' => $roleName,
+                'designation_id' => $designation_id,
                 'DEANumber' => $request['professional_detail']['federal_DEA_id'],
+                'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
                 'ssn' => $request['address_detail']['info']['ssn'],
                 'zipCode' => $request['professional_detail']['npa_zipCode'],
