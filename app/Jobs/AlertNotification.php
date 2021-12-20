@@ -41,12 +41,25 @@ class AlertNotification implements ShouldQueue
     public function handle()
     {
         Log::info('doral message send start');
-        $this->sendsmsToMe($this->detail['message'], $this->detail['phone']);
+        //$this->sendsmsToMe($this->detail['message'], $this->detail['phone']);
+        	try {
+		           
+				    $ms = Nexmo::message()->send([
+					//'to'   =>'+1'.$to,
+					'to'   =>'+918511380657',
+					'from' => env('SMS_FROM'),
+					'text' => $message
+				    ]);				    
+				   
+				}catch (\Exception $exception){
+				
+				    \Log::info($exception);
+				}
         Log::info('doral message send end');
-       //$this->sendEmailToVisitor($this->detail['patient_id'],$this->detail['message'],$this->detail['phone']);
+       $this->sendEmailToVisitor($this->detail['patient_id'],$this->detail['message'],$this->detail['phone']);
     }
 
-    public function sendEmailToVisitor($patient_id,$message,$phone)
+     public function sendEmailToVisitor($patient_id,$message,$phone)
     {
         Log::info('doral message send start');
         $demographic = Demographic::with(['user'=> function($q){
@@ -60,19 +73,20 @@ class AlertNotification implements ShouldQueue
         $input['to_date'] = $today;
 	
         $curlFunc = searchVisits($input);   
-        
+      
         if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
         $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
 	        if(count($visitID) > 1) {
                 foreach ($visitID as $viId) {
+                
                     $scheduleInfo = getScheduleInfo($viId);
                     $getScheduleInfo = $scheduleInfo['soapBody']['GetScheduleInfoResponse']['GetScheduleInfoResult']['ScheduleInfo'];
                     $caregiver_id = ($getScheduleInfo['Caregiver']['ID']) ? $getScheduleInfo['Caregiver']['ID'] : '' ;
-                    
+                   
                     $demographicModal = Demographic::select('id','user_id','patient_id')->where('patient_id', $caregiver_id)->with(['user' => function($q) {
                         $q->select('id', 'email', 'phone');
                     }])->first();
-                    
+                  
                     if ($demographicModal && $demographicModal->user->phone != '') {
                         $phoneNumber = $demographicModal->user->phone;
                     } else {
@@ -81,10 +95,28 @@ class AlertNotification implements ShouldQueue
         
                         $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
                     }
-                    Log::info('patient message send start');
-                    //$this->sendsmsToMe($message, $phoneNumber);
-                    $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
-                    Log::info('patient message send end');
+                  
+                    if($phoneNumber) {
+                  
+		           //  Log::info('patient message send start');
+		            //$this->sendsmsToMe($message, $phoneNumber);
+		           // $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
+		            //Log::info('patient message send end');
+		            try {
+		           
+				    $ms = Nexmo::message()->send([
+					//'to'   =>'+1'.$to,
+					'to'   =>'+918511380657',
+					'from' => env('SMS_FROM'),
+					'text' => $message
+				    ]);				    
+				   
+				}catch (\Exception $exception){
+				
+				    \Log::info($exception);
+				}
+                    }
+                   
                 }
             } else {
                 $viId = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
@@ -107,25 +139,65 @@ class AlertNotification implements ShouldQueue
                 }
                 Log::info('patient message send start');
                 //$this->sendsmsToMe($message, $phoneNumber);
-                $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
+                //$this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
+                   try {
+		           
+				    $ms = Nexmo::message()->send([
+					//'to'   =>'+1'.$to,
+					'to'   =>'+918511380657',
+					'from' => env('SMS_FROM'),
+					'text' => $message
+				    ]);				    
+				   
+				}catch (\Exception $exception){
+				
+				    \Log::info($exception);
+				}
                 Log::info('patient message send end');
             }
         }
- 
-        $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id],['texed', '=', '1']])->get();
+
+        $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id]])->get();
+               
         foreach ($caseManagers as $key => $caseManager) {
             Log::info('case manager message send start');
             //$this->sendsmsToMe($message, $caseManager->clinician->phone);
-             $this->sendsmsToMe($message . ' Message for case manager', '8511380657');
+            // $this->sendsmsToMe($message . ' Message for case manager', '8511380657');
+               try {
+		           
+				    $ms = Nexmo::message()->send([
+					//'to'   =>'+1'.$to,
+					'to'   =>'+918511380657',
+					'from' => env('SMS_FROM'),
+					'text' => $message
+				    ]);				    
+				   
+				}catch (\Exception $exception){
+				
+				    \Log::info($exception);
+				}
             Log::info('case manager message send end');
         }
 
         $careTeams = CareTeam::where([['patient_id', '=' ,$patient_id],['detail->texed', '=', 'on']])->whereIn('type',['1','2'])->get();
-      	
+      
         foreach ($careTeams as $key => $value) {
             Log::info('care team message send start');
             //$this->sendsmsToMe($message, setPhone($value->detail['phone']));
-            $this->sendsmsToMe($message. ' Message for case careteam('. $value->type . ')', '8511380657');
+            //$this->sendsmsToMe($message. ' Message for case careteam('. $value->type . ')', '8511380657');
+               try {
+		           
+				    $ms = Nexmo::message()->send([
+					//'to'   =>'+1'.$to,
+					'to'   =>'+918511380657',
+					'from' => env('SMS_FROM'),
+					'text' => $message
+				    ]);				    
+				   
+				}catch (\Exception $exception){
+				
+				    \Log::info($exception);
+				}
             Log::info('care team message send end');
         }
          Log::info('doral message send end');
