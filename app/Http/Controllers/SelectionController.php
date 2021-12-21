@@ -9,7 +9,7 @@ use App\Models\Designation;
 use App\Models\Selection;
 use App\Models\State;
 use App\Models\Malpractice;
-use Illuminate\Http\Request;
+use App\Models\PhysicianSpeciality;
 
 class SelectionController extends Controller
 {
@@ -34,9 +34,11 @@ class SelectionController extends Controller
         $designation = Designation::where('role_id',4)->get();
 
         $banks = Bank::where('status','1')->with('bankRouting')->orderBy('name','asc')->get();
-      
+     
 	    $state_license_category = $selection->where('name','State License Category')->orderBy('name','asc')->get();
         $malpractices = Malpractice::get();
+
+        $physicianSpeciality = PhysicianSpeciality::get();
         $data = [
             'certifying_board' => $certifying_board,
             'application_status' => $application_status,
@@ -50,6 +52,7 @@ class SelectionController extends Controller
             'state_license_category' => $state_license_category,
             'banks' => $banks,
             'malpractices' => $malpractices,
+            'physicianSpeciality' => $physicianSpeciality,
         ];
         
         return $this->generateResponse(true,'Selection list',$data,200);
