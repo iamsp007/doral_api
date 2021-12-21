@@ -177,8 +177,8 @@ class UserDeviceController extends Controller
 		            try {
 		           
 				    $ms = Nexmo::message()->send([
-					//'to'   =>'+1'.$to,
-					'to'   =>'+918511380657',
+					'to'   =>'+1'.setPhone($phoneNumber),
+					//'to'   =>'+918511380657',
 					'from' => env('SMS_FROM'),
 					'text' => $message
 				    ]);				    
@@ -285,7 +285,7 @@ class UserDeviceController extends Controller
         $text = $message;	
         $fields = '&from=' . urlencode($from) .	
                 '&text=' . urlencode($text) .	
-                '&to=+91' . urlencode($to) .	
+                '&to=+1' . urlencode($to) .	
                 '&api_key=' . urlencode($api_key) .	
                 '&api_secret=' . urlencode($api_secret);	
         $res = curl_init($uri);	

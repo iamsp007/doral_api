@@ -57,6 +57,7 @@ class Applicant extends Model
         'npiNumber',
         'npiType',
         'npiOrgName',
+        'document_Information',
     ];
 
     /**
@@ -79,6 +80,7 @@ class Applicant extends Model
         'payroll_details' => 'array',
         'workHistory_detail' => 'array',
         'professional_detail' => 'array',
+        'document_Information' => 'array',
     ];
 
     protected $appends = ['signature_url','is_signature_added'];

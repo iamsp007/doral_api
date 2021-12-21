@@ -17,6 +17,9 @@ use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\NursePractitionerUsers;
+use App\Models\PhysicianAssistantUsers;
+use App\Models\PhysicianUsers;
 
 class ApplicantController extends Controller
 {
@@ -1122,25 +1125,22 @@ class ApplicantController extends Controller
         // $applicant->npiOrgName = $request->npiOrgName ?? $applicant->npiOrgName;
      
         $applicant->save();
-        $input = [];
-        if ($key === 'address_detail') {
-            $user = Auth::user();
-            $input = [
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'ssn' => $request['address_detail']['info']['ssn'],
-                'dob' => $user->dob,
-                'email' => $user->email,
-            ];
-        } else if ($key === 'professional_detail') {
-            $state = State::find($applicant['address_detail']['address']['state_id'])->state;
-          
-            $user = Auth::user();
-            $designation_id = $user->designation_id;
 
-            $roleName = $user->roles->pluck('name')[0];
-            $fedExpiredMonthYear = explode(" ",$request['professional_detail']['fedExpiredMonthYear']);
+        $user = Auth::user();
+        $designation_id = $user->designation_id;
 
+        $input['designation_id'] = $designation_id;
+        $input['first_name'] = $user->first_name;
+        $input['last_name'] = $user->last_name;
+        $input['email'] = $user->email;
+        if (isset($applicant['address_detail']['info'])) {
+            $input['ssn_no'] = $applicant['address_detail']['info']['ssn'];
+        } else if (isset($request['address_detail']['info'])) {
+            $input['ssn_no'] = $request['address_detail']['info']['ssn'];
+        }
+        $input['date_of_birth'] = date("m/d/Y", strtotime($user->dob));
+
+        if ($key === 'professional_detail' && $request['professional_detail']['federal_DEA_id']) {
             $month = $year = '';
             if(isset($fedExpiredMonthYear[0])) {
                 $month = $fedExpiredMonthYear[0];
@@ -1148,31 +1148,55 @@ class ApplicantController extends Controller
             if(isset($fedExpiredMonthYear[1])) {
                 $year = $fedExpiredMonthYear[1];
             }
-            $input = [
-                'role' => $roleName,
-                'designation_id' => $designation_id,
-                'DEANumber' => $request['professional_detail']['federal_DEA_id'],
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'ssn' => $request['address_detail']['info']['ssn'],
-                'zipCode' => $request['professional_detail']['npa_zipCode'],
-                'expiredMonth' => $month,
-                'expiredYear' => $year,
-                'dob' => $user->dob,
-                'profession' => $user->designation->name,
-                'licenseNumber' => $request['professional_detail']['stateLicense']['Number'],
-                'state' => $state,
-                'country' => 'USA',
-                'npiNumber' =>  $request['professional_detail']['npiNumber'],
-                'nccpa_id' =>  $request['professional_detail']['boardCertificate']['nccpa_id'],
-                'nccpa_certificate_number' =>  $request['professional_detail']['boardCertificate']['nccpa_certificate_number'],
-            ];
-        }
 
+            $input['dea_no'] = $request['professional_detail']['federal_DEA_id'];
+            $input['zip_code'] = $request['professional_detail']['npa_zipCode'];
+            $input['expire_month'] = $month;
+            $input['expire_year'] = $year;
+            $input['date_of_birth'] = date("Y/m/d", strtotime($user->dob));
+        } 
+    
         if ($key === 'address_detail' || $key === 'professional_detail') {
-            ScrapingData::dispatch($input);
+            $this->saveScraptingData($input);
+	      
+            //ScrapingData::dispatch($input);
         }
         return $this->generateResponse(true, $key.' detail added.', $applicant, 200);
+    }
+
+    public function saveScraptingData($input)
+    {
+        if (isset($input['ssn_no'])) {
+           
+            //designation_name = 1(NP), 4(PA), 9(P)
+            if ($input['designation_id'] == '9') {
+                $input['category_id'] = '1';
+                $input['speciality_id'] = '1';
+            
+                PhysicianUsers::updateOrCreate([
+                    'ssn_no' => $input['ssn_no']
+                ],
+                $input);
+                PhysicianUsers::create($input);
+            } else if ($input['designation_id'] == '1') {
+               
+                $input['category_id'] = '2';
+                $input['speciality_id'] = '1';
+
+                NursePractitionerUsers::updateOrCreate([
+                    'ssn_no' => $input['ssn_no']
+                ],
+                $input);
+            } else if ($input['designation_id'] == '4') {
+                $input['category_id'] = '3';
+                $input['speciality_id'] = '2';
+
+                PhysicianAssistantUsers::updateOrCreate([
+                    'ssn_no' => $input['ssn_no']
+                ],
+                $input);
+            }
+        }
     }
 
     public function getApplicantDetails()
