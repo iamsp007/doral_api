@@ -1128,6 +1128,7 @@ class ApplicantController extends Controller
 
         $user = Auth::user();
         $designation_id = $user->designation_id;
+        $designation_name = $user->designation ? $user->designation->name : null;
 
         $input['designation_id'] = $designation_id;
         $input['first_name'] = $user->first_name;
@@ -1135,11 +1136,14 @@ class ApplicantController extends Controller
         $input['email'] = $user->email;
         if (isset($applicant['address_detail']['info'])) {
             $input['ssn_no'] = $applicant['address_detail']['info']['ssn'];
+            $input['state'] = State::find($applicant['address_detail']['info']['state_id'])->state;
         } else if (isset($request['address_detail']['info'])) {
             $input['ssn_no'] = $request['address_detail']['info']['ssn'];
+            $input['state'] = State::find($applicant['address_detail']['info']['state_id'])->state;
         }
+        $input['country'] = 'USA';
         $input['date_of_birth'] = date("m/d/Y", strtotime($user->dob));
-
+        
         if ($key === 'professional_detail' && $request['professional_detail']['federal_DEA_id']) {
             $month = $year = '';
             if(isset($fedExpiredMonthYear[0])) {
@@ -1154,6 +1158,10 @@ class ApplicantController extends Controller
             $input['expire_month'] = $month;
             $input['expire_year'] = $year;
             $input['date_of_birth'] = date("Y/m/d", strtotime($user->dob));
+            $input['profession'] = $designation_name;
+            // $input['stateLicense'] = $request['professional_detail']['stateLicense'];
+            // $input['nccpa_id'] = $request['professional_detail']['nccpa_id'];
+            $input['npiNumber'] = $request['professional_detail']['npiNumber'];
         } 
     
         if ($key === 'address_detail' || $key === 'professional_detail') {
