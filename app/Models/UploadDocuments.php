@@ -93,7 +93,7 @@ class UploadDocuments extends Model
             } elseif ($this->type === "35") {
                 $directory = 'FellowshipCertificate';
             } elseif ($this->type === "36") {
-                $directory = 'IntershipCertificate';
+                $directory = 'InternshipCertificate';
             } elseif ($this->type === "37") {
                 $directory = 'ECFMGCertificate';
             } elseif ($this->type === "38") {
@@ -103,7 +103,7 @@ class UploadDocuments extends Model
             } elseif ($this->type === "40") {
                 $directory = 'SanctionsQueries';
             } elseif ($this->type === "41") {
-                $directory = 'MedicalWelcomeLetter';
+                $directory = 'MedicareWelcomeLetter';
             } elseif ($this->type === "42") {
                 $directory = 'SignedW9';
             } elseif ($this->type === "43") {
@@ -196,7 +196,7 @@ class UploadDocuments extends Model
             } elseif ($this->type === "35") {
                 $directory = 'FellowshipCertificate';
             } elseif ($this->type === "36") {
-                $directory = 'IntershipCertificate';
+                $directory = 'InternshipCertificate';
             } elseif ($this->type === "37") {
                 $directory = 'ECFMGCertificate';
             } elseif ($this->type === "38") {
@@ -206,7 +206,7 @@ class UploadDocuments extends Model
             } elseif ($this->type === "40") {
                 $directory = 'SanctionsQueries';
             } elseif ($this->type === "41") {
-                $directory = 'MedicalWelcomeLetter';
+                $directory = 'MedicareWelcomeLetter';
             } elseif ($this->type === "42") {
                 $directory = 'SignedW9';
             } elseif ($this->type === "43") {

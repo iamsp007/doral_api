@@ -9,6 +9,7 @@ use App\Models\Education;
 use App\Models\WorkHistory;
 use App\Models\Attestation;
 use App\Models\BankAccount;
+use App\Models\City;
 use App\Models\Security;
 use App\Models\State;
 use App\Models\UploadDocuments;
@@ -1134,17 +1135,34 @@ class ApplicantController extends Controller
         $input['first_name'] = $user->first_name;
         $input['last_name'] = $user->last_name;
         $input['email'] = $user->email;
+        $input['gender'] = $user->gender;
+        $input['date_of_birth'] = date("m/d/Y", strtotime($user->dob));
+        $input['profession'] = $designation_name;
+        $input['deceased'] = 'No';
+        $input['address_type'] = 'Home';
+        $input['country'] = 'USA';
+
+        if (isset($request['address_detail']['address'])) {
+            $address = $request['address_detail']['address'];
+        } else if (isset($applicant['address_detail']['address'])) {
+            $address = $applicant['address_detail']['address'];
+        }
+
+        $input['address1'] = $address['address_detail']['address']['address1'];
+        $input['address2'] = $address['address_detail']['address']['address2'];
+        $input['building'] = $address['address_detail']['address']['building'];
+        $input['zip_code'] = $address['address_detail']['address']['zip_code'];
+        $input['city'] = City::find($address['address_detail']['address']['city_id'])->city;
+        $input['state'] = State::find($address['address_detail']['address']['state_id'])->state;
+
         if (isset($applicant['address_detail']['info'])) {
             $input['ssn_no'] = $applicant['address_detail']['info']['ssn'];
-            $input['state'] = State::find($applicant['address_detail']['info']['state_id'])->state;
+
         } else if (isset($request['address_detail']['info'])) {
             $input['ssn_no'] = $request['address_detail']['info']['ssn'];
-            $input['state'] = State::find($applicant['address_detail']['info']['state_id'])->state;
         }
-        $input['country'] = 'USA';
-        $input['date_of_birth'] = date("m/d/Y", strtotime($user->dob));
         
-        if ($key === 'professional_detail' && $request['professional_detail']['federal_DEA_id']) {
+        if ($key === 'professional_detail') {
             $month = $year = '';
             if(isset($fedExpiredMonthYear[0])) {
                 $month = $fedExpiredMonthYear[0];
@@ -1154,14 +1172,18 @@ class ApplicantController extends Controller
             }
 
             $input['dea_no'] = $request['professional_detail']['federal_DEA_id'];
-            $input['zip_code'] = $request['professional_detail']['npa_zipCode'];
             $input['expire_month'] = $month;
             $input['expire_year'] = $year;
-            $input['date_of_birth'] = date("Y/m/d", strtotime($user->dob));
-            $input['profession'] = $designation_name;
-            // $input['stateLicense'] = $request['professional_detail']['stateLicense'];
-            // $input['nccpa_id'] = $request['professional_detail']['nccpa_id'];
+           
+            /**Multiple issue */
+            // $input['LNumber'] = $request['professional_detail']['stateLicense']['Number'];
+            // $input['LState'] = $request['professional_detail']['stateLicense']['State'];
+            // $input['nccpa_id'] = $request['professional_detail']['boardCertificate']['nccpa_id'];
+            // $input['certificate_number'] = $request['professional_detail']['boardCertificate']['nccpa_certificate_number'];
+         
             $input['npiNumber'] = $request['professional_detail']['npiNumber'];
+            $input['caqh_id'] = $request['professional_detail']['caqh_id'];
+            $input['caqh_password'] = $request['professional_detail']['caqh_password'];
         } 
     
         if ($key === 'address_detail' || $key === 'professional_detail') {
@@ -1182,7 +1204,8 @@ class ApplicantController extends Controller
                 $input['speciality_id'] = '1';
             
                 PhysicianUsers::updateOrCreate([
-                    'ssn_no' => $input['ssn_no']
+                    'ssn_no' => $input['ssn_no'],
+                    'date_of_birth' => $input['date_of_birth']
                 ],
                 $input);
                 PhysicianUsers::create($input);
@@ -1192,7 +1215,8 @@ class ApplicantController extends Controller
                 $input['speciality_id'] = '1';
 
                 NursePractitionerUsers::updateOrCreate([
-                    'ssn_no' => $input['ssn_no']
+                    'ssn_no' => $input['ssn_no'],
+                    'date_of_birth' => $input['date_of_birth']
                 ],
                 $input);
             } else if ($input['designation_id'] == '4') {
@@ -1200,7 +1224,8 @@ class ApplicantController extends Controller
                 $input['speciality_id'] = '2';
 
                 PhysicianAssistantUsers::updateOrCreate([
-                    'ssn_no' => $input['ssn_no']
+                    'ssn_no' => $input['ssn_no'],
+                    'date_of_birth' => $input['date_of_birth']
                 ],
                 $input);
             }
