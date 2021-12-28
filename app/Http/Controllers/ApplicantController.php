@@ -1135,35 +1135,47 @@ class ApplicantController extends Controller
         $input['first_name'] = $user->first_name;
         $input['last_name'] = $user->last_name;
         $input['email'] = $user->email;
-        $input['gender'] = $user->gender;
-        $input['date_of_birth'] = date("m/d/Y", strtotime($user->dob));
+        $input['gender'] = $user->gender_name;
+        $input['date_of_birth'] = date("Y/m/d", strtotime($user->dob));
         $input['profession'] = $designation_name;
         $input['deceased'] = 'No';
         $input['address_type'] = 'Home';
         $input['country'] = 'USA';
-
+       
         if (isset($request['address_detail']['address'])) {
             $address = $request['address_detail']['address'];
         } else if (isset($applicant['address_detail']['address'])) {
             $address = $applicant['address_detail']['address'];
         }
-
-        $input['address1'] = $address['address_detail']['address']['address1'];
-        $input['address2'] = $address['address_detail']['address']['address2'];
-        $input['building'] = $address['address_detail']['address']['building'];
-        $input['zip_code'] = $address['address_detail']['address']['zip_code'];
-        $input['city'] = City::find($address['address_detail']['address']['city_id'])->city;
-        $input['state'] = State::find($address['address_detail']['address']['state_id'])->state;
+	
+        $input['add1'] = $address['address1'];
+        $input['add2'] = $address['address2'];
+        $input['street1'] = $address['building'];
+        $input['zip_code'] = $address['zipcode'];
+        $input['city'] = City::find($address['city_id'])->city;
+        $input['state'] = State::find($address['state_id'])->state;
 
         if (isset($applicant['address_detail']['info'])) {
             $input['ssn_no'] = $applicant['address_detail']['info']['ssn'];
-
+          
+            if ($applicant['address_detail']['info']['us_citizen'] == 'true') {
+                $input['citizenship_status'] = 'A citizen of the United States';
+            }
         } else if (isset($request['address_detail']['info'])) {
             $input['ssn_no'] = $request['address_detail']['info']['ssn'];
+            
+            if ($request['address_detail']['info']['us_citizen'] == 'true') {
+                $input['citizenship_status'] = 'A citizen of the United States';
+            }
         }
-        
+
+        $ssn_last_four = explode('-',$input['ssn_no']);
+        $input['ssn_last_four'] = $ssn_last_four[2];
+                
         if ($key === 'professional_detail') {
             $month = $year = '';
+            $fedExpiredMonthYear = explode(" ",$request['professional_detail']['fedExpiredMonthYear']);
+           
             if(isset($fedExpiredMonthYear[0])) {
                 $month = $fedExpiredMonthYear[0];
             }
@@ -1175,18 +1187,25 @@ class ApplicantController extends Controller
             $input['expire_month'] = $month;
             $input['expire_year'] = $year;
            
-            /**Multiple issue */
-            // $input['LNumber'] = $request['professional_detail']['stateLicense']['Number'];
-            // $input['LState'] = $request['professional_detail']['stateLicense']['State'];
-            // $input['nccpa_id'] = $request['professional_detail']['boardCertificate']['nccpa_id'];
-            // $input['certificate_number'] = $request['professional_detail']['boardCertificate']['nccpa_certificate_number'];
-         
-            $input['npiNumber'] = $request['professional_detail']['npiNumber'];
+            foreach ($request['professional_detail']['stateLicense'] as $value) {
+                if ($value['StateID'] == '35' || $value['State'] = 'New York') {
+                    $input['license_number'] = $value['Number'];
+                    $input['license_state'] = $value['State'];
+                }
+            }
+
+            foreach ($request['professional_detail']['boardCertificate'] as $value) {
+                $input['nccpa_id'] = $value['nccpa_id'];
+                $input['certification_num'] = $value['nccpa_certificate_number'];
+            }
+
+            $input['npi_no'] = $request['professional_detail']['npiNumber'];
             $input['caqh_id'] = $request['professional_detail']['caqh_id'];
             $input['caqh_password'] = $request['professional_detail']['caqh_password'];
         } 
-    
+    	
         if ($key === 'address_detail' || $key === 'professional_detail') {
+       
             $this->saveScraptingData($input);
 	      
             //ScrapingData::dispatch($input);
@@ -1196,10 +1215,12 @@ class ApplicantController extends Controller
 
     public function saveScraptingData($input)
     {
+    
         if (isset($input['ssn_no'])) {
            
             //designation_name = 1(NP), 4(PA), 9(P)
             if ($input['designation_id'] == '9') {
+               
                 $input['category_id'] = '1';
                 $input['speciality_id'] = '1';
             
@@ -1208,17 +1229,18 @@ class ApplicantController extends Controller
                     'date_of_birth' => $input['date_of_birth']
                 ],
                 $input);
-                PhysicianUsers::create($input);
+              
             } else if ($input['designation_id'] == '1') {
-               
+              
                 $input['category_id'] = '2';
                 $input['speciality_id'] = '1';
-
+		
                 NursePractitionerUsers::updateOrCreate([
                     'ssn_no' => $input['ssn_no'],
                     'date_of_birth' => $input['date_of_birth']
                 ],
                 $input);
+              
             } else if ($input['designation_id'] == '4') {
                 $input['category_id'] = '3';
                 $input['speciality_id'] = '2';
