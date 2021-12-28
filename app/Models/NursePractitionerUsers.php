@@ -25,9 +25,15 @@ class NursePractitionerUsers extends Model
         'last_name',
         'ssn_no',
         'dea_no',
+        'state',
         'zip_code',
         'expire_month',
         'expire_year',
         'date_of_birth',
+        'ssn_last_four',
+        'profession',
+        'license_number',
+        'certification_num',
+        'email',       
     ];
 }
