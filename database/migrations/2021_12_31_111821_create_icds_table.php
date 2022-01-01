@@ -15,9 +15,14 @@ class CreateIcdsTable extends Migration
     {
         Schema::create('icds', function (Blueprint $table) {
             $table->id();
-            $table->integer('version');
-            $table->string('code');
-            $table->string('name');
+
+            $table->foreignId('patient_id')->index('patient_id');
+            $table->foreignId('icd_code_id')->index('icd_code_id');
+            $table->string('date')->nullable();
+            $table->string('date_type')->nullable();
+            $table->string('historical_date')->nullable();
+            $table->string('identified_during')->nullable();
+            $table->enum('primary', ['0','1'])->default('0')->comment('0=secondary,1=primary');
             $table->timestamps();
         });
     }

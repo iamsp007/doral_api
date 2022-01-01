@@ -9,6 +9,8 @@ class UserLatestDeviceLog extends Model
 {
     use HasFactory;
 
+    protected $table = 'user_latest_device_logs';
+
     /**
      * The attributes that are mass assignable.
      *
