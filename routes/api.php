@@ -319,3 +319,4 @@ Route::get('/selection-list', 'App\Http\Controllers\SelectionController@index');
 
 Route::post('user/user-device-logs', 'App\Http\Controllers\Device\UserDeviceController@addDevice')->name('user.add-device');
 
+Route::post('get-patient-reading', 'App\Http\Controllers\Device\UserDeviceController@getDevice');

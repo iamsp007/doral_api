@@ -157,7 +157,6 @@ class PatientController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\PatientDieses  $patient
      * @return \Illuminate\Http\Response
      */
     public function roadlSelectedDisease(Request $request)
