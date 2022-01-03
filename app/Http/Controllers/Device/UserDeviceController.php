@@ -180,13 +180,11 @@ class UserDeviceController extends Controller
                   
 		    //        //  Log::info('patient message send start');
 		    //         //$this->sendsmsToMe($message, $phoneNumber);
-		    //        // $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
 		    //         //Log::info('patient message send end');
 		    //         try {
 		           
 			// 	    $ms = Nexmo::message()->send([
 			// 		'to'   =>'+1'.setPhone($phoneNumber),
-			// 		//'to'   =>'+918511380657',
 			// 		'from' => env('SMS_FROM'),
 			// 		'text' => $message
 			// 	    ]);				    
@@ -219,12 +217,10 @@ class UserDeviceController extends Controller
                 }
                 Log::info('patient message send start');
                 //$this->sendsmsToMe($message, $phoneNumber);
-                //$this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
                    try {
 		           
 				    $ms = Nexmo::message()->send([
 					'to'   =>'+1'.setPhone($phoneNumber),
-					//'to'   =>'+918511380657',
 					'from' => env('SMS_FROM'),
 					'text' => $message
 				    ]);				    
@@ -243,16 +239,12 @@ class UserDeviceController extends Controller
        
             Log::info('case manager message send start');
             //$this->sendsmsToMe($message, $caseManager->clinician->phone);
-            // $this->sendsmsToMe($message . ' Message for case manager', '8511380657');
                try {
-		           
-				    $ms = Nexmo::message()->send([
-					'to'   =>'+1'.$caseManager->clinician->phone,
-					//'to'   =>'+918511380657',
-					'from' => env('SMS_FROM'),
-					'text' => $message
+				    Nexmo::message()->send([
+                        'to'   =>'+1'.setPhone($caseManager->clinician->phone),
+                        'from' => env('SMS_FROM'),
+                        'text' => $message
 				    ]);				    
-				   
 				}catch (\Exception $exception){
 				
 				    \Log::info($exception);
@@ -265,14 +257,12 @@ class UserDeviceController extends Controller
         foreach ($careTeams as $key => $value) {
             Log::info('care team message send start');
             //$this->sendsmsToMe($message, setPhone($value->detail['phone']));
-            //$this->sendsmsToMe($message. ' Message for case careteam('. $value->type . ')', '8511380657');
                try {
 		           
-				    $ms = Nexmo::message()->send([
-					'to'   =>'+1'.setPhone($value->detail['phone']),
-					//'to'   =>'+918511380657',
-					'from' => env('SMS_FROM'),
-					'text' => $message
+				    Nexmo::message()->send([
+                        'to'   =>'+1'.setPhone($value->detail['phone']),
+                        'from' => env('SMS_FROM'),
+                        'text' => $message
 				    ]);				    
 				   
 				}catch (\Exception $exception){
