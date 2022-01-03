@@ -83,8 +83,7 @@ class SendAlertSMS implements ShouldQueue
                     $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
                 }
 		        Log::info('patient message send start');
-                //$this->sendsmsToMe($message, $phoneNumber);
-                $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
+                $this->sendsmsToMe($message, $phoneNumber);
                 Log::info('patient message send end');
 	     	}
 	     } else {
@@ -107,22 +106,15 @@ class SendAlertSMS implements ShouldQueue
                     $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
                 }
 		        Log::info('patient message send start');
-                //$this->sendsmsToMe($message, $phoneNumber);
-                $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
+                $this->sendsmsToMe($message, $phoneNumber);
                 Log::info('patient message send end');
-	     }
-           
-          	
-          
-              
-           
+	        }
         }
  
         $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id],['texed', '=', '1']])->get();
         foreach ($caseManagers as $key => $caseManager) {
             Log::info('case manager message send start');
-            //$this->sendsmsToMe($message, $caseManager->clinician->phone);
-             $this->sendsmsToMe($message . ' Message for case manager', '8511380657');
+            $this->sendsmsToMe($message, $caseManager->clinician->phone);
             Log::info('case manager message send end');
         }
 
@@ -130,8 +122,7 @@ class SendAlertSMS implements ShouldQueue
       	
         foreach ($careTeams as $key => $value) {
             Log::info('care team message send start');
-            //$this->sendsmsToMe($message, setPhone($value->detail['phone']));
-            $this->sendsmsToMe($message. ' Message for case careteam('. $value->type . ')', '8511380657');
+            $this->sendsmsToMe($message, setPhone($value->detail['phone']));
             Log::info('care team message send end');
         }
          Log::info('doral message send end');

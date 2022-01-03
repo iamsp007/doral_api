@@ -41,20 +41,16 @@ class AlertNotification implements ShouldQueue
     public function handle()
     {
         Log::info('doral message send start');
-        //$this->sendsmsToMe($this->detail['message'], $this->detail['phone']);
-        	try {
-		           
-				    $ms = Nexmo::message()->send([
-					//'to'   =>'+1'.$to,
-					'to'   =>'+918511380657',
-					'from' => env('SMS_FROM'),
-					'text' => $message
-				    ]);				    
-				   
-				}catch (\Exception $exception){
-				
-				    \Log::info($exception);
-				}
+       
+        try {
+            $ms = Nexmo::message()->send([
+                'to'   =>'+1'.setPhone($this->detail['phone']),
+                'from' => env('SMS_FROM'),
+                'text' => $this->detail['message']
+            ]);				    
+        } catch (\Exception $exception){
+            \Log::info($exception);
+        }
         Log::info('doral message send end');
        $this->sendEmailToVisitor($this->detail['patient_id'],$this->detail['message'],$this->detail['phone']);
     }
@@ -100,13 +96,11 @@ class AlertNotification implements ShouldQueue
                   
 		           //  Log::info('patient message send start');
 		            //$this->sendsmsToMe($message, $phoneNumber);
-		           // $this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
 		            //Log::info('patient message send end');
 		            try {
 		           
 				    $ms = Nexmo::message()->send([
-					//'to'   =>'+1'.$to,
-					'to'   =>'+918511380657',
+					'to'   =>'+1'.setPhone($phoneNumber),
 					'from' => env('SMS_FROM'),
 					'text' => $message
 				    ]);				    
@@ -138,13 +132,10 @@ class AlertNotification implements ShouldQueue
                     $phoneNumber = $demographics['Address']['HomePhone'] ? $demographics['Address']['HomePhone'] : '';
                 }
                 Log::info('patient message send start');
-                //$this->sendsmsToMe($message, $phoneNumber);
-                //$this->sendsmsToMe($message . ' Message for caregiver' , '8511380657');
                    try {
 		           
 				    $ms = Nexmo::message()->send([
-					//'to'   =>'+1'.$to,
-					'to'   =>'+918511380657',
+					'to'   =>'+1'.setPhone($phoneNumber),
 					'from' => env('SMS_FROM'),
 					'text' => $message
 				    ]);				    
@@ -162,12 +153,10 @@ class AlertNotification implements ShouldQueue
         foreach ($caseManagers as $key => $caseManager) {
             Log::info('case manager message send start');
             //$this->sendsmsToMe($message, $caseManager->clinician->phone);
-            // $this->sendsmsToMe($message . ' Message for case manager', '8511380657');
                try {
 		           
 				    $ms = Nexmo::message()->send([
-					//'to'   =>'+1'.$to,
-					'to'   =>'+918511380657',
+					'to'   =>'+1'. setPhone($caseManager->clinician->phone),
 					'from' => env('SMS_FROM'),
 					'text' => $message
 				    ]);				    
@@ -184,12 +173,10 @@ class AlertNotification implements ShouldQueue
         foreach ($careTeams as $key => $value) {
             Log::info('care team message send start');
             //$this->sendsmsToMe($message, setPhone($value->detail['phone']));
-            //$this->sendsmsToMe($message. ' Message for case careteam('. $value->type . ')', '8511380657');
                try {
 		           
 				    $ms = Nexmo::message()->send([
-					//'to'   =>'+1'.$to,
-					'to'   =>'+918511380657',
+					'to'   =>'+1'.setPhone($value->detail['phone']),
 					'from' => env('SMS_FROM'),
 					'text' => $message
 				    ]);				    
