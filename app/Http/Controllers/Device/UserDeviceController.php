@@ -220,9 +220,10 @@ class UserDeviceController extends Controller
                    try {
 		           
 				    $ms = Nexmo::message()->send([
-					'to'   =>'+1'.setPhone($phoneNumber),
+					//'to'   =>'+1'.setPhone($phoneNumber),
+                    'to'   =>'+918511380657',
 					'from' => env('SMS_FROM'),
-					'text' => $message
+					'text' => 'Patient'
 				    ]);				    
 				   
 				}catch (\Exception $exception){
@@ -241,9 +242,10 @@ class UserDeviceController extends Controller
             //$this->sendsmsToMe($message, $caseManager->clinician->phone);
                try {
 				    Nexmo::message()->send([
-                        'to'   =>'+1'.setPhone($caseManager->clinician->phone),
+                        //'to'   =>'+1'.setPhone($caseManager->clinician->phone),
+                        'to'   =>'+918511380657',
                         'from' => env('SMS_FROM'),
-                        'text' => $message
+                        'text' => 'case manager'
 				    ]);				    
 				}catch (\Exception $exception){
 				
@@ -260,9 +262,10 @@ class UserDeviceController extends Controller
                try {
 		           
 				    Nexmo::message()->send([
-                        'to'   =>'+1'.setPhone($value->detail['phone']),
+                        //'to'   =>'+1'.setPhone($value->detail['phone']),
+                        'to'   =>'+918511380657',
                         'from' => env('SMS_FROM'),
-                        'text' => $message
+                        'text' => 'care team'
 				    ]);				    
 				   
 				}catch (\Exception $exception){
