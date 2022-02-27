@@ -112,6 +112,12 @@ class UploadDocuments extends Model
                 $directory = 'CovidCertificate';
             } elseif ($this->type === "45") {
                 $directory = 'CPRACLS';
+            } elseif ($this->type === "46") {
+                $directory = 'passport';
+            } elseif ($this->type === "47") {
+                $directory = 'greencard';
+            } elseif ($this->type === "48") {
+                $directory = 'workpermit';
             } 
          
             return url('storage/documents/'.$this->user_id.'/'.$directory.'/'.$this->file_name);
@@ -215,7 +221,14 @@ class UploadDocuments extends Model
                 $directory = 'CovidCertificate';
             } elseif ($this->type === "45") {
                 $directory = 'CPRACLS';
+            } elseif ($this->type === "46") {
+                $directory = 'passport';
+            } elseif ($this->type === "47") {
+                $directory = 'greencard';
+            } elseif ($this->type === "48") {
+                $directory = 'workpermit';
             } 
+
             return $directory;
         } else {
             return '';

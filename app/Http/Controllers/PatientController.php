@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendingSMS;
+use App\Jobs\SendEmailJob;
 use App\Mail\AcceptedMail;
 use App\Models\Appointment;
 use App\Models\Demographic;
 use App\Models\Patient;
+use App\Models\PatientEmergencyContact;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
 use App\Models\User;
@@ -17,6 +19,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Auth;
 
 class PatientController extends Controller
 {
@@ -74,7 +80,193 @@ class PatientController extends Controller
             return $this->generateResponse($status, $message, null);
         }
     }
+    
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function patientProfile(Request $request)
+    {
+        $input = $request->all();
+       
+        $rules = [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required',
+            'gender' => 'required',
+            'dateOfBirth' => 'required',
+            'ssn' => 'required',
+            'address1' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zip_code' => 'required',
+            'home_phone' => 'required',
+            'name' => 'required',
+            'relation' => 'required',
+            'phone1' => 'required',
+            'emergency_address1' => 'required',
+            'emergency_city' => 'required',
+            'emergency_state' => 'required',
+            'emergency_zip_code' => 'required',
+        ];
 
+        $messages = [
+            'first_name.required' => 'Please enter first name.',
+            'last_name.required' => 'Please enter last name.',
+            'email.required' => 'Please enter email.',
+            'gender.required' => 'Please enter gender.',
+            'dateOfBirth.required' => 'Please select date of birth.',
+            'ssn.required' => 'Please enter ssn number.',
+            'address1.required' => 'Please enter address line 1.',
+            'city.required' => 'Please select city.',
+            'state.required' => 'Please select state.',
+            'zip_code.required' => 'Please enter zipcode.',
+            'home_phone.required' => 'Please enter home phone.',
+            'name.required' => 'Please enter name.',
+            'relation.required' => 'Please select relation.',
+            'phone1.required' => 'Please enter phone1.',
+            'emergency_address1.required' => 'Please enter address line 1.',
+            'emergency_city.required' => 'Please select city.',
+            'emergency_state.required' => 'Please select state.',
+            'emergency_zip_code.required' => 'Please enter zipcode.',
+          
+        ];
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails()) {
+            $arr = array('status' => 400, 'message' => $validator->errors()->first(), 'result' => array());
+        } else {
+            try {
+                DB::beginTransaction();
+               
+                $doral_id = createDoralId();
+                $phone_number = $input['home_phone'] ? $input['home_phone'] : '';
+                $status = '1';
+                if (isset($input['avatar']) && !empty($input['avatar'])) {
+                    $uploadFolder = 'users';
+                    $image = $input['avatar'];
+                    $image_uploaded_path = $image->store($uploadFolder, 'public');
+                  
+                    $input['avatar'] = basename($image_uploaded_path);
+                }
+              
+               
+                 $user = Auth::user();
+      
+		 $user->update([
+		    'avatar' => $input['avatar'],  
+                    'phone' =>  $this->getcrpydata($phone_number),
+                    'phone_verified_at' => now(),
+                    'first_name' => $this->getcrpydata($input['first_name']),
+                    'last_name' => $this->getcrpydata($input['last_name']),
+                    'email' => $this->getcrpydata($input['email']),
+                    'gender' => setGender($input['gender']),
+                    'dob' =>  $this->getcrpydata($input['dateOfBirth']),
+                    'status' => $status,
+		 ]);
+        
+                $user->assignRole('patient')->syncPermissions(Permission::all());
+                
+                $address = [
+                    'address1' => $input['address1'],
+                    'address2' => $input['address2'],
+                    'apt_building' => $input['apt_building'],
+                    'city' => $input['city'],
+                    'state' => $input['state'],
+                    'zip_code' => $input['zip_code'],
+                    'primary' => isset($input['primary']) ? $input['primary'] : '',
+                    'addressType' => $input['addressType'],
+                    'notes' => $input['address_note']
+                ];
+
+                $phone_info = [
+                    'home_phone' => ($input['home_phone']) ? setPhone($input['home_phone']) : '',
+                    'cell_phone' => ($input['cell_phone']) ? setPhone($input['cell_phone']) : '',
+                    'alternate_phone' => ($input['alternate_phone']) ? setPhone($input['alternate_phone']) : '',
+                ];
+
+                $language = '';
+                if (isset($input['language'])) {
+                    $language = implode(",",$input['language']);
+                }
+                
+                $demographic = new Demographic();
+                
+                $demographic->user_id = $user->id;
+                $demographic->service_id = $input['service_id'];
+                $demographic->doral_id = $doral_id;
+                $demographic->ethnicity = $input['ethnicity'];
+                $demographic->medicaid_number = $input['medicaid_number'];
+                $demographic->medicare_number = $input['medicare_number'];
+                $demographic->ssn = setSsn($input['ssn']);
+                $demographic->address = $address;
+                $demographic->language = $language;
+                $demographic->race = $input['race'];
+                $demographic->alert = $input['alert'];
+                $demographic->service_request_start_date =  dateFormat($input['serviceRequestStartDate']);
+                $demographic->phone_info = $phone_info;
+                $demographic->marital_status = $input['marital_status'];                
+                $demographic->type = '3';
+
+                $demographic->save();
+
+                $address = [
+                    'address1' => $input['emergency_address1'],
+                    'address2' => $input['emergency_address2'],
+                    'apt_building' => $input['emergency_apt_building'],
+                    'city' => $input['emergency_city'],
+                    'state' => $input['emergency_state'],
+                    'zip_code' => $input['emergency_zip_code'],
+                ];
+                PatientEmergencyContact::create([
+                    'user_id' => $user->id,
+                    'name' => $input['name'],
+                    'relation' => $input['relation'],
+                    'lives_with_patient' => isset($input['lives_with_patient']) ? $input['lives_with_patient'] : '',
+                    'have_keys' => isset($input['have_keys']) ? $input['have_keys'] : '',
+                    'phone1' => setPhone($input['phone1']),
+                    'phone2' => setPhone($input['phone2']),
+                    'address' => $address,
+                ]);
+                
+                DB::commit();
+                $url = '';
+                $details = [
+                    'name' => $user->first_name,
+                    'href' => $url,
+                ];
+                
+                SendEmailJob::dispatch($user->email,$details,'WelcomeEmail');
+
+               
+                 return $this->generateResponse('true', 'Patient created successfully.', null);
+            } catch (\Illuminate\Database\QueryException $ex) {
+                $message = $ex->getMessage();
+                if (isset($ex->errorInfo[2])) {
+                    $message = $ex->errorInfo[2];
+                }
+                DB::rollBack();
+                return $this->generateResponse('false', $message, null);
+            } catch (Exception $ex) {
+                $message = $ex->getMessage();
+                if (isset($ex->errorInfo[2])) {
+                    $message = $ex->errorInfo[2];
+                }
+                DB::rollBack();
+                
+                return $this->generateResponse('false', $message, null);
+            }
+        } 
+        
+    }
+
+ public function getcrpydata($value)
+    {
+       return Crypt::encryptString($value);
+    }
     /**
      * StoreInformation is store pateint detailed information based on different steps
      * This services is call from App only. There is not web API for patent registation
@@ -283,7 +475,12 @@ class PatientController extends Controller
         if ($status === '3') {
             $statusData = '3' ;
         }
-        $users = User::whereIn('id',$ids);
+       
+        if (isset($input['action']) && $input['action'] === 'single-action') {
+            $users = User::where('id',$ids);
+        } else {
+            $users = User::whereIn('id',$ids);
+        }
         $user = $users->update(['status' => $statusData]);
       
         if ($user) {
@@ -305,12 +502,12 @@ class PatientController extends Controller
                         }
                         
                         $smsController = new SmsController();
-                        $smsController->sendsmsToMe($message, setPhone($value->phone));
+                        $smsController->sendsmsToTwilio($message, setPhone($value->phone));
                     } else {
-                        $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
+                       $message = 'Congratulations! Your profile has been activated with Doral Health Connect and now you can see Doral Patient. By clicking on the link below verify your logins to receive visit requests.Link:https://testflight.apple.com/join/7zBLCZTD';
 
                         $smsController = new SmsController();
-                        $smsController->sendsmsToMe($message, setPhone($value->phone));
+                        $smsController->sendsmsToTwilio($message, setPhone($value->phone));
                     }
                    
                     // Send Message End

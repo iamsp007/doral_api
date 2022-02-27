@@ -244,8 +244,12 @@ class CompanyController extends Controller
         try {
             //$Company = Company::findOrFail($request['id']);
            // $Company = Company::update($request->all());
-            $Company = Company::where('id', $request['id'])
-                ->update($request);
+            if (isset($request['section']) && $request['section'] === 'company-checked') {
+              Company::where('id', $request['id'])->update(['texed' => $request['texed']]);
+            } else {
+               Company::where('id', $request['id'])->update($request);
+            }
+         
             $data = [
                 'Company' => $request
             ];

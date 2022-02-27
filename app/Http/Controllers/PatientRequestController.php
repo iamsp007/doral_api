@@ -535,7 +535,7 @@ class PatientRequestController extends Controller
             $role = 12;
         }
         
-        // $authUser = Auth::user();
+         $authUser = Auth::user();
        
         // $role_id = implode(',',$authUser->roles->pluck('id')->toArray()); 
 
@@ -550,7 +550,7 @@ class PatientRequestController extends Controller
                 ->whereNotNull('parent_id')
                 ->where('user_id','=',Auth::user()->id)
                 ->groupBy('parent_id')
-                ->orderBy('id','asc')
+                ->orderBy('id','desc')
                 ->get();
                
         } elseif ($status[0] == 4){
@@ -559,7 +559,7 @@ class PatientRequestController extends Controller
                    ->whereNotNull('parent_id')
                    ->where('status', 4)
                    ->groupBy('parent_id')
-                   ->orderBy('id','asc')
+                   ->orderBy('id','desc')
                    ->get();
         } elseif ($status[0] == 5){
             $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
@@ -567,7 +567,7 @@ class PatientRequestController extends Controller
                    ->whereNotNull('parent_id')
                    ->where('status', 5)
                    ->groupBy('parent_id')
-                   ->orderBy('id','asc')
+                   ->orderBy('id','desc')
                    ->get();
         } elseif (Auth::user()->is_available==='2'){
             if($status[0] == 2 || $status[0] == 3) {
@@ -580,7 +580,7 @@ class PatientRequestController extends Controller
 //                    ->where('type_id',$role)
                 ->whereIn('status', $status)
                 ->groupBy('parent_id')
-                ->orderBy('id','asc')
+                ->orderBy('id','desc')
                 ->get();
             }else if($status[0] == 1) {
                 $patientRequestList = '';
@@ -593,17 +593,34 @@ class PatientRequestController extends Controller
                     ->whereNotNull('parent_id')
                     ->where('type_id',$role)
                     ->groupBy('parent_id')
-                    ->orderBy('id','asc')
+                    ->selectRaw("*,
+                        ( 6371 * acos( cos( radians(" .  $authUser->latitude . ") ) *
+                        cos( radians(latitude) ) *
+                        cos( radians(longitude) - radians(" . $authUser->longitude . ") ) + 
+                        sin( radians(" . $authUser->latitude . ") ) *
+                        sin( radians(latitude) ) ) ) 
+                        AS distance")
+                    ->orderBy("distance", "asc") 
                     ->get();
+                 
                 if($role == 4 && $designation !='') {
+             
                     $directClinicins = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
                         ->whereIn('status',$status)
-                        ->where('clincial_id','=',Auth::user()->id)
+                        ->where('clincial_id', Auth::user()->id)
                         ->whereNotNull('parent_id')
                         ->where('type_id',$designation)
                         ->groupBy('parent_id')
-                        ->orderBy('id','asc')
+                        ->selectRaw("*,
+                            ( 6371 * acos( cos( radians(" .  $authUser->latitude . ") ) *
+                            cos( radians(latitude) ) *
+                            cos( radians(longitude) - radians(" . $authUser->longitude . ") ) + 
+                            sin( radians(" . $authUser->latitude . ") ) *
+                            sin( radians(latitude) ) ) ) 
+                            AS distance")
+                        ->orderBy("distance", "asc") 
                         ->get();
+                       
                     if(count($directClinicins)>0) {
                         $patientRequestList = $directClinicins;
                     }
@@ -615,7 +632,7 @@ class PatientRequestController extends Controller
                    ->whereNotNull('parent_id')
                    ->whereIn('status', ['4'])
                    ->groupBy('parent_id')
-                   ->orderBy('id','asc')
+                   ->orderBy('id','desc')
                    ->get();
             } else {
                 $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
@@ -623,9 +640,10 @@ class PatientRequestController extends Controller
                 ->whereNotNull('parent_id')
                 ->whereIn('status', ['2','3','6','7'])
                 ->groupBy('parent_id')
-                ->orderBy('id','asc')
+                ->orderBy('id','desc')
                 ->get();
             }
+          
             //            $roles = Auth::user()->roles->pluck('id');
             //            $patientRequestList = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm'])
                             // ->where(function ($q) use ($status){
@@ -643,7 +661,7 @@ class PatientRequestController extends Controller
                             //         });
                             // })
             //                ->groupBy('parent_id')
-            //                ->orderBy('id','asc')
+            //                ->orderBy('id','desc')
             //                ->get();
         }
 
@@ -731,6 +749,22 @@ class PatientRequestController extends Controller
             return $this->generateResponse(true,'Patient Request List',$patientRequestList,200);
         }
         return $this->generateResponse(false,'Patient Request Not Available',$patientRequestList,200);
+    }
+    
+        public function latestClinicianRoadlRequest()
+    {
+   	
+        $directClinicins = PatientRequest::with(['requests','detail','patient','requestType','patientDetail','ccrm','patientDetail.demographic'])
+            ->where('status',1)
+            ->where('clincial_id', Auth::user()->id)
+            ->whereNotNull('parent_id')
+            ->orderBy("id", "desc") 
+            ->first();
+
+            if ($directClinicins){
+                return $this->generateResponse(true,'Patient Request List',$directClinicins,200);
+            }
+            return $this->generateResponse(false,'Patient Request Not Available',null,200);
     }
 
     public function sendNexmoMessage($userDetails,$type){

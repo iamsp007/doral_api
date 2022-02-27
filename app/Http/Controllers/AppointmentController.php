@@ -23,11 +23,21 @@ class AppointmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $response = Appointment::with(['bookedDetails' => function ($q) {
-            $q->select('first_name', 'last_name', 'id');
-        }])
+    
+         $response = Appointment::
+            where(function ($q) use ($request){
+                if ($request['type']!=='all'){
+                    $q->where('status',$request['type']);
+                }
+                if ($request['date'] != ''){
+                      $q->whereDate('start_datetime', '=', $request['date']);
+                }
+            })
+            ->with(['bookedDetails' => function ($q) {
+                $q->select('first_name', 'last_name', 'id');
+            }])
             ->with(['patients', 'meeting', 'service', 'filetype', 'roadl.requests'])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');

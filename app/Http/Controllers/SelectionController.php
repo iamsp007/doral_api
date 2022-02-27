@@ -10,13 +10,14 @@ use App\Models\Selection;
 use App\Models\State;
 use App\Models\Malpractice;
 use App\Models\PhysicianSpeciality;
+use App\Models\Services;
 
 class SelectionController extends Controller
 {
     public function index(Selection $selection)
     {
         $certifying_board = $selection->where('name','Certifying Board')->orderBy('name','asc')->get();
-
+        
         $application_status = $selection->where('name','Application Status')->orderBy('name','asc')->get();
         
         $relationships = $selection->where('name','Relationship')->orderBy('name','asc')->get();
@@ -39,6 +40,16 @@ class SelectionController extends Controller
         $malpractices = Malpractice::get();
 
         $physicianSpeciality = PhysicianSpeciality::get();
+
+        $gender = $selection->where('name','Gender')->get();
+        $maritalStatus = $selection->where('name','Marital Status')->get();
+        $ethnicity = $selection->where('name','ethnicity')->get();
+        $race = $selection->where('name','race')->get();
+        $address_type = $selection->where('name','address_type')->get();
+        $relations = $selection->where('name','relations')->get();
+        $language = $selection->where('name','language')->get();
+        $services = Services::orderBy('name','ASC')->get();
+        
         $data = [
             'certifying_board' => $certifying_board,
             'application_status' => $application_status,
@@ -53,6 +64,14 @@ class SelectionController extends Controller
             'banks' => $banks,
             'malpractices' => $malpractices,
             'physicianSpeciality' => $physicianSpeciality,
+            'gender' => $gender,
+            'maritalStatus' => $maritalStatus,
+            'ethnicity' => $ethnicity,
+            'race' => $race,
+            'address_type' => $address_type,
+            'relations' => $relations,
+            'language' => $language,
+            'services' => $services,
         ];
         
         return $this->generateResponse(true,'Selection list',$data,200);

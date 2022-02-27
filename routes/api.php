@@ -42,6 +42,7 @@ Route::group([
     Route::post('finger-print-login', 'App\Http\Controllers\Auth\AuthController@passcodeandfingerlogin');
     
     Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
+   
     Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
     // Patient Referral Urls
@@ -103,7 +104,7 @@ Route::group([
         Route::post('request/store', 'App\Http\Controllers\RequestController@store');
         Route::put('request/{request}', 'App\Http\Controllers\RequestController@update');
         //Appointment
-        Route::get('appointment', 'App\Http\Controllers\AppointmentController@index');
+        Route::post('appointment', 'App\Http\Controllers\AppointmentController@index');
 
         Route::put('appointment/{appointment}', 'App\Http\Controllers\AppointmentController@update');
         Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
@@ -200,6 +201,7 @@ Route::group([
     Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
     Route::post('update-profile', 'App\Http\Controllers\ProfileController@store');
+    Route::post('patient-profile', 'App\Http\Controllers\PatientController@patientProfile');
 });
 
 // clincian API
@@ -209,6 +211,7 @@ Route::group([
 // Patient Road L API
     Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
     Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
+     Route::get('latest-roadl-request-list', 'App\Http\Controllers\PatientRequestController@latestClinicianRoadlRequest');
     //Route::post('update-patient-request-status', 'App\Http\Controllers\PatientRequestController@updatePatientRequeststatus');
     Route::post('update-preparation-time', 'App\Http\Controllers\PatientRequestController@updatePreperationTime');
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
@@ -320,3 +323,9 @@ Route::get('/selection-list', 'App\Http\Controllers\SelectionController@index');
 Route::post('user/user-device-logs', 'App\Http\Controllers\Device\UserDeviceController@addDevice')->name('user.add-device');
 
 Route::post('get-patient-reading', 'App\Http\Controllers\Device\UserDeviceController@getDevice');
+
+Route::post('run-scrap', 'App\Http\Controllers\Device\UserDeviceController@runScrap');
+
+Route::get('/npi-scrap', 'App\Http\Controllers\ScrapController@npiScrap');
+
+ 

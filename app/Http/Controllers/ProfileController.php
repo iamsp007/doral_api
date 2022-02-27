@@ -19,7 +19,8 @@ class ProfileController extends Controller
 
         if (isset($input["avatar"]) && !empty($input["avatar"])) {
             $file = $input['avatar'];
-            $new_file_name = time(). "_" .$file->getClientOriginalName();
+            $new_file_name = time(). "." .$file->getClientOriginalExtension();
+           
             copy($file->getRealPath(),public_path('upload/images/'.$new_file_name));
             $input['avatar'] = $new_file_name;
         }

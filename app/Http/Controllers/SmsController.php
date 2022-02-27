@@ -6,9 +6,24 @@ use App\Jobs\SendEmailJob;
 use App\Jobs\SendNotificationJob;
 use App\Mail\SendErrorEmail;
 use Illuminate\Support\Facades\Mail;
+use Twilio\Rest\Client;
 
 class SmsController extends Controller
 {
+ public function sendsmsToTwilio($message, $to) {
+        $account_sid = 'AC509601378833a11b18935bf0fe6387cc';
+        $auth_token = '7c6296070a54f124911fa4098467f03a';
+        $twilio_number = '+12184133934';
+
+        $client = new Client($account_sid, $auth_token);
+
+        if($to) {
+            $client->messages->create('+1'.setPhone($to), [
+                'from' => $twilio_number, 
+                'body' => $message
+            ]);
+        }
+    }
     public function sendsmsToMe($message, $to) {
         $to = $to;
         $from = "12089104598";	

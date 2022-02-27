@@ -1114,19 +1114,21 @@ class ApplicantController extends Controller
             $applicant = new Applicant();
             $applicant->user_id = $request->user()->id;
         }
-
+	
         $key = $request->key;
-        
+       
         $applicant->$key = $request->$key;
+        
         $applicant->phone = $request->phone ?? $applicant->phone;
         $applicant->home_phone = $request->home_phone ?? $applicant->home_phone;
+        
         // $applicant->fedExpiredMonthYear = $request->fedExpiredMonthYear ?? $applicant->fedExpiredMonthYear;
         // $applicant->npiNumber = $request->npiNumber ?? $applicant->npiNumber;
         // $applicant->npiType = $request->npiType ?? $applicant->npiType;
         // $applicant->npiOrgName = $request->npiOrgName ?? $applicant->npiOrgName;
      
         $applicant->save();
-
+	
         $user = Auth::user();
         $designation_id = $user->designation_id;
         $designation_name = $user->designation ? $user->designation->name : null;
@@ -1137,7 +1139,7 @@ class ApplicantController extends Controller
         $input['email'] = $user->email;
         $input['gender'] = $user->gender_name;
         $input['date_of_birth'] = date("Y/m/d", strtotime($user->dob));
-        $input['profession'] = $designation_name;
+       
         $input['deceased'] = 'No';
         $input['address_type'] = 'Home';
         $input['country'] = 'USA';
@@ -1148,6 +1150,17 @@ class ApplicantController extends Controller
             $address = $applicant['address_detail']['address'];
         }
 	
+        if (isset($request['address_detail']['info'])){
+            $documentType = $request['address_detail']['info']['documentType'];
+            if ($documentType === 'passport') {
+                $input['doc_num'] = $request['address_detail']['info']['passport_id'];
+            } else if ($documentType === 'greencard') {
+                $input['doc_num'] = $request['address_detail']['info']['greencard_id'];
+            } else if ($documentType === 'workpermit') {
+                $input['doc_num'] = $request['address_detail']['info']['workpermit_uscisId'];
+            }
+        }
+
         $input['add1'] = $address['address1'];
         $input['add2'] = $address['address2'];
         $input['street1'] = $address['building'];
@@ -1156,21 +1169,29 @@ class ApplicantController extends Controller
         $input['state'] = State::find($address['state_id'])->state;
 
         if (isset($applicant['address_detail']['info'])) {
-            $input['ssn_no'] = $applicant['address_detail']['info']['ssn'];
+            $ssn_val = $applicant['address_detail']['info']['ssn'];
+            
+            $ssn_last_four = explode('-',$ssn_val);
+            $input['ssn_last_four'] = $ssn_last_four[2];
+            
+            $input['ssn_no'] = setSsn($ssn_val);
           
             if ($applicant['address_detail']['info']['us_citizen'] == 'true') {
                 $input['citizenship_status'] = 'A citizen of the United States';
             }
         } else if (isset($request['address_detail']['info'])) {
-            $input['ssn_no'] = $request['address_detail']['info']['ssn'];
+            $ssn_val = $request['address_detail']['info']['ssn'];
+            
+            $ssn_last_four = explode('-',$ssn_val);
+            $input['ssn_last_four'] = $ssn_last_four[2];
+            
+            $input['ssn_no'] = setSsn($ssn_val);
             
             if ($request['address_detail']['info']['us_citizen'] == 'true') {
                 $input['citizenship_status'] = 'A citizen of the United States';
             }
         }
-
-        $ssn_last_four = explode('-',$input['ssn_no']);
-        $input['ssn_last_four'] = $ssn_last_four[2];
+        
                 
         if ($key === 'professional_detail') {
             $month = $year = '';
@@ -1197,6 +1218,14 @@ class ApplicantController extends Controller
             foreach ($request['professional_detail']['boardCertificate'] as $value) {
                 $input['nccpa_id'] = $value['nccpa_id'];
                 $input['certification_num'] = $value['nccpa_certificate_number'];
+
+                if ($input['designation_id'] == '9') {
+                    if ($value['certificate'] === 'American Board of Family Medicine') {
+                        $input['board'] = 'abfm';  
+                    } else if ($value['certificate'] === 'American Board of Internal Medicine') {
+                        $input['board'] = 'abim';
+                    }
+                }
             }
 
             $input['npi_no'] = $request['professional_detail']['npiNumber'];
@@ -1205,7 +1234,7 @@ class ApplicantController extends Controller
         } 
     	
         if ($key === 'address_detail' || $key === 'professional_detail') {
-       
+         
             $this->saveScraptingData($input);
 	      
             //ScrapingData::dispatch($input);
@@ -1220,10 +1249,10 @@ class ApplicantController extends Controller
            
             //designation_name = 1(NP), 4(PA), 9(P)
             if ($input['designation_id'] == '9') {
-               
+                $input['profession'] = '60';
                 $input['category_id'] = '1';
                 $input['speciality_id'] = '1';
-            
+            	
                 PhysicianUsers::updateOrCreate([
                     'ssn_no' => $input['ssn_no'],
                     'date_of_birth' => $input['date_of_birth']
@@ -1231,7 +1260,7 @@ class ApplicantController extends Controller
                 $input);
               
             } else if ($input['designation_id'] == '1') {
-              
+                $input['profession'] = '30';
                 $input['category_id'] = '2';
                 $input['speciality_id'] = '1';
 		
@@ -1244,6 +1273,7 @@ class ApplicantController extends Controller
             } else if ($input['designation_id'] == '4') {
                 $input['category_id'] = '3';
                 $input['speciality_id'] = '2';
+                $input['profession'] = '23';
 
                 PhysicianAssistantUsers::updateOrCreate([
                     'ssn_no' => $input['ssn_no'],

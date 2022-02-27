@@ -42,6 +42,7 @@ class PhysicianUsers extends Model
         'profession',
         'license_number',       
         'npi_no',
-        'email',        
+        'email',
+        'board',      
     ];
 }

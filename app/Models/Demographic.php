@@ -70,7 +70,11 @@ class Demographic extends Model
         return $this->hasOne(User::class,'id','user_id');
     }
 
-
+    public function company()
+    {
+        return $this->hasOne(Company::class,'id','company_id');
+    }
+    
     /**
      * Get the user's Date Of Birth.
      *
