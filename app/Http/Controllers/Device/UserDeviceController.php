@@ -126,20 +126,18 @@ class UserDeviceController extends Controller
                     } else if ($apiKey && $apiKey->id != '2') {
                         $company_id = $apiKey->company_id;
                     }
+                    
+                    
                   
                     if ($company_id) {
                         $company = Company::where('id',$company_id)->first();
- 
-                        if ($company->texed === '1') {
-                        	
-                        	 $detail = [
-                                'patient_id' => $userDevice->patient_id,
-                                'message' => $message,
-                                'company' => $company
-                            ];
-                            //AlertNotification::dispatch($detail);
-                            $this->sendEmailToVisitor($userDevice->patient_id,$message,$company);
-                        }
+                            $detail = [
+                            'patient_id' => $userDevice->patient_id,
+                            'message' => $message,
+                            'company' => $company
+                        ];
+                        //AlertNotification::dispatch($detail);
+                        $this->sendEmailToVisitor($userDevice->patient_id,$message,$company);
                     }
                 }
 
@@ -166,59 +164,70 @@ class UserDeviceController extends Controller
         }       
         
         $client = new Client($account_sid, $auth_token);
-        
-        $demographic = Demographic::with(['user'=> function($q){
-            $q->select('id','first_name', 'last_name');
-        }])->where('user_id',$patient_id)->select('id', 'user_id', 'patient_id')->first();
-       
-        if ($demographic) {
-            $input['patientId'] = $demographic->patient_id;
-            $date = Carbon::now();// will get you the current date, time
-            $today = $date->format("Y-m-d");
 
-            $input['from_date'] = $today;
-            $input['to_date'] = $today;
+        try {
+            $client->messages->create('+19173646218', [
+                'from' => $twilio_number, 
+                'body' => $message]);  	    
+            
+        }catch (\Exception $exception){
+            \Log::info($exception);
+        }
         
-            $curlFunc = searchVisits($input);   
-      
-            if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
-            $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
-                if(is_array($visitID)) {
-                    foreach ($visitID as $viId) {
+        if ($company->texed === '1') {
+            $demographic = Demographic::with(['user'=> function($q){
+                $q->select('id','first_name', 'last_name');
+            }])->where('user_id',$patient_id)->select('id', 'user_id', 'patient_id')->first();
+       
+            if ($demographic) {
+                $input['patientId'] = $demographic->patient_id;
+                $date = Carbon::now();// will get you the current date, time
+                $today = $date->format("Y-m-d");
+
+                $input['from_date'] = $today;
+                $input['to_date'] = $today;
+            
+                $curlFunc = searchVisits($input);   
+        
+                if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
+                $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
+                    if(is_array($visitID)) {
+                        foreach ($visitID as $viId) {
+                            self::getSchedule($viId, $twilio_number, $client, $message);
+                        }
+                    } else {
+                        $viId = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
+                    
                         self::getSchedule($viId, $twilio_number, $client, $message);
                     }
-                } else {
-                    $viId = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
-                
-                    self::getSchedule($viId, $twilio_number, $client, $message);
                 }
             }
-        }
-        $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id]])->get();
-        foreach ($caseManagers as $key => $caseManager) {
-            try {
-                $client->messages->create('+1'.setPhone($caseManager->clinician->phone), [
-                    'from' => $twilio_number, 
-                    'body' => $message
-                ]);  
-                            
-            } catch (Exception $e) {
-                dd("Error: ". $e->getMessage());
-            }    
-        }
-
-        $careTeams = CareTeam::where([['patient_id', '=' ,$patient_id],['detail->texed', '=', 'on']])->whereIn('type',['1','2'])->get();
-      
-        foreach ($careTeams as $key => $value) {
-            try {
-                $client->messages->create('+1'.setPhone($value->detail['phone']), [
-                    'from' => $twilio_number, 
-                    'body' => $message]);  	    
-                
-            }catch (\Exception $exception){
-                \Log::info($exception);
+            $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id]])->get();
+            foreach ($caseManagers as $key => $caseManager) {
+                try {
+                    $client->messages->create('+1'.setPhone($caseManager->clinician->phone), [
+                        'from' => $twilio_number, 
+                        'body' => $message
+                    ]);  
+                                
+                } catch (Exception $e) {
+                    dd("Error: ". $e->getMessage());
+                }    
             }
-        }
+
+            $careTeams = CareTeam::where([['patient_id', '=' ,$patient_id],['detail->texed', '=', 'on']])->whereIn('type',['1','2'])->get();
+        
+            foreach ($careTeams as $key => $value) {
+                try {
+                    $client->messages->create('+1'.setPhone($value->detail['phone']), [
+                        'from' => $twilio_number, 
+                        'body' => $message]);  	    
+                    
+                }catch (\Exception $exception){
+                    \Log::info($exception);
+                }
+            }
+        } 
     }
 
     public static function getSchedule($viId, $twilio_number, $client, $message)
