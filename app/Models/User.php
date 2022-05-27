@@ -316,4 +316,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Demographic::class,'user_id','id');
     }
+    
+    
+    public function caseManagement()
+    {
+        return $this->hasOne(CaseManagement::class,'patient_id','id');
+    }
 }

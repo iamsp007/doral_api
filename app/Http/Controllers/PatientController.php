@@ -145,19 +145,20 @@ class PatientController extends Controller
                 $doral_id = createDoralId();
                 $phone_number = $input['home_phone'] ? $input['home_phone'] : '';
                 $status = '1';
+                $avatar = '';
                 if (isset($input['avatar']) && !empty($input['avatar'])) {
                     $uploadFolder = 'users';
                     $image = $input['avatar'];
                     $image_uploaded_path = $image->store($uploadFolder, 'public');
                   
-                    $input['avatar'] = basename($image_uploaded_path);
+                    $avatar = basename($image_uploaded_path);
                 }
               
                
                  $user = Auth::user();
       
 		 $user->update([
-		    'avatar' => $input['avatar'],  
+		    'avatar' => $avatar,  
                     'phone' =>  $this->getcrpydata($phone_number),
                     'phone_verified_at' => now(),
                     'first_name' => $this->getcrpydata($input['first_name']),
@@ -603,6 +604,20 @@ Default Password : Patient@doral',
 
     }
 
+    public function getPatient()
+    {
+        $user_id = Auth::user()->id;
+        $patientList = User::with('patientDetail','roles')
+            ->whereHas('roles',function ($q){
+                $q->where('name','=','patient');
+            })->whereHas('caseManagement',function ($query) use($user_id) {
+                $query->where('clinician_id', $user_id);
+            })
+            ->get();
+            
+        return $this->generateResponse(true,'get patient list',$patientList,200);
+    }
+    
      public function scheduleAppoimentListData(Request $request){
         // patient referral pending status patient list
         $requestData = $request->all();

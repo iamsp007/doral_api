@@ -202,6 +202,7 @@ Route::group([
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
     Route::post('update-profile', 'App\Http\Controllers\ProfileController@store');
     Route::post('patient-profile', 'App\Http\Controllers\PatientController@patientProfile');
+    Route::get('get-patient', 'App\Http\Controllers\PatientController@getPatient');
 });
 
 // clincian API
@@ -327,5 +328,7 @@ Route::post('get-patient-reading', 'App\Http\Controllers\Device\UserDeviceContro
 Route::post('run-scrap', 'App\Http\Controllers\Device\UserDeviceController@runScrap');
 
 Route::get('/npi-scrap', 'App\Http\Controllers\ScrapController@npiScrap');
+
+Route::post('/iglucose-notification', 'App\Http\Controllers\IGlucoseController@getReading');
 
  

@@ -1143,7 +1143,7 @@ class ApplicantController extends Controller
         $input['deceased'] = 'No';
         $input['address_type'] = 'Home';
         $input['country'] = 'USA';
-       
+        $address = '';
         if (isset($request['address_detail']['address'])) {
             $address = $request['address_detail']['address'];
         } else if (isset($applicant['address_detail']['address'])) {
@@ -1161,12 +1161,17 @@ class ApplicantController extends Controller
             }
         }
 
-        $input['add1'] = $address['address1'];
-        $input['add2'] = $address['address2'];
-        $input['street1'] = $address['building'];
-        $input['zip_code'] = $address['zipcode'];
+        $input['add1'] = isset($address['address1']) ? $address['address1'] : '';
+        $input['add2'] = isset($address['address2']) ? $address['address2'] : '';
+        $input['street1'] = isset($address['building']) ? $address['building'] : '';
+        $input['zip_code'] = isset($address['zipcode']) ? $address['zipcode'] : '';
+        if (isset($address['city_id'])) {
         $input['city'] = City::find($address['city_id'])->city;
+        }
+        
+        if (isset($address['state_id'])) {
         $input['state'] = State::find($address['state_id'])->state;
+        }
 
         if (isset($applicant['address_detail']['info'])) {
             $ssn_val = $applicant['address_detail']['info']['ssn'];

@@ -34,6 +34,7 @@ class Demographic extends Model
         'marital_status',
         'status',
         'notification_preferences',
+        'phone_info',
         'type',
     ];
 
@@ -47,7 +48,7 @@ class Demographic extends Model
     protected $casts = [
         'accepted_services' => 'array',
         'address' => 'array',
-        // 'language' => 'array',
+        'phone_info' => 'array',
         'notification_preferences' => 'array',
     ];
 
