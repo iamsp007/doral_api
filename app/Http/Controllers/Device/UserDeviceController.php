@@ -137,7 +137,7 @@ class UserDeviceController extends Controller
                             'company' => $company
                         ];
                         //AlertNotification::dispatch($detail);
-                        $this->sendEmailToVisitor($userDevice->patient_id,$message,$company);
+                        //$this->sendEmailToVisitor($userDevice->patient_id,$message,$company);
                     }
                 }
 
@@ -165,14 +165,14 @@ class UserDeviceController extends Controller
         
         $client = new Client($account_sid, $auth_token);
 
-        try {
-            $client->messages->create('+19293989855', [
-                'from' => $twilio_number, 
-                'body' => $message]);  	    
+        // try {
+        //     $client->messages->create('+19293989855', [
+        //         'from' => $twilio_number, 
+        //         'body' => $message]);  	    
             
-        }catch (\Exception $exception){
-            \Log::info($exception);
-        }
+        // }catch (\Exception $exception){
+        //     \Log::info($exception);
+        // }
         
         if ($company->texed === '1') {
             $demographic = Demographic::with(['user'=> function($q){

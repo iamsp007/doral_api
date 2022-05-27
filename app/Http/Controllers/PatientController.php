@@ -17,8 +17,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
@@ -152,12 +150,11 @@ class PatientController extends Controller
                   
                     $input['avatar'] = basename($image_uploaded_path);
                 }
-              
                
-                 $user = Auth::user();
+                $user = Auth::user();
       
-		 $user->update([
-		    'avatar' => $input['avatar'],  
+                $user->update([
+                    'avatar' => $input['avatar'],  
                     'phone' =>  $this->getcrpydata($phone_number),
                     'phone_verified_at' => now(),
                     'first_name' => $this->getcrpydata($input['first_name']),
@@ -166,7 +163,7 @@ class PatientController extends Controller
                     'gender' => setGender($input['gender']),
                     'dob' =>  $this->getcrpydata($input['dateOfBirth']),
                     'status' => $status,
-		 ]);
+                ]);
         
                 $user->assignRole('patient')->syncPermissions(Permission::all());
                 
@@ -574,33 +571,48 @@ Default Password : Patient@doral',
         return $this->generateResponse(false,'No Patient Referral Ids Found',null,422);
     }
 
-    public function newpatientData(Request $request) {
+    // public function newpatientData(Request $request) {
 
-         $requestData = $request->all();
+    //      $requestData = $request->all();
 
-         $patientList = User::with('patientDetail','roles')
+    //      $patientList = User::with('patientDetail','roles')
+    //         ->whereHas('roles',function ($q){
+    //             $q->where('name','=','patient');
+    //         })
+    //         ->whereHas('patientDetail',function ($q){
+    //             $q->where('status','=','pending')->whereNotNull('first_name');
+    //         })
+    //         ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+    //         ->get();
+    //     return $this->generateResponse(true,'get new patient list',$patientList,200);
+    // }
+
+    // public function patientData(Request $request)
+    // {
+    //     $requestData = $request->all();
+    //     $patientList = User::with('patientDetail','roles')
+    //         ->whereHas('roles',function ($q){
+    //             $q->where('name','=','patient');
+    //         })
+    //         ->where('status','=','1')
+    //         ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
+    //         ->get();
+            
+    //     return $this->generateResponse(true,'get new patient list',$patientList,200);
+    // }
+
+    public function getPatient()
+    {
+        $user_id = Auth::user()->id;
+        $patientList = User::with('patientDetail','roles')
             ->whereHas('roles',function ($q){
                 $q->where('name','=','patient');
+            })->whereHas('caseManagement',function ($query) use($user_id) {
+                $query->where('clinician_id', $user_id);
             })
-            ->whereHas('patientDetail',function ($q){
-                $q->where('status','=','pending')->whereNotNull('first_name');
-            })
-            ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
             ->get();
-        return $this->generateResponse(true,'get new patient list',$patientList,200);
-    }
-
-    public function patientData(Request $request) {
-         $requestData = $request->all();
-          $patientList = User::with('patientDetail','roles')
-            ->whereHas('roles',function ($q){
-                $q->where('name','=','patient');
-            })
-            ->where('status','=','1')
-             ->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%')
-            ->get();
-        return $this->generateResponse(true,'get new patient list',$patientList,200);
-
+            
+        return $this->generateResponse(true,'get patient list',$patientList,200);
     }
 
      public function scheduleAppoimentListData(Request $request){

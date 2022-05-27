@@ -47,7 +47,7 @@ class Demographic extends Model
     protected $casts = [
         'accepted_services' => 'array',
         'address' => 'array',
-        // 'language' => 'array',
+        'phone_info' => 'array',
         'notification_preferences' => 'array',
     ];
 

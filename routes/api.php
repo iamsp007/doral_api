@@ -18,55 +18,34 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'auth'
 ], function () {
-    Route::post('patient-login', 'App\Http\Controllers\Auth\AuthController@patientLogin');
-    Route::post('update-phone', 'App\Http\Controllers\Auth\AuthController@updatePhone');
-    Route::post('verify-phone', 'App\Http\Controllers\Auth\AuthController@verifyPhone');
-    Route::post('login', 'App\Http\Controllers\Auth\AuthController@login')->name('login');
-    Route::post('forgot', 'App\Http\Controllers\Auth\AuthController@forgotPassword')->name('forgot');
-    Route::post('reset', 'App\Http\Controllers\Auth\AuthController@reset')->name('reset');
-    Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\AuthController@reset')->name('password.reset');
-    Route::post('password/reset', 'App\Http\Controllers\Auth\AuthController@resetPassword')->name('password.update');
-    Route::get('countries', 'App\Http\Controllers\Auth\AuthController@countries')->name('countries');
+    // Unused api route start
+    /// Route::post('patient-login', 'App\Http\Controllers\Auth\AuthController@patientLogin');
+    /// Route::post('update-phone', 'App\Http\Controllers\Auth\AuthController@updatePhone');
+    /// Route::post('verify-phone', 'App\Http\Controllers\Auth\AuthController@verifyPhone');
+    /// Route::post('reset', 'App\Http\Controllers\Auth\AuthController@reset')->name('reset');
+    /// Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\AuthController@reset')->name('password.reset');
+    /// Route::get('countries', 'App\Http\Controllers\Auth\AuthController@countries')->name('countries');
     Route::get('states', 'App\Http\Controllers\Auth\AuthController@states')->name('states');
     Route::get('cities', 'App\Http\Controllers\Auth\AuthController@cities')->name('cities');
     Route::post('filter-cities', 'App\Http\Controllers\Auth\AuthController@filterCities')->name('filter-cities');
-    Route::post('nexmo-send', 'App\Http\Controllers\NexmoController@index')->name('index')->middleware('auth:api');
-    Route::post('nexmo-verify', 'App\Http\Controllers\NexmoController@verify')->name('verify')->middleware('auth:api');
-
-//    Route::post('register', 'App\Http\Controllers\UserController@store');
-    Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
-    Route::post('verify', 'App\Http\Controllers\Auth\VerificationController@verify');
-    
-    Route::post('passcode-register', 'App\Http\Controllers\Auth\AuthController@passcodeRegister');
-    Route::post('finger-print-register', 'App\Http\Controllers\Auth\AuthController@fingerprintRegister');
-    Route::post('finger-print-login', 'App\Http\Controllers\Auth\AuthController@passcodeandfingerlogin');
-    
-    Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
-   
+    /// Route::post('finger-print-register', 'App\Http\Controllers\Auth\AuthController@fingerprintRegister');
     Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
-    // Patient Referral Urls
     Route::post('patient-referral/store', 'App\Http\Controllers\PatientReferralController@store');
     Route::post('patient-referral/storecert', 'App\Http\Controllers\PatientReferralController@storeCertDate');
-    /*Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');*/
     Route::post('patient-occupational/storeoccupational', 'App\Http\Controllers\PatientOccupationalController@storeOccupational');
     Route::get('patient-occupational/{id}', 'App\Http\Controllers\PatientOccupationalController@index')->name('occupational_patients');
     Route::get('mdforms', 'App\Http\Controllers\MDFormsController@index')->name('mdforms.index');
-
-    // Employee
-    Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
     Route::get('employee', 'App\Http\Controllers\EmployeeController@index')->name('employee.index');
     Route::get('employee/show/{employee}', 'App\Http\Controllers\EmployeeController@show')->name('employee.show');
     Route::get('employee/remove/{employee}', 'App\Http\Controllers\EmployeeController@destroy')->name('employee.remove');
     Route::post('employee/store', 'App\Http\Controllers\EmployeeController@store')->name('employee.store');
     Route::post('employee/work', 'App\Http\Controllers\EmployeeController@work')->name('employee.work');
-
     Route::get('company/{id}', 'App\Http\Controllers\CompanyController@index');
     Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
     Route::post('company_referral/update', 'App\Http\Controllers\CompanyController@update');
     Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
     Route::post('company/insert-update-service-payment', 'App\Http\Controllers\CompanyController@insertUpdateServicePayment');
-
     Route::post('caregiver/actionstore', 'App\Http\Controllers\CaregiverController@actionStore')->name('caregiver.actionstore');
 
     // supervisour api
@@ -78,51 +57,49 @@ Route::group([
     Route::post('employee-reports/{id}/store', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@store')->name('employee.reports.store');
     Route::get('employee-reports/{id}/show', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@show')->name('employee.reports.show');
     Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
+ 
+    // Route::post('register', 'App\Http\Controllers\UserController@store');
+    // Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+    // Unused api route end
+
+    /* Routes used in api start*/
+    Route::post('login', 'App\Http\Controllers\Auth\AuthController@login')->name('login');
+    Route::post('forgot', 'App\Http\Controllers\Auth\AuthController@forgotPassword')->name('forgot');
+    Route::post('password/reset', 'App\Http\Controllers\Auth\AuthController@resetPassword')->name('password.update');
+    Route::post('nexmo-send', 'App\Http\Controllers\NexmoController@index')->name('index')->middleware('auth:api');
+    Route::post('nexmo-verify', 'App\Http\Controllers\NexmoController@verify')->name('verify')->middleware('auth:api');
+    Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
+    Route::post('verify', 'App\Http\Controllers\Auth\VerificationController@verify');
+    Route::post('passcode-register', 'App\Http\Controllers\Auth\AuthController@passcodeRegister');
+    Route::post('finger-print-login', 'App\Http\Controllers\Auth\AuthController@passcodeandfingerlogin');
+    Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
+    Route::get('designation', 'App\Http\Controllers\DesignationController@index')->name('designation.index');
     Route::post('notification-history', 'App\Http\Controllers\NotificationHistoryController@index');
     Route::get('read-notification/{id}', 'App\Http\Controllers\NotificationHistoryController@readNotification');
-    
+    /* Routes used in api end*/
+
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
-        // COVID-19
-        Route::get('get-covid-19-patient-list', 'App\Http\Controllers\CovidForm\CovidFormController@index');
+        // Unused api route start
         Route::post('covid-19/store', 'App\Http\Controllers\CovidForm\CovidFormController@store');
         Route::post('covid-19/{id}/store-signatures', 'App\Http\Controllers\CovidForm\CovidFormController@storeSignatures');
-
-        Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
         Route::get('ccm-readings', 'App\Http\Controllers\UserController@ccmReadings');
         Route::post('save-token', 'App\Http\Controllers\Auth\AuthController@saveToken');
-        //Patient
         Route::get('patient/search/{keyword}', 'App\Http\Controllers\PatientController@searchByEmailNamePhone');
-        //Services
-        Route::get('service', 'App\Http\Controllers\ServicesController@index');
         Route::post('service/store', 'App\Http\Controllers\ServicesController@store');
         Route::put('service/{service}', 'App\Http\Controllers\ServicesController@update');
         Route::get('service-master', 'App\Http\Controllers\ServicesController@serviceMaster');
-        //Request
         Route::get('request', 'App\Http\Controllers\RequestController@index');
-        Route::post('request/store', 'App\Http\Controllers\RequestController@store');
         Route::put('request/{request}', 'App\Http\Controllers\RequestController@update');
-        //Appointment
-        Route::post('appointment', 'App\Http\Controllers\AppointmentController@index');
-
         Route::put('appointment/{appointment}', 'App\Http\Controllers\AppointmentController@update');
-        Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
-        Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
-        Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
-        Route::get('appointment/cancel-appointment-reasons', 'App\Http\Controllers\AppointmentController@getCancelAppointmentReasons');
         Route::post('appointment/bydate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
         Route::get('appointment/{id}', 'App\Http\Controllers\AppointmentController@edit');
         Route::post('appointment/getAppointmentsByDate', 'App\Http\Controllers\AppointmentController@getAppointmentsByDate');
-        //Users URLs
         Route::get('user', 'App\Http\Controllers\Auth\AuthController@user');
-        //Company URLs
-        //Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
         Route::post('company/saveprofile', 'App\Http\Controllers\CompanyController@saveProfile');
         Route::post('company/resetpassword', 'App\Http\Controllers\CompanyController@resetPassword');
         Route::post('company/confirmpassword', 'App\Http\Controllers\CompanyController@confirmPassword');
-        //Route::get('company', 'App\Http\Controllers\CompanyController@index');
-        //Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
         Route::get('company/{company}/edit', 'App\Http\Controllers\CompanyController@edit');
         // Employees Urls
         Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
@@ -135,18 +112,8 @@ Route::group([
         Route::get('get-clinician-list/{status_id}', 'App\Http\Controllers\ApplicantController@getClinicianList');
         Route::post('get-clinician-data', 'App\Http\Controllers\ApplicantController@getClinicianData');
         Route::get('get-clinician-detail/{id}', 'App\Http\Controllers\ApplicantController@getClinicianDetail');
-        
-        Route::get('patient-list', 'App\Http\Controllers\ConversationController@index');
-        Route::post('conversation', 'App\Http\Controllers\ConversationController@getConversation');
         Route::delete('conversation/{id}', 'App\Http\Controllers\ConversationController@destroy');
-        Route::post('send-mesage', 'App\Http\Controllers\ConversationController@store');
-
-        Route::get('get-applicant-details', 'App\Http\Controllers\ApplicantController@getApplicantDetails');
         Route::get('applicants', 'App\Http\Controllers\ApplicantController@index');
-        /*Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
-        Route::post('applicants/step-two', 'App\Http\Controllers\ApplicantController@stepTwo');
-        Route::post('applicants/step-three', 'App\Http\Controllers\ApplicantController@stepThree');
-        Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');*/
         Route::post('applicants/steps', 'App\Http\Controllers\ApplicantController@allStepTogether');
         Route::get('address-life', 'App\Http\Controllers\ApplicantController@addressLife');
         Route::get('relationship', 'App\Http\Controllers\ApplicantController@relationship');
@@ -172,160 +139,186 @@ Route::group([
         Route::post('bank-account', 'App\Http\Controllers\ApplicantController@bankAccount');
         Route::get('security', 'App\Http\Controllers\ApplicantController@getSecurities');
         Route::post('security', 'App\Http\Controllers\ApplicantController@security');
-        Route::post('document-verification', 'App\Http\Controllers\ApplicantController@documentVerification');
         Route::get('get-documents', 'App\Http\Controllers\ApplicantController@getDocuments');
         Route::post('remove-documents', 'App\Http\Controllers\ApplicantController@removeDocument');
-        Route::post('store-applicant-detail', 'App\Http\Controllers\ApplicantController@storeApplicantDetail');
 
+        //Route::post('company/updatestatus', 'App\Http\Controllers\CompanyController@updateStatus');
+        //Route::get('company', 'App\Http\Controllers\CompanyController@index');
+        //Route::get('company/show/{company}', 'App\Http\Controllers\CompanyController@show');
+        /*Route::post('applicants/step-one', 'App\Http\Controllers\ApplicantController@stepOne');
+        Route::post('applicants/step-two', 'App\Http\Controllers\ApplicantController@stepTwo');
+        Route::post('applicants/step-three', 'App\Http\Controllers\ApplicantController@stepThree');
+        Route::post('applicants/step-four', 'App\Http\Controllers\ApplicantController@stepFour');*/
+        // Unused api route end
+
+        /* Routes used in api start*/
+        Route::get('get-covid-19-patient-list', 'App\Http\Controllers\CovidForm\CovidFormController@index');
+        Route::get('logout', 'App\Http\Controllers\Auth\AuthController@logout');
+        Route::get('service', 'App\Http\Controllers\ServicesController@index');
+        Route::post('request/store', 'App\Http\Controllers\RequestController@store');
+        Route::post('appointment', 'App\Http\Controllers\AppointmentController@index');
+        Route::post('appointment/upcoming-patient-appointment', 'App\Http\Controllers\AppointmentController@upcomingPatientAppointment' );
+        Route::post('appointment/cancel-patient-appointment', 'App\Http\Controllers\AppointmentController@cancelPatientAppointment' );
+        Route::post('appointment/past-patient-appointment', 'App\Http\Controllers\AppointmentController@pastPatientAppointment' );
+        Route::get('appointment/cancel-appointment-reasons', 'App\Http\Controllers\AppointmentController@getCancelAppointmentReasons');
+        Route::get('patient-list', 'App\Http\Controllers\ConversationController@index');
+        Route::post('conversation', 'App\Http\Controllers\ConversationController@getConversation');
+        Route::post('send-mesage', 'App\Http\Controllers\ConversationController@store');
+        Route::get('get-applicant-details', 'App\Http\Controllers\ApplicantController@getApplicantDetails');
+        Route::post('document-verification', 'App\Http\Controllers\ApplicantController@documentVerification');
+        Route::post('store-applicant-detail', 'App\Http\Controllers\ApplicantController@storeApplicantDetail');
         Route::post('change-availability', 'App\Http\Controllers\UserController@changeAvailability');
         Route::post('clinician/store-signatures', 'App\Http\Controllers\ClinicianController@storeSignatures');
-
         Route::post('user_update', 'App\Http\Controllers\ClinicianController@userUpdate');
+        /* Routes used in api end*/
     });
 });
 
 Route::group([
     'middleware' => ['auth:api'],
-//    'middleware' => ['auth:api','role:patient|clinician'],
+    //'middleware' => ['auth:api','role:patient|clinician'],
 ], function () {
-// Patient Road L API
-    Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    // Unused api route start
     Route::post('patient-request-multi', 'App\Http\Controllers\PatientRequestController@storeMulti');
     Route::post('patient-request-otp-verify', 'App\Http\Controllers\RoadlController@patientRequestOtpVerify');
-    Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
-    Route::post('newpatient-data', 'App\Http\Controllers\PatientController@newpatientData');
-    Route::post('patient-data', 'App\Http\Controllers\PatientController@patientData');
-    Route::post('roadl-information', 'App\Http\Controllers\RoadlController@create');
+    ///Route::post('newpatient-data', 'App\Http\Controllers\PatientController@newpatientData');
+    ///Route::post('patient-data', 'App\Http\Controllers\PatientController@patientData');
     Route::post('roadl-information-show', 'App\Http\Controllers\RoadlController@show');
     Route::post('ccm-reading', 'App\Http\Controllers\PatientRequestController@ccmReading');
+    //Unused api route end
+
+    /* Routes used in api start*/
+    Route::post('patient-request', 'App\Http\Controllers\PatientRequestController@store');
+    Route::post('patient-roadl-selected-disease', 'App\Http\Controllers\PatientController@roadlSelectedDisease');
+    Route::post('roadl-information', 'App\Http\Controllers\RoadlController@create');
     Route::get('dieses-master', 'App\Http\Controllers\DiesesMasterController@index');
     Route::get('symptoms-master/{dieser_id}', 'App\Http\Controllers\SymptomsMasterController@index');
     Route::post('update-profile', 'App\Http\Controllers\ProfileController@store');
     Route::post('patient-profile', 'App\Http\Controllers\PatientController@patientProfile');
+    Route::post('get-patient', 'App\Http\Controllers\PatientController@getPatient');
+    
+    /* Routes used in api end*/
 });
 
 // clincian API
 Route::group([
     'middleware' => ['auth:api','role:clinician|co-ordinator|patient|LAB|Radiology|CHHA|Home Oxygen|Home Influsion|Wound Care|DME'],
 ], function () {
-// Patient Road L API
-    Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
-    Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
-     Route::get('latest-roadl-request-list', 'App\Http\Controllers\PatientRequestController@latestClinicianRoadlRequest');
-    //Route::post('update-patient-request-status', 'App\Http\Controllers\PatientRequestController@updatePatientRequeststatus');
-    Route::post('update-preparation-time', 'App\Http\Controllers\PatientRequestController@updatePreperationTime');
+    // Unused api route start
     Route::get('get-near-by-clinician-list/{patient_request_id}', 'App\Http\Controllers\RoadlController@getNearByClinicianList');
     Route::get('get-roadl-proccess/{patient_request_id}', 'App\Http\Controllers\RoadlController@getRoadLProccess');
-    Route::post('get-roadl-proccess-new', 'App\Http\Controllers\RoadlController@getRoadLProccessNew');
     Route::post('create-virtual-room', 'App\Http\Controllers\SessionsController@createRoom');
     Route::get('get-patient-list', 'App\Http\Controllers\PatientController@getPatientList');
     Route::get('get-new-patient-list', 'App\Http\Controllers\PatientController@getNewPatientList');
     Route::get('new-patient-list', 'App\Http\Controllers\PatientController@newPatientList');
     Route::get('get-schedule-appoiment-list', 'App\Http\Controllers\PatientController@scheduleAppoimentList');
     Route::post('get-schedule-appoiment-list-data', 'App\Http\Controllers\PatientController@scheduleAppoimentListData');
-    Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
     Route::post('get-cancel-appoiment-list-data', 'App\Http\Controllers\PatientController@cancelAppoimentListData');
-    Route::get('get-roadl-status', 'App\Http\Controllers\PatientRequestController@getRoadLStatus');
     Route::post('change-patient-status', 'App\Http\Controllers\PatientController@changePatientStatus');
-
-    //new patient list for appointment
     Route::post('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
-    //Appointment
     Route::post('send-video-meeting-notification', 'App\Http\Controllers\SessionsController@sendVideoMeetingNotification');
     Route::post('start-video-meeting-notification', 'App\Http\Controllers\SessionsController@startVideoMeetingNotification');
     Route::post('leave-video-meeting', 'App\Http\Controllers\SessionsController@leaveVideoMeeting');
-});
-Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus');
-Route::post('update-patient-phone', 'App\Http\Controllers\PatientController@updatePatientPhone');
 
-// Referral
-Route::group([
-    'prefix' => 'auth'
-], function () {
-    Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
-   Route::get('patient-referral-failed/{id}', 'App\Http\Controllers\PatientReferralController@faileRecode');
-   Route::get('patient-referral-failed-view/{id}', 'App\Http\Controllers\PatientReferralController@viewfaileRecode');
-
-
-    Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
-    Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
-
-   
+    //Route::post('update-patient-request-status', 'App\Http\Controllers\PatientRequestController@updatePatientRequeststatus');
+    // Unused api route end
+    
+    /* Routes used in api start*/
+    Route::post('clinician-request-accept', 'App\Http\Controllers\PatientRequestController@clinicianRequestAccept');
+    Route::post('clinician-patient-request-list', 'App\Http\Controllers\PatientRequestController@clinicianPatientRequestList');
+    Route::get('latest-roadl-request-list', 'App\Http\Controllers\PatientRequestController@latestClinicianRoadlRequest');
+    Route::post('update-preparation-time', 'App\Http\Controllers\PatientRequestController@updatePreperationTime');
+    Route::post('get-roadl-proccess-new', 'App\Http\Controllers\RoadlController@getRoadLProccessNew');
+    Route::get('get-cancel-appoiment-list', 'App\Http\Controllers\PatientController@cancelAppoimentList');
+    Route::get('get-roadl-status', 'App\Http\Controllers\PatientRequestController@getRoadLStatus');
+    /* Routes used in api end*/
 });
 
-// Co Ordinator
-Route::group([
-    'middleware' => ['auth:api','role:co-ordinator'],
-], function () {
-    //Route::get('/get-patient-list','');
-    Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
-});
+// Unused api route start
+     Route::post('update-patient-status', 'App\Http\Controllers\PatientController@updatePatientStatus');
+     Route::post('update-patient-phone', 'App\Http\Controllers\PatientController@updatePatientPhone');
 
-// Supervisor
-Route::group([
-    'middleware' => ['auth:api','role:supervisor'],
-], function () {
-    /*Route::get('getNewPatientListForAppointment1', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');*/
-    Route::get('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@index');
-    Route::post('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@store');
-    Route::post('filter-by-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@filter');
-    Route::post('assign-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@assign');
-    Route::post('remove-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@remove');
-});
+    // Referral
+    Route::group([
+        'prefix' => 'auth'
+    ], function () {
+        Route::get('patient-referral/{id}', 'App\Http\Controllers\PatientReferralController@index')->name('referral_patients');
+        Route::get('patient-referral-failed/{id}', 'App\Http\Controllers\PatientReferralController@faileRecode');
+        Route::get('patient-referral-failed-view/{id}', 'App\Http\Controllers\PatientReferralController@viewfaileRecode');
+        Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
+        Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');   
+    });
 
+    // Co Ordinator
+    Route::group([
+        'middleware' => ['auth:api','role:co-ordinator'],
+    ], function () {
+        Route::get('getNewPatientListForAppointment', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
+    });
+
+    // Supervisor
+    Route::group([
+        'middleware' => ['auth:api','role:supervisor'],
+    ], function () {
+        //Route::get('getNewPatientListForAppointment1', 'App\Http\Controllers\PatientController@getNewPatientListForAppointment');
+        Route::get('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@index');
+        Route::post('assign-clinician-to-patient', 'App\Http\Controllers\AssignClinicianToPatientController@store');
+        Route::post('filter-by-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@filter');
+        Route::post('assign-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@assign');
+        Route::post('remove-clinician', 'App\Http\Controllers\AssignClinicianToPatientController@remove');
+    });
+// Unused api route end
 
 // Co Ordinator
 Route::group([
     'middleware' => ['auth:api'],
 ], function () {
+    // Unused api route start
     Route::post('get-clinician-time-slots', 'App\Http\Controllers\AppointmentController@getClinicianTimeSlots');
-    Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store')->middleware('role:co-ordinator|patient');
     Route::put('appointment/{id}/update', 'App\Http\Controllers\AppointmentController@store')->middleware('role:co-ordinator|patient');
-    Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' )->middleware('role:co-ordinator|patient|clinician');
     Route::post('appointment/patient-md-form', 'App\Http\Controllers\PatientMdFormController@store' )->middleware('role:co-ordinator|patient|clinician');
     Route::post('add-insurance', 'App\Http\Controllers\PatientInsuranceController@updateOrCreateInsurance');
     Route::post('demographyData-update', 'App\Http\Controllers\UserController@demographyDataUpdate');
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
     Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
     Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
+    Route::post('multi-name-list', 'App\Http\Controllers\TestController@getMultiTest');
+    Route::get('clinician-list', 'App\Http\Controllers\PatientRequestController@getClinicianList');
+    Route::post('send-address-notification', 'App\Http\Controllers\NotificationController@store');
+    // Unused api route end
+
+    /* Routes used in api start*/
+    Route::post('appointment/store', 'App\Http\Controllers\AppointmentController@store')->middleware('role:co-ordinator|patient');
+    Route::post('appointment/cancel-appointment', 'App\Http\Controllers\AppointmentController@cancelAppointment' )->middleware('role:co-ordinator|patient|clinician');
     Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
     Route::post('category-list', 'App\Http\Controllers\CategoryController@getCategory');
     Route::post('name-list', 'App\Http\Controllers\TestController@getTest');
-    Route::post('multi-name-list', 'App\Http\Controllers\TestController@getMultiTest');
-    Route::get('clinician-list', 'App\Http\Controllers\PatientRequestController@getClinicianList');
     Route::post('get-parent-id-using-patient-id', 'App\Http\Controllers\PatientRequestController@getParentIdUsingPatientId');
-    Route::post('send-address-notification', 'App\Http\Controllers\NotificationController@store');
+    /* Routes used in api end*/
 });
 
-// Get List of Medicines.
-Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
+// Unused api route start
+    // Get List of Medicines.
+    Route::get('patient-medicine-list/{patient_id}', 'App\Http\Controllers\MedicineController@index');
+    // Get list of meetings.
+    Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
+    // Create meeting room using topic, agenda, start_time.
+    Route::post('/meetings', 'App\Http\Controllers\Zoom\MeetingController@create');
+    // Get information of the meeting room by ID.
+    Route::get('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@get')->where('id', '[0-9]+');
+    Route::patch('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@update')->where('id', '[0-9]+');
+    Route::delete('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@delete')->where('id', '[0-9]+');
+    Route::post('/lab-report/store', 'App\Http\Controllers\PatientLabReportController@store')->name('lab-report.store');
+    Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportController@addNote')->name('lab-report-note.store');
+    Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
+    Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
+    Route::post('run-scrap', 'App\Http\Controllers\Device\UserDeviceController@runScrap');
+    Route::get('/npi-scrap', 'App\Http\Controllers\ScrapController@npiScrap');
+// Unused api route end
 
-// Get list of meetings.
-Route::get('/meetings', 'App\Http\Controllers\Zoom\MeetingController@list');
-
-// Create meeting room using topic, agenda, start_time.
-Route::post('/meetings', 'App\Http\Controllers\Zoom\MeetingController@create');
-
-// Get information of the meeting room by ID.
-Route::get('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@get')->where('id', '[0-9]+');
-Route::patch('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@update')->where('id', '[0-9]+');
-Route::delete('/meetings/{id}', 'App\Http\Controllers\Zoom\MeetingController@delete')->where('id', '[0-9]+');
-
-Route::post('/lab-report/store', 'App\Http\Controllers\PatientLabReportController@store')->name('lab-report.store');
-Route::post('/lab-report-note/store', 'App\Http\Controllers\PatientLabReportController@addNote')->name('lab-report-note.store');
-
+/* Routes used in api start*/
 Route::post('/patient-report', 'App\Http\Controllers\PatientReportController@index');
-Route::get('/calendarAppoimentListData', 'App\Http\Controllers\PatientController@calendarAppoimentListData');
-Route::post('passwordReset', 'App\Http\Controllers\PatientReportController@resetPassword')->name('password.update');
-
 Route::get('/selection-list', 'App\Http\Controllers\SelectionController@index');
-
 Route::post('user/user-device-logs', 'App\Http\Controllers\Device\UserDeviceController@addDevice')->name('user.add-device');
-
 Route::post('get-patient-reading', 'App\Http\Controllers\Device\UserDeviceController@getDevice');
-
-Route::post('run-scrap', 'App\Http\Controllers\Device\UserDeviceController@runScrap');
-
-Route::get('/npi-scrap', 'App\Http\Controllers\ScrapController@npiScrap');
-
- 
+/* Routes used in api end*/
