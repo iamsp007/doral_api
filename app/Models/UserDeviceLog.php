@@ -20,6 +20,16 @@ class UserDeviceLog extends Model
         'reading_time',
         'level',
         'status',
+        'reading_json',
+    ];
+
+    /**
+     * The attributes that are casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'reading_json' => 'array',
     ];
 
     /**

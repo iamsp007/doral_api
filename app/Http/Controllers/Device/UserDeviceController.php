@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Device;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\AlertNotification;
-use App\Jobs\SendAlertSMS;
 use App\Models\ApiKey;
 use App\Models\UserDevice;
 use App\Models\UserDeviceLog;
-use App\Models\UserLatestDeviceLog;
 use App\Models\Demographic;
 use Carbon\Carbon;
-use App\Mail\SendErrorEmail;
 use App\Models\CareTeam;
 use App\Models\CaseManagement;
 use App\Models\Company;
@@ -19,10 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Nexmo\Laravel\Facade\Nexmo;
 use Twilio\Rest\Client;
 
 class UserDeviceController extends Controller
@@ -36,123 +29,91 @@ class UserDeviceController extends Controller
 
             $apiKey = ApiKey::where([['name', '=', $input['AppName']],['key', '=', $input['AppKey']],['secret', '=', $input['AppSecret']]])->first();
             
-            $patient_id = '';
-            if ($apiKey && $apiKey->id == '2') {
-                $userDeviceModel = UserDevice::with(['user','demographic.company','demographic'])->where([['patient_id', '=', $input['patient_id']],['device_type', '=', $input['device_type']]])->first();
-                $patient_id = $input['patient_id'];
-            } else if ($apiKey && $apiKey->id != '2') {
-                $userDeviceModel = UserDevice::with(['user','demographic.company','demographic' => function ($q) use($apiKey) {
-                    $q->where('company_id', $apiKey->company_id);
-                }])->where([['user_id', '=', $input['user_id']],['device_type', '=', $input['device_type']]])->first();
-                $patient_id = '11797'      ;
-            }
+            if($apiKey && isset($input['patient_id'])) {
+                $userDevice = UserDevice::with(['user','demographic.company','demographic'])->where([['patient_id', '=', $input['patient_id']],['device_type', '=', $input['device_type']]])->first();
           
-            $userDevice = $userDeviceModel;
-            if(! $userDevice) {
-                $userDevice = new UserDevice();
-                $userDevice->user_id = $input['user_id'];
-                $userDevice->device_type = $input['device_type'];
-                $userDevice->patient_id = $patient_id;
-                $userDevice->save();
-            }              
-                  	
-            //if ($userDevice->demographic != '') {
-                $userDeviceLog = new UserDeviceLog();
-                $userDeviceLog->user_device_id = $userDevice->id;
-                $userDeviceLog->value = $input['value'];
-                $userDeviceLog->reading_time = date('Y-m-d H:i:s', strtotime($input['datetime']));
-
-                $readingLevel = 1;
-                $level_message = '';
-                
-                if ($input['device_type'] == 1) {
+                if($userDevice) {
+                    if ($input['reading_type'] === 'blood_pressure') {
+                        $input['value'] = $input['systolic_mmhg'] . '/' . $input['diastolic_mmhg'];                
+                    } else if ($input['reading_type'] === 'blood_glucose') {
+                        $input['value'] = $input['blood_glucose_mgdl'];
+                    }
+        
+                    $userDeviceLog = new UserDeviceLog();
+                    $userDeviceLog->user_device_id = $userDevice->id;
+                    $userDeviceLog->value = $input['value'];
+                    $userDeviceLog->reading_time = date('Y-m-d H:i:s', strtotime($input['date_received']));
+                    $userDeviceLog->reading_json = $request->all();
+        
                     $readingLevel = 1;
-                    if (Str::contains($input['value'], ['/'])) {
-                        $explodeValue = explode("/",$input['value']);
-                    } else if (Str::contains($input['value'], [':'])) {
-                        $explodeValue = explode(":",$input['value']);
+                    $level_message = '';
+                        
+                    if ($input['device_type'] == 1) {
+                        $readingLevel = 1;
+                    
+                        if($input['systolic_mmhg'] >= 140 || $input['diastolic_mmhg'] >= 90) {
+                            $readingLevel = 3;
+                            $level_message = 'blood pressure is higher';
+                        } else if($input['systolic_mmhg'] <= 100 || $input['diastolic_mmhg'] <= 60) {
+                            $readingLevel = 3;
+                            $level_message = 'blood pressure is lower';
+                        }
+                    } else if ($input['device_type'] == 2) {
+                        $readingLevel = 1;
+                        if($input['blood_glucose_mgdl'] >= 300) {
+                            $readingLevel = 3;
+                            $level_message = 'blood sugar is higher';
+                        } else if($input['blood_glucose_mgdl'] <= 60) {
+                            $readingLevel = 3;
+                            $level_message = 'blood sugar is lower';
+                        }
                     }
                         
-                    if($explodeValue[0] >= 140 || $explodeValue[1] >= 90) {
-                        $readingLevel = 3;
-                        $level_message = 'blood pressure is higher';
-                    } else if($explodeValue[0] <= 100 || $explodeValue[1] <= 60) {
-                        $readingLevel = 3;
-                        $level_message = 'blood pressure is lower';
-                    }
+                    $userDeviceLog->level = $readingLevel;
+        
+                    $userDeviceLog->save();
+        
+                    if ($readingLevel == 3) {
+                                                
+                        $patient_name = $userDevice->user->first_name . ' ' . $userDevice->user->last_name;
                     
-                } else if ($input['device_type'] == 2) {
-                    $readingLevel = 1;
-                    if($input['value'] >= 300) {
-                        $readingLevel = 3;
-                        $level_message = 'blood sugar is higher';
-                    } else if($input['value'] <= 60) {
-                        $readingLevel = 3;
-                        $level_message = 'blood sugar is lower';
-                    }
-                }
-                
-                $userDeviceLog->level = $readingLevel;
-
-                $userDeviceLog->save();
-               
-            	//Latest Device Reading Start
-                $userLatestDevice = UserLatestDeviceLog::where([['patient_id', '=', $userDevice->patient_id],['device_type', '=', $input['device_type']]])->first();
-            
-                if(! $userLatestDevice) {
-                    $userDeviceLatest = new UserLatestDeviceLog();
-                    $userDeviceLatest->patient_id = $userDevice->patient_id;
-                    $userDeviceLatest->user_device_id = $userDevice->id;
-                    $userDeviceLatest->device_type = $input['device_type'];
-                    $userDeviceLatest->level = $readingLevel;
-                    $userDeviceLatest->value = $input['value'];
-                    $userDeviceLatest->reading_time = date('Y-m-d H:i:s', strtotime($input['datetime']));
-                    $userDeviceLatest->save();
-                }else {
-                    $userDeviceLatest = DB::table('user_latest_device_logs')
-                    ->where(['patient_id' =>$userDevice->patient_id,'device_type' => $input['device_type']])
-                    ->update(['user_device_id' => $userDevice->id, 'level' => $readingLevel, 'value' => $readingval, 'reading_time' => date('Y-m-d H:i:s', strtotime($input['datetime']))]);
-                }
-                // Latest Device Reading End
-		
-                if ($readingLevel == 3) {
-                                        
-                    $patient_name = $userDevice->user->first_name . ' ' . $userDevice->user->last_name;
-                
-                    $message = 'Doral Health Connect | Your family member - ' . $patient_name . ' ' . $level_message . ' than regular. Need immediate attention. http://app.doralhealthconnect.com/ccm/'.$userDeviceLog->id;
-
-                    if ($apiKey && $apiKey->id == '2') {
-                        $company_id = Demographic::where('user_id',$input['patient_id'])->first()->company_id;
-                    } else if ($apiKey && $apiKey->id != '2') {
-                        $company_id = $apiKey->company_id;
-                    }
+                        $message = 'Doral Health Connect | Your family member - ' . $patient_name . ' ' . $level_message . ' than regular. Need immediate attention. http://app.doralhealthconnect.com/ccm/'.$userDeviceLog->id;
+        
+                        $demographic = Demographic::with(['user'=> function($q){
+                            $q->select('id','first_name', 'last_name');
+                        }])->where('user_id',$input['patient_id'])->select('id', 'user_id', 'patient_id', 'company_id')->first();
                     
-                    
-                  
-                    if ($company_id) {
-                        $company = Company::where('id',$company_id)->first();
-                            $detail = [
-                            'patient_id' => $userDevice->patient_id,
-                            'message' => $message,
-                            'company' => $company
-                        ];
-                        //AlertNotification::dispatch($detail);
-                        //$this->sendEmailToVisitor($userDevice->patient_id,$message,$company);
+                        if ($demographic && $demographic->company_id) {
+                            $company = Company::where('id',$demographic->company_id)->first();
+                            if ($company->texed === '1') {
+                                $details = [
+                                    'patient_id' => $userDevice->patient_id,
+                                    'message' => $message,
+                                    'company' => $company,
+                                    'demographic' => $demographic
+                                ];
+        
+                                $this->sendEmailToVisitor($details);
+                            }
+                        }
                     }
+        
+                    return $this->generateResponse(true,'User device log added successfully.',$userDeviceLog,200);
                 }
-
-                return $this->generateResponse(true,'User device log added successfully.',$userDeviceLog,200);
-            // } else {
-            //     return $this->generateResponse(true,'Unauthenticated',null,401);
-            // }
-        }catch (\Exception $exception){
+            }
+            return $this->generateResponse(true,'User device not found.',[],200);
+        } catch (\Exception $exception){
             return $this->generateResponse(false,$exception->getMessage(),null,200);
         }
     }
     
-    public function sendEmailToVisitor($patient_id,$message,$company)
+    public function sendEmailToVisitor($details)
     {
-   
+        $company = $details['company'];
+        $patient_id = $details['patient_id'];
+        $message = $details['message'];
+        $demographic = $details['demographic'];
+
         if ($company->account_sid != '' && $company->auth_token != '' && $company->from_sms != '') {
             $account_sid = $company->account_sid;
             $auth_token = $company->auth_token;
@@ -164,72 +125,42 @@ class UserDeviceController extends Controller
         }       
         
         $client = new Client($account_sid, $auth_token);
-
-        // try {
-        //     $client->messages->create('+19293989855', [
-        //         'from' => $twilio_number, 
-        //         'body' => $message]);  	    
-            
-        // }catch (\Exception $exception){
-        //     \Log::info($exception);
-        // }
-        
-        if ($company->texed === '1') {
-            $demographic = Demographic::with(['user'=> function($q){
-                $q->select('id','first_name', 'last_name');
-            }])->where('user_id',$patient_id)->select('id', 'user_id', 'patient_id')->first();
        
-            if ($demographic) {
-                $input['patientId'] = $demographic->patient_id;
-                $date = Carbon::now();// will get you the current date, time
-                $today = $date->format("Y-m-d");
+        $input['patientId'] = $demographic->patient_id;
+        $date = Carbon::now();
+        $today = $date->format("Y-m-d");
 
-                $input['from_date'] = $today;
-                $input['to_date'] = $today;
+        $input['from_date'] = $today;
+        $input['to_date'] = $today;
+    
+        $curlFunc = searchVisits($input);   
+
+        if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
+            $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
+            if(is_array($visitID)) {
+                foreach ($visitID as $viId) {
+                    self::getSchedule($viId, $twilio_number, $client, $message);
+                }
+            } else {
+                $viId = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
+                self::getSchedule($viId, $twilio_number, $client, $message);
+            }
+        }
             
-                $curlFunc = searchVisits($input);   
-        
-                if (isset($curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits'])) {
-                $visitID = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
-                    if(is_array($visitID)) {
-                        foreach ($visitID as $viId) {
-                            self::getSchedule($viId, $twilio_number, $client, $message);
-                        }
-                    } else {
-                        $viId = $curlFunc['soapBody']['SearchVisitsResponse']['SearchVisitsResult']['Visits']['VisitID'];
-                    
-                        self::getSchedule($viId, $twilio_number, $client, $message);
-                    }
-                }
-            }
-            $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=' ,$patient_id]])->get();
-            foreach ($caseManagers as $key => $caseManager) {
-                try {
-                    $client->messages->create('+1'.setPhone($caseManager->clinician->phone), [
-                        'from' => $twilio_number, 
-                        'body' => $message
-                    ]);  
-                                
-                } catch (Exception $e) {
-                    dd("Error: ". $e->getMessage());
-                }    
-            }
+        $caseManagers = CaseManagement::with('clinician')->where([['patient_id', '=', $patient_id]])->get();
+        foreach ($caseManagers as $key => $caseManager) {
+            $to = $caseManager->clinician->phone;
+            static::sendSMS($client, $to, $twilio_number, $message);
+        }
 
-            $careTeams = CareTeam::where([['patient_id', '=' ,$patient_id],['detail->texed', '=', 'on']])->whereIn('type',['1','2'])->get();
-        
-            foreach ($careTeams as $key => $value) {
-                try {
-                    $client->messages->create('+1'.setPhone($value->detail['phone']), [
-                        'from' => $twilio_number, 
-                        'body' => $message]);  	    
-                    
-                }catch (\Exception $exception){
-                    \Log::info($exception);
-                }
-            }
-        } 
+        $careTeams = CareTeam::where([['patient_id', '=', $patient_id],['detail->texed', '=', 'on']])->whereIn('type',['1','2'])->get();
+    
+        foreach ($careTeams as $key => $value) {
+            $to = $value->detail['phone'];
+            static::sendSMS($client, $to, $twilio_number, $message);
+        }
     }
-
+    
     public static function getSchedule($viId, $twilio_number, $client, $message)
     {	
         $scheduleInfo = getScheduleInfo($viId);
@@ -252,23 +183,38 @@ class UserDeviceController extends Controller
         }
 	
         if($phoneNumber) {
-         try {
-             $client->messages->create('+1'.setPhone($phoneNumber), [
-                'from' => $twilio_number, 
-                'body' => $message
-            ]);
-     
-	  } catch (\Twilio\Exceptions\RestException $e) {
-		//echo "Couldn't send message to $phoneNumber\n";
-	  }
-           
+            static::sendSMS($client, $phoneNumber, $twilio_number, $message);
         }
     }
 
-    public function getDevice(Request $request) {
-       
+    public static function sendSMS($client, $to, $twilio_number, $message)
+    {
         try {
-            $device_logs = UserLatestDeviceLog::with('userDevice')->where('patient_id',$request->patient_id)->get();
+            $client->messages->create('+1'.setPhone($to), [
+                'from' => $twilio_number, 
+                'body' => $message]);  	    
+            
+        }catch (\Exception $exception){
+            Log::info($exception);
+        }
+    }
+
+    public function getDevice(Request $request)
+    {
+        try {
+            $paient_id = $request->patient_id;
+            $device_logs = UserDeviceLog::with('userDevice')->whereHas('userDevice',function ($q) use($paient_id) {
+                $q->where('patient_id', $paient_id);
+            })
+            ->select('*', DB::raw('DATE(created_at) as date'))
+            ->WhereIn('user_device_logs.id',DB::table('user_device_logs AS udl')
+                ->join('user_devices','user_devices.id','=','udl.user_device_id' )->where(
+                    'user_devices.patient_id',$paient_id
+                )
+                ->groupBy('udl.user_device_id')
+                ->orderBy('udl.id','DESC')->pluck(DB::raw('MAX(udl.id) AS id') )
+            )
+            ->get();
 
             return $this->generateResponse(true, 'CCM Readings!', $device_logs, 200);
         } catch (\Exception $ex) {
@@ -276,10 +222,9 @@ class UserDeviceController extends Controller
         }
     }
     
-     public function runScrap(Request $request)
+    public function runScrap()
     {
-        Artisan::call("send:dueReportNotification");
-        
-       return $this->generateResponse(true, 'CCM Readings!', null, 200);
+        Artisan::call("send:dueReportNotification");        
+        return $this->generateResponse(true, 'CCM Readings!', null, 200);
     }
 }

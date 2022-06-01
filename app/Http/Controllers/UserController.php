@@ -2,27 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Caregivers;
-use App\Models\PatientInsurance;
-use App\Models\PatientReferral;
-use App\Models\UploadDocuments;
 use App\Models\User;
-use App\Models\CaregiverInfo;
 use App\Models\Demographic;
 use App\Models\PatientEmergencyContact;
 use Illuminate\Http\Request;
-use App\Models\CCMReading;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PatientController;
 use App\Models\Company;
 use App\Models\UserDevice;
 use App\Models\UserDeviceLog;
-use App\Models\UserLatestDeviceLog;
 use Exception;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -391,109 +382,30 @@ class UserController extends Controller
 
         return $this->generateResponse(false, 'Something Went Wrong', null, 200);
     }
-//     public function demographyDataUpdate(Request $request)
-//     {
-//         if ($request->type==="1"){
-//             $demographyDetails = PatientReferral::where(['user_id'=>$request->patient_id])->first();
-//             if ($demographyDetails===null){
-//                 $demographyDetails = new PatientReferral();
-//                 $demographyDetails->user_id = $request->patient_id;
-//             }
-//             $user = User::find($demographyDetails->user_id);
-//             $demographyDetails->phone1 = $request->phoneno;
-//             $user->phone = $request->phoneno;
-//             $demographyDetails->email = $request->emailId;
-//             $user->email = $request->emailId;
-//             $demographyDetails->start_date = $request->start_date;
-// //            $demographyDetails->ethnicity = $request->ethnicity;
-//             $demographyDetails->ssn = $request->SSN;
-//             $demographyDetails->patient_id = $request->admissionId;
-//             $demographyDetails->address_1 = $request->address;
-//             $demographyDetails->eng_name = $request->eng_name;
-//             $demographyDetails->eng_addres = $request->eng_address;
-//             $demographyDetails->emg_phone = $request->emg_phone;
-//             $demographyDetails->emg_relationship = $request->emg_relationship;
-//             $demographyDetails->work_name = $request->work_name;
-//             $demographyDetails->home_phone1 = $request->home_phone1;
-//             $demographyDetails->cell_phone1 = $request->cell_phone1;
-//             $demographyDetails->work_phone3 = $request->work_phone3;
-// //            $demographyDetails->nurse = $request->nurse;
-//             $user->save();
-//             $demographyDetails->save();
-//             return $this->generateResponse(true,'Update Details Success',$demographyDetails,200);
-//         }elseif ($request->type==="2"){
-//             $demographyDetails = PatientReferral::where(['user_id'=>$request->patient_id])->first();
-//             if ($demographyDetails===null){
-//                 $demographyDetails = new PatientReferral();
-//                 $demographyDetails->user_id = $request->patient_id;
-//             }
-//             $demographyDetails->medicaid_number = $request->medicaid_number;
-//             $demographyDetails->medicare_number = $request->medicare_number;
-//             $demographyDetails->save();
-//             if (is_array($request->insurance_id)){
-//                 foreach ($request->insurance_id as $key=>$value) {
-//                     $patientInsurance = PatientInsurance::find($value);
-//                     if ($patientInsurance){
-//                         if ($request->has('name_'.$key)){
-//                             $patientInsurance->name = $request->input('name_'.$key);
-//                         }
-//                         if ($request->has('payerId_'.$key)){
-//                             $patientInsurance->payer_id = $request->input('payerId_'.$key);
-//                         }
-//                         if ($request->has('policy_no_'.$key)){
-//                             $patientInsurance->policy_no = $request->input('policy_no_'.$key);
-//                         }
-//                         if ($request->has('Phone_'.$key)){
-//                             $patientInsurance->phone = $request->input('Phone_'.$key);
-//                         }
-//                         $patientInsurance->save();
-//                     }
-//                 }
-//             }
-//             return $this->generateResponse(true,'Insurance Update Details Success',$request->input('payerId_'.$key),200);
-//         }elseif ($request->type==="3"){
-//             if ($request->has('caregiver_id')){
-//                 $caregivers = Caregivers::where('id','=',$request->caregiver_id)
-//                     ->where('patient_id','=',$request->patient_id)
-//                     ->first();
-//                 if ($caregivers){
-//                     $caregivers->name = $request->c_name;
-//                     $caregivers->phone = $request->c_phone;
-//                     $caregivers->start_time = $request->start_time;
-//                     $caregivers->end_time = $request->end_time;
-//                     $caregivers->save();
-//                 }
-//             }
-
-//             return $this->generateResponse(true,'Caregiver Detail Update Successfully!',$caregivers,200);
-//         }
-
-//         return $this->generateResponse(false,'Something Went Wrong',null,200);
-//     }
 
     public function ccmReadingLevelHigh()
     {
         try {
-            $hignData = [];
-            $device_logs = UserLatestDeviceLog::with('userDevice','userDevice.user');
-            $high = $device_logs->where('level',3)->orderBy('id','desc')->get();
-            if ($high) {
-                foreach ($high as $key => $value) {
-                    $hignData[$value->userDevice->device_type][] = $value;
-                }
-            }
-
-            $lowMidiumData = [];
-            $low_midium = UserLatestDeviceLog::with('userDevice','userDevice.user')->whereIn('level',['1','2'])->take(10)->orderBy('id','desc')->get();
-            if ($low_midium) {
-                foreach ($low_midium as $key => $value) {
-                    $lowMidiumData[$value->userDevice->device_type][] = $value;
-                }
-            }
+            $high = UserDeviceLog::where('level',3)->with('userDevice','userDevice.user')->whereHas('userDevice')
+                ->WhereIn('user_device_logs.id',DB::table('user_device_logs AS udl')
+                    ->join('user_devices','user_devices.id','=','udl.user_device_id' )                   
+                    ->groupBy('udl.user_device_id', 'patient_id')
+                    ->orderBy('udl.id','DESC')->pluck(DB::raw('MAX(udl.id) AS id'))
+                )
+                ->get();
+            
+            $low_midium = UserDeviceLog::whereIn('level',['1','2'])->take(10)
+                ->with('userDevice','userDevice.user')->whereHas('userDevice')
+                ->WhereIn('user_device_logs.id',DB::table('user_device_logs AS udl')
+                    ->join('user_devices','user_devices.id','=','udl.user_device_id' )                   
+                    ->groupBy('udl.user_device_id', 'udl.level')
+                    ->orderBy('udl.id','DESC')->pluck(DB::raw('MAX(udl.id) AS id'))
+                )
+                ->get();
 
             $data = [
-                'high' => $hignData,
-                'low_midium' => $lowMidiumData
+                'high' => $high,
+                'low_midium' => $low_midium
             ];
 
             return $this->generateResponse(true, 'CCM Readings!', $data, 200);
