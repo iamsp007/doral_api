@@ -287,8 +287,6 @@ Route::group([
     Route::post('add-insurance', 'App\Http\Controllers\PatientInsuranceController@updateOrCreateInsurance');
     Route::post('demographyData-update', 'App\Http\Controllers\UserController@demographyDataUpdate');
     Route::post('add-medicine', 'App\Http\Controllers\MedicineController@store');
-    Route::get('ccm-reading-level-high', 'App\Http\Controllers\UserController@ccmReadingLevelHigh');
-    Route::post('appointments', 'App\Http\Controllers\AppointmentController@appointments');
     Route::get('vendor-list', 'App\Http\Controllers\PatientRequestController@getVendorList');
     Route::post('category-list', 'App\Http\Controllers\CategoryController@getCategory');
     Route::post('name-list', 'App\Http\Controllers\TestController@getTest');
