@@ -382,35 +382,4 @@ class UserController extends Controller
 
         return $this->generateResponse(false, 'Something Went Wrong', null, 200);
     }
-
-    public function ccmReadingLevelHigh()
-    {
-        try {
-            $high = UserDeviceLog::where('level',3)->with('userDevice','userDevice.user')->whereHas('userDevice')
-                ->WhereIn('user_device_logs.id',DB::table('user_device_logs AS udl')
-                    ->join('user_devices','user_devices.id','=','udl.user_device_id' )                   
-                    ->groupBy('udl.user_device_id', 'patient_id')
-                    ->orderBy('udl.id','DESC')->pluck(DB::raw('MAX(udl.id) AS id'))
-                )
-                ->get();
-            
-            $low_midium = UserDeviceLog::whereIn('level',['1','2'])->take(10)
-                ->with('userDevice','userDevice.user')->whereHas('userDevice')
-                ->WhereIn('user_device_logs.id',DB::table('user_device_logs AS udl')
-                    ->join('user_devices','user_devices.id','=','udl.user_device_id' )                   
-                    ->groupBy('udl.user_device_id', 'udl.level')
-                    ->orderBy('udl.id','DESC')->pluck(DB::raw('MAX(udl.id) AS id'))
-                )
-                ->get();
-
-            $data = [
-                'high' => $high,
-                'low_midium' => $low_midium
-            ];
-
-            return $this->generateResponse(true, 'CCM Readings!', $data, 200);
-        } catch (\Exception $ex) {
-            return $this->generateResponse(false, $ex->getMessage(), null, 200);
-        }
-    }
 }
