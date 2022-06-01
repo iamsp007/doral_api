@@ -159,13 +159,13 @@ class PatientController extends Controller
       
 		 $user->update([
 		    'avatar' => $avatar,  
-                    'phone' =>  $this->getcrpydata($phone_number),
+                    'phone' =>  $phone_number,
                     'phone_verified_at' => now(),
-                    'first_name' => $this->getcrpydata($input['first_name']),
-                    'last_name' => $this->getcrpydata($input['last_name']),
-                    'email' => $this->getcrpydata($input['email']),
+                    'first_name' => $input['first_name'],
+                    'last_name' => $input['last_name'],
+                    'email' => $input['email'],
                     'gender' => setGender($input['gender']),
-                    'dob' =>  $this->getcrpydata($input['dateOfBirth']),
+                    'dob' =>  $input['dateOfBirth'],
                     'status' => $status,
 		 ]);
         
