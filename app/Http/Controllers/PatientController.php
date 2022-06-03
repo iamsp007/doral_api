@@ -165,7 +165,7 @@ class PatientController extends Controller
                     'last_name' => $input['last_name'],
                     'email' => $input['email'],
                     'gender' => setGender($input['gender']),
-                    'dob' =>  $input['dateOfBirth'],
+                    'dob' =>  dateFormat($input['dateOfBirth']),
                     'status' => $status,
 		 ]);
         
