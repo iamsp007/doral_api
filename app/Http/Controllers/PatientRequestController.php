@@ -507,6 +507,7 @@ class PatientRequestController extends Controller
 
     public function clinicianPatientRequestList(Request $request)
     {
+        
         $type = $request['type'];
         $status = explode(",",$type);
         if(Auth::user()->hasRole('patient')) {
