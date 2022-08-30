@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'gender','dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token', 'designation_id','service_id','latitude','longitude','is_available','avatar',
+        'first_name', 'last_name', 'middle_name', 'nickname', 'title', 'gender', 'gender_describe', 'dob', 'phone', 'phone_verified_at', 'type', 'email', 'email_verified_at', 'password', 'status', 'remember_token', 'level', 'api_token', 'designation_id','service_id','latitude','longitude','is_available','avatar',
     ];
 
     /**
@@ -81,7 +81,34 @@ class User extends Authenticatable
      */
     public function getGenderNameAttribute()
     {
-        return $this->gender==='1'?'Male':($this->gender==='2'?'Female':'Other');
+        $genderData = '';
+
+            if ($this->gender == '1') {
+                $genderData = 'Male';
+            } else if ($this->gender == '2') {
+                $genderData = 'Female';
+            } else if ($this->gender == '3') {
+                $genderData = 'Transgender Male';
+            } else if ($this->gender == '4') {
+                $genderData = 'Transgender Female';
+            } else if ($this->gender == '5') {
+                $genderData = 'Transgender (as non-binary)';
+            } else if ($this->gender == '6') {
+                $genderData = 'Non-binary';
+            } else if ($this->gender == '7') {
+                $genderData = 'Gender-queer';
+            } else if ($this->gender == '8') {
+                $genderData = 'Two-spirit';
+            } else if ($this->gender == '9') {
+                $genderData = 'Questioning/not sure';
+            } else if ($this->gender == '10') {
+                $genderData = 'Choose not to disclose';
+            } else if ($this->gender == '11') {
+                $genderData = 'Not listed, please describe';
+            } else if ($this->gender == '12') {
+                $genderData = 'Unknown';
+            }
+            return $genderData;
     }
     /**
      * Get the user's Date Of Birth.
@@ -90,7 +117,7 @@ class User extends Authenticatable
      */
     public function getAvatarImageAttribute()
     {
-   
+
         if (isset($this->avatar) && !empty($this->avatar)) {
             return env('APP_URL').'/upload/images/'.$this->avatar;
         } else {
@@ -185,7 +212,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(Conversation::class,'user_id','id');
     }
-    
+
     public function myRoom(){
         return $this->hasOne(VirtualRoom::class,'user_id','id');
     }
@@ -316,8 +343,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Demographic::class,'user_id','id');
     }
-    
-    
+
+
     public function caseManagement()
     {
         return $this->hasOne(CaseManagement::class,'patient_id','id');

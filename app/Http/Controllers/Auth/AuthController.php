@@ -51,6 +51,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
+   
         try {
             $username = $request->username;
             $password = $request->password;
@@ -66,7 +67,7 @@ class AuthController extends Controller
             }
 
             $user = $request->user();
-            
+          
             $user->isEmailVerified = $user->email_verified_at ? true : false;
             $user->isMobileVerified = $user->phone_verified_at ? true : false;
             $user->isProfileVerified = $user->profile_verified_at ? true : false;
@@ -82,6 +83,7 @@ class AuthController extends Controller
               if ($user->passcode) {
                 $user->setpasscode = true;
             }
+               
             $data = [
                 'access_token' => $tokenResult->accessToken,
                 'token_type' => 'Bearer',
@@ -91,6 +93,7 @@ class AuthController extends Controller
                 )->toDateTimeString()
                
             ];
+            
             // update device token and type
             $users = User::find($user->id);
             if ($request->has('device_token')) {
@@ -104,9 +107,10 @@ class AuthController extends Controller
             // if ($users->is_available!==2){
             //     $users->is_available = 1;
             // }
+         
             $users->save();
 
-            
+              
             return $this->generateResponse(true, 'Login Successfully!', $data);
         } catch (\Exception $e) {
             $status = false;
@@ -121,11 +125,15 @@ class AuthController extends Controller
 
             $user = new User;
             $user->first_name = $request->first_name;
+            $user->title = $request->title;
+            $user->middle_name = $request->middle_name;
+            $user->nickname = $request->nickname;
             $user->last_name = $request->last_name;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
             $user->dob = dateFormat($request->dob);
             $user->gender = setGender($request->gender);
+            $user->gender_describe = $request->gender_describe;
             $user->phone = $request->phone;
             $user->service_id =  $request->service_id;
             

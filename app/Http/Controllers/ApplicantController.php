@@ -1116,9 +1116,9 @@ class ApplicantController extends Controller
         }
 	
         $key = $request->key;
-       
-        $applicant->$key = $request->$key;
         
+        $applicant->$key = $request->$key;
+      
         $applicant->phone = $request->phone ?? $applicant->phone;
         $applicant->home_phone = $request->home_phone ?? $applicant->home_phone;
         
@@ -1126,7 +1126,7 @@ class ApplicantController extends Controller
         // $applicant->npiNumber = $request->npiNumber ?? $applicant->npiNumber;
         // $applicant->npiType = $request->npiType ?? $applicant->npiType;
         // $applicant->npiOrgName = $request->npiOrgName ?? $applicant->npiOrgName;
-     
+      
         $applicant->save();
 	
         $user = Auth::user();
@@ -1144,6 +1144,7 @@ class ApplicantController extends Controller
         $input['address_type'] = 'Home';
         $input['country'] = 'USA';
         $address = '';
+        
         if (isset($request['address_detail']['address'])) {
             $address = $request['address_detail']['address'];
         } else if (isset($applicant['address_detail']['address'])) {
@@ -1172,6 +1173,7 @@ class ApplicantController extends Controller
         if (isset($address['state_id'])) {
         $input['state'] = State::find($address['state_id'])->state;
         }
+
 
         if (isset($applicant['address_detail']['info'])) {
             $ssn_val = $applicant['address_detail']['info']['ssn'];
@@ -1239,8 +1241,7 @@ class ApplicantController extends Controller
         } 
     	
         if ($key === 'address_detail' || $key === 'professional_detail') {
-         
-            $this->saveScraptingData($input);
+            //$this->saveScraptingData($input);
 	      
             //ScrapingData::dispatch($input);
         }
@@ -1249,7 +1250,7 @@ class ApplicantController extends Controller
 
     public function saveScraptingData($input)
     {
-    
+    	
         if (isset($input['ssn_no'])) {
            
             //designation_name = 1(NP), 4(PA), 9(P)
@@ -1269,7 +1270,7 @@ class ApplicantController extends Controller
                 $input['category_id'] = '2';
                 $input['speciality_id'] = '1';
 		
-                NursePractitionerUsers::updateOrCreate([
+                $np = NursePractitionerUsers::updateOrCreate([
                     'ssn_no' => $input['ssn_no'],
                     'date_of_birth' => $input['date_of_birth']
                 ],

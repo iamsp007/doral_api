@@ -9,6 +9,8 @@ class Iglucose extends Model
 {
     use HasFactory;
 
+protected $table = "iglucose";
+
     /**
      * The attributes that are casted.
      *

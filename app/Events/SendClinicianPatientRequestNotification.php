@@ -22,7 +22,7 @@ class SendClinicianPatientRequestNotification
      * @param  \App\Models\User  $order
      * @return void
      */
-    public function __construct($data,$clinicianList)
+    public function __construct($data,$clinicianList, $arrived = '')
     {
         $first_name = ($data->patient && $data->patient->first_name) ? $data->patient->first_name : '';
         $last_name = ($data->patient && $data->patient->last_name) ? $data->patient->last_name : '';
@@ -30,7 +30,7 @@ class SendClinicianPatientRequestNotification
         $address = $message = '';
         if($data->patient && $data->patient->demographic) {
             $addressData = $data->patient->demographic->address;
-          
+
             if ($addressData['address1']){
                 $address.= $addressData['address1'];
             }
@@ -45,6 +45,17 @@ class SendClinicianPatientRequestNotification
             }
             if ($address){
                 $message="The roadL request came from this address: " . $address;
+            }
+
+            if ($arrived === '3') {
+                $patientmessage = "RoadL request arrive";
+                $patienttitle="RoadL request arrive";
+                $patientToken=$data->patient->device_token;
+
+                $helper = new Helper();
+                if ($patientToken){
+                    $helper->sendNotification($patientToken,$patienttitle,$patientmessage,$data,1);
+                }
             }
         }
 
@@ -65,3 +76,4 @@ class SendClinicianPatientRequestNotification
         }
     }
 }
+

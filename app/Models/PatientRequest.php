@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class PatientRequest extends Model
 {
@@ -42,7 +43,7 @@ class PatientRequest extends Model
 
     public function patient(){
 
-        return $this->belongsTo(User::class,'user_id','id')->select('id','latitude','longitude','first_name','last_name','email','phone');
+        return $this->belongsTo(User::class,'user_id','id')->select('id','latitude','longitude','first_name','last_name','email','phone','dob','gender');
     }
     
     public function request(){
@@ -86,6 +87,14 @@ class PatientRequest extends Model
         return $this->hasOne(Referral::class, 'role_id', 'type_id')->select('id','role_id','name','color','icon');
     }
 
+    /**
+     * Get Meeting Reasons
+     */
+    public function roadlRequestTo()
+    {
+        return $this->hasOne(RoadlRequestTo::class, 'patient_request_id', 'id')->where('clinician_id', Auth::user()->id);
+    }
+    
     public function getSymptomsAttribute($value){
         if ($value){
             $symtoms = SymptomsMaster::whereIn('id',explode(',',$value))->pluck('name');

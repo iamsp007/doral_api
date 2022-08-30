@@ -39,6 +39,9 @@ class AppointmentController extends Controller
                 $q->select('first_name', 'last_name', 'id');
             }])
             ->with(['patients', 'meeting', 'service', 'filetype', 'roadl.requests'])
+            ->with(['patients.demographic' => function ($q) {
+                $q->select('user_id', 'show', 'id');
+            }])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])

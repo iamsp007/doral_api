@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Roadl\Roadlcontroller;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 //Route::get('store_employee', 'App\Http\Controllers\EmployeeController@store');
+header('Access-Control-Allow-Origin:  *');
+header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
+header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization');
 Route::group([
     'prefix' => 'auth'
 ], function () {
@@ -203,6 +207,8 @@ Route::group([
     Route::post('update-profile', 'App\Http\Controllers\ProfileController@store');
     Route::post('patient-profile', 'App\Http\Controllers\PatientController@patientProfile');
     Route::get('get-patient', 'App\Http\Controllers\PatientController@getPatient');
+    Route::post('roadl-request', [Roadlcontroller::class, 'index']);
+    Route::post('hide-roadl-request', [Roadlcontroller::class, 'hideRoadlRequest']);
 });
 
 // clincian API
@@ -329,4 +335,4 @@ Route::get('/npi-scrap', 'App\Http\Controllers\ScrapController@npiScrap');
 
 Route::post('/iglucose-notification', 'App\Http\Controllers\IGlucoseController@getReading');
 
- 
+ Route::get('pages', 'App\Http\Controllers\PageController@index');
