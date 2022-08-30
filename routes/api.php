@@ -40,13 +40,13 @@ Route::group([
 //    Route::post('register', 'App\Http\Controllers\UserController@store');
     Route::post('register', 'App\Http\Controllers\Auth\AuthController@register');
     Route::post('verify', 'App\Http\Controllers\Auth\VerificationController@verify');
-    
+
     Route::post('passcode-register', 'App\Http\Controllers\Auth\AuthController@passcodeRegister');
     Route::post('finger-print-register', 'App\Http\Controllers\Auth\AuthController@fingerprintRegister');
     Route::post('finger-print-login', 'App\Http\Controllers\Auth\AuthController@passcodeandfingerlogin');
-    
+
     Route::put('patient/register/{step}', 'App\Http\Controllers\PatientController@storeInfomation')->name('patient.updateInfomation');
-   
+
     Route::post('company/login', 'App\Http\Controllers\CompanyController@login');
     Route::post('company/store', 'App\Http\Controllers\CompanyController@store');
     // Patient Referral Urls
@@ -84,7 +84,7 @@ Route::group([
     Route::get('employee-reports/{id}/remove', 'App\Http\Controllers\EmployeePhysicalExaminationReportController@destroy')->name('employee.reports.remove');
     Route::post('notification-history', 'App\Http\Controllers\NotificationHistoryController@index');
     Route::get('read-notification/{id}', 'App\Http\Controllers\NotificationHistoryController@readNotification');
-    
+
     Route::group([
         'middleware' => ['auth:api'],
     ], function () {
@@ -139,7 +139,7 @@ Route::group([
         Route::get('get-clinician-list/{status_id}', 'App\Http\Controllers\ApplicantController@getClinicianList');
         Route::post('get-clinician-data', 'App\Http\Controllers\ApplicantController@getClinicianData');
         Route::get('get-clinician-detail/{id}', 'App\Http\Controllers\ApplicantController@getClinicianDetail');
-        
+
         Route::get('patient-list', 'App\Http\Controllers\ConversationController@index');
         Route::post('conversation', 'App\Http\Controllers\ConversationController@getConversation');
         Route::delete('conversation/{id}', 'App\Http\Controllers\ConversationController@destroy');
@@ -253,11 +253,11 @@ Route::group([
    Route::get('patient-referral-failed/{id}', 'App\Http\Controllers\PatientReferralController@faileRecode');
    Route::get('patient-referral-failed-view/{id}', 'App\Http\Controllers\PatientReferralController@viewfaileRecode');
 
-
-    Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
+   Route::post('patient-detail', 'App\Http\Controllers\PatientController@index')->name('patient.detail');
+   // Route::get('get-patient-detail/{id}', 'App\Http\Controllers\UserController@getPatientDetail')->name('patient.detail');
     Route::post('store-patient', 'App\Http\Controllers\PatientReferralController@storePatient');
 
-   
+
 });
 
 // Co Ordinator
