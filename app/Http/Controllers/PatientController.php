@@ -80,7 +80,7 @@ class PatientController extends Controller
             return $this->generateResponse($status, $message, null);
         }
     }
-    
+
      /**
      * Store a newly created resource in storage.
      *
@@ -90,7 +90,7 @@ class PatientController extends Controller
     public function patientProfile(Request $request)
     {
         $input = $request->all();
-       
+
         $rules = [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -131,7 +131,7 @@ class PatientController extends Controller
             'emergency_city.required' => 'Please select city.',
             'emergency_state.required' => 'Please select state.',
             'emergency_zip_code.required' => 'Please enter zipcode.',
-          
+
         ];
 
         $validator = Validator::make($input, $rules, $messages);
@@ -141,7 +141,7 @@ class PatientController extends Controller
         } else {
             try {
                 DB::beginTransaction();
-               
+
                 $doral_id = createDoralId();
                 $phone_number = $input['home_phone'] ? $input['home_phone'] : '';
                 $status = '1';
@@ -150,15 +150,15 @@ class PatientController extends Controller
                     $uploadFolder = 'users';
                     $image = $input['avatar'];
                     $image_uploaded_path = $image->store($uploadFolder, 'public');
-                  
+
                     $avatar = basename($image_uploaded_path);
                 }
-              
-               
+
+
                  $user = Auth::user();
-      
+
 		 $user->update([
-		    'avatar' => $avatar,  
+		    'avatar' => $avatar,
                     'phone' =>  $phone_number,
                     'phone_verified_at' => now(),
                     'first_name' => $input['first_name'],
@@ -168,9 +168,9 @@ class PatientController extends Controller
                     'dob' =>  dateFormat($input['dateOfBirth']),
                     'status' => $status,
 		 ]);
-        
+
                 $user->assignRole('patient')->syncPermissions(Permission::all());
-                
+
                 $address = [
                     'address1' => $input['address1'],
                     'address2' => $input['address2'],
@@ -193,9 +193,9 @@ class PatientController extends Controller
                 if (isset($input['language'])) {
                     $language = implode(",",$input['language']);
                 }
-                
+
                 $demographic = new Demographic();
-                
+
                 $demographic->user_id = $user->id;
                 $demographic->service_id = $input['service_id'];
                 $demographic->doral_id = $doral_id;
@@ -209,7 +209,7 @@ class PatientController extends Controller
                 $demographic->alert = $input['alert'];
                 $demographic->service_request_start_date =  dateFormat($input['serviceRequestStartDate']);
                 $demographic->phone_info = $phone_info;
-                $demographic->marital_status = $input['marital_status'];                
+                $demographic->marital_status = $input['marital_status'];
                 $demographic->type = '3';
 
                 $demographic->save();
@@ -232,17 +232,17 @@ class PatientController extends Controller
                     'phone2' => setPhone($input['phone2']),
                     'address' => $address,
                 ]);
-                
+
                 DB::commit();
                 $url = '';
                 $details = [
                     'name' => $user->first_name,
                     'href' => $url,
                 ];
-                
+
                 SendEmailJob::dispatch($user->email,$details,'WelcomeEmail');
 
-               
+
                  return $this->generateResponse('true', 'Patient created successfully.', null);
             } catch (\Illuminate\Database\QueryException $ex) {
                 $message = $ex->getMessage();
@@ -257,11 +257,11 @@ class PatientController extends Controller
                     $message = $ex->errorInfo[2];
                 }
                 DB::rollBack();
-                
+
                 return $this->generateResponse('false', $message, null);
             }
-        } 
-        
+        }
+
     }
 
  public function getcrpydata($value)
@@ -359,7 +359,7 @@ class PatientController extends Controller
             $patientRequest->dieses=$request->dieses;
             $patientRequest->symptoms=$request->symptoms;
             $patientRequest->is_parking=$request->is_parking;
-            
+
             $patientRequest->save();
             return $this->generateResponse(true, 'Detail Update Successfully!', $patientRequest,200);
         }
@@ -476,14 +476,14 @@ class PatientController extends Controller
         if ($status === '3') {
             $statusData = '3' ;
         }
-       
+
         if (isset($input['action']) && $input['action'] === 'single-action') {
             $users = User::where('id',$ids);
         } else {
             $users = User::whereIn('id',$ids);
         }
         $user = $users->update(['status' => $statusData]);
-      
+
         if ($user) {
             $usersData = $users->with('demographic')->get();
             foreach ($usersData as $value) {
@@ -494,14 +494,14 @@ class PatientController extends Controller
                 if ($value->phone) {
                     // Send Message Start
                     $link=env("WEB_URL").'download-application';
-                  
+
                     if ($value->demographic) {
                         if($value->demographic->service_id == 6) {
                             $message = 'This message is from Doral Health Connect. In order to track your nurse coming to your home for vaccination please click on the link below and download an app. '.$link . "  for login Username : ".$value->email." & Password : ".$password;
                         } else if($value->demographic->service_id == 3) {
                             $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
                         }
-                        
+
                         $smsController = new SmsController();
                         $smsController->sendsmsToTwilio($message, setPhone($value->phone));
                     } else {
@@ -510,7 +510,7 @@ class PatientController extends Controller
                         $smsController = new SmsController();
                         $smsController->sendsmsToTwilio($message, setPhone($value->phone));
                     }
-                   
+
                     // Send Message End
                 }
 
@@ -527,12 +527,12 @@ class PatientController extends Controller
                     }
                 }
             }
-            
+
             return $this->generateResponse(true, 'Change Status Successfully.', null, 200);
         }
         return $this->generateResponse(false, 'Detail not Found', null, 400);
     }
-    
+
     public function changePatientStatus(Request $request){
         $this->validate($request,[
             'id'=>'required',
@@ -614,10 +614,19 @@ Default Password : Patient@doral',
                 $query->where('clinician_id', $user_id);
             })
             ->get();
-            
+
         return $this->generateResponse(true,'get patient list',$patientList,200);
     }
-    
+
+
+    public function index(Request $request)
+    {
+        $patient = User::with('demographic', 'patientEmergency','userDevices')->find($request->patient_id);
+
+        return $this->generateResponse(true,'get patient detail',$patient,200);
+    }
+
+
      public function scheduleAppoimentListData(Request $request){
         // patient referral pending status patient list
         $requestData = $request->all();
