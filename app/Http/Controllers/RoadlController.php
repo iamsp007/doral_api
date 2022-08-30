@@ -15,6 +15,7 @@ use App\Models\AssignAppointmentRoadl;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
 use App\Models\RoadlInformation;
+use App\Models\RoadlRequestTo;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
@@ -27,11 +28,13 @@ class RoadlController extends Controller
 {
     //
     public function create(RoadlInformationRequest $request){
+
         if(isset($request->patient_request_id)) {
             $patientRequest = PatientRequest::find($request->patient_request_id);
         }else {
-            $patientRequest = PatientRequest::find($request->patient_requests_id); 
+            $patientRequest = PatientRequest::find($request->patient_requests_id);
         }
+
         if ($patientRequest){
             if ($request->status==="4" || $request->status===4){
                 $patientRequest->status = $request->status;
@@ -50,11 +53,100 @@ class RoadlController extends Controller
                 $patientRequest->status = $request->status;
                 $patientRequest->cancelled_time = Carbon::now()->toDateTime();
                 $patientRequest->notes = $request->notes;
+                $patientRequest->clinician_id = null;
                 $patientRequest->save();
+
+                if($request->user_type_id == 4) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q){
+                        $q->where('name','=','clinician');
+                    })
+                    ->where('is_available','=','1')->get();
+
+                } else if($request->user_type_id == 6) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '18');
+                    })
+                    ->where('is_available','=','1')->get();
+
+                } else if($request->user_type_id == 7) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '19');
+                    })
+                    ->where('is_available','=','1')->get();
+
+                } else if($request->user_type_id == 8) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '20');
+                    })
+                    ->where('is_available','=','1')->get();
+
+                } else if($request->user_type_id == 9) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '21');
+                    })
+                    ->where('is_available','=','1')->get();
+
+                } else if($request->user_type_id == 10) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '22');
+                    })
+                    ->where('is_available','=','1')->get();
+
+                } else if($request->user_type_id == 11) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '23');
+                    })
+                    ->where('is_available','=','1')->get();
+
+                } else if($request->user_type_id == 12) {
+                    $clinicianIds = User::with('roles')
+                    ->whereHas('roles',function($q) use($request){
+                        $q->where('id','=', '24');
+                    })
+                    ->where('is_available','=','1')->get();
+                }
+
+                $markers = collect($clinicianIds)->map(function($item) use ($request){
+                    $item['distance'] = $this->calculateDistanceBetweenTwoAddresses($item->latitude, $item->longitude, $request->latitude,$request->longitude);
+                    return $item;
+                })
+                // ->where('distance','<=',20)
+                ->pluck('id');
+
+                $clinicianList = User::whereIn('id',$markers)->get();
+
+                $data = PatientRequest::with('detail','patient','requests')
+                    ->where('id','=',$request->patient_request_id)
+                    ->first();
+
+                event(new SendClinicianPatientRequestNotification($data,$clinicianList));
+
+                $smsController = new SmsController();
+                $smsController->sendSms($data,'1');
             }elseif ($request->status==="3"){
                 $patientRequest->status = $request->status;
                 $patientRequest->arrived_time = Carbon::now()->toDateTime();
                 $patientRequest->save();
+
+                $checkAssignId = RoadlRequestTo::where('patient_request_id',$request->patient_request_id)->get()->pluck('clinician_id')->toArray();
+                $clinicianList = User::where('id',$checkAssignId)->get();
+
+                $data = PatientRequest::with('detail','patient','requests')
+                    ->where('id','=',$request->patient_request_id)
+                    ->first();
+                    dd($data);
+
+                event(new SendClinicianPatientRequestNotification($data,$clinicianList, $request->status));
+
+                $smsController = new SmsController();
+                $smsController->sendSms($data,'1');
 
             }elseif ($request->status==="5"){
                 $patientRequest->status = $request->status;
@@ -65,15 +157,15 @@ class RoadlController extends Controller
                 $patientRequest->prepare_time = $request->has('prepare_time')?$request->prepare_time:5;
             }
             // update is available field in user table start
-           
+
             $user = User::where('id',$patientRequest->clincial_id)->first();
-         
+
             if ($user){
                 $user->latitude = $request->latitude;
                 $user->longitude = $request->longitude;
                 if ($request->status==='4' || $request->status==='5'){
                     $user->is_available = '1';
-                    
+
                     $patientRequestdata = PatientRequest::where([['parent_id', $patientRequest->parent_id],['status', '!=', 4],['status', '!=', 5]])->get();
 		     if(count($patientRequestdata) == 0) {
 			PatientRequest::find($patientRequest->parent_id)->update([
@@ -93,10 +185,10 @@ class RoadlController extends Controller
             $roadlInformation->is_status = $request->status;
             $roadlInformation->save();
             // update is available field in user table end
-            
+
             $smsController = new SmsController();
             $smsController->sendSms($patientRequest,$request->status);
-           
+
             return $this->generateResponse(true,'Your RoadL Visit Updated Successfully!',$patientRequest,200);
         }
         return $this->generateResponse(false,'Something Went Wrong!',null,200);
@@ -320,9 +412,9 @@ class RoadlController extends Controller
                         $latitude = $roadlInfo->latitude;
                         $longitude = $roadlInfo->longitude;
                     }
-                        
+
                 }
-              
+
                 return [
                     'id' => isset($lookup->id) ? $lookup->id : null,
                     'user_id' => isset($lookup->user_id) ? $lookup->user_id : null,
@@ -348,7 +440,7 @@ class RoadlController extends Controller
             });
 
             $patient = $patientRequest->map(function ( $lookup ) {
-                
+
                 return [
                     'id' => isset($lookup->patient->id) ? $lookup->patient->id : null,
                     'latitude' => $lookup->latitude,

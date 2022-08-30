@@ -2,31 +2,18 @@
 
 namespace App\Imports;
 
-use App\Models\Patient;
-use App\Models\PatientReferral;
-use App\Models\PatientReferralNotSsn;
 use App\Models\User;
 use App\Models\FailRecodeImport;
 use App\Models\LabReportType;
-use App\Models\CaregiverInfo;
 use App\Models\Demographic;
 use App\Models\PatientLabReport;
-use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Spatie\Permission\Models\Permission;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
-use Maatwebsite\Excel\Concerns\WithProgressBar;
-// use Illuminate\Contracts\Queue\ShouldQueue;
-// use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Validators\Failure;
@@ -469,13 +456,7 @@ class BulkImport implements ToModel, WithHeadingRow, WithValidation,SkipsOnFailu
             //         }
             //         // \Log::info(123456);
             //     }
-            // } else {
-            //     $patientRefNotSsn = new PatientReferralNotSsn();
-            //     $patientRefNotSsn->referral_id = $this->referral_id;
-            //     $patientRefNotSsn->patient_id = isset($row['admission_id'])?$row['admission_id']:null;
-            //     $patientRefNotSsn->caregiver_code = isset($row['caregiver_code'])?$row['caregiver_code']:null;
-            //     $patientRefNotSsn->save();
-            // }
+            // } 
         } catch(Exception $e) {
             $faild_recodes = new FailRecodeImport();
             $faild_recodes->errors = $e->getMessage();

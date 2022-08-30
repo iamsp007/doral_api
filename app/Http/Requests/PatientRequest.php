@@ -88,7 +88,7 @@ class PatientRequest extends FormRequest
         if ($this->patient_id){
             return [
                 'type_id' => 'required',
-                'test_name' => 'required',
+                //'test_name' => 'required',
                 //'sub_test_name' => 'required',
             ];
         } else {
@@ -96,7 +96,7 @@ class PatientRequest extends FormRequest
                 'type_id' => 'required',
             ];
         }
-       
+
     }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)

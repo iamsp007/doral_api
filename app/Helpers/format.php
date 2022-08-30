@@ -1,11 +1,11 @@
 <?php
 
-   
+
 use Illuminate\Support\Facades\Hash;
 
     /**
      * Remove special character from phone value and store only digit.
-     * 
+     *
      * @return int
      */
     if (!function_exists('setPhone')) {
@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Hash;
 
     /**
      * Change default phone format to USA phone format (xxx) xxx-xxxx
-     * 
+     *
      * @return string
      */
     if (!function_exists('getPhone')) {
@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Hash;
 
     /**
      * Change date format.
-     * 
+     *
      * @return string
      */
     if (!function_exists('dateFormat')) {
@@ -51,7 +51,7 @@ use Illuminate\Support\Facades\Hash;
 
     /**
      * Create doral id.
-     * 
+     *
      * @return string
      */
     if (!function_exists('createDoralId')) {
@@ -63,7 +63,7 @@ use Illuminate\Support\Facades\Hash;
 
     /**
      * Create password.
-     * 
+     *
      * @return string
      */
     if (!function_exists('setPassword')) {
@@ -72,21 +72,40 @@ use Illuminate\Support\Facades\Hash;
             return Hash::make($value);
         }
     }
-    
+
     /**
      * Set Gender field.
-     * 
+     *
      * @return int
      */
     if (!function_exists('setGender')) {
         function setGender($value)
         {
+            $genderData = '';
             if ($value === 'Male' || $value === 'MALE' || $value == '1') {
                 $genderData = 1;
             } else if ($value === 'Female' || $value === 'FEMALE' || $value == '2') {
                 $genderData = 2;
-            } else {
+            } else if ($value === 'Transgender Male' || $value == '3') {
                 $genderData = 3;
+            } else if ($value === 'Transgender Female' || $value == '4') {
+                $genderData = 4;
+            } else if ($value === 'Transgender (as non-binary)' || $value == '5') {
+                $genderData = 5;
+            } else if ($value === 'Non-binary' || $value == '6') {
+                $genderData = 6;
+            } else if ($value === 'Gender-queer' || $value == '7') {
+                $genderData = 7;
+            } else if ($value === 'Two-spirit' || $value == '8') {
+                $genderData = 8;
+            } else if ($value === 'Questioning/not sure' || $value == '9') {
+                $genderData = 9;
+            } else if ($value === 'Choose not to disclose' || $value == '10') {
+                $genderData = 10;
+            } else if ($value === 'Not listed, please describe' || $value == '11') {
+                $genderData = 11;
+            } else if ($value === 'Unknown' || $value == '12') {
+                $genderData = 12;
             }
             return $genderData;
         }
@@ -122,7 +141,7 @@ use Illuminate\Support\Facades\Hash;
             if ($value) {
                 return 'xxx-xx-' . substr($value, -4);
             }
-    
+
             return $ssnData;
         }
     }
@@ -135,12 +154,32 @@ use Illuminate\Support\Facades\Hash;
     if (!function_exists('getGender')) {
         function getGender($value)
         {
-            if ($value === '1') {
+            $genderData = '';
+
+            if ($value == '1') {
                 $genderData = 'Male';
-            } else if ($value === '2') {
+            } else if ($value == '2') {
                 $genderData = 'Female';
-            } else {
-                $genderData = 'Other';
+            } else if ($value == '3') {
+                $genderData = 'Transgender Male';
+            } else if ($value == '4') {
+                $genderData = 'Transgender Female';
+            } else if ($value == '5') {
+                $genderData = 'Transgender (as non-binary)';
+            } else if ($value == '6') {
+                $genderData = 'Non-binary';
+            } else if ($value == '7') {
+                $genderData = 'Gender-queer';
+            } else if ($value == '8') {
+                $genderData = 'Two-spirit';
+            } else if ($value == '9') {
+                $genderData = 'Questioning/not sure';
+            } else if ($value == '10') {
+                $genderData = 'Choose not to disclose';
+            } else if ($value == '11') {
+                $genderData = 'Not listed, please describe';
+            } else if ($value == '12') {
+                $genderData = 'Unknown';
             }
             return $genderData;
         }

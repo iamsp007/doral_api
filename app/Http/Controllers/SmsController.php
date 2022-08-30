@@ -11,9 +11,13 @@ use Twilio\Rest\Client;
 class SmsController extends Controller
 {
  public function sendsmsToTwilio($message, $to) {
-        $account_sid = 'AC509601378833a11b18935bf0fe6387cc';
-        $auth_token = '7c6296070a54f124911fa4098467f03a';
-        $twilio_number = '+12184133934';
+        // $account_sid = 'AC509601378833a11b18935bf0fe6387cc';
+        // $auth_token = '7c6296070a54f124911fa4098467f03a';
+        // $twilio_number = '+12184133934';
+
+        $account_sid = 'ACbe214ebdec2d1af98ed69bea61d8c7de';
+        $auth_token = '667678d9e907883b5e7ea4e1a332f9aa';
+        $twilio_number = '+17472986910';
 
         $client = new Client($account_sid, $auth_token);
 

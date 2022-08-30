@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Events\SendingSMS;
 use App\Models\Otp;
+use App\Models\User;
 use Faker\Provider\Address;
 use GuzzleHttp\Cookie\CookieJar as GuzzleHttpCookie;
 use GuzzleHttp\Exception\ClientException;
@@ -146,7 +147,7 @@ class Helper extends BaseController
 
     }
 
-    public function sendNotification($token,$title,$message,$data,$notification_type='1'){
+    public function sendNotification($token,$title,$data){
         $path_to_fcm='https://fcm.googleapis.com/fcm/send';
         $server_key=env('FIREBASE_CREDENTIALS');
         $key= $token;
@@ -155,15 +156,16 @@ class Helper extends BaseController
             'Content-Type:application/json'
         );
         $fields=array(
-            "registration_ids" => [$token],
-            "notification" => [
-                "title" => $title,
-                "body" => $message,
-                "icon" => asset('images/no-image.jpeg'),
-                "notification_type" => $notification_type,
-            ],
-            'data'=>$data,
-            "messageType" => $notification_type
+            'to'=>$key,
+//            'notification'=>array(
+//                'title'=>$title,
+//                'body'=> [
+//                    'title' => $title,
+//                    'message' => $title,
+//                    'data' => $data
+//                ]
+//            ),
+            'data' => $data
         );
 
         $payload=json_encode($fields);
@@ -177,11 +179,11 @@ class Helper extends BaseController
         curl_setopt($curl_session,CURLOPT_POSTFIELDS,$payload);
 
         $result=curl_exec($curl_session);
-       
+        \Log::info($result);
         curl_close($curl_session);
     }
 
-    public function sendWebNotification($token,$title,$message,$data,$notification_type='1',$link=''){
+     public function sendWebNotification($token,$title,$message,$data,$notification_type='1',$link=''){
 
         $SERVER_API_KEY = env('FIREBASE_CREDENTIALS');
 
@@ -215,25 +217,42 @@ class Helper extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
 
         $response = curl_exec($ch);
-        
+
     }
 
-    public function sendLocationEmit($data){
-        try {
-            $client = new Client();
-            $uri = env('WEB_URL') . 'send-location';
-           return $response =  $client->request('GET', $uri, [
-               'json'=>$data,
-               'headers' => [
-                   'Accept' => 'application/json',
-                   'Content-Type' => 'application/json',
-                   'X-Requested-With' => 'XMLHttpRequest',
-               ]
-           ]);
-        }catch (ClientException $exception){
-            return $exception->getResponse();
-        }catch (\Exception $exception){
-            return $exception->getMessage();
-        }
+    function clean($string) {
+
+        $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
+        $string = strtolower($string);
+
+        return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
     }
+    function sendSpecialNotification($token,$data){
+        $path_to_fcm='https://fcm.googleapis.com/fcm/send';
+        $server_key="AAAAX1u3Ca0:APA91bG13OgsGlpQqFcZSSWO566LoADEr8wJEzSSsIpwhwurOLO7vOksqHygf2o9gkmGNXaM7_uDIYk0A2QGtwUHbm8pvUbKtWTx9qpSv-0l4HweeIKABh0QepaSOQhdqHl9pwY-Midm";
+        $user_token = User::where('id','=',3)->get();
+        $key = $user_token[0]->web_token;
+        $headers=array(
+            'Authorization:key='.$server_key,
+            'Content-Type:application/json'
+        );
+        $fields=array(
+            'to'=>$key,
+            'notification'=>$data
+        );
+
+        $payload=json_encode($fields);
+        $curl_session=curl_init();
+        curl_setopt($curl_session,CURLOPT_URL,$path_to_fcm);
+        curl_setopt($curl_session,CURLOPT_POST,true);
+        curl_setopt($curl_session,CURLOPT_HTTPHEADER,$headers);
+        curl_setopt($curl_session,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl_session,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($curl_session,CURLOPT_IPRESOLVE,CURL_IPRESOLVE_V4);
+        curl_setopt($curl_session,CURLOPT_POSTFIELDS,$payload);
+
+        $result=curl_exec($curl_session);
+        curl_close($curl_session);
+    }
+
 }

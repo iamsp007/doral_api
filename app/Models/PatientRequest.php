@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class PatientRequest extends Model
 {
     use HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -42,14 +43,14 @@ class PatientRequest extends Model
 
     public function patient(){
 
-        return $this->belongsTo(User::class,'user_id','id')->select('id','latitude','longitude','first_name','last_name','email','phone');
+        return $this->belongsTo(User::class,'user_id','id')->select('id','latitude','longitude','first_name','last_name','email','phone','dob','gender');
     }
-    
+
     public function request(){
 
         return $this->belongsTo(User::class,'requester_id','id')->select('id','latitude','longitude','first_name','last_name','email','phone');
     }
-    
+
     public function patientDetail(){
 
         return $this->hasOne(User::class,'id','user_id')->with('detail');
@@ -84,6 +85,14 @@ class PatientRequest extends Model
     public function requestType()
     {
         return $this->hasOne(Referral::class, 'role_id', 'type_id')->select('id','role_id','name','color','icon');
+    }
+
+    /**
+     * Get Meeting Reasons
+     */
+    public function roadlRequestTo()
+    {
+        return $this->hasOne(RoadlRequestTo::class, 'patient_request_id', 'id')->where('status', '1')->where( 'clinician_id', Auth::user()->id);
     }
 
     public function getSymptomsAttribute($value){

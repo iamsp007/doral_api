@@ -25,7 +25,7 @@ class AppointmentController extends Controller
      */
     public function index(Request $request)
     {
-    
+
          $response = Appointment::
             where(function ($q) use ($request){
                 if ($request['type']!=='all'){
@@ -39,6 +39,9 @@ class AppointmentController extends Controller
                 $q->select('first_name', 'last_name', 'id');
             }])
             ->with(['patients', 'meeting', 'service', 'filetype', 'roadl.requests'])
+            ->with(['patients.demographic' => function ($q) {
+                $q->select('user_id', 'show', 'id');
+            }])
             ->with(['provider1Details' => function ($q) {
                 $q->select('first_name', 'last_name', 'id');
             }])
@@ -48,7 +51,7 @@ class AppointmentController extends Controller
             ->get();
         if (count($response)>0){
         	$arr = [];
-        	
+
             return $this->generateResponse(true,'All Appointment List',$response,200);
         }
         return $this->generateResponse(false,'No Appointment Exists',null,200);

@@ -81,7 +81,15 @@ class User extends Authenticatable
      */
     public function getGenderNameAttribute()
     {
-        return $this->gender==='1'?'Male':($this->gender==='2'?'Female':'Other');
+        $genderData = '';
+    	if ($this->gender === '1') {
+            $genderData = 'Male';
+        } else if ($this->gender === '2') {
+            $genderData = 'Female';
+        } else {
+            $genderData = 'Other';
+        }
+        return $genderData;
     }
     /**
      * Get the user's Date Of Birth.
@@ -90,7 +98,7 @@ class User extends Authenticatable
      */
     public function getAvatarImageAttribute()
     {
-   
+
         if (isset($this->avatar) && !empty($this->avatar)) {
             return env('APP_URL').'/upload/images/'.$this->avatar;
         } else {
@@ -185,7 +193,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(Conversation::class,'user_id','id');
     }
-    
+
     public function myRoom(){
         return $this->hasOne(VirtualRoom::class,'user_id','id');
     }
@@ -316,10 +324,20 @@ class User extends Authenticatable
     {
         return $this->hasOne(Demographic::class,'user_id','id');
     }
-    
-    
+
+
     public function caseManagement()
     {
         return $this->hasOne(CaseManagement::class,'patient_id','id');
+    }
+
+    public function userDevices()
+    {
+        return $this->hasMany(UserDevice::class,'patient_id','id');
+    }
+
+    public function patientEmergency()
+    {
+        return $this->hasMany(PatientEmergencyContact::class,'user_id','id');
     }
 }

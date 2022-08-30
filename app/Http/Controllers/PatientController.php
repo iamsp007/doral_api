@@ -7,7 +7,6 @@ use App\Jobs\SendEmailJob;
 use App\Mail\AcceptedMail;
 use App\Models\Appointment;
 use App\Models\Demographic;
-use App\Models\Patient;
 use App\Models\PatientEmergencyContact;
 use App\Models\PatientReferral;
 use App\Models\PatientRequest;
@@ -17,49 +16,25 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
 
 class PatientController extends Controller
 {
-    /**
-     * Search patient by name / Email / phone
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getAppoinment($keyword)
-    {
-        $status = false;
-        $data = [];
-        $message = "";
-        try {
-            $res = Patient::searchByEmailNamePhone($keyword);
-            dd($res);
-            $status = true;
-            $message = $res['message'];
-            $data = [
-                'data' => $res['data']
-            ];
-            return $this->generateResponse($status, $message, $data);
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getFile(). $e->getMessage(). $e->getLine();
-            return $this->generateResponse($status, $message, $data);
-        }
-    }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function index(Request $request)
     {
-        //
+        $input = $request->all();
+
+        $patient = User::with('demographic', 'patientEmergency','userDevices')->find($input['paient_id']);
+
+        return $this->generateResponse(true,'get patient detail',$patient,200);
     }
 
     /**
@@ -80,7 +55,7 @@ class PatientController extends Controller
             return $this->generateResponse($status, $message, null);
         }
     }
-    
+
      /**
      * Store a newly created resource in storage.
      *
@@ -90,7 +65,7 @@ class PatientController extends Controller
     public function patientProfile(Request $request)
     {
         $input = $request->all();
-       
+
         $rules = [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -131,7 +106,7 @@ class PatientController extends Controller
             'emergency_city.required' => 'Please select city.',
             'emergency_state.required' => 'Please select state.',
             'emergency_zip_code.required' => 'Please enter zipcode.',
-          
+
         ];
 
         $validator = Validator::make($input, $rules, $messages);
@@ -141,7 +116,7 @@ class PatientController extends Controller
         } else {
             try {
                 DB::beginTransaction();
-               
+
                 $doral_id = createDoralId();
                 $phone_number = $input['home_phone'] ? $input['home_phone'] : '';
                 $status = '1';
@@ -150,15 +125,15 @@ class PatientController extends Controller
                     $uploadFolder = 'users';
                     $image = $input['avatar'];
                     $image_uploaded_path = $image->store($uploadFolder, 'public');
-                  
+
                     $avatar = basename($image_uploaded_path);
                 }
-              
-               
+
+
                  $user = Auth::user();
-      
+
 		 $user->update([
-		    'avatar' => $avatar,  
+		    'avatar' => $avatar,
                     'phone' =>  $phone_number,
                     'phone_verified_at' => now(),
                     'first_name' => $input['first_name'],
@@ -168,9 +143,9 @@ class PatientController extends Controller
                     'dob' =>  $input['dateOfBirth'],
                     'status' => $status,
 		 ]);
-        
+
                 $user->assignRole('patient')->syncPermissions(Permission::all());
-                
+
                 $address = [
                     'address1' => $input['address1'],
                     'address2' => $input['address2'],
@@ -193,9 +168,9 @@ class PatientController extends Controller
                 if (isset($input['language'])) {
                     $language = implode(",",$input['language']);
                 }
-                
+
                 $demographic = new Demographic();
-                
+
                 $demographic->user_id = $user->id;
                 $demographic->service_id = $input['service_id'];
                 $demographic->doral_id = $doral_id;
@@ -209,7 +184,7 @@ class PatientController extends Controller
                 $demographic->alert = $input['alert'];
                 $demographic->service_request_start_date =  dateFormat($input['serviceRequestStartDate']);
                 $demographic->phone_info = $phone_info;
-                $demographic->marital_status = $input['marital_status'];                
+                $demographic->marital_status = $input['marital_status'];
                 $demographic->type = '3';
 
                 $demographic->save();
@@ -232,17 +207,17 @@ class PatientController extends Controller
                     'phone2' => setPhone($input['phone2']),
                     'address' => $address,
                 ]);
-                
+
                 DB::commit();
                 $url = '';
                 $details = [
                     'name' => $user->first_name,
                     'href' => $url,
                 ];
-                
+
                 SendEmailJob::dispatch($user->email,$details,'WelcomeEmail');
 
-               
+
                  return $this->generateResponse('true', 'Patient created successfully.', null);
             } catch (\Illuminate\Database\QueryException $ex) {
                 $message = $ex->getMessage();
@@ -257,94 +232,11 @@ class PatientController extends Controller
                     $message = $ex->errorInfo[2];
                 }
                 DB::rollBack();
-                
+
                 return $this->generateResponse('false', $message, null);
             }
-        } 
-        
-    }
-
- public function getcrpydata($value)
-    {
-       return Crypt::encryptString($value);
-    }
-    /**
-     * StoreInformation is store pateint detailed information based on different steps
-     * This services is call from App only. There is not web API for patent registation
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function storeInfomation($step, Request $request)
-    {
-        $status = false;
-        $resp = null;
-        if ($step == 1) {
-            $request->validate([
-                'ssn' => 'required',
-                'medicaid_number' => 'numeric',
-                'medicare_number' => 'numeric',
-                'address_1' => 'required',
-                'address_2' => 'required',
-                'Zip' => 'required',
-                'service_id' => 'required|numeric'
-            ]);
         }
 
-        try {
-            $request = $request->all();
-            if (!$step) {
-                throw new Exception("Invalid parameter are required");
-            }
-            if (!$request['id']) {
-                throw new Exception("Invalid parameter Id are required");
-            }
-            $id = $request['id'];
-            unset($request['id']);
-            $patient = PatientReferral::with('user')->where('user_id', $id)->first();
-            if (!$patient) {
-                throw new Exception("Patient are not found into database");
-            }
-            switch ($step) {
-                case '1':
-                    $id = $patient->id;
-                    $data = Patient::updatePatient($id, $request);
-                    if ($data) {
-                        $status = true;
-                        $message = "Patient information saved Successfully";
-                        return $this->generateResponse($status, $message, $resp);
-                    }
-                    break;
-                case '2': // Insert services
-                    $id = $patient->id;
-                    $data = Patient::updateServices($id, $request);
-                    if ($data) {
-                        $status = true;
-                        $message = "Patient serives saved Successfully";
-                        return $this->generateResponse($status, $message, $resp);
-                    }
-                    break;
-                case '3': // Insert Insurance
-                    $id = $patient->id;
-                    $data = Patient::updateInsurance($id, $request);
-                    if ($data) {
-                        $user = $patient->user;
-                        $user->profile_verified_at = date('Y-m-d H:i:s');
-                        $user->save();
-                        $status = true;
-                        $message = "Patient Insurance saved Successfully";
-                        return $this->generateResponse($status, $message, $resp);
-                    }
-                    break;
-                default:
-                    throw new Exception("Invalid Parameters");
-                    break;
-            }
-        } catch (\Exception $e) {
-            $status = false;
-            $message = $e->getMessage(). $e->getLine();
-            return $this->generateResponse($status, $message, $resp);
-        }
     }
 
     /**
@@ -359,7 +251,7 @@ class PatientController extends Controller
             $patientRequest->dieses=$request->dieses;
             $patientRequest->symptoms=$request->symptoms;
             $patientRequest->is_parking=$request->is_parking;
-            
+
             $patientRequest->save();
             return $this->generateResponse(true, 'Detail Update Successfully!', $patientRequest,200);
         }
@@ -384,32 +276,6 @@ class PatientController extends Controller
             ->get();
         //dd($patientList);
         return $this->generateResponse(true,'get new patient list',$patientList,200);
-    }
-
-//    public function getNewPatientListForAppointment(Request $request){
-//        // patient referral accept status patient list
-//        $patientList = PatientReferral::with('detail','service','filetype')
-//            ->where('status','=','accept')
-//            ->get();
-//        return $this->generateResponse(true,'get new patient list',$patientList,200);
-//    }
-
-    public function scheduleAppoimentList(Request $request){
-        // patient referral pending status patient list
-        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
-                    $q->select('first_name', 'last_name', 'id');
-                }])
-            ->with(['patients','meeting','service','filetype','roadl'])
-            ->with(['provider1Details' => function ($q) {
-                $q->select('first_name', 'last_name', 'id');
-            }])
-            ->with(['provider2Details' => function ($q) {
-                $q->select('first_name', 'last_name', 'id');
-            }])
-            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
-            ->orderBy('start_datetime','asc')
-            ->get()->toArray();
-        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
     }
 
     public function cancelAppoimentList(Request $request){
@@ -476,14 +342,14 @@ class PatientController extends Controller
         if ($status === '3') {
             $statusData = '3' ;
         }
-       
+
         if (isset($input['action']) && $input['action'] === 'single-action') {
             $users = User::where('id',$ids);
         } else {
             $users = User::whereIn('id',$ids);
         }
         $user = $users->update(['status' => $statusData]);
-      
+
         if ($user) {
             $usersData = $users->with('demographic')->get();
             foreach ($usersData as $value) {
@@ -494,14 +360,14 @@ class PatientController extends Controller
                 if ($value->phone) {
                     // Send Message Start
                     $link=env("WEB_URL").'download-application';
-                  
+
                     if ($value->demographic) {
                         if($value->demographic->service_id == 6) {
                             $message = 'This message is from Doral Health Connect. In order to track your nurse coming to your home for vaccination please click on the link below and download an app. '.$link . "  for login Username : ".$value->email." & Password : ".$password;
                         } else if($value->demographic->service_id == 3) {
                             $message = 'Congratulation! Your employer Housecalls home care has been enrolled to benefit plan where each employees will get certain medical facilities. If you have any medical concern or need annual physical please click on the link below and book your appointment now. '.$link . "  Credentials for this application. Username : ".$value->email." & Password : ".$password;
                         }
-                        
+
                         $smsController = new SmsController();
                         $smsController->sendsmsToTwilio($message, setPhone($value->phone));
                     } else {
@@ -510,7 +376,7 @@ class PatientController extends Controller
                         $smsController = new SmsController();
                         $smsController->sendsmsToTwilio($message, setPhone($value->phone));
                     }
-                   
+
                     // Send Message End
                 }
 
@@ -527,12 +393,12 @@ class PatientController extends Controller
                     }
                 }
             }
-            
+
             return $this->generateResponse(true, 'Change Status Successfully.', null, 200);
         }
         return $this->generateResponse(false, 'Detail not Found', null, 400);
     }
-    
+
     public function changePatientStatus(Request $request){
         $this->validate($request,[
             'id'=>'required',
@@ -614,31 +480,8 @@ Default Password : Patient@doral',
                 $query->where('clinician_id', $user_id);
             })
             ->get();
-            
-        return $this->generateResponse(true,'get patient list',$patientList,200);
-    }
-    
-     public function scheduleAppoimentListData(Request $request){
-        // patient referral pending status patient list
-        $requestData = $request->all();
-        $appointmentList = Appointment::with(['bookedDetails' => function ($q) {
-                    $q->select('first_name', 'last_name', 'id');
-                }])
-            ->with(['meeting','service','filetype','roadl'])
-            ->with(['patients' => function ($q) use($requestData) {
-                $q->where(DB::raw('concat(first_name," ",last_name)'), 'like', '%'.$requestData['searchTerm'].'%');
-            }])
 
-            ->with(['provider1Details' => function ($q) {
-                $q->select('first_name', 'last_name', 'id');
-            }])
-            ->with(['provider2Details' => function ($q) {
-                $q->select('first_name', 'last_name', 'id');
-            }])
-            ->whereDate('start_datetime','>=',Carbon::now()->format('Y-m-d'))
-            ->orderBy('start_datetime','asc')
-            ->get()->toArray();
-        return $this->generateResponse(true,'get schedule patient list',$appointmentList,200);
+        return $this->generateResponse(true,'get patient list',$patientList,200);
     }
 
       public function cancelAppoimentListData(Request $request){

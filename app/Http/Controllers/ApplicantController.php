@@ -24,7 +24,7 @@ use App\Models\PhysicianUsers;
 
 class ApplicantController extends Controller
 {
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -841,7 +841,7 @@ class ApplicantController extends Controller
         try {
             $keys=array_keys($request->allFiles());
             foreach ($keys as $key) {
-          
+
                 $fileKeys =explode('_',$key);
                 $validator = \Validator::make($request->all(),[
                     $key=>'max:10000|mimes:pdf,xls,xlsx,png,jpg,jpeg'
@@ -852,9 +852,9 @@ class ApplicantController extends Controller
                 }
 
                 $type=$fileKeys[1];
-                 
+
                 if (is_numeric($type)){
-                
+
                     $file=$request->file($key);
                     $uploadFolder = 'documents/'.auth()->user()->id.'/'.$fileKeys[count($fileKeys)-1];
                     $file_uploaded_path = $file->store($uploadFolder, 'public');
@@ -1114,21 +1114,21 @@ class ApplicantController extends Controller
             $applicant = new Applicant();
             $applicant->user_id = $request->user()->id;
         }
-	
+
         $key = $request->key;
-       
+
         $applicant->$key = $request->$key;
-        
+
         $applicant->phone = $request->phone ?? $applicant->phone;
         $applicant->home_phone = $request->home_phone ?? $applicant->home_phone;
-        
+
         // $applicant->fedExpiredMonthYear = $request->fedExpiredMonthYear ?? $applicant->fedExpiredMonthYear;
         // $applicant->npiNumber = $request->npiNumber ?? $applicant->npiNumber;
         // $applicant->npiType = $request->npiType ?? $applicant->npiType;
         // $applicant->npiOrgName = $request->npiOrgName ?? $applicant->npiOrgName;
-     
+
         $applicant->save();
-	
+
         $user = Auth::user();
         $designation_id = $user->designation_id;
         $designation_name = $user->designation ? $user->designation->name : null;
@@ -1139,17 +1139,18 @@ class ApplicantController extends Controller
         $input['email'] = $user->email;
         $input['gender'] = $user->gender_name;
         $input['date_of_birth'] = date("Y/m/d", strtotime($user->dob));
-       
+
         $input['deceased'] = 'No';
         $input['address_type'] = 'Home';
         $input['country'] = 'USA';
         $address = '';
+
         if (isset($request['address_detail']['address'])) {
             $address = $request['address_detail']['address'];
         } else if (isset($applicant['address_detail']['address'])) {
             $address = $applicant['address_detail']['address'];
         }
-	
+
         if (isset($request['address_detail']['info'])){
             $documentType = $request['address_detail']['info']['documentType'];
             if ($documentType === 'passport') {
@@ -1168,40 +1169,41 @@ class ApplicantController extends Controller
         if (isset($address['city_id'])) {
         $input['city'] = City::find($address['city_id'])->city;
         }
-        
+
         if (isset($address['state_id'])) {
         $input['state'] = State::find($address['state_id'])->state;
         }
 
+
         if (isset($applicant['address_detail']['info'])) {
             $ssn_val = $applicant['address_detail']['info']['ssn'];
-            
+
             $ssn_last_four = explode('-',$ssn_val);
             $input['ssn_last_four'] = $ssn_last_four[2];
-            
+
             $input['ssn_no'] = setSsn($ssn_val);
-          
+
             if ($applicant['address_detail']['info']['us_citizen'] == 'true') {
                 $input['citizenship_status'] = 'A citizen of the United States';
             }
         } else if (isset($request['address_detail']['info'])) {
             $ssn_val = $request['address_detail']['info']['ssn'];
-            
+
             $ssn_last_four = explode('-',$ssn_val);
             $input['ssn_last_four'] = $ssn_last_four[2];
-            
+
             $input['ssn_no'] = setSsn($ssn_val);
-            
+
             if ($request['address_detail']['info']['us_citizen'] == 'true') {
                 $input['citizenship_status'] = 'A citizen of the United States';
             }
         }
-        
-                
+
+
         if ($key === 'professional_detail') {
             $month = $year = '';
             $fedExpiredMonthYear = explode(" ",$request['professional_detail']['fedExpiredMonthYear']);
-           
+
             if(isset($fedExpiredMonthYear[0])) {
                 $month = $fedExpiredMonthYear[0];
             }
@@ -1212,7 +1214,7 @@ class ApplicantController extends Controller
             $input['dea_no'] = $request['professional_detail']['federal_DEA_id'];
             $input['expire_month'] = $month;
             $input['expire_year'] = $year;
-           
+
             foreach ($request['professional_detail']['stateLicense'] as $value) {
                 if ($value['StateID'] == '35' || $value['State'] = 'New York') {
                     $input['license_number'] = $value['Number'];
@@ -1226,7 +1228,7 @@ class ApplicantController extends Controller
 
                 if ($input['designation_id'] == '9') {
                     if ($value['certificate'] === 'American Board of Family Medicine') {
-                        $input['board'] = 'abfm';  
+                        $input['board'] = 'abfm';
                     } else if ($value['certificate'] === 'American Board of Internal Medicine') {
                         $input['board'] = 'abim';
                     }
@@ -1236,12 +1238,11 @@ class ApplicantController extends Controller
             $input['npi_no'] = $request['professional_detail']['npiNumber'];
             $input['caqh_id'] = $request['professional_detail']['caqh_id'];
             $input['caqh_password'] = $request['professional_detail']['caqh_password'];
-        } 
-    	
+        }
+
         if ($key === 'address_detail' || $key === 'professional_detail') {
-         
-            $this->saveScraptingData($input);
-	      
+            //$this->saveScraptingData($input);
+
             //ScrapingData::dispatch($input);
         }
         return $this->generateResponse(true, $key.' detail added.', $applicant, 200);
@@ -1249,32 +1250,32 @@ class ApplicantController extends Controller
 
     public function saveScraptingData($input)
     {
-    
+
         if (isset($input['ssn_no'])) {
-           
+
             //designation_name = 1(NP), 4(PA), 9(P)
             if ($input['designation_id'] == '9') {
                 $input['profession'] = '60';
                 $input['category_id'] = '1';
                 $input['speciality_id'] = '1';
-            	
+
                 PhysicianUsers::updateOrCreate([
                     'ssn_no' => $input['ssn_no'],
                     'date_of_birth' => $input['date_of_birth']
                 ],
                 $input);
-              
+
             } else if ($input['designation_id'] == '1') {
                 $input['profession'] = '30';
                 $input['category_id'] = '2';
                 $input['speciality_id'] = '1';
-		
-                NursePractitionerUsers::updateOrCreate([
+
+                $np = NursePractitionerUsers::updateOrCreate([
                     'ssn_no' => $input['ssn_no'],
                     'date_of_birth' => $input['date_of_birth']
                 ],
                 $input);
-              
+
             } else if ($input['designation_id'] == '4') {
                 $input['category_id'] = '3';
                 $input['speciality_id'] = '2';

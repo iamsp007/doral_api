@@ -206,7 +206,7 @@ class UserDeviceController extends Controller
             $device_logs = UserDeviceLog::with('userDevice')->whereHas('userDevice',function ($q) use($paient_id) {
                 $q->where('patient_id', $paient_id);
             })
-            ->select('*', DB::raw('DATE(created_at) as date'))
+            ->select('*', DB::raw('DATE(reading_time) as date'))
             ->WhereIn('user_device_logs.id',DB::table('user_device_logs AS udl')
                 ->join('user_devices','user_devices.id','=','udl.user_device_id' )->where(
                     'user_devices.patient_id',$paient_id
