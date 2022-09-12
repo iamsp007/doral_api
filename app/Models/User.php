@@ -119,7 +119,7 @@ class User extends Authenticatable
     {
 
         if (isset($this->avatar) && !empty($this->avatar)) {
-            return env('APP_URL').'/upload/images/'.$this->avatar;
+            return env('APP_URL').'/storage/users/'.$this->avatar;
         } else {
             return env('WEB_URL').'assets/img/user/avatar.jpg';
         }

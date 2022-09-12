@@ -18,11 +18,11 @@ class ProfileController extends Controller
         $input =  $request->all();
 
         if (isset($input["avatar"]) && !empty($input["avatar"])) {
-            $file = $input['avatar'];
-            $new_file_name = time(). "." .$file->getClientOriginalExtension();
-           
-            copy($file->getRealPath(),public_path('upload/images/'.$new_file_name));
-            $input['avatar'] = $new_file_name;
+             $uploadFolder = 'users';
+            $image = $input['avatar'];
+            $image_uploaded_path = $image->store($uploadFolder, 'public');
+
+            $input['avatar'] = basename($image_uploaded_path);
         }
         $user = Auth::user();
       
